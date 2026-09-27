@@ -42,8 +42,8 @@ h2 { font-size: 1.2rem; margin: 0 0 12px; }
 .lead, .hint { color: var(--text-muted); }
 
 .field { margin-bottom: 22px; }
-.field label { display: block; font-size: 0.9rem; margin-bottom: 6px; }
-.field input {
+.field > label { display: block; font-size: 0.9rem; margin-bottom: 6px; }
+.field input:not([type="radio"]):not([type="checkbox"]) {
   width: 100%;
   box-sizing: border-box;
   padding: 8px 10px;
@@ -110,4 +110,72 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
   .page { grid-template-columns: 1fr; }
   .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
   .content { padding: 16px; }
+}
+
+.top-nav {
+  display: flex;
+  gap: 4px;
+  padding: 0 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav-link {
+  padding: 14px 16px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+}
+
+.nav-link:hover { color: var(--text); }
+.nav-link.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.gbs-page {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 24px 32px 48px;
+}
+
+.gbs-page .primary-button { margin-top: 8px; }
+
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 8px 32px;
+}
+
+.radio-list .dash-options-list-option { display: flex; align-items: center; gap: 8px; margin: 6px 0; cursor: pointer; }
+
+.hint.small { font-size: 0.8rem; margin: 6px 0 0; }
+
+.step h2 { display: flex; align-items: center; gap: 10px; }
+.step h4 { margin: 8px 0 4px; color: var(--text-muted); font-weight: 600; }
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #7b3fe4;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.two-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .gbs-page { padding: 16px; }
+  .top-nav { padding: 0 8px; overflow-x: auto; }
+  .nav-link { padding: 12px 10px; white-space: nowrap; }
 }

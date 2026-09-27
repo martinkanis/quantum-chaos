@@ -9,7 +9,7 @@ from montecarlo.charts import final_value_histogram, percentile_fan_chart
 from montecarlo.metrics import BAND_PERCENTILES, SummaryMetrics, percentile_bands, summarize
 from montecarlo.simulation import MONTHS_PER_YEAR, SimulationResult
 from ui import ids
-from ui.layout import TABLE_CELL_STYLE, TABLE_HEADER_STYLE
+from ui.components import TABLE_CELL_STYLE, TABLE_HEADER_STYLE, metric_tile
 
 PERCENT = 100
 YEAR_COLUMN = "year"
@@ -44,33 +44,25 @@ def format_money(value: float) -> str:
 
 def _metric_tiles(metrics: SummaryMetrics) -> html.Div:
     tiles = [
-        _tile("Vloženo celkem", format_money(metrics.total_contributed)),
-        _tile("Medián", format_money(metrics.median)),
-        _tile("Průměr", format_money(metrics.mean)),
-        _tile("Šance na ztrátu", f"{metrics.probability_of_loss * PERCENT:.1f} %"),
-        _tile("5. percentil", format_money(metrics.percentile_5)),
-        _tile("95. percentil", format_money(metrics.percentile_95)),
-        _tile(
+        metric_tile("Vloženo celkem", format_money(metrics.total_contributed)),
+        metric_tile("Medián", format_money(metrics.median)),
+        metric_tile("Průměr", format_money(metrics.mean)),
+        metric_tile("Šance na ztrátu", f"{metrics.probability_of_loss * PERCENT:.1f} %"),
+        metric_tile("5. percentil", format_money(metrics.percentile_5)),
+        metric_tile("95. percentil", format_money(metrics.percentile_95)),
+        metric_tile(
             "VaR 95 %", format_money(metrics.value_at_risk),
             hint="Ztráta vůči vloženému kapitálu, kterou s 95% pravděpodobností nepřekročíš. "
             "Záporná hodnota = zisk.",
         ),
-        _tile(
+        metric_tile(
             "CVaR 95 %", format_money(metrics.conditional_value_at_risk),
             hint="Průměrná ztráta vůči vloženému kapitálu v nejhorších 5 % scénářů.",
         ),
     ]
     if metrics.median_annual_return is not None:
-        tiles.append(_tile("Mediánový roční výnos", f"{metrics.median_annual_return * PERCENT:.2f} %"))
+        tiles.append(metric_tile("Mediánový roční výnos", f"{metrics.median_annual_return * PERCENT:.2f} %"))
     return html.Div(className="metric-grid", children=tiles)
-
-
-def _tile(label: str, value: str, hint: str = "") -> html.Div:
-    return html.Div(
-        className="metric", title=hint,
-        children=[html.Div(label + (" ⓘ" if hint else ""), className="metric-label"),
-                  html.Div(value, className="metric-value")],
-    )
 
 
 def _percentile_table(result: SimulationResult) -> dash_table.DataTable:

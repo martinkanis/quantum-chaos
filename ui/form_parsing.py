@@ -16,6 +16,7 @@ WEIGHT_COLUMN = "weight"
 RETURN_COLUMN = "expected_return"
 VOLATILITY_COLUMN = "volatility"
 CORRELATION_ROW_LABEL_COLUMN = "asset"
+RANDOM_SEED = "random"
 
 Row = Dict[str, Any]
 
@@ -71,7 +72,7 @@ def build_parameters(
         monthly_contribution=_required_parameter(monthly_contribution, "Měsíční vklad"),
         years=int(_required_parameter(years, "Investiční horizont")),
         simulation_count=int(_required_parameter(simulation_count, "Počet simulací")),
-        seed=_optional_seed(seed),
+        seed=parse_seed(seed),
     )
 
 
@@ -116,8 +117,9 @@ def _required_parameter(value: Any, label: str) -> float:
     return number
 
 
-def _optional_seed(value: Any) -> Optional[int]:
-    if value is None or value == "":
+def parse_seed(value: Any) -> Optional[int]:
+    """None means a fresh random seed on every run."""
+    if value is None or value == "" or value == RANDOM_SEED:
         return None
     number = _as_number(value)
     if number is None or number < 0 or not float(number).is_integer():

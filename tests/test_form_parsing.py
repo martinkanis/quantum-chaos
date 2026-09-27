@@ -6,6 +6,7 @@ from montecarlo.simulation import SimulationParametersError
 from ui.form_parsing import (
     DEFAULT_ASSET_ROWS,
     NAME_COLUMN,
+    RANDOM_SEED,
     RETURN_COLUMN,
     VOLATILITY_COLUMN,
     WEIGHT_COLUMN,
@@ -62,6 +63,14 @@ def test_soucet_vah_ignoruje_prazdne_bunky():
 
 def test_prazdny_seed_znamena_nahodnou_simulaci():
     assert build_parameters(1000, 0, 5, 100, None).seed is None
+
+
+def test_volba_nahodny_z_dropdownu_znamena_nahodnou_simulaci():
+    assert build_parameters(1000, 0, 5, 100, RANDOM_SEED).seed is None
+
+
+def test_seed_z_dropdownu_se_pouzije():
+    assert build_parameters(1000, 0, 5, 100, 42).seed == 42
 
 
 @pytest.mark.parametrize("seed", [-1, 1.5, "abc"])

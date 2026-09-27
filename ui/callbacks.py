@@ -16,11 +16,11 @@ from ui.form_parsing import (
     asset_names,
     build_parameters,
     build_portfolio,
-    correlation_column_id,
     default_correlation_rows,
     has_valid_names,
     weight_sum_percent,
 )
+from ui.portfolio_page import correlation_table_columns
 from ui.results import build_results
 
 WEIGHT_SUM_TARGET = 100.0
@@ -62,7 +62,7 @@ def register_callbacks(app: Dash) -> None:
         State(ids.MONTHLY_CONTRIBUTION_INPUT, "value"),
         State(ids.YEARS_SLIDER, "value"),
         State(ids.SIMULATION_COUNT_SLIDER, "value"),
-        State(ids.SEED_INPUT, "value"),
+        State(ids.SEED_DROPDOWN, "value"),
         prevent_initial_call=True,
     )(run_simulation)
 
@@ -91,11 +91,7 @@ def reset_correlation_table(asset_rows: List[Row], pairwise_correlation: float) 
     if not has_valid_names(names):
         return [], [{"id": CORRELATION_ROW_LABEL_COLUMN, "name": "Nejdřív vyplň unikátní názvy aktiv"}]
 
-    columns = [{"id": CORRELATION_ROW_LABEL_COLUMN, "name": "", "editable": False}] + [
-        {"id": correlation_column_id(index), "name": name, "type": "numeric"}
-        for index, name in enumerate(names)
-    ]
-    return default_correlation_rows(names, pairwise_correlation), columns
+    return default_correlation_rows(names, pairwise_correlation), correlation_table_columns(names)
 
 
 def run_simulation(
