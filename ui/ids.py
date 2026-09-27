@@ -23,6 +23,7 @@ NAV_PORTFOLIO_LINK = "nav-portfolio-link"
 NAV_GBS_LINK = "nav-gbs-link"
 PORTFOLIO_PAGE = "portfolio-page"
 GBS_PAGE = "gbs-page"
+CAVEATS_PAGE = "caveats-page"
 
 GBS_DEGREE_RADIO = "gbs-degree-radio"
 GBS_STRENGTH_SLIDER = "gbs-strength-slider"

@@ -4,10 +4,12 @@ import pytest
 from gbs.demo import DemoParametersError, run_gbs_demo, sample_sizes_up_to
 from gbs.expectation import MomentProblem
 from ui import ids
+from ui.caveats_content import CAVEATS
+from ui.caveats_page import build_caveats_page
 from ui.form_parsing import DEFAULT_ASSET_ROWS, asset_names, build_portfolio, default_correlation_rows
 from ui.gbs_callbacks import should_run
 from ui.gbs_results import build_gbs_results
-from ui.navigation import GBS_PATH, HIDDEN, PORTFOLIO_PATH, VISIBLE, show_page
+from ui.navigation import CAVEATS_PATH, GBS_PATH, HIDDEN, PORTFOLIO_PATH, VISIBLE, caveat_href, show_page
 
 NAMES = asset_names(DEFAULT_ASSET_ROWS)
 
@@ -46,10 +48,30 @@ def test_stejny_seed_da_stejny_gbs_beh():
     np.testing.assert_array_equal(first.study.gbs_trajectory, second.study.gbs_trajectory)
 
 
-def test_navigace_ukaze_gbs_stranku_jen_na_jeji_adrese():
-    assert show_page(GBS_PATH)[:2] == (HIDDEN, VISIBLE)
-    assert show_page(PORTFOLIO_PATH)[:2] == (VISIBLE, HIDDEN)
-    assert show_page("/neexistuje")[:2] == (VISIBLE, HIDDEN)
+def test_navigace_ukaze_prave_jednu_stranku_podle_adresy():
+    assert show_page(PORTFOLIO_PATH)[:3] == (VISIBLE, HIDDEN, HIDDEN)
+    assert show_page(GBS_PATH)[:3] == (HIDDEN, VISIBLE, HIDDEN)
+    assert show_page(CAVEATS_PATH)[:3] == (HIDDEN, HIDDEN, VISIBLE)
+    assert show_page("/neexistuje")[:3] == (VISIBLE, HIDDEN, HIDDEN)
+
+
+def test_podstranka_hacku_zvyrazni_v_navigaci_gbs():
+    assert show_page(CAVEATS_PATH)[3:] == ("nav-link", "nav-link active")
+
+
+def test_kazdy_hacek_ma_unikatni_kotvu_a_vlastni_sekci():
+    anchors = [caveat.anchor for caveat in CAVEATS]
+    page = build_caveats_page()
+    section_ids = [child.id for child in page.children if getattr(child, "id", None)]
+
+    assert len(set(anchors)) == len(anchors)
+    assert section_ids == anchors
+    assert caveat_href(anchors[0]) == f"{CAVEATS_PATH}#{anchors[0]}"
+
+
+def test_kazdy_hacek_ma_shrnuti_vysvetleni_i_doporuceni():
+    for caveat in CAVEATS:
+        assert caveat.summary.strip() and caveat.explanation.strip() and caveat.remedies.strip()
 
 
 def test_gbs_simulace_bezi_po_kliknuti_nebo_pri_prvnim_zobrazeni_stranky():

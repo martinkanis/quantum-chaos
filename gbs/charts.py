@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Sequence
+from typing import Dict, Optional, Sequence
 
 import numpy as np
 import plotly.graph_objects as go
@@ -16,6 +16,7 @@ WIRE_COLOR = "#1c2330"
 SQUEEZER_FILL = "#efe7fd"
 INTERFEROMETER_FILL = "rgba(154, 163, 178, 0.18)"
 DETECTOR_FILL = "#e3f4ea"
+DEGREE_COLORS = {2: MC_COLOR, 4: GBS_COLOR, 6: "#d9822b"}
 
 SQUEEZER_X = (0.6, 2.2)
 INTERFEROMETER_X = (3.0, 7.0)
@@ -170,6 +171,25 @@ def _heatmap(
     )
     figure.update_yaxes(autorange="reversed")
     figure.update_layout(height=120 + 45 * len(row_labels), margin=CHART_MARGIN)
+    return figure
+
+
+def useful_fraction_chart(
+    strengths: np.ndarray, fractions_by_degree: Dict[int, np.ndarray], highlighted_strength: float
+) -> go.Figure:
+    figure = go.Figure()
+    for degree, fractions in fractions_by_degree.items():
+        figure.add_trace(go.Scatter(
+            x=strengths, y=fractions, mode="lines+markers", name=f"d = {degree}",
+            line=dict(color=DEGREE_COLORS.get(degree, MUTED_COLOR), width=3),
+            hovertemplate=f"d = {degree}, tanh r_max = %{{x:.2f}}: %{{y:.1%}}<extra></extra>",
+        ))
+    figure.add_vline(
+        x=highlighted_strength, line=dict(color=MUTED_COLOR, dash="dash"), annotation_text="výchozí nastavení",
+    )
+    figure.update_xaxes(title="Síla stlačení tanh(r_max)")
+    figure.update_yaxes(title="Podíl užitečných výstřelů", tickformat=".0%", rangemode="tozero")
+    figure.update_layout(height=360, margin=CHART_LEGEND_MARGIN, legend=CHART_LEGEND)
     return figure
 
 

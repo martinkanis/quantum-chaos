@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Dict, List, Optional, Sequence
 
 import numpy as np
 
@@ -46,6 +46,18 @@ def run_gbs_demo(
         shots=sample_shots(program, SHOT_PREVIEW_COUNT, rng, SHOT_PREVIEW_MAX_TOTAL),
         total_photon_probabilities=total_photon_distribution(program, PHOTON_CHART_MAX_TOTAL),
     )
+
+
+def useful_shot_fractions(
+    covariance: np.ndarray, squeezing_strengths: Sequence[float], degrees: Sequence[int]
+) -> Dict[int, np.ndarray]:
+    """Probability of exactly d photons per shot – the share of shots the estimator can use."""
+    fractions: Dict[int, List[float]] = {degree: [] for degree in degrees}
+    for strength in squeezing_strengths:
+        totals = total_photon_distribution(program_from_covariance(covariance, strength), max(degrees))
+        for degree in degrees:
+            fractions[degree].append(float(totals[degree]))
+    return {degree: np.array(values) for degree, values in fractions.items()}
 
 
 def sample_sizes_up_to(max_sample_size: int) -> np.ndarray:

@@ -6,8 +6,9 @@ from gbs.demo import MAX_SAMPLE_SIZE
 from gbs.expectation import ALLOWED_DEGREES
 from gbs.sampler import MAX_MODES
 from ui import ids
+from ui.caveats_content import CAVEATS, REFERENCES_MARKDOWN
 from ui.components import REFERENCE_SEED, labelled, seed_dropdown
-from ui.navigation import HIDDEN
+from ui.navigation import CAVEATS_PATH, HIDDEN, caveat_href
 
 DEFAULT_DEGREE = 4
 DEFAULT_SQUEEZING_STRENGTH = 0.7
@@ -39,33 +40,10 @@ Když do zařízení „nahrajeme“ $\Sigma$, četnosti naměřených vzorů fo
 odhad $\mathbb{E}[L^d]$ – místo generování scénářů se počítají fotony.
 """
 
-CAVEATS_MARKDOWN = r"""
-- **GBS je tady simulované klasicky.** Pro pár módů je to snadné. Kvantová výhoda může vzniknout jen
-  tam, kde klasická simulace GBS selhává – a tahle hranice se posouvá (tensor-network simulace
-  z roku 2024 dohnaly i velké experimenty).
-- **Pro tento konkrétní moment existuje vzorec** $\mathbb{E}[L^d] = (d-1)!!\,(w^\top \Sigma w)^{d/2}$.
-  Používá se tu jen jako kontrola správnosti. Smysl má GBS u obecných polynomů ve vysoké dimenzi,
-  kde je výpočet hafniánů exponenciálně drahý.
-- **Znaménkový problém.** Měří se $\mathrm{Haf}^2$, ne $\mathrm{Haf}$, takže tento estimátor funguje jen
-  pro nezáporné korelace.
-- **Většina výstřelů se zahodí.** Informaci nesou jen výstřely s přesně $d$ fotony. Síla stlačení je
-  kompromis: slabé stlačení dá málo fotonů, silné je rozprostře do vyšších počtů.
-- **Reálný hardware** má ztráty fotonů, šum a často jen prahové detektory (foton ano/ne). Výstupní
-  rozdělení je pak jiné a estimátor se musí upravit.
-- **VaR a CVaR nejsou polynomy.** Ukazatele s indikátorovou funkcí by se musely aproximovat polynomem
-  vysokého stupně a počet potřebných vzorů roste kombinatoricky.
-- **Srovnání je v počtu vzorků, ne v čase** – rychlost vzorkování hardwaru se tu nemodeluje.
-"""
-
-REFERENCES_MARKDOWN = """
-- Hamilton et al.: *Gaussian Boson Sampling*, Phys. Rev. Lett. 119, 170501 (2017).
-- Arrazola, Rebentrost, Weedbrook: *Quantum supremacy and high-dimensional integration*, arXiv (2017).
-- Andersen, Shan: *Using Gaussian Boson Samplers to Approximate Gaussian Expectation Problems*, arXiv (2025).
-- Oh et al.: *Classical algorithm for simulating experimental Gaussian boson sampling*, Nature Physics 20, 1461 (2024).
-
-Estimátor na této stránce odhaduje hafniány přímo z četností vzorů. Jde o ilustraci principu;
-konkrétní estimátory v uvedených pracích se mohou lišit.
-"""
+ESTIMATOR_NOTE = (
+    "Estimátor na této stránce odhaduje hafniány přímo z četností vzorů. Jde o ilustraci principu; "
+    "konkrétní estimátory v uvedených pracích se mohou lišit."
+)
 
 
 def build_gbs_page() -> html.Div:
@@ -85,11 +63,36 @@ def build_gbs_page() -> html.Div:
             _controls(),
             html.Div(id=ids.GBS_ERROR_MESSAGE, className="error-message"),
             dcc.Loading(html.Div(id=ids.GBS_RESULTS), type="circle"),
+            _caveats_summary(),
             html.Section(
                 className="card",
-                children=[html.H2("Kde jsou háčky"), dcc.Markdown(CAVEATS_MARKDOWN, mathjax=True)],
+                children=[
+                    html.H2("Literatura"),
+                    dcc.Markdown(REFERENCES_MARKDOWN),
+                    html.P(ESTIMATOR_NOTE, className="hint"),
+                ],
             ),
-            html.Section(className="card", children=[html.H2("Literatura"), dcc.Markdown(REFERENCES_MARKDOWN)]),
+        ],
+    )
+
+
+def _caveats_summary() -> html.Section:
+    return html.Section(
+        className="card",
+        children=[
+            html.H2("Kde jsou háčky"),
+            html.Ol(
+                className="caveat-list",
+                children=[
+                    html.Li([
+                        html.Strong(caveat.title),
+                        dcc.Markdown(caveat.summary, mathjax=True),
+                        dcc.Link("Podrobněji →", href=caveat_href(caveat.anchor)),
+                    ])
+                    for caveat in CAVEATS
+                ],
+            ),
+            dcc.Link("Všechny háčky podrobně na samostatné stránce →", href=CAVEATS_PATH, className="back-link"),
         ],
     )
 

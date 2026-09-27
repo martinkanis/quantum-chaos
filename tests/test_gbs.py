@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 
+from gbs.demo import useful_shot_fractions
 from gbs.expectation import (
     MomentProblem,
     MomentProblemError,
@@ -141,3 +142,11 @@ def test_studie_vraci_pozorovane_cetnosti_vzoru():
 
     assert study.observed_pattern_counts.shape == (len(study.patterns),)
     assert study.observed_pattern_counts.sum() == pytest.approx(5_000 * study.useful_shot_fraction, rel=0.2)
+
+
+def test_podil_uzitecnych_vystrelu_je_pravdepodobnost():
+    fractions = useful_shot_fractions(COVARIANCE, [0.1, 0.5, 0.9], degrees=[2, 4])
+
+    assert set(fractions) == {2, 4}
+    assert all(np.all((values > 0) & (values < 1)) for values in fractions.values())
+    assert fractions[4][0] < fractions[4][-1]
