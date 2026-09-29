@@ -11,7 +11,8 @@ from gbs.sampler import GbsProgramError
 from montecarlo.portfolio import PortfolioValidationError
 from montecarlo.simulation import SimulationParametersError
 from ui import ids
-from ui.form_parsing import build_portfolio, parse_seed
+from ui.callbacks import add_asset_row, describe_weight_sum, reset_correlation_table
+from ui.form_parsing import build_centered_portfolio, parse_seed
 from ui.gbs_results import build_gbs_results
 from ui.navigation import GBS_PATH
 
@@ -28,6 +29,26 @@ EXPECTED_INPUT_ERRORS = (
 
 def register_gbs_callbacks(app: Dash) -> None:
     app.callback(
+        Output(ids.GBS_ASSET_TABLE, "data"),
+        Input(ids.GBS_ADD_ASSET_BUTTON, "n_clicks"),
+        State(ids.GBS_ASSET_TABLE, "data"),
+        prevent_initial_call=True,
+    )(add_asset_row)
+
+    app.callback(
+        Output(ids.GBS_WEIGHT_SUM_TEXT, "children"),
+        Output(ids.GBS_WEIGHT_SUM_TEXT, "className"),
+        Input(ids.GBS_ASSET_TABLE, "data"),
+    )(describe_weight_sum)
+
+    app.callback(
+        Output(ids.GBS_CORRELATION_TABLE, "data"),
+        Output(ids.GBS_CORRELATION_TABLE, "columns"),
+        Input(ids.GBS_ASSET_TABLE, "data"),
+        Input(ids.GBS_PAIRWISE_CORRELATION_SLIDER, "value"),
+    )(reset_correlation_table)
+
+    app.callback(
         output=dict(results=Output(ids.GBS_RESULTS, "children"), error=Output(ids.GBS_ERROR_MESSAGE, "children")),
         inputs=dict(
             _clicks=Input(ids.GBS_RUN_BUTTON, "n_clicks"),
@@ -36,8 +57,8 @@ def register_gbs_callbacks(app: Dash) -> None:
         state=dict(
             current_results=State(ids.GBS_RESULTS, "children"),
             form=dict(
-                asset_rows=State(ids.ASSET_TABLE, "data"),
-                correlation_rows=State(ids.CORRELATION_TABLE, "data"),
+                asset_rows=State(ids.GBS_ASSET_TABLE, "data"),
+                correlation_rows=State(ids.GBS_CORRELATION_TABLE, "data"),
                 degree=State(ids.GBS_DEGREE_RADIO, "value"),
                 squeezing_strength=State(ids.GBS_STRENGTH_SLIDER, "value"),
                 max_sample_size=State(ids.GBS_MAX_SHOTS_DROPDOWN, "value"),
@@ -52,7 +73,7 @@ def run_gbs_simulation(_clicks: Optional[int], pathname: str, current_results: A
         return dict(results=no_update, error=no_update)
 
     try:
-        portfolio = build_portfolio(form["asset_rows"], form["correlation_rows"])
+        portfolio = build_centered_portfolio(form["asset_rows"], form["correlation_rows"])
         problem = MomentProblem(
             covariance=portfolio.covariance(), weights=portfolio.weights, degree=int(form["degree"])
         )

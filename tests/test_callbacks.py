@@ -1,3 +1,5 @@
+from collections import Counter
+
 from app import app
 from ui import ids
 from ui.callbacks import run_simulation
@@ -8,10 +10,20 @@ from ui.portfolio_page import build_portfolio_page
 NAMES = asset_names(DEFAULT_ASSET_ROWS)
 
 
+def outputs_of(callback):
+    return callback["output"] if isinstance(callback["output"], list) else [callback["output"]]
+
+
 def component_ids_used_by(callback):
-    outputs = callback["output"] if isinstance(callback["output"], list) else [callback["output"]]
     dependencies = callback["inputs"] + callback["state"]
-    return {output.component_id for output in outputs} | {dependency["id"] for dependency in dependencies}
+    return {output.component_id for output in outputs_of(callback)} | {dependency["id"] for dependency in dependencies}
+
+
+def callback_writing(component_id):
+    return next(
+        callback for callback in app.callback_map.values()
+        if any(output.component_id == component_id for output in outputs_of(callback))
+    )
 
 
 def download_button_style_after_run(initial_value):
@@ -33,3 +45,16 @@ def test_tlacitko_stazeni_je_skryte_dokud_neni_co_stahnout():
     assert build_portfolio_page()[ids.DOWNLOAD_BUTTON].style == HIDDEN
     assert download_button_style_after_run(initial_value=1000) == VISIBLE
     assert download_button_style_after_run(initial_value=None) == HIDDEN
+
+
+def test_id_komponent_jsou_v_celem_layoutu_unikatni():
+    duplicate_ids = [component_id for component_id, count in Counter(app.layout).items() if count > 1]
+
+    assert duplicate_ids == []
+
+
+def test_gbs_stranka_pocita_s_vlastnim_portfoliem_ne_s_prvni_strankou():
+    read_ids = {dependency["id"] for dependency in callback_writing(ids.GBS_RESULTS)["state"]}
+
+    assert {ids.GBS_ASSET_TABLE, ids.GBS_CORRELATION_TABLE} <= read_ids
+    assert not {ids.ASSET_TABLE, ids.CORRELATION_TABLE} & read_ids

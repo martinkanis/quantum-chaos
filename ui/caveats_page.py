@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Callable, Dict, List
 
-import numpy as np
 from dash import dcc, html
 
 from gbs.charts import useful_fraction_chart
@@ -10,10 +9,8 @@ from gbs.demo import useful_shot_fractions
 from gbs.expectation import ALLOWED_DEGREES
 from ui import ids
 from ui.caveats_content import CAVEATS, DISCARDED_SHOTS, REFERENCES_MARKDOWN, Caveat
-from ui.form_parsing import DEFAULT_ASSET_ROWS, asset_names, build_portfolio, default_correlation_rows
-from ui.gbs_page import DEFAULT_SQUEEZING_STRENGTH, MAX_SQUEEZING_STRENGTH, MIN_SQUEEZING_STRENGTH, SQUEEZING_STEP
+from ui.gbs_page import DEFAULT_SQUEEZING_STRENGTH, default_portfolio, squeezing_strength_grid
 from ui.navigation import GBS_PATH, HIDDEN, caveat_href
-from ui.portfolio_page import DEFAULT_PAIRWISE_CORRELATION
 
 INTRO = (
     "Rozvedení omezení z 2. stránky. U každého háčku: co přesně znamená, proč vzniká, konkrétní příklad "
@@ -71,10 +68,8 @@ def _illustrations(caveat: Caveat) -> List:
 
 
 def _useful_fraction_graph() -> html.Div:
-    names = asset_names(DEFAULT_ASSET_ROWS)
-    portfolio = build_portfolio(DEFAULT_ASSET_ROWS, default_correlation_rows(names, DEFAULT_PAIRWISE_CORRELATION))
-    strengths = np.round(np.arange(MIN_SQUEEZING_STRENGTH, MAX_SQUEEZING_STRENGTH + SQUEEZING_STEP / 2, SQUEEZING_STEP), 2)
-    fractions = useful_shot_fractions(portfolio.covariance(), strengths, ALLOWED_DEGREES)
+    strengths = squeezing_strength_grid()
+    fractions = useful_shot_fractions(default_portfolio().covariance(), strengths, ALLOWED_DEGREES)
     return html.Div([
         html.H4("Podíl užitečných výstřelů (s přesně d fotony) pro výchozí portfolio"),
         dcc.Graph(figure=useful_fraction_chart(strengths, fractions, DEFAULT_SQUEEZING_STRENGTH)),

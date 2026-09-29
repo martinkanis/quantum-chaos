@@ -7,7 +7,7 @@ from typing import Dict, List, Optional, Sequence
 
 import numpy as np
 
-from gbs.expectation import ConvergenceStudy, MomentProblem, run_convergence_study
+from gbs.expectation import ConvergenceStudy, MomentProblem, gbs_relative_error_constant, run_convergence_study
 from gbs.sampler import GbsProgram, program_from_covariance, sample_shots, total_photon_distribution
 
 REPETITIONS = 20
@@ -58,6 +58,22 @@ def useful_shot_fractions(
         for degree in degrees:
             fractions[degree].append(float(totals[degree]))
     return {degree: np.array(values) for degree, values in fractions.items()}
+
+
+def gbs_error_constants(
+    covariance: np.ndarray, weights: np.ndarray, squeezing_strengths: Sequence[float], degrees: Sequence[int]
+) -> Dict[int, np.ndarray]:
+    """√N × relative RMSE of the GBS estimator per squeezing strength, from the large-N theory."""
+    return {
+        degree: np.array([
+            gbs_relative_error_constant(
+                MomentProblem(covariance=covariance, weights=weights, degree=degree),
+                program_from_covariance(covariance, strength),
+            )
+            for strength in squeezing_strengths
+        ])
+        for degree in degrees
+    }
 
 
 def sample_sizes_up_to(max_sample_size: int) -> np.ndarray:

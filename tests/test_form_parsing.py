@@ -10,6 +10,7 @@ from ui.form_parsing import (
     RETURN_COLUMN,
     VOLATILITY_COLUMN,
     WEIGHT_COLUMN,
+    build_centered_portfolio,
     build_parameters,
     build_portfolio,
     correlation_column_id,
@@ -82,3 +83,15 @@ def test_odmitne_neplatny_seed(seed):
 def test_odmitne_prazdnou_pocatecni_investici():
     with pytest.raises(SimulationParametersError, match="Počáteční investice"):
         build_parameters(None, 0, 5, 100, None)
+
+
+def test_portfolio_pro_gbs_nepotrebuje_ocekavane_vynosy():
+    rows_without_returns = [
+        {key: value for key, value in row.items() if key != RETURN_COLUMN} for row in DEFAULT_ASSET_ROWS
+    ]
+    correlations = default_correlation_rows(NAMES, 0.2)
+
+    portfolio = build_centered_portfolio(rows_without_returns, correlations)
+
+    np.testing.assert_array_equal(portfolio.expected_returns, 0.0)
+    np.testing.assert_allclose(portfolio.covariance(), build_portfolio(DEFAULT_ASSET_ROWS, correlations).covariance())

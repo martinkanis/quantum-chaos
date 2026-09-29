@@ -64,6 +64,12 @@ def build_portfolio(asset_rows: List[Row], correlation_rows: List[Row]) -> Portf
     return Portfolio(assets=assets, correlation=correlation)
 
 
+def build_centered_portfolio(asset_rows: List[Row], correlation_rows: List[Row]) -> Portfolio:
+    """Portfolio of returns centred on zero; the GBS form therefore has no expected-return column."""
+    centered_rows = [{**row, RETURN_COLUMN: 0} for row in asset_rows]
+    return build_portfolio(centered_rows, correlation_rows)
+
+
 def build_parameters(
     initial_value: Any, monthly_contribution: Any, years: Any, simulation_count: Any, seed: Any
 ) -> SimulationParameters:

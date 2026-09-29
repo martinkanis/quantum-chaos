@@ -30,6 +30,15 @@ class MomentProblem:
             raise MomentProblemError(f"Stupeň momentu musí být jeden z {ALLOWED_DEGREES}.")
         if self.covariance.shape != (len(self.weights), len(self.weights)):
             raise MomentProblemError("Rozměr kovarianční matice neodpovídá počtu vah.")
+        if self.portfolio_variance <= 0:
+            raise MomentProblemError(
+                "Portfolio má nulový rozptyl wᵀΣw, takže moment je nula a relativní chybu nejde spočítat. "
+                "Dej váhu aspoň jednomu aktivu s nenulovou volatilitou."
+            )
+
+    @property
+    def portfolio_variance(self) -> float:
+        return float(self.weights @ self.covariance @ self.weights)
 
     def monomials(self) -> Tuple[np.ndarray, np.ndarray]:
         """Multinomial expansion (w·x)^d = Σ_n c_n x^n over patterns with |n| = d."""
@@ -39,8 +48,7 @@ class MomentProblem:
 
     def closed_form(self) -> float:
         """(d−1)!! · (wᵀΣw)^(d/2), used to cross-check the hafnian route."""
-        portfolio_variance = float(self.weights @ self.covariance @ self.weights)
-        return _double_factorial(self.degree - 1) * portfolio_variance ** (self.degree / 2)
+        return _double_factorial(self.degree - 1) * self.portfolio_variance ** (self.degree / 2)
 
 
 @dataclass(frozen=True)
@@ -69,6 +77,10 @@ class ConvergenceStudy:
     pattern_probabilities: np.ndarray
     observed_pattern_counts: np.ndarray
     """Pattern counts of the first repetition after the largest sample size."""
+    gbs_error_constant: float
+    """√N × relative RMSE of the GBS estimator predicted for large N."""
+    mc_error_constant: float
+    """√N × relative RMSE of classical Monte Carlo predicted for large N."""
 
 
 def hafnian_terms(problem: MomentProblem) -> List[HafnianTerm]:
@@ -103,6 +115,27 @@ def classical_mc_estimate(problem: MomentProblem, samples: np.ndarray) -> float:
     return float(np.mean((samples @ problem.weights) ** problem.degree))
 
 
+def mc_relative_error_constant(degree: int) -> float:
+    """√N × relative RMSE of classical Monte Carlo for E[L^d].
+
+    L is Gaussian, so var(L^d) / E[L^d]² = (2d−1)!! / ((d−1)!!)² − 1 for every portfolio.
+    """
+    return float(np.sqrt(_double_factorial(2 * degree - 1) / _double_factorial(degree - 1) ** 2 - 1))
+
+
+def gbs_relative_error_constant(problem: MomentProblem, program: GbsProgram) -> float:
+    """√N × relative RMSE of gbs_estimate for large N (delta method).
+
+    As in importance sampling, every pattern adds share² / p(n), where share is its part of the moment, so
+    patterns carrying much of the moment but rarely observed dominate; the ½ comes from the square root.
+    """
+    _, probabilities = pattern_distribution(program, problem.degree)
+    contributions = np.array([term.contribution for term in hafnian_terms(problem)])
+    shares = contributions / contributions.sum()
+    observable = probabilities > 0
+    return 0.5 * float(np.sqrt(np.sum(shares[observable] ** 2 / probabilities[observable]) - 1))
+
+
 def run_convergence_study(
     problem: MomentProblem,
     program: GbsProgram,
@@ -130,6 +163,8 @@ def run_convergence_study(
         patterns=patterns,
         pattern_probabilities=probabilities,
         observed_pattern_counts=gbs_runs[0][1],
+        gbs_error_constant=gbs_relative_error_constant(problem, program),
+        mc_error_constant=mc_relative_error_constant(problem.degree),
     )
 
 

@@ -1,17 +1,21 @@
+from math import prod
+
 import numpy as np
 import pytest
 
-from gbs.demo import useful_shot_fractions
+from gbs.demo import gbs_error_constants, useful_shot_fractions
 from gbs.expectation import (
     MomentProblem,
     MomentProblemError,
     classical_mc_estimate,
     exact_expectation_via_hafnians,
     gbs_estimate,
+    gbs_relative_error_constant,
     hafnian_terms,
+    mc_relative_error_constant,
     run_convergence_study,
 )
-from gbs.hafnian import hafnian, repeated_submatrix
+from gbs.hafnian import hafnian, hafnian_expansion, repeated_submatrix
 from gbs.sampler import (
     GbsProgramError,
     pattern_distribution,
@@ -150,3 +154,67 @@ def test_podil_uzitecnych_vystrelu_je_pravdepodobnost():
     assert set(fractions) == {2, 4}
     assert all(np.all((values > 0) & (values < 1)) for values in fractions.values())
     assert fractions[4][0] < fractions[4][-1]
+
+
+def test_wickuv_rozklad_slouci_stejna_parovani():
+    assert hafnian_expansion([2, 2]) == {((0, 0), (1, 1)): 1, ((0, 1), (0, 1)): 2}
+
+
+@pytest.mark.parametrize("pattern", [[4, 0, 0], [3, 1, 0], [2, 1, 1], [2, 2, 2], [1, 1, 1, 1, 1, 1]])
+def test_wickuv_rozklad_dava_hafnian_a_pocet_parovani(pattern):
+    covariance = np.diag([0.04, 0.02, 0.01, 0.03, 0.05, 0.06])[: len(pattern), : len(pattern)] + 0.004
+    expansion = hafnian_expansion(pattern)
+
+    value = sum(count * prod(covariance[i, j] for i, j in product) for product, count in expansion.items())
+
+    assert value == pytest.approx(hafnian(repeated_submatrix(covariance, pattern)), rel=1e-12)
+    assert sum(expansion.values()) == prod(range(sum(pattern) - 1, 0, -2))
+
+
+def test_lichy_pocet_cinitelu_nema_zadne_parovani():
+    assert hafnian_expansion([2, 1]) == {}
+
+
+@pytest.mark.parametrize("degree, expected", [(2, np.sqrt(2)), (4, np.sqrt(96) / 3), (6, np.sqrt(10170) / 15)])
+def test_konstanta_chyby_mc_zavisi_jen_na_stupni(degree, expected):
+    assert mc_relative_error_constant(degree) == pytest.approx(expected)
+
+
+def test_konstanta_chyby_gbs_pro_jedno_aktivum_je_dana_podilem_uzitecnych_vystrelu():
+    covariance = np.array([[0.04]])
+    program = program_from_covariance(covariance, squeezing_strength=0.6)
+    problem = MomentProblem(covariance=covariance, weights=np.array([1.0]), degree=4)
+    useful_fraction = total_photon_distribution(program, max_total=4)[4]
+
+    assert gbs_relative_error_constant(problem, program) == pytest.approx(0.5 * np.sqrt(1 / useful_fraction - 1))
+
+
+def test_konstanta_chyby_gbs_neklesne_pod_mez_danou_zahozenymi_vystrely():
+    problem = MomentProblem(covariance=COVARIANCE, weights=WEIGHTS, degree=4)
+    program = program_from_covariance(COVARIANCE, squeezing_strength=0.7)
+    useful_fraction = pattern_distribution(program, 4)[1].sum()
+
+    assert gbs_relative_error_constant(problem, program) >= 0.5 * np.sqrt(1 / useful_fraction - 1)
+
+
+def test_teoreticke_konstanty_chyby_odpovidaji_simulaci():
+    problem = MomentProblem(covariance=COVARIANCE, weights=WEIGHTS, degree=4)
+    program = program_from_covariance(COVARIANCE, squeezing_strength=0.7)
+    shot_count = 100_000
+
+    study = run_convergence_study(problem, program, [shot_count], repetitions=100, rng=np.random.default_rng(5))
+
+    assert study.gbs_relative_rmse[-1] * np.sqrt(shot_count) == pytest.approx(study.gbs_error_constant, rel=0.2)
+    assert study.mc_relative_rmse[-1] * np.sqrt(shot_count) == pytest.approx(study.mc_error_constant, rel=0.2)
+
+
+def test_silnejsi_stlaceni_zmensi_konstantu_chyby_gbs():
+    constants = gbs_error_constants(COVARIANCE, WEIGHTS, [0.3, 0.9], degrees=[4])
+
+    assert constants[4][0] > constants[4][1] > 0
+
+
+def test_odmitne_portfolio_s_nulovym_rozptylem():
+    covariance = np.diag([0.0, 0.04])
+    with pytest.raises(MomentProblemError, match="rozptyl"):
+        MomentProblem(covariance=covariance, weights=np.array([1.0, 0.0]), degree=4)

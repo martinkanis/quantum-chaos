@@ -24,6 +24,13 @@ NAV_GBS_LINK = "nav-gbs-link"
 PORTFOLIO_PAGE = "portfolio-page"
 GBS_PAGE = "gbs-page"
 CAVEATS_PAGE = "caveats-page"
+THEORY_PAGE = "theory-page"
+
+GBS_ASSET_TABLE = "gbs-asset-table"
+GBS_ADD_ASSET_BUTTON = "gbs-add-asset-button"
+GBS_WEIGHT_SUM_TEXT = "gbs-weight-sum-text"
+GBS_PAIRWISE_CORRELATION_SLIDER = "gbs-pairwise-correlation-slider"
+GBS_CORRELATION_TABLE = "gbs-correlation-table"
 
 GBS_DEGREE_RADIO = "gbs-degree-radio"
 GBS_STRENGTH_SLIDER = "gbs-strength-slider"

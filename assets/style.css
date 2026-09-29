@@ -180,7 +180,7 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
   .nav-link { padding: 12px 10px; white-space: nowrap; }
 }
 
-.caveat-section { scroll-margin-top: 72px; }
+.caveat-section, .theory-section { scroll-margin-top: 72px; }
 .step h3 { margin: 18px 0 4px; font-size: 1.05rem; }
 
 .in-short {
@@ -196,7 +196,7 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 .caveat-list li { margin-bottom: 14px; }
 .caveat-list li p { margin: 4px 0; }
 
-.back-link {
+.back-link, .details-link {
   display: inline-block;
   margin: 4px 0 16px;
   color: var(--accent);
@@ -204,4 +204,7 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
   text-decoration: none;
 }
 
-.back-link:hover { text-decoration: underline; }
+.back-link:hover, .details-link:hover { text-decoration: underline; }
+
+.principle-block + .principle-block { border-top: 1px solid var(--border); margin-top: 8px; }
+.gbs-page mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }

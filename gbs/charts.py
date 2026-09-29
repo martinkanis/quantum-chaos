@@ -137,11 +137,18 @@ def pattern_frequency_chart(study: ConvergenceStudy) -> go.Figure:
 
 def convergence_chart(study: ConvergenceStudy) -> go.Figure:
     sizes = study.sample_sizes
-    reference = study.mc_relative_rmse[0] * np.sqrt(sizes[0] / sizes)
+    inverse_root = 1 / np.sqrt(sizes)
     figure = go.Figure()
     figure.add_trace(go.Scatter(x=sizes, y=study.gbs_relative_rmse, name="GBS estimátor", mode="lines+markers", line=dict(color=GBS_COLOR, width=3)))
     figure.add_trace(go.Scatter(x=sizes, y=study.mc_relative_rmse, name="klasické Monte Carlo", mode="lines+markers", line=dict(color=MC_COLOR, width=3)))
-    figure.add_trace(go.Scatter(x=sizes, y=reference, name="∝ 1/√N", mode="lines", line=dict(color=MUTED_COLOR, dash="dash")))
+    for constant, label, color in (
+        (study.gbs_error_constant, "GBS", GBS_COLOR),
+        (study.mc_error_constant, "MC", MC_COLOR),
+    ):
+        figure.add_trace(go.Scatter(
+            x=sizes, y=constant * inverse_root, name=f"teorie {label}: {constant:.2f}/√N", mode="lines",
+            line=dict(color=color, dash="dash"),
+        ))
     figure.update_xaxes(type="log", title="Počet vzorků N", dtick=1)
     figure.update_yaxes(type="log", title="Relativní chyba (RMSE)", tickformat=".1%", dtick="D2")
     figure.update_layout(height=400, margin=CHART_LEGEND_MARGIN, legend=CHART_LEGEND)
@@ -190,6 +197,35 @@ def useful_fraction_chart(
     figure.update_xaxes(title="Síla stlačení tanh(r_max)")
     figure.update_yaxes(title="Podíl užitečných výstřelů", tickformat=".0%", rangemode="tozero")
     figure.update_layout(height=360, margin=CHART_LEGEND_MARGIN, legend=CHART_LEGEND)
+    return figure
+
+
+def error_constant_chart(
+    strengths: np.ndarray,
+    gbs_constants_by_degree: Dict[int, np.ndarray],
+    mc_constants_by_degree: Dict[int, float],
+    highlighted_strength: float,
+) -> go.Figure:
+    """Solid lines: GBS constant per squeezing strength; dashed: the strength-independent MC constant."""
+    figure = go.Figure()
+    for degree, constants in gbs_constants_by_degree.items():
+        color = DEGREE_COLORS.get(degree, MUTED_COLOR)
+        figure.add_trace(go.Scatter(
+            x=strengths, y=constants, mode="lines+markers", name=f"GBS, d = {degree}", line=dict(color=color, width=3),
+            hovertemplate=f"GBS, d = {degree}, tanh r_max = %{{x:.2f}}: c = %{{y:.2f}}<extra></extra>",
+        ))
+        mc_constant = mc_constants_by_degree[degree]
+        figure.add_trace(go.Scatter(
+            x=[strengths[0], strengths[-1]], y=[mc_constant, mc_constant], mode="lines", name=f"MC, d = {degree}",
+            line=dict(color=color, dash="dash"),
+            hovertemplate=f"MC, d = {degree}: c = {mc_constant:.2f}<extra></extra>",
+        ))
+    figure.add_vline(
+        x=highlighted_strength, line=dict(color=MUTED_COLOR, dash="dot"), annotation_text="výchozí nastavení",
+    )
+    figure.update_xaxes(title="Síla stlačení tanh(r_max)")
+    figure.update_yaxes(type="log", title="Konstanta chyby c (chyba ≈ c/√N)", dtick="D2")
+    figure.update_layout(height=400, margin=CHART_LEGEND_MARGIN, legend=CHART_LEGEND)
     return figure
 
 

@@ -128,7 +128,6 @@ def _correlation_section() -> html.Details:
                 "Jednotlivé páry můžeš upravit v matici. Rozhodují hodnoty nad diagonálou.",
                 className="hint",
             ),
-            # Initial data lets the GBS page read the correlations before this table is first edited.
             dash_table.DataTable(
                 id=ids.CORRELATION_TABLE,
                 data=default_correlation_rows(_default_names(), DEFAULT_PAIRWISE_CORRELATION),

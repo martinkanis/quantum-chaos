@@ -9,19 +9,26 @@ from ui import ids
 PORTFOLIO_PATH = "/"
 GBS_PATH = "/gbs"
 CAVEATS_PATH = "/gbs/hacky"
+THEORY_PATH = "/gbs/teorie"
 
 VISIBLE = {"display": "block"}
 HIDDEN = {"display": "none"}
 ACTIVE_LINK_CLASS = "nav-link active"
 LINK_CLASS = "nav-link"
 
-PAGE_IDS = (ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE)
+PAGE_IDS = (ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE)
 NAV_LINK_IDS = (ids.NAV_PORTFOLIO_LINK, ids.NAV_GBS_LINK)
-PAGE_BY_PATH = {PORTFOLIO_PATH: ids.PORTFOLIO_PAGE, GBS_PATH: ids.GBS_PAGE, CAVEATS_PATH: ids.CAVEATS_PAGE}
+PAGE_BY_PATH = {
+    PORTFOLIO_PATH: ids.PORTFOLIO_PAGE,
+    GBS_PATH: ids.GBS_PAGE,
+    CAVEATS_PATH: ids.CAVEATS_PAGE,
+    THEORY_PATH: ids.THEORY_PAGE,
+}
 ACTIVE_LINK_BY_PAGE = {
     ids.PORTFOLIO_PAGE: ids.NAV_PORTFOLIO_LINK,
     ids.GBS_PAGE: ids.NAV_GBS_LINK,
     ids.CAVEATS_PAGE: ids.NAV_GBS_LINK,
+    ids.THEORY_PAGE: ids.NAV_GBS_LINK,
 }
 
 # Pages are only hidden, so the browser cannot jump to an anchor on its own. Formulas (MathJax)
@@ -59,6 +66,10 @@ def caveat_href(anchor: str) -> str:
     return f"{CAVEATS_PATH}#{anchor}"
 
 
+def theory_href(anchor: str) -> str:
+    return f"{THEORY_PATH}#{anchor}"
+
+
 def build_navigation() -> html.Nav:
     return html.Nav(
         className="top-nav",
@@ -79,7 +90,7 @@ def register_navigation_callbacks(app: Dash) -> None:
 
 
 def show_page(pathname: str) -> Tuple:
-    """All pages stay mounted and are only hidden, so the GBS page can read the portfolio form."""
+    """All pages stay mounted and are only hidden, so forms and results survive switching pages."""
     page = PAGE_BY_PATH.get(pathname, ids.PORTFOLIO_PAGE)
     styles = tuple(VISIBLE if page_id == page else HIDDEN for page_id in PAGE_IDS)
     active_link = ACTIVE_LINK_BY_PAGE[page]

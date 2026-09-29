@@ -10,6 +10,7 @@ from ui.form_parsing import RANDOM_SEED
 
 TABLE_CELL_STYLE = {"fontFamily": "inherit", "padding": "6px 10px", "textAlign": "right"}
 TABLE_HEADER_STYLE = {"fontWeight": "600", "backgroundColor": "var(--surface-muted)"}
+SCROLLABLE_TABLE_STYLE = {"overflowX": "auto"}
 
 REFERENCE_SEED = 42
 SEED_OPTIONS = [
@@ -40,6 +41,10 @@ def seed_dropdown(component_id: str, default_value: Union[str, int]) -> html.Div
             html.P(SEED_HINT, className="hint small"),
         ],
     )
+
+
+def details_link(title: str, href: str) -> dcc.Link:
+    return dcc.Link(f"Podrobněji: {title} →", href=href, className="details-link")
 
 
 def metric_tile(label: str, value: str, hint: str = "") -> html.Div:
