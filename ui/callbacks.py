@@ -20,6 +20,7 @@ from ui.form_parsing import (
     has_valid_names,
     weight_sum_percent,
 )
+from ui.navigation import HIDDEN, VISIBLE
 from ui.portfolio_page import correlation_table_columns
 from ui.results import build_results
 
@@ -55,6 +56,7 @@ def register_callbacks(app: Dash) -> None:
         Output(ids.RESULTS, "children"),
         Output(ids.FINAL_VALUES_STORE, "data"),
         Output(ids.ERROR_MESSAGE, "children"),
+        Output(ids.DOWNLOAD_BUTTON, "style"),
         Input(ids.RUN_BUTTON, "n_clicks"),
         State(ids.ASSET_TABLE, "data"),
         State(ids.CORRELATION_TABLE, "data"),
@@ -108,14 +110,14 @@ def run_simulation(
         parameters = build_parameters(initial_value, monthly_contribution, years, simulation_count, seed)
         portfolio = build_portfolio(asset_rows, correlation_rows)
     except (PortfolioValidationError, SimulationParametersError) as error:
-        return None, None, str(error)
+        return None, None, str(error), HIDDEN
 
     logger.info(
         "Running simulation: assets=%d years=%d simulations=%d",
         len(portfolio.assets), parameters.years, parameters.simulation_count,
     )
     result = simulate(portfolio, parameters)
-    return build_results(result), result.final_values.tolist(), ""
+    return build_results(result), result.final_values.tolist(), "", VISIBLE
 
 
 def download_final_values(_clicks: int, final_values: Optional[List[float]]):

@@ -8,7 +8,6 @@ from dash import dash_table, dcc, html
 from montecarlo.charts import final_value_histogram, percentile_fan_chart
 from montecarlo.metrics import BAND_PERCENTILES, SummaryMetrics, percentile_bands, summarize
 from montecarlo.simulation import MONTHS_PER_YEAR, SimulationResult
-from ui import ids
 from ui.components import TABLE_CELL_STYLE, TABLE_HEADER_STYLE, metric_tile
 
 PERCENT = 100
@@ -33,7 +32,6 @@ def build_results(result: SimulationResult) -> html.Div:
                     dcc.Tab(label="Percentily po letech", children=_percentile_table(result)),
                 ]
             ),
-            html.Button("Stáhnout konečné hodnoty (CSV)", id=ids.DOWNLOAD_BUTTON, className="secondary-button"),
         ],
     )
 

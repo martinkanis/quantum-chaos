@@ -87,7 +87,7 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 .error-message { color: var(--danger); margin: 12px 0; font-weight: 600; }
 
 .results { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 20px; }
-.results .secondary-button { margin-top: 12px; }
+.download-button { margin-top: 12px; }
 
 .metric-grid {
   display: grid;

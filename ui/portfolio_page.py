@@ -19,6 +19,7 @@ from ui.form_parsing import (
     correlation_column_id,
     default_correlation_rows,
 )
+from ui.navigation import HIDDEN
 
 DEFAULT_INITIAL_VALUE = 1_000_000
 DEFAULT_MONTHLY_CONTRIBUTION = 0
@@ -47,7 +48,9 @@ def build_portfolio_page() -> html.Div:
                     _correlation_section(),
                     html.Button("Spustit simulaci", id=ids.RUN_BUTTON, className="primary-button"),
                     html.Div(id=ids.ERROR_MESSAGE, className="error-message"),
-                    dcc.Loading(html.Div(id=ids.RESULTS), type="circle"),
+                    # The download button stays in the initial layout because Dash checks on page load that every
+                    # callback input exists. Sharing the Loading hides it together with the results during a re-run.
+                    dcc.Loading([html.Div(id=ids.RESULTS), _download_button()], type="circle"),
                     dcc.Store(id=ids.FINAL_VALUES_STORE),
                     dcc.Download(id=ids.DOWNLOAD),
                 ],
@@ -135,6 +138,13 @@ def _correlation_section() -> html.Details:
                 style_header=TABLE_HEADER_STYLE,
             ),
         ],
+    )
+
+
+def _download_button() -> html.Button:
+    return html.Button(
+        "Stáhnout konečné hodnoty (CSV)", id=ids.DOWNLOAD_BUTTON, className="secondary-button download-button",
+        style=HIDDEN,
     )
 
 
