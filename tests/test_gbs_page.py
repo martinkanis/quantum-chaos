@@ -22,7 +22,7 @@ from ui.navigation import (
     show_page,
     theory_href,
 )
-from ui.theory_content import TOPICS
+from ui.theory_content import SOURCES_ANCHOR, TOPICS, all_sources
 from ui.theory_page import build_theory_page
 
 NAMES = asset_names(DEFAULT_ASSET_ROWS)
@@ -113,13 +113,13 @@ def test_kazde_tema_teorie_ma_unikatni_kotvu_a_vlastni_sekci():
     section_ids = [child.id for child in page.children if getattr(child, "id", None)]
 
     assert len(set(anchors)) == len(anchors)
-    assert section_ids == anchors
+    assert section_ids == anchors + [SOURCES_ANCHOR]
     assert theory_href(anchors[0]) == f"{THEORY_PATH}#{anchors[0]}"
 
 
 def test_kazde_tema_teorie_ma_shrnuti_vyklad_i_literaturu():
     for topic in TOPICS:
-        assert topic.in_short.strip() and topic.explanation.strip() and topic.further_reading.strip()
+        assert topic.in_short.strip() and topic.explanation.strip() and topic.further_reading
 
 
 def test_monom_a_wickuv_rozklad_se_zobrazi_citelne():
@@ -127,3 +127,12 @@ def test_monom_a_wickuv_rozklad_se_zobrazi_citelne():
     assert wick_formula([2, 2, 0]) == "Σ₁₁Σ₂₂ + 2Σ₁₂²"
     assert wick_formula([4, 0, 0]) == "3Σ₁₁²"
     assert wick_formula([2, 1, 1]) == "Σ₁₁Σ₂₃ + 2Σ₁₂Σ₁₃"
+
+
+def test_souhrnny_seznam_obsahuje_kazdy_citovany_zdroj_prave_jednou():
+    cited = {reading.source for topic in TOPICS for reading in topic.further_reading}
+    sources = all_sources(TOPICS)
+
+    assert len(sources) == len(set(sources))
+    assert set(sources) == cited
+    assert any(source.czech for source in sources)

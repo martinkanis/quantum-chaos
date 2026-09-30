@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Sequence
 
 from dash import dcc, html
 
@@ -11,12 +11,21 @@ from ui import ids
 from ui.gbs_page import DEFAULT_DEGREE, DEFAULT_SQUEEZING_STRENGTH, default_portfolio, squeezing_strength_grid
 from ui.gbs_results import hafnian_table
 from ui.navigation import GBS_PATH, HIDDEN, caveat_href, theory_href
-from ui.theory_content import COMPARISON, TOPICS, WICK_THEOREM, TheoryTopic
+from ui.theory_content import (
+    COMPARISON,
+    SOURCES_ANCHOR,
+    TOPICS,
+    WICK_THEOREM,
+    Reading,
+    Source,
+    TheoryTopic,
+    all_sources,
+)
 
 INTRO = (
-    "Podrobné vysvětlení kroků z 2. stránky: co jednotlivé pojmy znamenají, proč jednotlivé kroky fungují, "
-    "čísla pro výchozí portfolio (akcie 60 %, dluhopisy 30 %, zlato 10 %) a literatura – české zdroje "
-    "i původní články."
+    "Veškerá podrobná vysvětlení ke 2. stránce na jednom místě: co jednotlivé pojmy znamenají, proč jednotlivé "
+    "kroky fungují, čísla pro výchozí portfolio (akcie 60 %, dluhopisy 30 %, zlato 10 %) a literatura – u každého "
+    "tématu i souhrnně na konci stránky, česká i původní články."
 )
 
 
@@ -31,6 +40,7 @@ def build_theory_page() -> html.Div:
             html.P(INTRO, className="lead"),
             _table_of_contents(),
             *[_topic_section(number, topic) for number, topic in enumerate(TOPICS, start=1)],
+            _sources_section(),
             _back_link(),
         ],
     )
@@ -42,6 +52,8 @@ def _table_of_contents() -> html.Nav:
         children=[
             html.H2("Obsah"),
             html.Ol([html.Li(dcc.Link(topic.title, href=theory_href(topic.anchor))) for topic in TOPICS]),
+            dcc.Link("Všechny zdroje – česky i původní články →", href=theory_href(SOURCES_ANCHOR),
+                     className="back-link"),
         ],
     )
 
@@ -59,9 +71,38 @@ def _topic_section(number: int, topic: TheoryTopic) -> html.Section:
             *_illustrations(topic),
             *_related_caveats(topic),
             html.H3("Kde číst dál"),
-            dcc.Markdown(topic.further_reading, mathjax=True, link_target="_blank"),
+            _markdown_list([_reading_item(reading) for reading in topic.further_reading]),
         ],
     )
+
+
+def _sources_section() -> html.Section:
+    sources = all_sources(TOPICS)
+    return html.Section(
+        id=SOURCES_ANCHOR,
+        className="card step theory-section",
+        children=[
+            html.H2("Všechny zdroje"),
+            html.P("Každý zdroj, na který se stránka odkazuje, na jednom místě.", className="hint"),
+            html.H3("V češtině"),
+            _markdown_list(_source_items([source for source in sources if source.czech])),
+            html.H3("Původní články a další literatura"),
+            _markdown_list(_source_items([source for source in sources if not source.czech])),
+        ],
+    )
+
+
+def _reading_item(reading: Reading) -> str:
+    note = f" – {reading.note}" if reading.note else ""
+    return f"- {reading.source.citation}{note}."
+
+
+def _source_items(sources: Sequence[Source]) -> List[str]:
+    return [f"- {source.citation}." for source in sources]
+
+
+def _markdown_list(items: Sequence[str]) -> dcc.Markdown:
+    return dcc.Markdown("\n".join(items), mathjax=True, link_target="_blank")
 
 
 def _illustrations(topic: TheoryTopic) -> List:

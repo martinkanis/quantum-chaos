@@ -29,7 +29,7 @@ from ui.form_parsing import (
 )
 from ui.navigation import CAVEATS_PATH, HIDDEN, THEORY_PATH, caveat_href, theory_href
 from ui.portfolio_page import DEFAULT_PAIRWISE_CORRELATION, correlation_table_columns
-from ui.theory_content import ESTIMATOR, GBS_DEVICE, MONTE_CARLO, WICK_THEOREM, TheoryTopic
+from ui.theory_content import ESTIMATOR, GBS_DEVICE, MONTE_CARLO, SOURCES_ANCHOR, WICK_THEOREM, TheoryTopic
 
 DEFAULT_DEGREE = 4
 DEFAULT_SQUEEZING_STRENGTH = 0.7
@@ -49,83 +49,37 @@ DEGREE_LABELS = {
 }
 
 MONTE_CARLO_PRINCIPLE = r"""
-Chceme znát **střední hodnotu** (v ekonomii také očekávanou hodnotu) veličiny, která závisí na náhodě – tady
-$\mathbb{E}[L^d]$, kde $L$ je odchylka výnosu portfolia od očekávání. Klasické Monte Carlo ji nepočítá
-integrálem, ale náhodu **nasimuluje**: vylosuje $N$ nezávislých scénářů výnosů $X^{(1)}, \dots, X^{(N)}$, pro
-každý spočítá hodnotu a výsledky zprůměruje:
-
-$$
-\mathbb{E}[f(X)] \approx \frac{1}{N}\sum_{i=1}^{N} f\big(X^{(i)}\big).
-$$
-
-Česká literatura mluví o odhadu střední hodnoty **výběrovým (aritmetickým) průměrem** nezávislých realizací.
-Podle **zákona velkých čísel** se průměr s rostoucím $N$ blíží skutečné hodnotě a podle **centrální limitní
-věty** klesá jeho chyba jako $1/\sqrt{N}$: desetkrát přesnější výsledek stojí stokrát víc scénářů.
+Klasické Monte Carlo odhaduje střední hodnotu $\mathbb{E}[f(X)]$ výběrovým průměrem přes $N$ náhodných scénářů;
+chyba klesá jako $1/\sqrt{N}$.
 """
 
 WICK_PRINCIPLE = r"""
-Pro gaussovské výnosy jde průměr součinu spočítat přesně, bez losování. Činitele stačí **rozdělit do dvojic**
-všemi možnými způsoby, každou dvojici nahradit její kovariancí a součiny sečíst. Pro čtyři činitele existují
-tři rozdělení:
+Pro gaussovské výnosy $X \sim \mathcal{N}(0, \Sigma)$ je moment vážený součet **hafniánů** kovarianční matice –
+součtů přes všechna rozdělení činitelů do dvojic:
 
 $$
-\mathbb{E}[X_aX_bX_cX_d] = \Sigma_{ab}\Sigma_{cd} + \Sigma_{ac}\Sigma_{bd} + \Sigma_{ad}\Sigma_{bc}.
+\mathbb{E}[L^d] = \sum_{|n| = d} c_n\,\mathrm{Haf}(\Sigma_n), \qquad L = w^\top X .
 $$
-
-Činitelé se smějí opakovat, třeba $\mathbb{E}[X_1^2X_2^2] = \Sigma_{11}\Sigma_{22} + 2\Sigma_{12}^2$. Součtu
-přes všechna rozdělení do dvojic se říká **hafnián**. Když se mocnina $L^d = (w^\top X)^d$ roznásobí na monomy
-$c_n\,x^n$, má každý monom střední hodnotu $\mathrm{Haf}(\Sigma_n)$ – hafnián matice, která opakuje řádek
-a sloupec $i$ celkem $n_i$-krát – a tedy
-
-$$
-\mathbb{E}[L^d] = \sum_{|n| = d} c_n\,\mathrm{Haf}(\Sigma_n).
-$$
-
-Háček: rozdělení do dvojic je $1\cdot 3\cdot 5\cdots(d-1)$ a s velikostí matice jejich počet roste
-exponenciálně – pro 20 činitelů je jich přes 650 milionů.
 """
 
 GBS_PRINCIPLE = r"""
-GBS je optický obvod o třech částech. **Zdroje stlačeného světla** vyrábějí fotony vždy v párech,
-**interferometr** – síť děličů svazku – je promíchá mezi $k$ kanály (módy) a **detektory** spočítají fotony
-v každém kanálu. Jedno spuštění („výstřel“) dá náhodný vzor $n = (n_1, \dots, n_k)$. Kvantová mechanika určuje
-jeho pravděpodobnost jako **druhou mocninu hafniánu**:
+Fotonické zařízení, jehož výstupní pravděpodobnosti jsou **druhé mocniny hafniánů**:
 
 $$
-p(n) = \frac{\mathrm{Haf}(B_n)^2}{n_1!\cdots n_k!\;\prod_j \cosh r_j},
-\qquad B = U\,\mathrm{diag}(\tanh r_j)\,U^\top ,
+p(n) = \frac{\mathrm{Haf}(B_n)^2}{n!\,\prod_j \cosh r_j}, \qquad B = U\,\mathrm{diag}(\tanh r)\,U^\top .
 $$
-
-kde $r_j$ je stlačení zdroje $j$ a $U$ nastavení interferometru. Hafnián se objeví ze stejného důvodu jako ve
-Wickově větě: fotony vznikají v párech a amplituda vzoru je součet přes všechny způsoby, jak detekované fotony
-rozdělit do párů. Zařízení tak vzorkuje z rozdělení daného hafniány, aniž by je kdokoli počítal.
 """
 
 ESTIMATOR_PRINCIPLE = r"""
-Zařízení nastavíme tak, aby jeho matice byla úměrná kovarianční matici: $B = \gamma\Sigma$. Stlačení $r_j$
-a interferometr $U$ se vyčtou z rozkladu $\Sigma$ na vlastní čísla a vlastní vektory. Každý člen hafniánu
-matice $d \times d$ je součin $d/2$ prvků, takže $\mathrm{Haf}(B_n) = \gamma^{d/2}\,\mathrm{Haf}(\Sigma_n)$,
-a ze vzorce pro $p(n)$ jde hafnián vyjádřit:
-
-$$
-\mathrm{Haf}(\Sigma_n) = \gamma^{-d/2}\sqrt{p(n)\; n!\;\textstyle\prod_j \cosh r_j}.
-$$
-
-Pravděpodobnost $p(n)$ neznáme, ale odhadneme ji **relativní četností** $\hat p(n) = N_n/N$ – kolikrát ze
-$N$ výstřelů padl vzor $n$. Dosazením do součtu hafniánů vznikne odhad momentu
-
-$$
-\widehat{\mathbb{E}[L^d]} = \sum_{|n| = d} c_n\,\gamma^{-d/2}\sqrt{\hat p(n)\; n!\;\textstyle\prod_j \cosh r_j}.
-$$
-
-Místo generování scénářů se tedy **počítají fotony** a hafniány nikdo klasicky nepočítá.
+Když do zařízení „nahrajeme“ $B = \gamma\Sigma$, četnosti naměřených vzorů fotonů prozradí hafniány a z nich
+odhad $\mathbb{E}[L^d]$ – místo generování scénářů se počítají fotony.
 """
 
 PRINCIPLE_BLOCKS = (
     ("Klasické Monte Carlo: průměr přes náhodné scénáře", MONTE_CARLO_PRINCIPLE, MONTE_CARLO),
     ("Wickova–Isserlisova věta: moment jako součet hafniánů", WICK_PRINCIPLE, WICK_THEOREM),
     ("Gaussian Boson Sampler: pravděpodobnosti jsou hafniány", GBS_PRINCIPLE, GBS_DEVICE),
-    ("Nahrání Σ a odhad z četností: místo scénářů se počítají fotony", ESTIMATOR_PRINCIPLE, ESTIMATOR),
+    ("Nahrání Σ a odhad z četností", ESTIMATOR_PRINCIPLE, ESTIMATOR),
 )
 
 PORTFOLIO_HINT = (
@@ -167,7 +121,7 @@ def build_gbs_page() -> html.Div:
                     dcc.Markdown(REFERENCES_MARKDOWN),
                     html.P(ESTIMATOR_NOTE, className="hint"),
                     dcc.Link(
-                        "České zdroje a literatura ke každému kroku na stránce s teorií →", href=THEORY_PATH,
+                        "Všechny zdroje včetně české literatury →", href=theory_href(SOURCES_ANCHOR),
                         className="back-link",
                     ),
                 ],
@@ -187,17 +141,16 @@ def squeezing_strength_grid() -> np.ndarray:
     return np.round(np.arange(MIN_SQUEEZING_STRENGTH, MAX_SQUEEZING_STRENGTH + SQUEEZING_STEP / 2, SQUEEZING_STEP), 2)
 
 
-def _principle_section() -> html.Details:
-    return html.Details(
-        open=True,
+def _principle_section() -> html.Section:
+    return html.Section(
         className="card step",
         children=[
-            html.Summary("Princip krok za krokem"),
+            html.H2("Princip v kostce"),
             *[
                 _principle_block(number, title, text, topic)
                 for number, (title, text, topic) in enumerate(PRINCIPLE_BLOCKS, start=1)
             ],
-            dcc.Link("Celá teorie podrobně na samostatné stránce →", href=THEORY_PATH, className="back-link"),
+            dcc.Link("Veškerá podrobná vysvětlení na stránce Teorie →", href=THEORY_PATH, className="back-link"),
         ],
     )
 

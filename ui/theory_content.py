@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Tuple
+from typing import List, Sequence, Tuple
 
 from ui.caveats_content import (
     CLASSICAL_SIMULATION,
@@ -15,14 +15,152 @@ from ui.caveats_content import (
 )
 
 
+SOURCES_ANCHOR = "zdroje"
+
+
+@dataclass(frozen=True)
+class Source:
+    citation: str
+    """Markdown without the final full stop: authors, *title*, where and when published, optional link."""
+    czech: bool = False
+
+
+@dataclass(frozen=True)
+class Reading:
+    source: Source
+    note: str = ""
+    """What the source adds to the topic that cites it."""
+
+
 @dataclass(frozen=True)
 class TheoryTopic:
     anchor: str
     title: str
     in_short: str
     explanation: str
-    further_reading: str
+    further_reading: Tuple[Reading, ...]
     related_caveats: Tuple[Caveat, ...] = ()
+
+
+DRIMAL_MONTE_CARLO = Source(
+    "Dřímal, J., Trunec, D., Brablec, A.: *Úvod do metody Monte Carlo*. Přírodovědecká fakulta MU, Brno 2006, "
+    "[PDF](https://www.physics.muni.cz/~trunec/mc.pdf)",
+    czech=True,
+)
+DVORAKOVA_MONTE_CARLO = Source(
+    "Dvořáková, Ľ.: *Vyzkoušejte metodu Monte Carlo*. Rozhledy matematicko-fyzikální 94 (2019), č. 2, s. 1–11, "
+    "[DML-CZ](https://dml.cz/dmlcz/147998)",
+    czech=True,
+)
+FABIAN_KLUIBER = Source(
+    "Fabian, F., Kluiber, Z.: *Metoda Monte Carlo a možnosti jejího uplatnění*. Prospektrum, Praha 1998, "
+    "[WorldCat](https://search.worldcat.org/cs/title/metoda-monte-carlo-a-moznosti-jejiho-uplatneni/oclc/40790269)",
+    czech=True,
+)
+ANDEL_STATISTICS = Source(
+    "Anděl, J.: *Základy matematické statistiky*. Matfyzpress, Praha 2005 (3. vyd. 2011), "
+    "[nakladatel](https://matfyzpress.cz/cz/e-shop/vsechny-tituly/zaklady-matematicke-statistiky-9788073781620)",
+    czech=True,
+)
+WIKIPEDIA_MONTE_CARLO = Source(
+    "Wikipedie: [Metoda Monte Carlo](https://cs.wikipedia.org/wiki/Metoda_Monte_Carlo), "
+    "[Zákon velkých čísel](https://cs.wikipedia.org/wiki/Z%C3%A1kon_velk%C3%BDch_%C4%8D%C3%ADsel), "
+    "[Centrální limitní věta](https://cs.wikipedia.org/wiki/Centr%C3%A1ln%C3%AD_limitn%C3%AD_v%C4%9Bta)",
+    czech=True,
+)
+WIKIPEDIA_COVARIANCE = Source(
+    "Wikipedie: [Kovarianční matice](https://cs.wikipedia.org/wiki/Kovarian%C4%8Dn%C3%AD_matice)",
+    czech=True,
+)
+WIKIPEDIA_PRINCIPAL_COMPONENTS = Source(
+    "Wikipedie: [Analýza hlavních komponent](https://cs.wikipedia.org/wiki/Anal%C3%BDza_hlavn%C3%ADch_komponent)",
+    czech=True,
+)
+SALEH_TEICH = Source(
+    "Saleh, B. E. A., Teich, M. C.: *Základy fotoniky* (4 svazky). Matfyzpress, Praha 1994–1996 – český překlad "
+    "učebnice *Fundamentals of Photonics*",
+    czech=True,
+)
+METROPOLIS_ULAM = Source(
+    "Metropolis, N., Ulam, S.: *The Monte Carlo Method*. Journal of the American Statistical Association 44 "
+    "(1949), 335–341"
+)
+GLASSERMAN = Source("Glasserman, P.: *Monte Carlo Methods in Financial Engineering*. Springer, New York 2004")
+MARKOWITZ = Source("Markowitz, H.: *Portfolio Selection*. The Journal of Finance 7 (1952), 77–91")
+ISSERLIS = Source(
+    "Isserlis, L.: *On a formula for the product-moment coefficient of any order of a normal frequency "
+    "distribution in any number of variables*. Biometrika 12 (1918), 134–139, "
+    "[doi:10.1093/biomet/12.1-2.134](https://doi.org/10.1093/biomet/12.1-2.134)"
+)
+WICK = Source(
+    "Wick, G. C.: *The Evaluation of the Collision Matrix*. Physical Review 80 (1950), 268–272, "
+    "[doi:10.1103/PhysRev.80.268](https://doi.org/10.1103/PhysRev.80.268)"
+)
+WIKIPEDIA_HAFNIAN = Source(
+    "Wikipedia (anglicky): [Isserlis' theorem](https://en.wikipedia.org/wiki/Isserlis%27s_theorem), "
+    "[Hafnian](https://en.wikipedia.org/wiki/Hafnian)"
+)
+WALRUS_HAFNIAN = Source(
+    "[The hafnian](https://the-walrus.readthedocs.io/en/latest/hafnian.html) – dokumentace knihovny The Walrus"
+)
+BARVINOK = Source("Barvinok, A.: *Combinatorics and Complexity of Partition Functions*. Springer 2016")
+VALIANT = Source(
+    "Valiant, L. G.: *The complexity of computing the permanent*. Theoretical Computer Science 8 (1979), 189–201"
+)
+BJORKLUND_GUPT_QUESADA = Source(
+    "Björklund, A., Gupt, B., Quesada, N.: *A faster hafnian formula for complex matrices and its benchmarking on "
+    "a supercomputer*. ACM Journal of Experimental Algorithmics (2019)"
+)
+HAMILTON = Source(
+    "Hamilton, C. S., Kruse, R., Sansoni, L., Barkhofen, S., Silberhorn, C., Jex, I.: *Gaussian Boson Sampling*. "
+    "Physical Review Letters 119, 170501 (2017), "
+    "[doi:10.1103/PhysRevLett.119.170501](https://doi.org/10.1103/PhysRevLett.119.170501)"
+)
+KRUSE = Source(
+    "Kruse, R., Hamilton, C. S., Sansoni, L., Barkhofen, S., Silberhorn, C., Jex, I.: *Detailed study of "
+    "Gaussian boson sampling*. Physical Review A 100, 032326 (2019), "
+    "[doi:10.1103/PhysRevA.100.032326](https://doi.org/10.1103/PhysRevA.100.032326)"
+)
+AARONSON_ARKHIPOV = Source(
+    "Aaronson, S., Arkhipov, A.: *The computational complexity of linear optics*. Theory of Computing 9 (2013), "
+    "143–252"
+)
+GERRY_KNIGHT = Source("Gerry, C. C., Knight, P. L.: *Introductory Quantum Optics*. Cambridge University Press 2005")
+RECK = Source(
+    "Reck, M., Zeilinger, A., Bernstein, H. J., Bertani, P.: *Experimental realization of any discrete unitary "
+    "operator*. Physical Review Letters 73, 58 (1994)"
+)
+CLEMENTS = Source(
+    "Clements, W. R. a kol.: *Optimal design for universal multiport interferometers*. Optica 3, 1460 (2016)"
+)
+ZHONG = Source("Zhong, H.-S. a kol.: *Quantum computational advantage using photons*. Science 370, 1460 (2020)")
+MADSEN = Source(
+    "Madsen, L. S. a kol.: *Quantum computational advantage with a programmable photonic processor*. "
+    "Nature 606, 75 (2022)"
+)
+BRADLER = Source(
+    "Brádler, K., Dallaire-Demers, P.-L., Rebentrost, P., Su, D., Weedbrook, C.: *Gaussian boson sampling for "
+    "perfect matchings of arbitrary graphs*. Physical Review A 98, 032310 (2018)"
+)
+ARRAZOLA_BROMLEY = Source(
+    "Arrazola, J. M., Bromley, T. R.: *Using Gaussian Boson Sampling to Find Dense Subgraphs*. Physical Review "
+    "Letters 121, 030503 (2018)"
+)
+QUESADA_THRESHOLD_DETECTORS = Source(
+    "Quesada, N., Arrazola, J. M., Killoran, N.: *Gaussian boson sampling using threshold detectors*. Physical "
+    "Review A 98, 062322 (2018)"
+)
+ANDERSEN_SHAN_EXPECTATIONS = Source(
+    "Andersen, Shan: *Using Gaussian Boson Samplers to Approximate Gaussian Expectation Problems*, "
+    "[arXiv:2502.19336](https://arxiv.org/abs/2502.19336) (2025)"
+)
+ANDERSEN_SHAN_ADVANTAGE = Source(
+    "Andersen, Shan: *Estimating the Percentage of GBS Advantage in Gaussian Expectation Problems*, "
+    "[arXiv:2502.19362](https://arxiv.org/abs/2502.19362) (2025)"
+)
+ARRAZOLA_REBENTROST_WEEDBROOK = Source(
+    "Arrazola, Rebentrost, Weedbrook: *Quantum supremacy and high-dimensional integration*, arXiv (2017)"
+)
 
 
 MONTE_CARLO = TheoryTopic(
@@ -96,22 +234,19 @@ z četnosti, s jakou náhodně hozená jehla protne rovnoběžku. Soustavně met
 J. von Neumann a N. Metropolis v Los Alamos ve 40. letech 20. století; název podle kasina v Monaku se
 v odborném tisku poprvé objevil v článku Metropolise a Ulama z roku 1949.
 """,
-    further_reading="""
-- Dřímal, J., Trunec, D., Brablec, A.: *Úvod do metody Monte Carlo*. Přírodovědecká fakulta MU, Brno 2006,
-  [PDF](https://www.physics.muni.cz/~trunec/mc.pdf) – kap. 1.4 princip a odhad chyby, kap. 5 výpočet
-  integrálů a metody snižování disperze včetně metody váženého výběru.
-- Dvořáková, Ľ.: *Vyzkoušejte metodu Monte Carlo*. Rozhledy matematicko-fyzikální 94 (2019), č. 2,
-  s. 1–11, [DML-CZ](https://dml.cz/dmlcz/147998) – přístupný úvod se středoškolskou matematikou.
-- Fabian, F., Kluiber, Z.: *Metoda Monte Carlo a možnosti jejího uplatnění*. Prospektrum, Praha 1998.
-- Anděl, J.: *Základy matematické statistiky*. Matfyzpress, Praha 2005 (3. vyd. 2011) – zákon velkých čísel,
-  centrální limitní věta, odhady.
-- Wikipedie: [Metoda Monte Carlo](https://cs.wikipedia.org/wiki/Metoda_Monte_Carlo),
-  [Zákon velkých čísel](https://cs.wikipedia.org/wiki/Z%C3%A1kon_velk%C3%BDch_%C4%8D%C3%ADsel),
-  [Centrální limitní věta](https://cs.wikipedia.org/wiki/Centr%C3%A1ln%C3%AD_limitn%C3%AD_v%C4%9Bta).
-- Metropolis, N., Ulam, S.: *The Monte Carlo Method*. Journal of the American Statistical Association 44
-  (1949), 335–341.
-- Glasserman, P.: *Monte Carlo Methods in Financial Engineering*. Springer, New York 2004.
-""",
+    further_reading=(
+        Reading(
+            DRIMAL_MONTE_CARLO,
+            "kap. 1.4 princip a odhad chyby, kap. 5 výpočet integrálů a metody snižování disperze včetně metody "
+            "váženého výběru",
+        ),
+        Reading(DVORAKOVA_MONTE_CARLO, "přístupný úvod se středoškolskou matematikou"),
+        Reading(FABIAN_KLUIBER),
+        Reading(ANDEL_STATISTICS, "zákon velkých čísel, centrální limitní věta, odhady"),
+        Reading(WIKIPEDIA_MONTE_CARLO),
+        Reading(METROPOLIS_ULAM),
+        Reading(GLASSERMAN),
+    ),
 )
 
 PORTFOLIO_MOMENT = TheoryTopic(
@@ -189,13 +324,11 @@ silněji než rozptyl.
 platí Wickova věta a se kterým GBS umí pracovat. Kontrolní vzorec navíc umožní ověřit, že všechny další kroky
 počítají správně.
 """,
-    further_reading=r"""
-- Anděl, J.: *Základy matematické statistiky*. Matfyzpress, Praha 2005 – vícerozměrné normální rozdělení
-  a jeho momenty.
-- Wikipedie: [Kovarianční matice](https://cs.wikipedia.org/wiki/Kovarian%C4%8Dn%C3%AD_matice).
-- Markowitz, H.: *Portfolio Selection*. The Journal of Finance 7 (1952), 77–91 – rozptyl portfolia
-  $w^\top\Sigma w$ jako míra rizika.
-""",
+    further_reading=(
+        Reading(ANDEL_STATISTICS, "vícerozměrné normální rozdělení a jeho momenty"),
+        Reading(WIKIPEDIA_COVARIANCE),
+        Reading(MARKOWITZ, r"rozptyl portfolia $w^\top\Sigma w$ jako míra rizika"),
+    ),
     related_caveats=(CLOSED_FORM,),
 )
 
@@ -328,23 +461,15 @@ potřebují řádově $n^3\,2^{n/2}$ operací pro matici $n \times n$. GBS je fy
 pravděpodobnosti jsou hafniány – umí tedy vzorkovat z rozdělení daného hafniány, aniž by je kdokoli počítal.
 Na tom stojí celá myšlenka 2. stránky.
 """,
-    further_reading=r"""
-- Isserlis, L.: *On a formula for the product-moment coefficient of any order of a normal frequency
-  distribution in any number of variables*. Biometrika 12 (1918), 134–139,
-  [doi:10.1093/biomet/12.1-2.134](https://doi.org/10.1093/biomet/12.1-2.134).
-- Wick, G. C.: *The Evaluation of the Collision Matrix*. Physical Review 80 (1950), 268–272,
-  [doi:10.1103/PhysRev.80.268](https://doi.org/10.1103/PhysRev.80.268).
-- Wikipedia (anglicky): [Isserlis' theorem](https://en.wikipedia.org/wiki/Isserlis%27s_theorem),
-  [Hafnian](https://en.wikipedia.org/wiki/Hafnian).
-- [The hafnian](https://the-walrus.readthedocs.io/en/latest/hafnian.html) – dokumentace knihovny The Walrus:
-  definice, vlastnosti a algoritmy pro výpočet hafniánu.
-- Barvinok, A.: *Combinatorics and Complexity of Partition Functions*. Springer 2016 – permanenty a hafniány
-  podrobně.
-- Valiant, L. G.: *The complexity of computing the permanent*. Theoretical Computer Science 8 (1979),
-  189–201.
-- Björklund, A., Gupt, B., Quesada, N.: *A faster hafnian formula for complex matrices and its benchmarking on
-  a supercomputer*. ACM Journal of Experimental Algorithmics (2019).
-""",
+    further_reading=(
+        Reading(ISSERLIS),
+        Reading(WICK),
+        Reading(WIKIPEDIA_HAFNIAN),
+        Reading(WALRUS_HAFNIAN, "definice, vlastnosti a algoritmy pro výpočet hafniánu"),
+        Reading(BARVINOK, "permanenty a hafniány podrobně"),
+        Reading(VALIANT),
+        Reading(BJORKLUND_GUPT_QUESADA),
+    ),
     related_caveats=(CLOSED_FORM, CLASSICAL_SIMULATION),
 )
 
@@ -417,27 +542,17 @@ algoritmy reálná (ztrátová) zařízení dohánějí.
 hafniány matice $\Sigma$. Když zařízení nastavíme tak, aby $B$ byla úměrná $\Sigma$, ponesou četnosti
 výstřelů informaci o momentech (další dva oddíly).
 """,
-    further_reading=r"""
-- Hamilton, C. S., Kruse, R., Sansoni, L., Barkhofen, S., Silberhorn, C., Jex, I.: *Gaussian Boson
-  Sampling*. Physical Review Letters 119, 170501 (2017),
-  [doi:10.1103/PhysRevLett.119.170501](https://doi.org/10.1103/PhysRevLett.119.170501).
-- Kruse, R., Hamilton, C. S., Sansoni, L., Barkhofen, S., Silberhorn, C., Jex, I.: *Detailed study of
-  Gaussian boson sampling*. Physical Review A 100, 032326 (2019),
-  [doi:10.1103/PhysRevA.100.032326](https://doi.org/10.1103/PhysRevA.100.032326) – odvození vzorce
-  pro $p(n)$ krok za krokem.
-- Aaronson, S., Arkhipov, A.: *The computational complexity of linear optics*. Theory of Computing 9 (2013),
-  143–252.
-- Saleh, B. E. A., Teich, M. C.: *Základy fotoniky* (4 svazky). Matfyzpress, Praha 1994–1996 – český
-  překlad učebnice; fotony a kvantové stavy světla.
-- Gerry, C. C., Knight, P. L.: *Introductory Quantum Optics*. Cambridge University Press 2005 – stlačené
-  stavy světla.
-- Reck, M., Zeilinger, A., Bernstein, H. J., Bertani, P.: *Experimental realization of any discrete unitary
-  operator*. Physical Review Letters 73, 58 (1994).
-- Clements, W. R. a kol.: *Optimal design for universal multiport interferometers*. Optica 3, 1460 (2016).
-- Zhong, H.-S. a kol.: *Quantum computational advantage using photons*. Science 370, 1460 (2020).
-- Madsen, L. S. a kol.: *Quantum computational advantage with a programmable photonic processor*.
-  Nature 606, 75 (2022).
-""",
+    further_reading=(
+        Reading(HAMILTON),
+        Reading(KRUSE, "odvození vzorce pro $p(n)$ krok za krokem"),
+        Reading(AARONSON_ARKHIPOV),
+        Reading(SALEH_TEICH, "fotony a kvantové stavy světla"),
+        Reading(GERRY_KNIGHT, "stlačené stavy světla"),
+        Reading(RECK),
+        Reading(CLEMENTS),
+        Reading(ZHONG),
+        Reading(MADSEN),
+    ),
     related_caveats=(CLASSICAL_SIMULATION,),
 )
 
@@ -509,18 +624,13 @@ užitečných.
 $\Sigma$. Problém nastane až při zpětném výpočtu: z pravděpodobnosti úměrné $\mathrm{Haf}^2$ se dá získat jen
 $|\mathrm{Haf}|$ a znaménko se ztratí.
 """,
-    further_reading="""
-- Kruse, R. a kol.: *Detailed study of Gaussian boson sampling*. Physical Review A 100, 032326 (2019) –
-  jak Gaussovský stav určí matici $B$.
-- Brádler, K., Dallaire-Demers, P.-L., Rebentrost, P., Su, D., Weedbrook, C.: *Gaussian boson sampling for
-  perfect matchings of arbitrary graphs*. Physical Review A 98, 032310 (2018) – nahrání libovolné symetrické
-  matice přes Takagiho rozklad.
-- Arrazola, J. M., Bromley, T. R.: *Using Gaussian Boson Sampling to Find Dense Subgraphs*. Physical Review
-  Letters 121, 030503 (2018).
-- Wikipedie: [Analýza hlavních komponent](https://cs.wikipedia.org/wiki/Anal%C3%BDza_hlavn%C3%ADch_komponent).
-- Clements, W. R. a kol.: *Optimal design for universal multiport interferometers*. Optica 3, 1460 (2016) –
-  jak z děličů svazku poskládat libovolné $U$.
-""",
+    further_reading=(
+        Reading(KRUSE, "jak gaussovský stav určí matici $B$"),
+        Reading(BRADLER, "nahrání libovolné symetrické matice přes Takagiho rozklad"),
+        Reading(ARRAZOLA_BROMLEY),
+        Reading(WIKIPEDIA_PRINCIPAL_COMPONENTS),
+        Reading(CLEMENTS, "jak z děličů svazku poskládat libovolné $U$"),
+    ),
     related_caveats=(SIGN_PROBLEM,),
 )
 
@@ -577,13 +687,11 @@ počet fotonů $\bar n = \sum_j \sinh^2 r_j$ je při výchozím nastavení asi 1
 o tom, **jak se** daný počet fotonů **rozdělí mezi detektory** – tedy o pravděpodobnostech jednotlivých vzorů
 se stejným součtem. Právě tyto podíly nesou informaci o $\Sigma$.
 """,
-    further_reading="""
-- Kruse, R. a kol.: *Detailed study of Gaussian boson sampling*. Physical Review A 100, 032326 (2019).
-- Gerry, C. C., Knight, P. L.: *Introductory Quantum Optics*. Cambridge University Press 2005 – stlačené
-  vakuum v bázi počtu fotonů.
-- Quesada, N., Arrazola, J. M., Killoran, N.: *Gaussian boson sampling using threshold detectors*. Physical
-  Review A 98, 062322 (2018) – co se změní, když detektor pozná jen „foton ano/ne“.
-""",
+    further_reading=(
+        Reading(KRUSE),
+        Reading(GERRY_KNIGHT, "stlačené vakuum v bázi počtu fotonů"),
+        Reading(QUESADA_THRESHOLD_DETECTORS, "co se změní, když detektor pozná jen „foton ano/ne“"),
+    ),
     related_caveats=(DISCARDED_SHOTS,),
 )
 
@@ -641,7 +749,8 @@ $$
 $$
 
 Ze 100 000 výstřelů padne tento vzor v průměru asi 3 346×; skutečný počet kolísá zhruba o $\sqrt{N p (1-p)} \approx 57$, tedy
-o 1,7 %, a odhad hafniánu díky odmocnině jen o 0,85 %.
+o 1,7 %, a odhad hafniánu díky odmocnině jen o 0,85 %. Obecně kolísá počet výskytů vzoru relativně zhruba
+o $1/\sqrt{N_n}$ a odhad hafniánu o polovinu toho – vzory, které padají zřídka, jsou proto odhadnuté nejhůř.
 
 **Vlastnosti odhadu.**
 
@@ -656,13 +765,11 @@ o 1,7 %, a odhad hafniánu díky odmocnině jen o 0,85 %.
 výsledek. Hafniány matice $\Sigma$ nikde nepočítá, jen je „čte“ z fyzikálního experimentu. V této aplikaci
 je ovšem i ten experiment simulovaný klasicky.
 """,
-    further_reading="""
-- Andersen, Shan: *Using Gaussian Boson Samplers to Approximate Gaussian Expectation Problems*,
-  [arXiv:2502.19336](https://arxiv.org/abs/2502.19336) (2025).
-- Andersen, Shan: *Estimating the Percentage of GBS Advantage in Gaussian Expectation Problems*,
-  [arXiv:2502.19362](https://arxiv.org/abs/2502.19362) (2025).
-- Arrazola, Rebentrost, Weedbrook: *Quantum supremacy and high-dimensional integration*, arXiv (2017).
-""",
+    further_reading=(
+        Reading(ANDERSEN_SHAN_EXPECTATIONS),
+        Reading(ANDERSEN_SHAN_ADVANTAGE),
+        Reading(ARRAZOLA_REBENTROST_WEEDBROOK),
+    ),
     related_caveats=(SIGN_PROBLEM, CLASSICAL_SIMULATION),
 )
 
@@ -684,7 +791,9 @@ $$
 $$
 
 tedy typická odchylka odhadu od přesné hodnoty $\mu$ v procentech. Relativní chyba 1 % znamená, že se odhad
-obvykle trefí do ±1 % přesné hodnoty.
+obvykle trefí do ±1 % přesné hodnoty. Pozor, i RMSE z 20 opakování je jen odhad s relativní nejistotou zhruba
+$1/\sqrt{2\cdot 20} \approx 16\,\%$. Naměřené chyby se proto mezi běhy liší a spolehlivější je srovnat
+teoretické konstanty níže (na 2. stránce jsou v grafu konvergence čárkovaně).
 
 **Obě chyby klesají jako $1/\sqrt{N}$.** U MC to říká centrální limitní věta; u GBS totéž platí pro četnosti
 a odmocnina na tom nic nemění. V logaritmickém grafu jsou to rovnoběžné přímky se sklonem $-\tfrac12$:
@@ -749,17 +858,12 @@ dat stojí jinak než jeden gaussovský scénář na procesoru. Srovnává se na
 snižování rozptylu (vážený výběr, nalezení hlavní části) by zmenšily i $c_{\mathrm{MC}}$. A pro tento
 konkrétní moment existuje vzorec, takže tu jde o testovací úlohu.
 """,
-    further_reading="""
-- Dřímal, J., Trunec, D., Brablec, A.: *Úvod do metody Monte Carlo*. Přírodovědecká fakulta MU, Brno 2006,
-  [PDF](https://www.physics.muni.cz/~trunec/mc.pdf) – kap. 5.4 odhad účinnosti metody, kap. 5.7 metoda
-  váženého výběru.
-- Andersen, Shan: *Using Gaussian Boson Samplers to Approximate Gaussian Expectation Problems*,
-  [arXiv:2502.19336](https://arxiv.org/abs/2502.19336) (2025).
-- Andersen, Shan: *Estimating the Percentage of GBS Advantage in Gaussian Expectation Problems*,
-  [arXiv:2502.19362](https://arxiv.org/abs/2502.19362) (2025).
-- Glasserman, P.: *Monte Carlo Methods in Financial Engineering*. Springer, New York 2004 – snižování rozptylu
-  ve financích.
-""",
+    further_reading=(
+        Reading(DRIMAL_MONTE_CARLO, "kap. 5.4 odhad účinnosti metody, kap. 5.7 metoda váženého výběru"),
+        Reading(ANDERSEN_SHAN_EXPECTATIONS),
+        Reading(ANDERSEN_SHAN_ADVANTAGE),
+        Reading(GLASSERMAN, "snižování rozptylu ve financích"),
+    ),
     related_caveats=(SAMPLES_NOT_TIME, DISCARDED_SHOTS, CLOSED_FORM),
 )
 
@@ -773,3 +877,13 @@ TOPICS: Tuple[TheoryTopic, ...] = (
     ESTIMATOR,
     COMPARISON,
 )
+
+
+def all_sources(topics: Sequence[TheoryTopic]) -> List[Source]:
+    """Every cited source once, in the order in which the topics first cite it."""
+    sources: List[Source] = []
+    for topic in topics:
+        for reading in topic.further_reading:
+            if reading.source not in sources:
+                sources.append(reading.source)
+    return sources
