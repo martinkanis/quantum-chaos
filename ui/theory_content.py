@@ -163,6 +163,26 @@ ARRAZOLA_REBENTROST_WEEDBROOK = Source(
 )
 
 
+DAMODARAN_RETURNS = Source(
+    "Damodaran, A.: *Historical Returns on Stocks, Bonds and Bills: 1928–2023*. NYU Stern, leden 2024, "
+    "[data](https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histret.html)"
+)
+WIKIPEDIA_CORRELATION = Source("Wikipedie: [Korelace](https://cs.wikipedia.org/wiki/Korelace)", czech=True)
+DANISH_QUANTUM_USE_CASES = Source(
+    "*16 Danish Quantum Use Cases*, prosinec 2024, případ 16 Quantum-Optimised Real-Time Trading (Jyske Bank, "
+    "Qpurpose), [PDF](https://dqc.dk/wp-content/uploads/2024/12/16-Danish-Quantum-Use-Cases-December-2024.pdf)"
+)
+SDU_QUANTUM_FINANCE = Source(
+    "Centre for Quantum Mathematics, SDU: [Quantum Mathematics for Finance: QM, Jyske Bank and Qpurpose]"
+    "(https://www.sdu.dk/en/forskning/qm/quantum-computing/quantum-in-finance)"
+)
+OH_CLASSICAL_SIMULATION = Source(
+    "Oh, C., Liu, M., Alexeev, Y., Fefferman, B., Jiang, L.: *Classical algorithm for simulating experimental "
+    "Gaussian boson sampling*. Nature Physics 20, 1461 (2024), "
+    "[článek](https://www.nature.com/articles/s41567-024-02535-8)"
+)
+
+
 MONTE_CARLO = TheoryTopic(
     anchor="monte-carlo",
     title="Klasické Monte Carlo: střední hodnota jako průměr přes náhodné scénáře",
@@ -196,17 +216,41 @@ $$
 \hat\mu_N = \frac{1}{N}\sum_{i=1}^{N} f\big(X^{(i)}\big) \approx \mathbb{E}[f(X)] .
 $$
 
+**Co je scénář.** Scénář je jedna vylosovaná realizace $X^{(i)}$ – u nás jeden smyšlený, ale věrohodný rok:
+odchylky ročních výnosů všech aktiv od očekávání najednou. Třeba akcie o 12 % líp, než se čekalo, dluhopisy
+o 1 % hůř a zlato o 20 % líp. Z něj vyjde odchylka portfolia
+
+$$
+L = 0{,}6\cdot 12\,\% + 0{,}3\cdot(-1\,\%) + 0{,}1\cdot 20\,\% = 8{,}9\,\%
+$$
+
+a hodnota, která se průměruje, $f(X) = L^4 \approx 0{,}000063$. Počítač scénáře losuje tak, aby každé
+aktivum kolísalo se svou volatilitou a aktiva se hýbala spolu podle korelací – většinou tedy vyjde obyčejný
+rok, jen občas extrémní. Na 1. stránce je scénářem celá jedna možná budoucnost portfolia měsíc po měsíci
+přes celý horizont; u GBS hraje roli scénáře výstřel.
+
 **Proč to funguje.**
 
 - *Nestrannost:* $\mathbb{E}[\hat\mu_N] = \mathbb{E}[f(X)]$ – odhad se v průměru nemýlí.
 - *Zákon velkých čísel:* s rostoucím $N$ se výběrový průměr blíží střední hodnotě (podle silného zákona
   velkých čísel skoro jistě).
 - *Centrální limitní věta:* pro velké $N$ má $\hat\mu_N$ přibližně normální rozdělení se směrodatnou
-  odchylkou $\sigma_f/\sqrt{N}$, kde $\sigma_f^2 = \operatorname{var} f(X)$ je rozptyl jednoho scénáře
-  (starší česká literatura říká *disperze* a značí ji $D(X)$). Z toho plyne 95% interval spolehlivosti
-  $\hat\mu_N \pm 1{,}96\,\hat\sigma_f/\sqrt{N}$.
+  odchylkou $\sigma_f/\sqrt{N}$, kde $\sigma_f^2 = \operatorname{var} f(X)$ je rozptyl výsledku jednoho
+  scénáře (starší česká literatura říká *disperze* a značí ji $D(X)$). Z toho plyne 95% interval
+  spolehlivosti $\hat\mu_N \pm 1{,}96\,\hat\sigma_f/\sqrt{N}$.
 - I bez předpokladu normality dává odhad chyby Čebyševova nerovnost: s pravděpodobností aspoň $1-\alpha$ se
   průměr od střední hodnoty neliší o víc než $\sqrt{D(X)/(N\alpha)}$. Chyba tedy vždy klesá jako $1/\sqrt{N}$.
+
+**Rozptyl scénáře polopatě.** Jeden konkrétní scénář je jedno číslo a sám rozptyl nemá. Než ho ale
+vylosujeme, je jeho výsledek náhodný – a rozptyl říká, jak moc se výsledky jednotlivých scénářů mezi sebou
+liší; $\sigma_f$ je typická odchylka jednoho scénáře od průměru. Příklad mimo finance: průměrnou výšku lidí
+odhadneš z pár stovek náhodně změřených lidí, protože výšky se liší jen o desítky centimetrů. Průměrný příjem
+ne – jeden miliardář ve vzorku průměr rozhodí, rozptyl jednoho „scénáře“ je obrovský a vzorků je potřeba
+mnohem víc. U $L^4$ je to podobné: obyčejný rok s odchylkou 5 % dá $0{,}05^4 \approx 0{,}000006$, vzácný rok
+s odchylkou 30 % dá $0{,}3^4 \approx 0{,}008$, asi 1 300× víc. Typická odchylka jednoho scénáře od průměru je
+proto zhruba 3,3× větší než průměr sám; jeden scénář skoro nic neřekne a teprve 100 000 scénářů stáhne chybu
+průměru asi na 1 %. Nejde přitom o rozptyl výnosu portfolia ($\sigma_p^2$, čtverec volatility), ale
+o kolísání toho, co se v Monte Carlu průměruje.
 
 **Pravidlo odmocniny.** Desetkrát přesnější výsledek stojí stokrát víc scénářů. Výhodou je, že rychlost
 $1/\sqrt{N}$ nezávisí na počtu proměnných: mřížka s 10 body na osu by pro 6 aktiv potřebovala milion bodů
@@ -225,9 +269,14 @@ a nakonec výsledky zprůměruje. Hodnota $L^d$ má ale *těžký chvost*: vzác
 do průměru nepoměrně hodně, takže $\sigma_f$ je velké – a pro $d = 6$ mnohem větší než pro $d = 2$
 (viz srovnání s GBS).
 
-**Náhoda z počítače.** Počítač losuje *pseudonáhodná čísla*: deterministickou posloupnost, která vypadá
-náhodně. Stejný počáteční stav generátoru (seed) dá vždy stejné scénáře – proto aplikace nabízí volbu seedu
-a kontrolní běhy.
+**Náhoda z počítače: seed, referenční a kontrolní běhy.** Počítač losuje *pseudonáhodná čísla*:
+deterministickou posloupnost, která vypadá náhodně. Její počáteční stav určuje *seed*: stejný seed a stejné
+vstupy dají vždy přesně stejné scénáře, a tedy stejné výsledky. Volba „Náhodný“ bere pokaždé nový seed, takže
+se výsledky mezi spuštěními mírně liší. *Referenční běh* (seed 42) je jeden pevně daný běh, na jehož čísla se
+dá odkazovat a porovnávat je. *Kontrolní běhy* (seed 1, 2, 3) jsou tentýž výpočet s jinými, ale pevnými
+seedy, tedy s jinými náhodnými scénáři. Když vyjdou skoro stejně, má simulace vzorků dost; když se výrazně
+liší, je náhodná chyba velká a je potřeba zvýšit počet vzorků. Je to nejjednodušší způsob, jak chybu Monte
+Carla uvidět bez teorie.
 
 **Historie a název.** Myšlenka je stará: Buffonova úloha o jehle z 18. století odhaduje číslo $\pi$
 z četnosti, s jakou náhodně hozená jehla protne rovnoběžku. Soustavně metodu rozvinuli S. Ulam,
@@ -330,6 +379,81 @@ počítají správně.
         Reading(MARKOWITZ, r"rozptyl portfolia $w^\top\Sigma w$ jako míra rizika"),
     ),
     related_caveats=(CLOSED_FORM,),
+)
+
+CORRELATION = TheoryTopic(
+    anchor="korelace",
+    title="Korelace mezi aktivy: proč a jak funguje",
+    in_short=(
+        "Korelace (od −1 do +1) říká, jak moc se dvě aktiva hýbou spolu. Čím je nižší, tím víc se jejich výkyvy "
+        "v portfoliu navzájem vyruší – to je podstata diverzifikace."
+    ),
+    explanation=r"""
+**Co korelace je.** Číslo od −1 do +1, které říká, jak moc se výnosy dvou aktiv hýbou společně:
+
+- **+1:** když má jedno aktivum dobrý rok, má ho i druhé,
+- **0:** z pohybu jednoho nejde nic poznat o druhém,
+- **−1:** když jedno roste, druhé klesá.
+
+Počítá se jako společné kolísání (kovariance) vydělené kolísáním obou aktiv zvlášť; zpětně z ní a z volatilit
+vzniká kovarianční matice:
+
+$$
+\rho_{ij} = \frac{\operatorname{cov}(R_i, R_j)}{\sigma_i\,\sigma_j}, \qquad
+\Sigma_{ij} = \rho_{ij}\,\sigma_i\,\sigma_j .
+$$
+
+**Proč na ní záleží: diverzifikace.** Rozptyl portfolia je
+
+$$
+\sigma_p^2 = \sum_{i}\sum_{j} w_i\,w_j\,\rho_{ij}\,\sigma_i\,\sigma_j .
+$$
+
+Když se aktiva nehýbou úplně spolu, jejich výkyvy se částečně vyruší. Výchozí portfolio (akcie 60 %
+s volatilitou 16 %, dluhopisy 30 % s 5 %, zlato 10 % s 15 %) má při stejných aktivech a jiné korelaci všech
+párů volatilitu 12,6 % při korelaci 1, 10,4 % při výchozí 0,2, 9,8 % při 0 a 8,1 % při −0,5. Jen při
+korelaci 1 je volatilita portfolia prostým váženým průměrem volatilit:
+
+$$
+0{,}6\cdot 16\,\% + 0{,}3\cdot 5\,\% + 0{,}1\cdot 15\,\% = 12{,}6\,\% .
+$$
+
+Čím nižší korelace, tím víc rizika se vyruší.
+
+**Jak s korelací pracuje aplikace.**
+
+- Posuvník nastaví stejnou korelaci všem párům, v matici jde upravit každý pár zvlášť (počítají se hodnoty
+  nad diagonálou). Po změně aktiv nebo posuvníku se matice znovu vyplní jednotně.
+- Simulace na 1. stránce: z volatilit a korelací vznikne kovarianční matice $\Sigma$. Každý měsíc generátor
+  vylosuje nezávislá náhodná čísla a smíchá je přes rozklad $\Sigma$ na hlavní komponenty – jeden společný
+  „tržní“ šok tak zasáhne víc aktiv najednou a ta se pohnou spolu. Pak se spočítá výnos portfolia a portfolio
+  se vrátí na cílové váhy.
+- Stránka GBS: korelace vstupují do $\Sigma$, která se nahraje do zařízení – rozklad na hlavní komponenty je
+  tu přímo nastavení stlačení a interferometru. Povolené jsou jen nezáporné korelace.
+- Stresové scénáře korelaci nepoužívají: scénář je konkrétní rok, ve kterém se aktiva pohnula tak, jak se
+  skutečně pohnula.
+- Předvolby trhu nastaví průměrnou korelaci za zvolené období, spočítanou přes páry tříd, které portfolio
+  obsahuje.
+
+**Proč nejde zadat libovolná čísla.** Korelace si nesmí odporovat: když se A hýbe hodně s B (0,9) a B hodně
+s C (0,9), nemůže se A hýbat proti C (−0,9). Matematicky musí být korelační matice pozitivně semidefinitní,
+jinak by některá kombinace aktiv měla záporný rozptyl – aplikace takovou matici odmítne. Proto posuvník začíná
+na −0,5: stejná korelace všech párů $n$ aktiv nesmí klesnout pod $-1/(n-1)$, pro 3 aktiva tedy −0,5 a pro
+4 aktiva už −0,33.
+
+**Korelace není stálá.** Stejná dvojice akcie–státní dluhopisy se v různých krizích chovala opačně: v roce 2008
+akcie klesly o 36,6 % a dluhopisy vzrostly o 20,1 % (útěk do bezpečí), v roce 2022 klesly akcie o 18,0 %
+a dluhopisy o 17,8 % (obojí srazila inflace a rostoucí sazby). Za období 1972–2023 vychází korelace
+akcie–dluhopisy +0,07, akcie–zlato −0,20 a dluhopisy–zlato −0,09. Model ale používá jedno pevné číslo na celý
+horizont a korelace navíc měří jen lineární souvislost – extrémní roky se mohou chovat jinak, než napoví průměr.
+""",
+    further_reading=(
+        Reading(MARKOWITZ, "proč diverzifikace snižuje riziko portfolia"),
+        Reading(ANDEL_STATISTICS, "korelace a vícerozměrné normální rozdělení"),
+        Reading(WIKIPEDIA_CORRELATION),
+        Reading(DAMODARAN_RETURNS, "roční výnosy, ze kterých jsou spočítané historické korelace"),
+    ),
+    related_caveats=(SIGN_PROBLEM,),
 )
 
 WICK_THEOREM = TheoryTopic(
@@ -867,15 +991,79 @@ konkrétní moment existuje vzorec, takže tu jde o testovací úlohu.
     related_caveats=(SAMPLES_NOT_TIME, DISCARDED_SHOTS, CLOSED_FORM),
 )
 
+GBS_ADVANTAGE = TheoryTopic(
+    anchor="exponencialni-vyhoda",
+    title="Exponenciální výhoda: co přesně dokázali Andersen a Shan",
+    in_short=(
+        "Andersen a Shan (2025) dokázali, že existují gaussovské úlohy, pro které GBS stačí polynomiálně mnoho "
+        "vzorků, zatímco klasickému Monte Carlu exponenciálně mnoho. Jde hlavně o polynomy velmi vysokého stupně; "
+        "o tento výsledek se opírá i tvrzení firmy Qpurpose o exponenciálním zrychlení."
+    ),
+    explanation=r"""
+**Kdo a kde.** Jørgen Ellegaard Andersen a Shan Shan z Center for Quantum Mathematics na University of Southern
+Denmark zveřejnili v únoru 2025 dva preprinty na arXivu; recenzovanou verzi se zatím dohledat nepodařilo. Na
+centrum navazuje firma Qpurpose (spin-off z roku 2022). V přehledu *16 Danish Quantum Use Cases* (prosinec 2024)
+popisuje projekt pro Jyske Bank, kde GBS má „v určitých případech“ nabízet exponenciální zrychlení oproti
+Monte Carlu.
+
+**Prostor úloh.** Úloha je spočítat $\mathbb{E}[f(X)]$ pro gaussovský vektor $X$ v $N$ dimenzích
+s kovarianční maticí $B$ (vlastní čísla mezi 0 a 1, aby šla nahrát do zařízení) a polynom
+$f(x) = \sum_{|I| \le K} a_I\,x^I$ stupně nejvýš $K$. Jedna úloha je tedy volba $N$, $K$, $B$ a koeficientů
+$a_I$ – naše $\mathbb{E}[L^d]$ je speciální případ.
+
+**Dva odhady.**
+
+- *GBS-I* se chová jako vážený výběr: průměruje přeškálované koeficienty $a_I$ přes vylosované vzory. Je
+  nestranný, ale řeší upravenou úlohu, ve které místo hafniánů vystupují jejich druhé mocniny,
+  $\sum_I a_I\,\mathrm{Haf}(B_I)^2$ – střední hodnotu přes „zdvojený“ gaussovský vektor s kovariancí
+  $B \oplus B$.
+- *GBS-P* odmocňuje relativní četnosti vzorů – přesně odhad z 2. stránky. Je mírně vychýlený, ale řeší
+  původní úlohu.
+
+**Co tvrdí.** Srovnávají zaručený počet vzorků, se kterým má odhad s pravděpodobností aspoň $1-\delta$ relativní
+chybu nejvýš $\varepsilon$ (odvozený z rozptylu přes Čebyševovu nerovnost). Hlavní věty říkají, že pro dost velký
+stupeň $K$ existuje neprázdná otevřená podmnožina úloh, kde klasické Monte Carlo potřebuje exponenciálně víc
+vzorků než GBS – pro GBS-I na upravené úloze i pro GBS-P na původní. Zpřesněná verze: pro
+$K \ge \zeta N^2$ stačí GBS řádově $N^{3+p}$ vzorků, zatímco Monte Carlo potřebuje aspoň $e^{c N^2}$.
+
+**Jaká je to množina, polopatě.** „Otevřená neprázdná podmnožina“ znamená, že takové úlohy existují a malá změna
+matice nebo koeficientů výhodu nezničí; věta ale neříká, jak velká ta oblast je. Tvoří ji hlavně polynomy velmi
+vysokého stupně (stupeň roste aspoň s druhou mocninou počtu proměnných) s koeficienty sladěnými s rozdělením GBS.
+Důvod je stejný jako ve srovnání na 2. stránce: rozptyl klasického Monte Carla roste se stupněm polynomu
+exponenciálně – u nás konstanta $c_{\mathrm{MC}}$ roste z 1,41 přes 3,27 na 6,72 pro $d = 2, 4, 6$ – kdežto GBS
+se chová jako vážený výběr, který sám losuje vzory úměrně hafniánům na druhou. Druhý článek odhaduje, jak velký
+podíl úloh je výhodný: po vyladění středního počtu fotonů „podstatný“, ve speciálních případech téměř 100 %.
+
+**Na co si dát pozor.**
+
+- Jde o počet vzorků ideálního bezeztrátového GBS, ne o čas ani o reálný hardware; klasické algoritmy dnes
+  reálná ztrátová zařízení umějí napodobit (Oh a kol. 2024).
+- Srovnává se s obyčejným Monte Carlem, ne s nejlepší klasickou metodou (vážený výběr, řídicí proměnné).
+- Je to věta o existenci: užitek pro konkrétní finanční úlohy (VaR, opce) v článcích doložený není. Tvrzení
+  o přínosu pro obchodování v Jyske Bank pocházejí z přehledu případových studií, ne z recenzované práce,
+  a podle něj i stránek SDU algoritmy zatím běží na klasických počítačích.
+""",
+    further_reading=(
+        Reading(ANDERSEN_SHAN_EXPECTATIONS, "definice úloh, odhady GBS-I a GBS-P a věty o exponenciální výhodě"),
+        Reading(ANDERSEN_SHAN_ADVANTAGE, "jak velký podíl úloh je výhodný"),
+        Reading(DANISH_QUANTUM_USE_CASES, "případ 16: Jyske Bank a Qpurpose"),
+        Reading(SDU_QUANTUM_FINANCE, "spolupráce centra QM, Jyske Bank a Qpurpose"),
+        Reading(OH_CLASSICAL_SIMULATION, "proč výhoda reálných zařízení není samozřejmá"),
+    ),
+    related_caveats=(SAMPLES_NOT_TIME, CLASSICAL_SIMULATION, CLOSED_FORM),
+)
+
 TOPICS: Tuple[TheoryTopic, ...] = (
     MONTE_CARLO,
     PORTFOLIO_MOMENT,
+    CORRELATION,
     WICK_THEOREM,
     GBS_DEVICE,
     ENCODING,
     SHOTS,
     ESTIMATOR,
     COMPARISON,
+    GBS_ADVANTAGE,
 )
 
 
