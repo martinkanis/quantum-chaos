@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, Sequence
+from typing import Dict, Optional, Protocol, Sequence
 
 import numpy as np
 import plotly.graph_objects as go
@@ -28,6 +28,25 @@ PATTERN_BAR_COUNT = 12
 CHART_MARGIN = dict(t=30, b=40, l=10, r=10)
 CHART_LEGEND_MARGIN = dict(t=60, b=40, l=10, r=10)
 CHART_LEGEND = dict(orientation="h", yanchor="bottom", y=1.02, x=0)
+
+
+class ConvergenceCurves(Protocol):
+    """Relative errors of both estimators per sample size, as measured and as predicted (c/√N)."""
+
+    @property
+    def sample_sizes(self) -> np.ndarray: ...
+
+    @property
+    def gbs_relative_rmse(self) -> np.ndarray: ...
+
+    @property
+    def mc_relative_rmse(self) -> np.ndarray: ...
+
+    @property
+    def gbs_error_constant(self) -> float: ...
+
+    @property
+    def mc_error_constant(self) -> float: ...
 
 
 def circuit_diagram(program: GbsProgram, asset_labels: Sequence[str]) -> go.Figure:
@@ -135,7 +154,7 @@ def pattern_frequency_chart(study: ConvergenceStudy) -> go.Figure:
     return figure
 
 
-def convergence_chart(study: ConvergenceStudy) -> go.Figure:
+def convergence_chart(study: ConvergenceCurves) -> go.Figure:
     sizes = study.sample_sizes
     inverse_root = 1 / np.sqrt(sizes)
     figure = go.Figure()

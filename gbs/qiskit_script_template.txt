@@ -1,0 +1,201 @@
+"""GBS-P odhad gaussovského momentu na qubitovém simulátoru Qiskit.
+
+Vygenerovala aplikace Quantum chaos (stránka 3 · Výhoda GBS).
+
+Úloha: ${formula} pro x ~ N(0, Σ); matice Σ a exponenty jsou v konstantách níže.
+Naladění stlačení: ${encoding}.
+
+Spuštění (Python 3.9 nebo novější):
+    pip install "qiskit>=1.0" numpy
+    python ${file_name}
+
+Co skript dělá:
+ 1. Nahraje matici B = D·Σ·D do „zařízení“: B = O·diag(tanh r)·Oᵀ (rozklad na vlastní čísla).
+ 2. Každý fotonický mód zakóduje do QUBITS_PER_MODE qubitů: binární číslo = počet fotonů v módu.
+ 3. Připraví v každém módu stlačené vakuum (přesné amplitudy, ořezané na 2^QUBITS_PER_MODE hladin).
+ 4. Interferometr O rozloží na Givensovy rotace, tedy děliče svazku mezi dvojicemi módů.
+ 5. Změří všechny qubity: jeden výstřel = počty fotonů ve všech módech.
+ 6. Z četnosti cílového vzoru spočítá GBS-P odhad a porovná ho s přesnou hodnotou a s klasickým Monte Carlem.
+
+Qiskit fotonické módy nemá, proto je tady emulujeme na qubitech. Kvantovou výhodu to nepřináší: skript ukazuje,
+jak výpočet probíhá, a ověřuje vzorce. Skutečný GBS je fotonický čip. Obvod by šlo po transpilaci poslat
+i na qubitový počítač (qiskit-ibm-runtime), brány na 5–10 qubitech se ale rozloží na tisíce dvouqubitových
+bran a dnešní šum by výsledek zničil – proto skript používá přesný simulátor StatevectorSampler.
+"""
+
+import math
+from functools import lru_cache
+
+import numpy as np
+from qiskit import QuantumCircuit
+from qiskit.circuit.library import UnitaryGate
+from qiskit.primitives import StatevectorSampler
+from qiskit.quantum_info import Statevector
+
+COVARIANCE = np.array(${covariance})
+EXPONENTS = ${exponents}
+VARIABLE_NAMES = ${variable_names}
+MODE_SCALES = np.array(${mode_scales})
+"""Diagonála D v B = D·Σ·D, jak ji naladila aplikace."""
+QUBITS_PER_MODE = ${qubits_per_mode}
+SHOTS = ${shots}
+SEED = ${seed}
+
+
+def gaussian_moment(covariance, exponents):
+    """E[x^n] pro x ~ N(0, Σ) rekurzí ze Steinova lemmatu (= hafnián Σ_n podle Wickovy věty)."""
+    size = len(exponents)
+
+    @lru_cache(maxsize=None)
+    def moment(pattern):
+        if sum(pattern) == 0:
+            return 1.0
+        if sum(pattern) % 2:
+            return 0.0
+        first = next(index for index, power in enumerate(pattern) if power)
+        reduced = list(pattern)
+        reduced[first] -= 1
+        total = 0.0
+        for other in range(size):
+            if reduced[other]:
+                smaller = list(reduced)
+                smaller[other] -= 1
+                total += covariance[first, other] * reduced[other] * moment(tuple(smaller))
+        return total
+
+    return moment(tuple(int(power) for power in exponents))
+
+
+def device_settings(kernel):
+    """Takagiho rozklad reálné pozitivně semidefinitní matice: B = O·diag(tanh r)·Oᵀ."""
+    tanh_squeezing, orthogonal = np.linalg.eigh(kernel)
+    return np.arctanh(np.clip(tanh_squeezing, 0.0, None)), orthogonal
+
+
+def squeezed_vacuum(squeezing, cutoff):
+    """Amplitudy stlačeného vakua ⟨k|ψ⟩ ořezané na cutoff hladin a zachovaná pravděpodobnost.
+
+    Fáze stlačení je zvolená tak, aby výstup odpovídal přímo B, ne −B (na pravděpodobnostech to nic nemění).
+    """
+    amplitudes = np.zeros(cutoff)
+    amplitudes[0] = 1.0 / math.sqrt(np.cosh(squeezing))
+    # ⟨2k|ψ⟩ = tanh(r)^k·√((2k)!) / (2^k·k!·√cosh r); poměr sousedních amplitud nepřeteče ani pro stovky fotonů.
+    for photons in range(2, cutoff, 2):
+        amplitudes[photons] = amplitudes[photons - 2] * np.tanh(squeezing) * math.sqrt((photons - 1) / photons)
+    kept_probability = float(np.sum(amplitudes**2))
+    return amplitudes / math.sqrt(kept_probability), kept_probability
+
+
+def preparation_unitary(state):
+    """Householderova reflexe, která převede |0⟩ na zadaný reálný normovaný stav."""
+    reflection_axis = -state.copy()
+    reflection_axis[0] += 1.0
+    norm_squared = float(reflection_axis @ reflection_axis)
+    if norm_squared < 1e-15:
+        return np.eye(len(state))
+    return np.eye(len(state)) - 2.0 * np.outer(reflection_axis, reflection_axis) / norm_squared
+
+
+def givens_rotations(orthogonal):
+    """Rotace (i, j, θ), které ortogonální matici převedou na diagonální matici ±1 (QR rozklad)."""
+    matrix = orthogonal.copy()
+    rotations = []
+    size = len(matrix)
+    for column in range(size - 1):
+        for row in range(column + 1, size):
+            angle = math.atan2(matrix[row, column], matrix[column, column])
+            rotation = np.eye(size)
+            rotation[[column, column, row, row], [column, row, column, row]] = (
+                math.cos(angle), math.sin(angle), -math.sin(angle), math.cos(angle),
+            )
+            matrix = rotation @ matrix
+            rotations.append((column, row, angle))
+    return rotations
+
+
+def beam_splitter_unitary(angle, cutoff):
+    """exp(θ·(a_i†a_j − a_j†a_i)) na dvou ořezaných módech; báze |n_i⟩ + cutoff·|n_j⟩ (mód i = nižší qubity)."""
+    annihilation = np.diag(np.sqrt(np.arange(1, cutoff)), 1)
+    generator = angle * (np.kron(annihilation, annihilation.T) - np.kron(annihilation.T, annihilation))
+    eigenvalues, eigenvectors = np.linalg.eigh(1j * generator)
+    unitary = eigenvectors @ np.diag(np.exp(-1j * eigenvalues)) @ eigenvectors.conj().T
+    return unitary.real
+
+
+def mode_qubits(mode):
+    return list(range(mode * QUBITS_PER_MODE, (mode + 1) * QUBITS_PER_MODE))
+
+
+def gbs_circuit(squeezing, orthogonal, cutoff):
+    circuit = QuantumCircuit(len(squeezing) * QUBITS_PER_MODE)
+    for mode, mode_squeezing in enumerate(squeezing):
+        state, _ = squeezed_vacuum(mode_squeezing, cutoff)
+        circuit.append(UnitaryGate(preparation_unitary(state), label=f"S({mode_squeezing:.2f})"), mode_qubits(mode))
+    # Rotace T_k převádějí O na diagonálu, takže O = T_1ᵀ·…·T_Lᵀ·(±1): obvod je aplikuje pozpátku s opačným úhlem.
+    for first, second, angle in reversed(givens_rotations(orthogonal)):
+        circuit.append(
+            UnitaryGate(beam_splitter_unitary(-angle, cutoff), label="BS"), mode_qubits(first) + mode_qubits(second),
+        )
+    return circuit
+
+
+def pattern_index(pattern):
+    return sum(int(photons) << (mode * QUBITS_PER_MODE) for mode, photons in enumerate(pattern))
+
+
+def main():
+    exponents = np.array(EXPONENTS)
+    degree = int(exponents.sum())
+    cutoff = 2**QUBITS_PER_MODE
+    if cutoff <= degree:
+        raise ValueError("Ořez musí být větší než stupeň monomu, jinak by se cílový vzor nedal změřit přesně.")
+
+    kernel = MODE_SCALES[:, None] * COVARIANCE * MODE_SCALES[None, :]
+    squeezing, orthogonal = device_settings(kernel)
+    kept_probability = math.prod(squeezed_vacuum(value, cutoff)[1] for value in squeezing)
+    pattern_factorial = math.prod(math.factorial(int(photons)) for photons in exponents)
+    normalization = float(np.prod(np.cosh(squeezing)))
+    unscaling = float(np.prod(MODE_SCALES**exponents))
+
+    exact = gaussian_moment(COVARIANCE, EXPONENTS)
+    exact_probability = (exact * unscaling) ** 2 / (pattern_factorial * normalization)
+
+    circuit = gbs_circuit(squeezing, orthogonal, cutoff)
+    print("Monom:", " · ".join(f"{name}^{power}" for name, power in zip(VARIABLE_NAMES, EXPONENTS)))
+    print(f"Obvod: qubitů {circuit.num_qubits} (módy {len(squeezing)} × {QUBITS_PER_MODE} qubitů), "
+          f"bran {len(circuit.data)}.")
+    print(f"Střední počet fotonů ze stlačovačů: {np.round(np.sinh(squeezing) ** 2, 3)}")
+    print(f"Ořez na {cutoff} hladin na mód zachová {kept_probability:.2%} pravděpodobnosti; odhad to opravuje.")
+
+    emulated_probability = abs(Statevector(circuit).data[pattern_index(EXPONENTS)]) ** 2 * kept_probability
+    print(f"Kontrola: p(n) ze stavového vektoru {emulated_probability:.6g}, z hafniánu {exact_probability:.6g}")
+
+    circuit.measure_all()
+    result = StatevectorSampler(seed=SEED).run([circuit], shots=SHOTS).result()
+    counts = result[0].data.meas.get_counts()
+    target_count = sum(count for bits, count in counts.items() if int(bits, 2) == pattern_index(EXPONENTS))
+
+    # Emulátor nezná vzory nad ořezem, proto u něj padá cílový vzor s pravděpodobností p(n) / kept_probability.
+    estimated_probability = target_count / SHOTS * kept_probability
+    gbs_estimate = math.sqrt(estimated_probability * pattern_factorial * normalization) / unscaling
+
+    rng = np.random.default_rng(SEED)
+    samples = rng.multivariate_normal(np.zeros(len(EXPONENTS)), COVARIANCE, size=SHOTS, method="eigh")
+    mc_estimate = float(np.mean(np.prod(samples**exponents, axis=1)))
+
+    mc_relative_variance = gaussian_moment(COVARIANCE, tuple(2 * exponents)) / exact**2 - 1
+    gbs_relative_variance = (1 - exact_probability) / (4 * exact_probability)
+
+    print()
+    print(f"Přesná hodnota E[x^n]:        {exact:.6g}")
+    print(f"GBS-P odhad ({target_count} výstřelů z {SHOTS} se vzorem n): {gbs_estimate:.6g} "
+          f"(chyba {gbs_estimate / exact - 1:+.2%})")
+    print(f"Monte Carlo ({SHOTS} scénářů): {mc_estimate:.6g} (chyba {mc_estimate / exact - 1:+.2%})")
+    print()
+    print(f"Rozptyl jednoho vzorku / μ²: Monte Carlo {mc_relative_variance:.4g}, GBS-P {gbs_relative_variance:.4g}")
+    print(f"Pro relativní chybu 1 % je potřeba: MC {mc_relative_variance / 1e-4:.3g} scénářů, "
+          f"GBS {gbs_relative_variance / 1e-4:.3g} výstřelů")
+
+
+if __name__ == "__main__":
+    main()

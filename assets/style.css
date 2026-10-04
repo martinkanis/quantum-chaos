@@ -217,3 +217,9 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
   #asset-table th, #asset-table td, #gbs-asset-table th, #gbs-asset-table td { white-space: normal !important; }
   #asset-table th, #asset-table td, #gbs-asset-table th, #gbs-asset-table td { padding: 4px 6px !important; }
 }
+
+.theory-section table { border-collapse: collapse; margin: 8px 0 16px; display: block; max-width: 100%; overflow-x: auto; }
+.theory-section th, .theory-section td { padding: 4px 12px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
+.theory-section th { white-space: normal; vertical-align: bottom; }
+.theory-section th:first-child, .theory-section td:first-child { text-align: left; }
+.theory-section pre { background: var(--surface-muted); border-radius: 6px; padding: 10px 14px; overflow-x: auto; }

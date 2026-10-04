@@ -10,25 +10,31 @@ PORTFOLIO_PATH = "/"
 GBS_PATH = "/gbs"
 CAVEATS_PATH = "/gbs/hacky"
 THEORY_PATH = "/gbs/teorie"
+ADVANTAGE_PATH = "/vyhoda-gbs"
+GUIDE_PATH = "/vyhoda-gbs/pruvodce"
 
 VISIBLE = {"display": "block"}
 HIDDEN = {"display": "none"}
 ACTIVE_LINK_CLASS = "nav-link active"
 LINK_CLASS = "nav-link"
 
-PAGE_IDS = (ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE)
-NAV_LINK_IDS = (ids.NAV_PORTFOLIO_LINK, ids.NAV_GBS_LINK)
+PAGE_IDS = (ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE)
+NAV_LINK_IDS = (ids.NAV_PORTFOLIO_LINK, ids.NAV_GBS_LINK, ids.NAV_ADVANTAGE_LINK)
 PAGE_BY_PATH = {
     PORTFOLIO_PATH: ids.PORTFOLIO_PAGE,
     GBS_PATH: ids.GBS_PAGE,
     CAVEATS_PATH: ids.CAVEATS_PAGE,
     THEORY_PATH: ids.THEORY_PAGE,
+    ADVANTAGE_PATH: ids.ADVANTAGE_PAGE,
+    GUIDE_PATH: ids.GUIDE_PAGE,
 }
 ACTIVE_LINK_BY_PAGE = {
     ids.PORTFOLIO_PAGE: ids.NAV_PORTFOLIO_LINK,
     ids.GBS_PAGE: ids.NAV_GBS_LINK,
     ids.CAVEATS_PAGE: ids.NAV_GBS_LINK,
     ids.THEORY_PAGE: ids.NAV_GBS_LINK,
+    ids.ADVANTAGE_PAGE: ids.NAV_ADVANTAGE_LINK,
+    ids.GUIDE_PAGE: ids.NAV_ADVANTAGE_LINK,
 }
 
 # Pages are only hidden, so the browser cannot jump to an anchor on its own. Formulas (MathJax)
@@ -70,12 +76,17 @@ def theory_href(anchor: str) -> str:
     return f"{THEORY_PATH}#{anchor}"
 
 
+def guide_href(anchor: str) -> str:
+    return f"{GUIDE_PATH}#{anchor}"
+
+
 def build_navigation() -> html.Nav:
     return html.Nav(
         className="top-nav",
         children=[
             dcc.Link("1 · Klasické Monte Carlo", href=PORTFOLIO_PATH, id=ids.NAV_PORTFOLIO_LINK, className=LINK_CLASS),
             dcc.Link("2 · Monte Carlo na GBS", href=GBS_PATH, id=ids.NAV_GBS_LINK, className=LINK_CLASS),
+            dcc.Link("3 · Výhoda GBS", href=ADVANTAGE_PATH, id=ids.NAV_ADVANTAGE_LINK, className=LINK_CLASS),
         ],
     )
 

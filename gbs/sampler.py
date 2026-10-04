@@ -96,7 +96,7 @@ def total_photon_distribution(program: GbsProgram, max_total: int) -> np.ndarray
     distribution = np.zeros(max_total + 1)
     distribution[0] = 1.0
     for squeezing in program.squeezing:
-        distribution = np.convolve(distribution, _squeezed_vacuum_distribution(squeezing, max_total))[: max_total + 1]
+        distribution = np.convolve(distribution, squeezed_vacuum_distribution(squeezing, max_total))[: max_total + 1]
     return distribution
 
 
@@ -121,7 +121,7 @@ def sample_shots(
     return shots
 
 
-def _squeezed_vacuum_distribution(squeezing: float, max_total: int) -> np.ndarray:
+def squeezed_vacuum_distribution(squeezing: float, max_total: int) -> np.ndarray:
     distribution = np.zeros(max_total + 1)
     tanh_squared = np.tanh(squeezing) ** 2
     for pairs in range(max_total // 2 + 1):

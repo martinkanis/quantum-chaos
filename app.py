@@ -4,6 +4,7 @@ import logging
 
 from dash import Dash
 
+from ui.advantage_callbacks import register_advantage_callbacks
 from ui.callbacks import register_callbacks
 from ui.gbs_callbacks import register_gbs_callbacks
 from ui.layout import build_layout
@@ -18,6 +19,7 @@ app.layout = build_layout()
 register_navigation_callbacks(app)
 register_callbacks(app)
 register_gbs_callbacks(app)
+register_advantage_callbacks(app)
 
 server = app.server
 

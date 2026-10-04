@@ -155,8 +155,8 @@ def run_convergence_study(
     return ConvergenceStudy(
         sample_sizes=sizes,
         exact=exact,
-        gbs_relative_rmse=_relative_rmse(gbs_estimates, exact),
-        mc_relative_rmse=_relative_rmse(mc_estimates, exact),
+        gbs_relative_rmse=relative_rmse(gbs_estimates, exact),
+        mc_relative_rmse=relative_rmse(mc_estimates, exact),
         gbs_trajectory=gbs_estimates[0],
         mc_trajectory=mc_estimates[0],
         useful_shot_fraction=useful_probability,
@@ -217,7 +217,7 @@ def _sum_of_powers(problem: MomentProblem, sample_count: int, rng: np.random.Gen
     return total
 
 
-def _relative_rmse(estimates: np.ndarray, exact: float) -> np.ndarray:
+def relative_rmse(estimates: np.ndarray, exact: float) -> np.ndarray:
     return np.sqrt(np.mean((estimates - exact) ** 2, axis=0)) / abs(exact)
 
 
