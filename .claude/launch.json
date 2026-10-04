@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "quantum-chaos",
+      "runtimeExecutable": "/Users/martinkanis/Work/Projects/quantum-chaos/.venv/bin/python",
+      "runtimeArgs": ["app.py"],
+      "port": 8050
+    }
+  ]
+}
