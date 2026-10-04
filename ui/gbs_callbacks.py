@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from dash import Dash, Input, Output, State, ctx, no_update
 
@@ -11,9 +11,11 @@ from gbs.sampler import GbsProgramError
 from montecarlo.portfolio import PortfolioValidationError
 from montecarlo.simulation import SimulationParametersError
 from ui import ids
-from ui.callbacks import add_asset_row, describe_weight_sum, reset_correlation_table
-from ui.form_parsing import build_centered_portfolio, parse_seed
+from ui.callbacks import add_asset_row, add_selected_asset, describe_weight_sum, reset_correlation_table
+from ui.form_parsing import Row, build_centered_portfolio, parse_seed
+from ui.gbs_page import CORRELATION_SLIDER
 from ui.gbs_results import build_gbs_results
+from ui.market_presets import apply_preset, find_preset, preset_summary, slider_correlation
 from ui.navigation import GBS_PATH
 
 logger = logging.getLogger(__name__)
@@ -34,6 +36,23 @@ def register_gbs_callbacks(app: Dash) -> None:
         State(ids.GBS_ASSET_TABLE, "data"),
         prevent_initial_call=True,
     )(add_asset_row)
+
+    app.callback(
+        Output(ids.GBS_ASSET_TABLE, "data", allow_duplicate=True),
+        Output(ids.GBS_PAIRWISE_CORRELATION_SLIDER, "value"),
+        Output(ids.GBS_MARKET_PRESET_SUMMARY, "children"),
+        Input(ids.GBS_MARKET_PRESET_DROPDOWN, "value"),
+        State(ids.GBS_ASSET_TABLE, "data"),
+        prevent_initial_call=True,
+    )(apply_gbs_market_preset)
+
+    app.callback(
+        Output(ids.GBS_ASSET_TABLE, "data", allow_duplicate=True),
+        Output(ids.GBS_PREDEFINED_ASSET_DROPDOWN, "value"),
+        Input(ids.GBS_PREDEFINED_ASSET_DROPDOWN, "value"),
+        State(ids.GBS_ASSET_TABLE, "data"),
+        prevent_initial_call=True,
+    )(add_selected_asset)
 
     app.callback(
         Output(ids.GBS_WEIGHT_SUM_TEXT, "children"),
@@ -66,6 +85,14 @@ def register_gbs_callbacks(app: Dash) -> None:
             ),
         ),
     )(run_gbs_simulation)
+
+
+def apply_gbs_market_preset(preset_key: str, asset_rows: List[Row]) -> Tuple[List[Row], float, str]:
+    """Expected returns do not matter here; negative correlations are clipped because GBS cannot encode them."""
+    preset = find_preset(preset_key)
+    correlation = slider_correlation(preset, asset_rows, CORRELATION_SLIDER)
+    summary = preset_summary(preset, asset_rows, correlation, show_returns=False)
+    return apply_preset(asset_rows, preset), correlation, summary
 
 
 def run_gbs_simulation(_clicks: Optional[int], pathname: str, current_results: Any, form: Dict[str, Any]) -> dict:

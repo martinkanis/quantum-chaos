@@ -6,11 +6,28 @@ from typing import Union
 
 from dash import dcc, html
 
-from ui.form_parsing import RANDOM_SEED
+from montecarlo.historical_returns import AssetClass
+from ui.form_parsing import CLASS_COLUMN, RANDOM_SEED
 
 TABLE_CELL_STYLE = {"fontFamily": "inherit", "padding": "6px 10px", "textAlign": "right"}
 TABLE_HEADER_STYLE = {"fontWeight": "600", "backgroundColor": "var(--surface-muted)"}
 SCROLLABLE_TABLE_STYLE = {"overflowX": "auto"}
+
+ASSET_CLASS_LABELS = {
+    AssetClass.STOCKS: "Akcie",
+    AssetClass.BILLS: "Hotovost",
+    AssetClass.BONDS: "Státní dluhopisy",
+    AssetClass.CORPORATE_BONDS: "Firemní dluhopisy",
+    AssetClass.REAL_ESTATE: "Nemovitosti",
+    AssetClass.GOLD: "Zlato",
+}
+ASSET_CLASS_COLUMN = {"id": CLASS_COLUMN, "name": "Třída", "presentation": "dropdown"}
+ASSET_CLASS_DROPDOWN = {
+    CLASS_COLUMN: {
+        "options": [{"label": label, "value": asset_class.value} for asset_class, label in ASSET_CLASS_LABELS.items()],
+        "clearable": False,
+    }
+}
 
 REFERENCE_SEED = 42
 SEED_OPTIONS = [

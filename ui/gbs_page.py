@@ -10,6 +10,8 @@ from montecarlo.portfolio import Portfolio
 from ui import ids
 from ui.caveats_content import CAVEATS, REFERENCES_MARKDOWN, SIGN_PROBLEM
 from ui.components import (
+    ASSET_CLASS_COLUMN,
+    ASSET_CLASS_DROPDOWN,
     REFERENCE_SEED,
     SCROLLABLE_TABLE_STYLE,
     TABLE_CELL_STYLE,
@@ -27,9 +29,24 @@ from ui.form_parsing import (
     build_centered_portfolio,
     default_correlation_rows,
 )
+from ui.market_presets import (
+    ASSET_TABLE_HINT,
+    PREDEFINED_ASSET_OPTIONS,
+    PRESET_HINT,
+    PRESET_OPTIONS,
+    SliderRange,
+)
 from ui.navigation import CAVEATS_PATH, HIDDEN, THEORY_PATH, caveat_href, theory_href
 from ui.portfolio_page import DEFAULT_PAIRWISE_CORRELATION, correlation_table_columns
-from ui.theory_content import ESTIMATOR, GBS_DEVICE, MONTE_CARLO, SOURCES_ANCHOR, WICK_THEOREM, TheoryTopic
+from ui.theory_content import (
+    CORRELATION,
+    ESTIMATOR,
+    GBS_DEVICE,
+    MONTE_CARLO,
+    SOURCES_ANCHOR,
+    WICK_THEOREM,
+    TheoryTopic,
+)
 
 DEFAULT_DEGREE = 4
 DEFAULT_SQUEEZING_STRENGTH = 0.7
@@ -41,6 +58,7 @@ SAMPLE_SIZE_OPTIONS = (10_000, DEFAULT_MAX_SAMPLE_SIZE, MAX_SAMPLE_SIZE)
 MIN_PAIRWISE_CORRELATION = 0.0
 MAX_PAIRWISE_CORRELATION = 1.0
 CORRELATION_STEP = 0.05
+CORRELATION_SLIDER = SliderRange(MIN_PAIRWISE_CORRELATION, MAX_PAIRWISE_CORRELATION, CORRELATION_STEP)
 
 DEGREE_LABELS = {
     2: "E[L²] – rozptyl výnosu portfolia",
@@ -175,21 +193,29 @@ def _portfolio_section() -> html.Section:
                 className="hint",
                 children=[PORTFOLIO_HINT, dcc.Link("proč?", href=caveat_href(SIGN_PROBLEM.anchor))],
             ),
+            labelled("Předvolba trhu", dcc.Dropdown(
+                id=ids.GBS_MARKET_PRESET_DROPDOWN, options=PRESET_OPTIONS, placeholder="Vyber předvolbu…",
+                clearable=False, searchable=False,
+            )),
+            html.P(PRESET_HINT, className="hint small"),
+            html.P(id=ids.GBS_MARKET_PRESET_SUMMARY, className="hint small"),
             # The rows keep the hidden expected-return column of page 1; build_centered_portfolio ignores it.
+            # No horizontal scrolling here: a scroll container would clip the asset-class dropdown menus.
             dash_table.DataTable(
                 id=ids.GBS_ASSET_TABLE,
                 data=DEFAULT_ASSET_ROWS,
                 columns=[
                     {"id": NAME_COLUMN, "name": "Aktivum", "type": "text"},
+                    ASSET_CLASS_COLUMN,
                     {"id": WEIGHT_COLUMN, "name": "Váha (%)", "type": "numeric"},
                     {"id": VOLATILITY_COLUMN, "name": "Roční volatilita (%)", "type": "numeric"},
                 ],
+                dropdown=ASSET_CLASS_DROPDOWN,
                 editable=True,
                 row_deletable=True,
                 style_cell=TABLE_CELL_STYLE,
                 style_cell_conditional=[{"if": {"column_id": NAME_COLUMN}, "textAlign": "left"}],
                 style_header=TABLE_HEADER_STYLE,
-                style_table=SCROLLABLE_TABLE_STYLE,
             ),
             html.Div(
                 className="table-footer",
@@ -198,6 +224,11 @@ def _portfolio_section() -> html.Section:
                     html.Span(id=ids.GBS_WEIGHT_SUM_TEXT),
                 ],
             ),
+            dcc.Dropdown(
+                id=ids.GBS_PREDEFINED_ASSET_DROPDOWN, options=PREDEFINED_ASSET_OPTIONS,
+                placeholder="+ Přidat aktivum z nabídky…", searchable=False, className="predefined-asset-picker",
+            ),
+            html.P(ASSET_TABLE_HINT, className="hint small"),
         ],
     )
 
@@ -217,6 +248,7 @@ def _correlation_section() -> html.Details:
                 "Jednotlivé páry můžeš upravit v matici. Rozhodují hodnoty nad diagonálou.",
                 className="hint",
             ),
+            details_link(CORRELATION.title, theory_href(CORRELATION.anchor)),
             # Initial data lets the automatic first run read the correlations before the reset callback fills them.
             dash_table.DataTable(
                 id=ids.GBS_CORRELATION_TABLE,

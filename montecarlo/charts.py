@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict
+from typing import Dict, Sequence
 
 import numpy as np
 import plotly.graph_objects as go
@@ -10,6 +10,8 @@ from montecarlo.simulation import MONTHS_PER_YEAR
 
 HISTOGRAM_BIN_COUNT = 60
 SAMPLE_PATH_COUNT = 30
+SCENARIO_BAR_HEIGHT = 30
+SCENARIO_CHART_PADDING = 80
 
 MAIN_COLOR = "#2a6fdb"
 BAND_OUTER_COLOR = "rgba(42, 111, 219, 0.15)"
@@ -97,3 +99,28 @@ def _add_band(
             name=name, hoverinfo="skip",
         )
     )
+
+
+def stress_scenario_chart(
+    names: Sequence[str], returns: Sequence[float], bar_texts: Sequence[str], hover_texts: Sequence[str]
+) -> go.Figure:
+    """Horizontal bars of the portfolio return per scenario, worst scenario on top."""
+    order = np.argsort(returns)
+    figure = go.Figure(
+        go.Bar(
+            x=[returns[index] for index in order],
+            y=[names[index] for index in order],
+            orientation="h",
+            marker_color=[LOSS_COLOR if returns[index] < 0 else GAIN_COLOR for index in order],
+            text=[bar_texts[index] for index in order],
+            textposition="auto",
+            hovertext=[hover_texts[index] for index in order],
+            hovertemplate="%{hovertext}<extra></extra>",
+        )
+    )
+    figure.update_yaxes(autorange="reversed", automargin=True)
+    figure.update_xaxes(title="Výnos portfolia za rok", tickformat=".0%", zeroline=True, zerolinecolor=NEUTRAL_COLOR)
+    figure.update_layout(
+        height=SCENARIO_CHART_PADDING + SCENARIO_BAR_HEIGHT * len(names), margin=dict(t=10, b=40, l=10, r=10),
+    )
+    return figure

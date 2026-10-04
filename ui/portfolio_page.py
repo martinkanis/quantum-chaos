@@ -6,7 +6,15 @@ from dash import dash_table, dcc, html
 
 from montecarlo.simulation import MAX_SIMULATION_COUNT, MAX_YEARS
 from ui import ids
-from ui.components import TABLE_CELL_STYLE, TABLE_HEADER_STYLE, labelled, seed_dropdown
+from ui.components import (
+    ASSET_CLASS_COLUMN,
+    ASSET_CLASS_DROPDOWN,
+    TABLE_CELL_STYLE,
+    TABLE_HEADER_STYLE,
+    details_link,
+    labelled,
+    seed_dropdown,
+)
 from ui.form_parsing import (
     CORRELATION_ROW_LABEL_COLUMN,
     DEFAULT_ASSET_ROWS,
@@ -19,7 +27,16 @@ from ui.form_parsing import (
     correlation_column_id,
     default_correlation_rows,
 )
-from ui.navigation import HIDDEN
+from ui.market_presets import (
+    ASSET_TABLE_HINT,
+    PREDEFINED_ASSET_OPTIONS,
+    PRESET_HINT,
+    PRESET_OPTIONS,
+    SliderRange,
+)
+from ui.navigation import HIDDEN, theory_href
+from ui.stress_scenarios import build_stress_section
+from ui.theory_content import CORRELATION
 
 DEFAULT_INITIAL_VALUE = 1_000_000
 DEFAULT_MONTHLY_CONTRIBUTION = 0
@@ -27,6 +44,10 @@ DEFAULT_YEARS = 10
 DEFAULT_SIMULATION_COUNT = 5_000
 MIN_SIMULATION_COUNT = 100
 DEFAULT_PAIRWISE_CORRELATION = 0.2
+MIN_PAIRWISE_CORRELATION = -0.5
+MAX_PAIRWISE_CORRELATION = 1.0
+CORRELATION_STEP = 0.05
+CORRELATION_SLIDER = SliderRange(MIN_PAIRWISE_CORRELATION, MAX_PAIRWISE_CORRELATION, CORRELATION_STEP)
 
 
 def build_portfolio_page() -> html.Div:
@@ -51,6 +72,7 @@ def build_portfolio_page() -> html.Div:
                     # The download button stays in the initial layout because Dash checks on page load that every
                     # callback input exists. Sharing the Loading hides it together with the results during a re-run.
                     dcc.Loading([html.Div(id=ids.RESULTS), _download_button()], type="circle"),
+                    build_stress_section(),
                     dcc.Store(id=ids.FINAL_VALUES_STORE),
                     dcc.Download(id=ids.DOWNLOAD),
                 ],
@@ -88,15 +110,23 @@ def _asset_section() -> html.Section:
         className="card",
         children=[
             html.H2("Portfolio"),
+            labelled("Předvolba trhu", dcc.Dropdown(
+                id=ids.MARKET_PRESET_DROPDOWN, options=PRESET_OPTIONS, placeholder="Vyber předvolbu…",
+                clearable=False, searchable=False,
+            )),
+            html.P(PRESET_HINT, className="hint small"),
+            html.P(id=ids.MARKET_PRESET_SUMMARY, className="hint small"),
             dash_table.DataTable(
                 id=ids.ASSET_TABLE,
                 data=DEFAULT_ASSET_ROWS,
                 columns=[
                     {"id": NAME_COLUMN, "name": "Aktivum", "type": "text"},
+                    ASSET_CLASS_COLUMN,
                     {"id": WEIGHT_COLUMN, "name": "Váha (%)", "type": "numeric"},
                     {"id": RETURN_COLUMN, "name": "Očekávaný roční výnos (%)", "type": "numeric"},
                     {"id": VOLATILITY_COLUMN, "name": "Roční volatilita (%)", "type": "numeric"},
                 ],
+                dropdown=ASSET_CLASS_DROPDOWN,
                 editable=True,
                 row_deletable=True,
                 style_cell=TABLE_CELL_STYLE,
@@ -110,6 +140,11 @@ def _asset_section() -> html.Section:
                     html.Span(id=ids.WEIGHT_SUM_TEXT),
                 ],
             ),
+            dcc.Dropdown(
+                id=ids.PREDEFINED_ASSET_DROPDOWN, options=PREDEFINED_ASSET_OPTIONS,
+                placeholder="+ Přidat aktivum z nabídky…", searchable=False, className="predefined-asset-picker",
+            ),
+            html.P(ASSET_TABLE_HINT, className="hint small"),
         ],
     )
 
@@ -120,14 +155,16 @@ def _correlation_section() -> html.Details:
         children=[
             html.Summary("Korelace mezi aktivy"),
             labelled("Výchozí korelace mezi všemi páry", dcc.Slider(
-                id=ids.PAIRWISE_CORRELATION_SLIDER, min=-0.5, max=1.0, step=0.05,
-                value=DEFAULT_PAIRWISE_CORRELATION, marks={-0.5: "-0,5", 0: "0", 0.5: "0,5", 1: "1"},
+                id=ids.PAIRWISE_CORRELATION_SLIDER, min=MIN_PAIRWISE_CORRELATION, max=MAX_PAIRWISE_CORRELATION,
+                step=CORRELATION_STEP, value=DEFAULT_PAIRWISE_CORRELATION,
+                marks={-0.5: "-0,5", 0: "0", 0.5: "0,5", 1: "1"},
                 tooltip={"placement": "bottom", "always_visible": True},
             )),
             html.P(
                 "Jednotlivé páry můžeš upravit v matici. Rozhodují hodnoty nad diagonálou.",
                 className="hint",
             ),
+            details_link(CORRELATION.title, theory_href(CORRELATION.anchor)),
             dash_table.DataTable(
                 id=ids.CORRELATION_TABLE,
                 data=default_correlation_rows(_default_names(), DEFAULT_PAIRWISE_CORRELATION),

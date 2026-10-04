@@ -208,3 +208,12 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 
 .principle-block + .principle-block { border-top: 1px solid var(--border); margin-top: 8px; }
 .gbs-page mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
+.card details > summary { cursor: pointer; font-weight: 600; margin: 12px 0; }
+.card details .secondary-button { margin-top: 12px; }
+.predefined-asset-picker { margin-top: 12px; }
+
+/* Asset tables cannot scroll horizontally (it would clip the asset-class dropdowns), so they shrink instead. */
+@media (max-width: 800px) {
+  #asset-table th, #asset-table td, #gbs-asset-table th, #gbs-asset-table td { white-space: normal !important; }
+  #asset-table th, #asset-table td, #gbs-asset-table th, #gbs-asset-table td { padding: 4px 6px !important; }
+}

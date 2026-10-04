@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 
@@ -65,12 +65,19 @@ def _validate_assets(assets: Tuple[Asset, ...]) -> None:
         raise PortfolioValidationError("Názvy aktiv musí být unikátní.")
 
     for asset in assets:
-        if asset.weight < 0:
-            raise PortfolioValidationError(f"Váha aktiva '{asset.name}' nesmí být záporná.")
         if asset.volatility < 0:
             raise PortfolioValidationError(f"Volatilita aktiva '{asset.name}' nesmí být záporná.")
 
-    weight_sum = sum(asset.weight for asset in assets)
+    validate_weights({asset.name: asset.weight for asset in assets})
+
+
+def validate_weights(weights_by_name: Dict[str, float]) -> None:
+    """Weights are fractions of the portfolio: none negative and together 100 %."""
+    for name, weight in weights_by_name.items():
+        if weight < 0:
+            raise PortfolioValidationError(f"Váha aktiva '{name}' nesmí být záporná.")
+
+    weight_sum = sum(weights_by_name.values())
     if abs(weight_sum - 1.0) > WEIGHT_SUM_TOLERANCE:
         raise PortfolioValidationError(
             f"Součet vah musí být 100 %, aktuálně je {weight_sum * 100:.2f} %."
