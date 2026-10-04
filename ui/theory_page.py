@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Dict, List, Sequence
+from typing import Callable, Dict, List
 
 from dash import dcc, html
 
@@ -10,17 +10,9 @@ from gbs.expectation import ALLOWED_DEGREES, MomentProblem, hafnian_terms, mc_re
 from ui import ids
 from ui.gbs_page import DEFAULT_DEGREE, DEFAULT_SQUEEZING_STRENGTH, default_portfolio, squeezing_strength_grid
 from ui.gbs_results import hafnian_table
-from ui.navigation import GBS_PATH, HIDDEN, caveat_href, theory_href
-from ui.theory_content import (
-    COMPARISON,
-    SOURCES_ANCHOR,
-    TOPICS,
-    WICK_THEOREM,
-    Reading,
-    Source,
-    TheoryTopic,
-    all_sources,
-)
+from ui.navigation import GBS_PATH, HIDDEN, theory_href
+from ui.theory_content import COMPARISON, SOURCES_ANCHOR, TOPICS, WICK_THEOREM, TheoryTopic
+from ui.topic_sections import sources_section, table_of_contents, topic_section
 
 INTRO = (
     "Veškerá podrobná vysvětlení ke 2. stránce na jednom místě: co jednotlivé pojmy znamenají, proč jednotlivé "
@@ -38,87 +30,17 @@ def build_theory_page() -> html.Div:
             _back_link(),
             html.H1("Teorie Monte Carla na GBS krok za krokem"),
             html.P(INTRO, className="lead"),
-            _table_of_contents(),
-            *[_topic_section(number, topic) for number, topic in enumerate(TOPICS, start=1)],
-            _sources_section(),
+            table_of_contents(TOPICS, theory_href, SOURCES_ANCHOR),
+            *[topic_section(number, topic, _illustrations(topic)) for number, topic in enumerate(TOPICS, start=1)],
+            sources_section(TOPICS, SOURCES_ANCHOR),
             _back_link(),
         ],
     )
 
 
-def _table_of_contents() -> html.Nav:
-    return html.Nav(
-        className="card toc",
-        children=[
-            html.H2("Obsah"),
-            html.Ol([html.Li(dcc.Link(topic.title, href=theory_href(topic.anchor))) for topic in TOPICS]),
-            dcc.Link("Všechny zdroje – česky i původní články →", href=theory_href(SOURCES_ANCHOR),
-                     className="back-link"),
-        ],
-    )
-
-
-def _topic_section(number: int, topic: TheoryTopic) -> html.Section:
-    return html.Section(
-        id=topic.anchor,
-        className="card step theory-section",
-        children=[
-            html.H2([html.Span(str(number), className="step-number"), topic.title]),
-            html.Div(className="in-short", children=[
-                html.Strong("V kostce: "), dcc.Markdown(topic.in_short, mathjax=True),
-            ]),
-            dcc.Markdown(topic.explanation, mathjax=True),
-            *_illustrations(topic),
-            *_related_caveats(topic),
-            html.H3("Kde číst dál"),
-            _markdown_list([_reading_item(reading) for reading in topic.further_reading]),
-        ],
-    )
-
-
-def _sources_section() -> html.Section:
-    sources = all_sources(TOPICS)
-    return html.Section(
-        id=SOURCES_ANCHOR,
-        className="card step theory-section",
-        children=[
-            html.H2("Všechny zdroje"),
-            html.P("Každý zdroj, na který se stránka odkazuje, na jednom místě.", className="hint"),
-            html.H3("V češtině"),
-            _markdown_list(_source_items([source for source in sources if source.czech])),
-            html.H3("Původní články a další literatura"),
-            _markdown_list(_source_items([source for source in sources if not source.czech])),
-        ],
-    )
-
-
-def _reading_item(reading: Reading) -> str:
-    note = f" – {reading.note}" if reading.note else ""
-    return f"- {reading.source.citation}{note}."
-
-
-def _source_items(sources: Sequence[Source]) -> List[str]:
-    return [f"- {source.citation}." for source in sources]
-
-
-def _markdown_list(items: Sequence[str]) -> dcc.Markdown:
-    return dcc.Markdown("\n".join(items), mathjax=True, link_target="_blank")
-
-
-def _illustrations(topic: TheoryTopic) -> List:
+def _illustrations(topic: TheoryTopic) -> List[html.Div]:
     build_illustration = ILLUSTRATIONS.get(topic.anchor)
     return [build_illustration()] if build_illustration else []
-
-
-def _related_caveats(topic: TheoryTopic) -> List:
-    if not topic.related_caveats:
-        return []
-    links: List = []
-    for caveat in topic.related_caveats:
-        if links:
-            links.append(", ")
-        links.append(dcc.Link(caveat.title, href=caveat_href(caveat.anchor)))
-    return [html.P(className="hint", children=["Související háčky: ", *links])]
 
 
 def _wick_table() -> html.Div:
