@@ -54,6 +54,7 @@ def build_portfolio_page() -> html.Div:
     return html.Div(
         id=ids.PORTFOLIO_PAGE,
         className="page",
+        style=HIDDEN,
         children=[
             html.Aside(className="sidebar", children=_simulation_parameters()),
             html.Main(

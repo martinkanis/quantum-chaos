@@ -223,3 +223,13 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 .theory-section th { white-space: normal; vertical-align: bottom; }
 .theory-section th:first-child, .theory-section td:first-child { text-align: left; }
 .theory-section pre { background: var(--surface-muted); border-radius: 6px; padding: 10px 14px; overflow-x: auto; }
+
+.nav-group-label { align-self: center; margin-left: 12px; color: var(--text-muted); font-size: 0.85rem; white-space: nowrap; }
+.breadcrumb { padding: 8px 20px; font-size: 0.85rem; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--surface); }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-current { color: var(--text); }
+.topic-section h3 { margin: 18px 0 6px; }
+.topic-section li { margin-bottom: 10px; color: var(--text-muted); }
+.topic-page-link { font-weight: 600; color: var(--accent); text-decoration: none; }
+@media (max-width: 800px) { .breadcrumb { padding: 8px 16px; } }

@@ -6,7 +6,9 @@ from dash import Dash, Input, Output, dcc, html
 
 from ui import ids
 
-PORTFOLIO_PATH = "/"
+TOPICS_PATH = "/"
+ACADEMY_PATH = "/quantum-academy"
+PORTFOLIO_PATH = "/klasicke-monte-carlo"
 GBS_PATH = "/gbs"
 CAVEATS_PATH = "/gbs/hacky"
 THEORY_PATH = "/gbs/teorie"
@@ -18,9 +20,22 @@ HIDDEN = {"display": "none"}
 ACTIVE_LINK_CLASS = "nav-link active"
 LINK_CLASS = "nav-link"
 
-PAGE_IDS = (ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE)
-NAV_LINK_IDS = (ids.NAV_PORTFOLIO_LINK, ids.NAV_GBS_LINK, ids.NAV_ADVANTAGE_LINK)
+PAGE_IDS = (
+    ids.TOPICS_PAGE,
+    ids.ACADEMY_PAGE,
+    ids.PORTFOLIO_PAGE,
+    ids.GBS_PAGE,
+    ids.CAVEATS_PAGE,
+    ids.THEORY_PAGE,
+    ids.ADVANTAGE_PAGE,
+    ids.GUIDE_PAGE,
+)
+NAV_LINK_IDS = (
+    ids.NAV_TOPICS_LINK, ids.NAV_ACADEMY_LINK, ids.NAV_PORTFOLIO_LINK, ids.NAV_GBS_LINK, ids.NAV_ADVANTAGE_LINK,
+)
 PAGE_BY_PATH = {
+    TOPICS_PATH: ids.TOPICS_PAGE,
+    ACADEMY_PATH: ids.ACADEMY_PAGE,
     PORTFOLIO_PATH: ids.PORTFOLIO_PAGE,
     GBS_PATH: ids.GBS_PAGE,
     CAVEATS_PATH: ids.CAVEATS_PAGE,
@@ -29,6 +44,8 @@ PAGE_BY_PATH = {
     GUIDE_PATH: ids.GUIDE_PAGE,
 }
 ACTIVE_LINK_BY_PAGE = {
+    ids.TOPICS_PAGE: ids.NAV_TOPICS_LINK,
+    ids.ACADEMY_PAGE: ids.NAV_ACADEMY_LINK,
     ids.PORTFOLIO_PAGE: ids.NAV_PORTFOLIO_LINK,
     ids.GBS_PAGE: ids.NAV_GBS_LINK,
     ids.CAVEATS_PAGE: ids.NAV_GBS_LINK,
@@ -84,6 +101,9 @@ def build_navigation() -> html.Nav:
     return html.Nav(
         className="top-nav",
         children=[
+            dcc.Link("Témata", href=TOPICS_PATH, id=ids.NAV_TOPICS_LINK, className=LINK_CLASS),
+            dcc.Link("Quantum Academy", href=ACADEMY_PATH, id=ids.NAV_ACADEMY_LINK, className=LINK_CLASS),
+            html.Span("Monte Carlo:", className="nav-group-label"),
             dcc.Link("1 · Klasické Monte Carlo", href=PORTFOLIO_PATH, id=ids.NAV_PORTFOLIO_LINK, className=LINK_CLASS),
             dcc.Link("2 · Monte Carlo na GBS", href=GBS_PATH, id=ids.NAV_GBS_LINK, className=LINK_CLASS),
             dcc.Link("3 · Výhoda GBS", href=ADVANTAGE_PATH, id=ids.NAV_ADVANTAGE_LINK, className=LINK_CLASS),
@@ -102,7 +122,7 @@ def register_navigation_callbacks(app: Dash) -> None:
 
 def show_page(pathname: str) -> Tuple:
     """All pages stay mounted and are only hidden, so forms and results survive switching pages."""
-    page = PAGE_BY_PATH.get(pathname, ids.PORTFOLIO_PAGE)
+    page = PAGE_BY_PATH.get(pathname, ids.TOPICS_PAGE)
     styles = tuple(VISIBLE if page_id == page else HIDDEN for page_id in PAGE_IDS)
     active_link = ACTIVE_LINK_BY_PAGE[page]
     link_classes = tuple(ACTIVE_LINK_CLASS if link_id == active_link else LINK_CLASS for link_id in NAV_LINK_IDS)

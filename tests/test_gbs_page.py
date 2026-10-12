@@ -77,7 +77,7 @@ def test_navigace_ukaze_prave_jednu_stranku_podle_adresy():
     assert visible_pages(GBS_PATH) == [ids.GBS_PAGE]
     assert visible_pages(CAVEATS_PATH) == [ids.CAVEATS_PAGE]
     assert visible_pages(THEORY_PATH) == [ids.THEORY_PAGE]
-    assert visible_pages("/neexistuje") == [ids.PORTFOLIO_PAGE]
+    assert visible_pages("/neexistuje") == [ids.TOPICS_PAGE]
 
 
 def test_podstranky_gbs_zvyrazni_v_navigaci_gbs():
