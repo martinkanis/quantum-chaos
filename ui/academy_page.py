@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Tuple
 
-from dash import html
+from dash import dcc, html
 
 from ui import ids
 from ui.advantage_content import QISKIT_DOCUMENTATION
@@ -44,6 +44,8 @@ class AcademySection:
     title: str
     links: Tuple[AcademyLink, ...] = ()
     sources: Tuple[Source, ...] = ()
+    tldr: str = ""
+    """Optional Markdown summary shown above the links."""
 
 
 ACADEMY_SECTIONS: Tuple[AcademySection, ...] = (
@@ -83,6 +85,52 @@ ACADEMY_SECTIONS: Tuple[AcademySection, ...] = (
         "Software",
         sources=(QISKIT_DOCUMENTATION, STRAWBERRY_FIELDS, WALRUS_HAFNIAN),
     ),
+    AcademySection(
+        "Platformy pro kvantové algoritmy: Classiq a CUDA-Q",
+        tldr=(
+            "**Classiq** je vysokoúrovňový jazyk Qmod s Python SDK: popíšeš, *co* má obvod dělat, a platforma ho "
+            "sama sestaví (syntéza obvodu). Jeho veřejná knihovna (licence MIT) má hotové finanční příklady – "
+            "třeba výpočet VaR iterativní kvantovou amplitudovou estimací (IQAE), tedy hradlovou cestu z rešerše. "
+            "Háček: ke spouštění je potřeba účet a přístup je teď jen na pozvánku; kód ale jde volně číst.\n\n"
+            "**CUDA-Q** od NVIDIA je otevřený (Apache 2.0) programovací model pro hybridní výpočty CPU + GPU + "
+            "kvantový procesor v Pythonu i C++ (`pip install cudaq`). Nabízí rychlé simulátory – akcelerované "
+            "na GPU v Linuxu, na Macu s Apple Silicon běží na CPU – a napojení na reálné přístroje včetně "
+            "fotonického boson sampleru ORCA. Pro tuto aplikaci je zajímavý hlavně jako cesta k fotonickému "
+            "hardwaru a k velkým simulacím."
+        ),
+        links=(
+            AcademyLink(
+                "Classiq Library", "https://github.com/Classiq/classiq-library",
+                "Sbírka algoritmů, aplikací a tutoriálů v Qmod a Pythonu (složky algorithms, applications, "
+                "tutorials, functions), notebooky .ipynb i modely .qmod.",
+            ),
+            AcademyLink(
+                "Classiq: finanční aplikace", "https://github.com/Classiq/classiq-library/tree/main/applications/finance",
+                "Oceňování opcí (option_pricing, autocallable_options, rainbow_options), value_at_risk "
+                "a optimalizace portfolia – dobré čtení ke kapitole o hradlovém kvantovém Monte Carlu v rešerši.",
+            ),
+            AcademyLink(
+                "Classiq: registrace a instalace",
+                "https://docs.classiq.io/latest/classiq_101/registration_installations/",
+                "Jak získat účet a nainstalovat SDK (`pip install classiq`); přístup je podle dokumentace "
+                "jen na pozvánku a bezplatný nekomerční přístup zatím není.",
+            ),
+            AcademyLink(
+                "CUDA-Q: dokumentace", "https://nvidia.github.io/cuda-quantum/latest/",
+                "Rychlý start, simulátory (stavový vektor, tensor networks, šumové simulace) a seznam "
+                "podporovaných kvantových procesorů a cloudů.",
+            ),
+            AcademyLink(
+                "CUDA-Q: kód na GitHubu", "https://github.com/NVIDIA/cuda-quantum",
+                "Zdrojový kód pod licencí Apache 2.0.",
+            ),
+            AcademyLink(
+                "CUDA-Q a reálný hardware",
+                "https://nvidia.github.io/cuda-quantum/latest/using/examples/hardware_providers.html",
+                "Příklady připojení k poskytovatelům, mj. k fotonickému boson sampleru ORCA s časovými biny.",
+            ),
+        ),
+    ),
 )
 
 
@@ -103,5 +151,15 @@ def _section(section: AcademySection) -> html.Section:
     items = [f"- [{link.title}]({link.url}) – {link.description}" for link in section.links]
     return html.Section(
         className="card theory-section",
-        children=[html.H2(section.title), markdown_list(items + source_items(section.sources))],
+        children=[
+            html.H2(section.title),
+            *_tldr(section),
+            markdown_list(items + source_items(section.sources)),
+        ],
     )
+
+
+def _tldr(section: AcademySection) -> list:
+    if not section.tldr:
+        return []
+    return [html.Div(className="tldr-box", children=[html.Strong("TL;DR"), dcc.Markdown(section.tldr)])]

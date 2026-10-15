@@ -110,3 +110,12 @@ def test_dopocet_cesty_od_nahody_k_cplex_odpovida_textu():
     )
     assert "85 %" in cost_table() and "60 %" in cost_table()
     assert build_vqe_paper_page().id == ids.VQE_PAPER_PAGE
+
+
+def test_quantum_academy_ma_classiq_a_cuda_q_s_tldr():
+    platforms = next(section for section in ACADEMY_SECTIONS if "Classiq" in section.title)
+    urls = {link.url for link in platforms.links}
+
+    assert "https://github.com/Classiq/classiq-library" in urls
+    assert "https://nvidia.github.io/cuda-quantum/latest/" in urls
+    assert "Classiq" in platforms.tldr and "CUDA-Q" in platforms.tldr
