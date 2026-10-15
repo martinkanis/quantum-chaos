@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple
+from typing import Dict, FrozenSet, Tuple
 
 from dash import Dash, Input, Output, dcc, html
 
@@ -14,6 +14,7 @@ CAVEATS_PATH = "/gbs/hacky"
 THEORY_PATH = "/gbs/teorie"
 ADVANTAGE_PATH = "/vyhoda-gbs"
 GUIDE_PATH = "/vyhoda-gbs/pruvodce"
+VQE_PAPER_PATH = "/kvantova-optimalizace/vqe-ibm-fez"
 
 VISIBLE = {"display": "block"}
 HIDDEN = {"display": "none"}
@@ -29,9 +30,19 @@ PAGE_IDS = (
     ids.THEORY_PAGE,
     ids.ADVANTAGE_PAGE,
     ids.GUIDE_PAGE,
+    ids.VQE_PAPER_PAGE,
 )
+MONTE_CARLO_PAGES = frozenset({
+    ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
+})
 NAV_LINK_IDS = (
-    ids.NAV_TOPICS_LINK, ids.NAV_ACADEMY_LINK, ids.NAV_PORTFOLIO_LINK, ids.NAV_GBS_LINK, ids.NAV_ADVANTAGE_LINK,
+    ids.NAV_TOPICS_LINK,
+    ids.NAV_MONTE_CARLO_LINK,
+    ids.NAV_OPTIMIZATION_LINK,
+    ids.NAV_ACADEMY_LINK,
+    ids.NAV_PORTFOLIO_LINK,
+    ids.NAV_GBS_LINK,
+    ids.NAV_ADVANTAGE_LINK,
 )
 PAGE_BY_PATH = {
     TOPICS_PATH: ids.TOPICS_PAGE,
@@ -42,16 +53,18 @@ PAGE_BY_PATH = {
     THEORY_PATH: ids.THEORY_PAGE,
     ADVANTAGE_PATH: ids.ADVANTAGE_PAGE,
     GUIDE_PATH: ids.GUIDE_PAGE,
+    VQE_PAPER_PATH: ids.VQE_PAPER_PAGE,
 }
-ACTIVE_LINK_BY_PAGE = {
-    ids.TOPICS_PAGE: ids.NAV_TOPICS_LINK,
-    ids.ACADEMY_PAGE: ids.NAV_ACADEMY_LINK,
-    ids.PORTFOLIO_PAGE: ids.NAV_PORTFOLIO_LINK,
-    ids.GBS_PAGE: ids.NAV_GBS_LINK,
-    ids.CAVEATS_PAGE: ids.NAV_GBS_LINK,
-    ids.THEORY_PAGE: ids.NAV_GBS_LINK,
-    ids.ADVANTAGE_PAGE: ids.NAV_ADVANTAGE_LINK,
-    ids.GUIDE_PAGE: ids.NAV_ADVANTAGE_LINK,
+ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
+    ids.TOPICS_PAGE: frozenset({ids.NAV_TOPICS_LINK}),
+    ids.ACADEMY_PAGE: frozenset({ids.NAV_ACADEMY_LINK}),
+    ids.PORTFOLIO_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_PORTFOLIO_LINK}),
+    ids.GBS_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
+    ids.CAVEATS_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
+    ids.THEORY_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
+    ids.ADVANTAGE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
+    ids.GUIDE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
+    ids.VQE_PAPER_PAGE: frozenset({ids.NAV_OPTIMIZATION_LINK}),
 }
 
 # Pages are only hidden, so the browser cannot jump to an anchor on its own. Formulas (MathJax)
@@ -97,16 +110,33 @@ def guide_href(anchor: str) -> str:
     return f"{GUIDE_PATH}#{anchor}"
 
 
-def build_navigation() -> html.Nav:
-    return html.Nav(
-        className="top-nav",
+def build_navigation() -> html.Header:
+    """Topics in the top row; the pages of the Monte Carlo topic in a second row under it."""
+    return html.Header(
+        className="site-header",
         children=[
-            dcc.Link("Témata", href=TOPICS_PATH, id=ids.NAV_TOPICS_LINK, className=LINK_CLASS),
-            dcc.Link("Quantum Academy", href=ACADEMY_PATH, id=ids.NAV_ACADEMY_LINK, className=LINK_CLASS),
-            html.Span("Monte Carlo:", className="nav-group-label"),
-            dcc.Link("1 · Klasické Monte Carlo", href=PORTFOLIO_PATH, id=ids.NAV_PORTFOLIO_LINK, className=LINK_CLASS),
-            dcc.Link("2 · Monte Carlo na GBS", href=GBS_PATH, id=ids.NAV_GBS_LINK, className=LINK_CLASS),
-            dcc.Link("3 · Výhoda GBS", href=ADVANTAGE_PATH, id=ids.NAV_ADVANTAGE_LINK, className=LINK_CLASS),
+            html.Nav(
+                className="top-nav",
+                children=[
+                    dcc.Link("Témata", href=TOPICS_PATH, id=ids.NAV_TOPICS_LINK, className=LINK_CLASS),
+                    dcc.Link("Monte Carlo", href=PORTFOLIO_PATH, id=ids.NAV_MONTE_CARLO_LINK, className=LINK_CLASS),
+                    dcc.Link(
+                        "Kvantová optimalizace", href=VQE_PAPER_PATH, id=ids.NAV_OPTIMIZATION_LINK,
+                        className=LINK_CLASS,
+                    ),
+                    dcc.Link("Quantum Academy", href=ACADEMY_PATH, id=ids.NAV_ACADEMY_LINK, className=LINK_CLASS),
+                ],
+            ),
+            html.Nav(
+                id=ids.MONTE_CARLO_SUBNAV,
+                className="sub-nav",
+                style=HIDDEN,
+                children=[
+                    dcc.Link("Klasické", href=PORTFOLIO_PATH, id=ids.NAV_PORTFOLIO_LINK, className=LINK_CLASS),
+                    dcc.Link("Na GBS", href=GBS_PATH, id=ids.NAV_GBS_LINK, className=LINK_CLASS),
+                    dcc.Link("Výhoda GBS", href=ADVANTAGE_PATH, id=ids.NAV_ADVANTAGE_LINK, className=LINK_CLASS),
+                ],
+            ),
         ],
     )
 
@@ -114,7 +144,8 @@ def build_navigation() -> html.Nav:
 def register_navigation_callbacks(app: Dash) -> None:
     app.callback(
         [Output(page_id, "style") for page_id in PAGE_IDS]
-        + [Output(link_id, "className") for link_id in NAV_LINK_IDS],
+        + [Output(link_id, "className") for link_id in NAV_LINK_IDS]
+        + [Output(ids.MONTE_CARLO_SUBNAV, "style")],
         Input(ids.URL, "pathname"),
     )(show_page)
     app.clientside_callback(SCROLL_TO_ANCHOR_JS, Input(ids.URL, "hash"), Input(ids.URL, "pathname"))
@@ -124,6 +155,7 @@ def show_page(pathname: str) -> Tuple:
     """All pages stay mounted and are only hidden, so forms and results survive switching pages."""
     page = PAGE_BY_PATH.get(pathname, ids.TOPICS_PAGE)
     styles = tuple(VISIBLE if page_id == page else HIDDEN for page_id in PAGE_IDS)
-    active_link = ACTIVE_LINK_BY_PAGE[page]
-    link_classes = tuple(ACTIVE_LINK_CLASS if link_id == active_link else LINK_CLASS for link_id in NAV_LINK_IDS)
-    return styles + link_classes
+    active_links = ACTIVE_LINKS_BY_PAGE[page]
+    link_classes = tuple(ACTIVE_LINK_CLASS if link_id in active_links else LINK_CLASS for link_id in NAV_LINK_IDS)
+    subnav_style = VISIBLE if page in MONTE_CARLO_PAGES else HIDDEN
+    return styles + link_classes + (subnav_style,)

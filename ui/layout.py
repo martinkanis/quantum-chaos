@@ -13,6 +13,7 @@ from ui.navigation import build_navigation
 from ui.portfolio_page import build_portfolio_page
 from ui.theory_page import build_theory_page
 from ui.topics_page import build_topics_page
+from ui.vqe_paper_page import build_vqe_paper_page
 
 
 def build_layout() -> html.Div:
@@ -29,5 +30,6 @@ def build_layout() -> html.Div:
             build_theory_page(),
             build_advantage_page(),
             build_guide_page(),
+            build_vqe_paper_page(),
         ]
     )

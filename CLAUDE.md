@@ -3,8 +3,10 @@
 Dash aplikace pro výuku a výzkum. Úvodní stránka Témata (`/`) řadí obsah pod témata; vedle ní je Quantum Academy
 s odkazy na materiály. Téma „Monte Carlo a modifikované Monte Carlo“ má 1. stránku klasické Monte Carlo portfolia,
 2. stránku Monte Carlo na GBS (s podstránkami Háčky a Teorie) a 3. stránku Výhoda GBS (laboratoř, pět úloh, export
-do Qiskitu, průvodce). Novou stránku zařaď do tématu v `ui/topic_catalog.py`; odtud se kreslí Témata i drobečková
-navigace.
+do Qiskitu, průvodce). Téma „Kvantová optimalizace portfolia“ má rozbory článků (zatím VQE na IBM Fez,
+arXiv:2512.22001; čísla z článku jsou data v `ui/vqe_paper_content.py`). Novou stránku zařaď do tématu
+v `ui/topic_catalog.py`; odtud se kreslí Témata i drobečková navigace. Horní lišta má témata, stránky tématu Monte Carlo
+jsou v řádku pod ní (`navigation.py`).
 Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, s odkazy na literaturu.
 
 ## Příkazy

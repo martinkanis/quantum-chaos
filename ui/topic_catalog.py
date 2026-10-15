@@ -14,6 +14,7 @@ from ui.navigation import (
     PORTFOLIO_PATH,
     THEORY_PATH,
     TOPICS_PATH,
+    VQE_PAPER_PATH,
 )
 
 TOPICS_TITLE = "Témata"
@@ -93,7 +94,23 @@ MONTE_CARLO_TOPIC = ResearchTopic(
     ),
 )
 
-RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (MONTE_CARLO_TOPIC,)
+VQE_PAPER = PageEntry(
+    ids.VQE_PAPER_PAGE, "VQE na IBM Fez (De León a kol. 2025)", VQE_PAPER_PATH,
+    "TL;DR článku o dynamické optimalizaci portfolia až 38 aktiv na 156qubitovém čipu: jak funguje VQE s opravou "
+    "ISQR, co znamená „srovnatelné s CPLEX“ a proč to není kvantová výhoda.",
+)
+
+OPTIMIZATION_TOPIC = ResearchTopic(
+    anchor="tema-kvantova-optimalizace",
+    title="Kvantová optimalizace portfolia",
+    summary=(
+        "Výběr portfolia jako hledání základního stavu Isingova hamiltoniánu (QUBO) a variační kvantové algoritmy, "
+        "které ho řeší na dnešních šumných čipech. Rozbory článků s ověřenými čísly a kritickým hodnocením."
+    ),
+    sections=(TopicSection("Rozbory článků", (VQE_PAPER,)),),
+)
+
+RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (MONTE_CARLO_TOPIC, OPTIMIZATION_TOPIC)
 
 
 def topic_href(topic: ResearchTopic) -> str:

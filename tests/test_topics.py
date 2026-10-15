@@ -1,3 +1,4 @@
+import pytest
 from dash import dcc
 
 from ui import ids
@@ -13,10 +14,13 @@ from ui.navigation import (
     PORTFOLIO_PATH,
     TOPICS_PATH,
     VISIBLE,
+    VQE_PAPER_PATH,
     show_page,
 )
-from ui.topic_catalog import MONTE_CARLO_TOPIC, RESEARCH_TOPICS, breadcrumb_trail
+from ui.topic_catalog import MONTE_CARLO_TOPIC, OPTIMIZATION_TOPIC, RESEARCH_TOPICS, breadcrumb_trail
 from ui.topics_page import build_topics_page
+from ui.vqe_paper_content import COST_COMPARISONS, cost_table, gap_closed
+from ui.vqe_paper_page import build_vqe_paper_page
 
 
 def visible_pages(pathname):
@@ -46,11 +50,12 @@ def test_uvodni_strankou_jsou_temata_a_vedle_nich_quantum_academy():
     assert active_links(ACADEMY_PATH) == [ids.NAV_ACADEMY_LINK]
 
 
-def test_tema_monte_carlo_obsahuje_vsechny_stranky_aplikace():
+def test_kazda_stranka_aplikace_patri_do_nektereho_tematu():
     topic_pages = {page.page_id for topic in RESEARCH_TOPICS for page in topic.pages}
 
     assert topic_pages == set(PAGE_IDS) - {ids.TOPICS_PAGE, ids.ACADEMY_PAGE}
-    assert all(PAGE_BY_PATH[page.path] == page.page_id for page in MONTE_CARLO_TOPIC.pages)
+    assert all(PAGE_BY_PATH[page.path] == page.page_id for topic in RESEARCH_TOPICS for page in topic.pages)
+    assert ids.GUIDE_PAGE in {page.page_id for page in MONTE_CARLO_TOPIC.pages}
 
 
 def test_stranka_temat_odkazuje_na_kazdou_stranku_tematu():
@@ -78,3 +83,30 @@ def test_quantum_academy_odkazuje_na_quantum_country_looking_glass_a_shtetl_opti
         "https://quantum.country", "https://www.youtube.com/@LookingGlassUniverse", "https://scottaaronson.blog",
     } <= urls
     assert build_academy_page().id == ids.ACADEMY_PAGE
+
+
+def test_monte_carlo_je_v_horni_liste_a_jeho_stranky_v_radku_pod_nim():
+    assert active_links(GUIDE_PATH) == [ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK]
+    assert show_page(PORTFOLIO_PATH)[-1] == VISIBLE
+    assert show_page(VQE_PAPER_PATH)[-1] != VISIBLE
+    assert active_links(VQE_PAPER_PATH) == [ids.NAV_OPTIMIZATION_LINK]
+
+
+def test_clanek_o_vqe_je_dalsim_tematem_s_drobeckovou_navigaci():
+    assert visible_pages(VQE_PAPER_PATH) == [ids.VQE_PAPER_PAGE]
+    assert [label for label, _ in breadcrumb_trail(ids.VQE_PAPER_PAGE)][:2] == ["Témata", OPTIMIZATION_TOPIC.title]
+
+
+def test_dopocet_cesty_od_nahody_k_cplex_odpovida_textu():
+    nine, nine_vqec, thirty_eight = COST_COMPARISONS
+
+    assert gap_closed(nine.random_cost, nine.raw_cost, nine.cplex_cost) == pytest.approx(0.36, abs=0.01)
+    assert gap_closed(nine.random_cost, nine.isqr_cost, nine.cplex_cost) == pytest.approx(0.85, abs=0.01)
+    assert gap_closed(thirty_eight.random_cost, thirty_eight.raw_cost, thirty_eight.cplex_cost) == pytest.approx(
+        0.49, abs=0.01
+    )
+    assert gap_closed(thirty_eight.random_cost, thirty_eight.isqr_cost, thirty_eight.cplex_cost) == pytest.approx(
+        0.60, abs=0.01
+    )
+    assert "85 %" in cost_table() and "60 %" in cost_table()
+    assert build_vqe_paper_page().id == ids.VQE_PAPER_PAGE

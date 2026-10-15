@@ -81,8 +81,8 @@ def test_navigace_ukaze_prave_jednu_stranku_podle_adresy():
 
 
 def test_podstranky_gbs_zvyrazni_v_navigaci_gbs():
-    assert active_links(CAVEATS_PATH) == [ids.NAV_GBS_LINK]
-    assert active_links(THEORY_PATH) == [ids.NAV_GBS_LINK]
+    assert active_links(CAVEATS_PATH) == [ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK]
+    assert active_links(THEORY_PATH) == [ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK]
 
 
 def test_kazdy_hacek_ma_unikatni_kotvu_a_vlastni_sekci():
