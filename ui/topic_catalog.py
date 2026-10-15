@@ -11,6 +11,7 @@ from ui.navigation import (
     CAVEATS_PATH,
     GBS_PATH,
     GUIDE_PATH,
+    LITERATURE_REVIEW_PATH,
     PORTFOLIO_PATH,
     THEORY_PATH,
     TOPICS_PATH,
@@ -120,7 +121,25 @@ OPTIMIZATION_TOPIC = ResearchTopic(
     sections=(TopicSection("Rozbory článků", (VQE_PAPER,)),),
 )
 
-RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (MONTE_CARLO_TOPIC, OPTIMIZATION_TOPIC)
+
+LITERATURE_REVIEW = PageEntry(
+    ids.LITERATURE_REVIEW_PAGE, "Rešerše: GBS pro odhad finančního rizika", LITERATURE_REVIEW_PATH,
+    "TL;DR a přehled literatury, patentů, hardwaru a kritiky: co je o Gaussian Boson Samplingu jako náhradě "
+    "Monte Carla ve financích doložené, co ne a kde jsou otevřené otázky. Na konci kontrolní otázky.",
+)
+
+LITERATURE_REVIEW_TOPIC = ResearchTopic(
+    anchor="tema-reserse-gbs",
+    title="Rešerše: Gaussian Boson Sampling a finanční riziko",
+    summary=(
+        "Shrnutí rešerše k otázce, jestli může fotonický Gaussian Boson Sampler nahradit Monte Carlo při odhadu "
+        "finančního rizika: případ Jyske Bank a Qpurpose, teorie, konkurenční výzkum, hardware a kritická "
+        "literatura. Začni krátkým TL;DR, podrobnosti jsou v kapitolách."
+    ),
+    sections=(TopicSection("Přehled literatury", (LITERATURE_REVIEW,)),),
+)
+
+RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, OPTIMIZATION_TOPIC)
 
 
 def study_path(topic: ResearchTopic) -> Tuple[PageEntry, ...]:

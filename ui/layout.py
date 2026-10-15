@@ -9,6 +9,7 @@ from ui.breadcrumbs import build_breadcrumb
 from ui.caveats_page import build_caveats_page
 from ui.gbs_page import build_gbs_page
 from ui.guide_page import build_guide_page
+from ui.literature_review_page import build_literature_review_page
 from ui.navigation import build_navigation
 from ui.portfolio_page import build_portfolio_page
 from ui.study_progress import build_progress_store, build_study_pager
@@ -33,6 +34,7 @@ def build_layout() -> html.Div:
             build_advantage_page(),
             build_guide_page(),
             build_vqe_paper_page(),
+            build_literature_review_page(),
             build_study_pager(),
         ]
     )

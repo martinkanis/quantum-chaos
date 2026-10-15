@@ -21,9 +21,14 @@ def table_of_contents(topics: Sequence[TheoryTopic], href: Callable[[str], str],
             html.Ol([
                 toc_item(topic.title, href(topic.anchor), topic_minutes) for topic, topic_minutes in zip(topics, minutes)
             ]),
-            dcc.Link("Všechny zdroje – česky i původní články →", href=href(sources_anchor), className="back-link"),
+            dcc.Link(_sources_link_label(topics), href=href(sources_anchor), className="back-link"),
         ],
     )
+
+
+def _sources_link_label(topics: Sequence[TheoryTopic]) -> str:
+    has_czech_source = any(source.czech for source in all_sources(topics))
+    return "Všechny zdroje – česky i původní články →" if has_czech_source else "Všechny zdroje →"
 
 
 def toc_item(title: str, href: str, minutes: int) -> html.Li:
@@ -60,12 +65,16 @@ def sources_section(topics: Sequence[TheoryTopic], anchor: str) -> html.Section:
         children=[
             html.H2("Všechny zdroje"),
             html.P("Každý zdroj, na který se stránka odkazuje, na jednom místě.", className="hint"),
-            html.H3("V češtině"),
-            markdown_list(source_items([source for source in sources if source.czech])),
-            html.H3("Původní články a další literatura"),
-            markdown_list(source_items([source for source in sources if not source.czech])),
+            *_source_group("V češtině", [source for source in sources if source.czech]),
+            *_source_group("Původní články a další literatura", [source for source in sources if not source.czech]),
         ],
     )
+
+
+def _source_group(title: str, sources: Sequence[Source]) -> List:
+    if not sources:
+        return []
+    return [html.H3(title), markdown_list(source_items(sources))]
 
 
 def source_items(sources: Sequence[Source]) -> List[str]:

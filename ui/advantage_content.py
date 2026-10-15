@@ -34,7 +34,7 @@ AARHUS_TALK = Source(
     "ellegaard-andersen)"
 )
 ANGUITA_MONTE_CARLO_ACCELERATOR = Source(
-    "Anguita, Roelink, Marzban, Briels, Filippi, Renema: *Experimental demonstration of boson sampling as "
+    "Correa Anguita, Roelink, Marzban, Briels, Filippi, Renema: *Experimental demonstration of boson sampling as "
     "a hardware accelerator for Monte Carlo integration*, [arXiv:2509.25404](https://arxiv.org/abs/2509.25404) "
     "(2025)"
 )

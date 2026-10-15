@@ -159,7 +159,8 @@ ANDERSEN_SHAN_ADVANTAGE = Source(
     "[arXiv:2502.19362](https://arxiv.org/abs/2502.19362) (2025)"
 )
 ARRAZOLA_REBENTROST_WEEDBROOK = Source(
-    "Arrazola, Rebentrost, Weedbrook: *Quantum supremacy and high-dimensional integration*, arXiv (2017)"
+    "Arrazola, Rebentrost, Weedbrook: *Quantum supremacy and high-dimensional integration*, "
+    "[arXiv:1712.07288](https://arxiv.org/abs/1712.07288) (2017)"
 )
 
 
@@ -174,7 +175,7 @@ DANISH_QUANTUM_USE_CASES = Source(
 )
 SDU_QUANTUM_FINANCE = Source(
     "Centre for Quantum Mathematics, SDU: [Quantum Mathematics for Finance: QM, Jyske Bank and Qpurpose]"
-    "(https://www.sdu.dk/en/forskning/qm/quantum-computing/quantum-in-finance)"
+    "(https://www.sdu.dk/en/forskning/qm/research/quantum-computing/quantum-in-finance)"
 )
 OH_CLASSICAL_SIMULATION = Source(
     "Oh, C., Liu, M., Alexeev, Y., Fefferman, B., Jiang, L.: *Classical algorithm for simulating experimental "
