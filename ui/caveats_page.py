@@ -11,6 +11,8 @@ from ui import ids
 from ui.caveats_content import CAVEATS, DISCARDED_SHOTS, REFERENCES_MARKDOWN, Caveat
 from ui.gbs_page import DEFAULT_SQUEEZING_STRENGTH, default_portfolio, squeezing_strength_grid
 from ui.navigation import GBS_PATH, HIDDEN, caveat_href
+from ui.reading_time import reading_minutes, reading_time_label
+from ui.topic_sections import toc_item
 
 INTRO = (
     "Rozvedení omezení z 2. stránky. U každého háčku: co přesně znamená, proč vzniká, konkrétní příklad "
@@ -36,11 +38,16 @@ def build_caveats_page() -> html.Div:
 
 
 def _table_of_contents() -> html.Nav:
+    minutes = [reading_minutes([caveat.summary, caveat.explanation, caveat.remedies]) for caveat in CAVEATS]
     return html.Nav(
         className="card toc",
         children=[
             html.H2("Obsah"),
-            html.Ol([html.Li(dcc.Link(caveat.title, href=caveat_href(caveat.anchor))) for caveat in CAVEATS]),
+            html.P(f"Celkem asi {reading_time_label(sum(minutes))}", className="hint small"),
+            html.Ol([
+                toc_item(caveat.title, caveat_href(caveat.anchor), caveat_minutes)
+                for caveat, caveat_minutes in zip(CAVEATS, minutes)
+            ]),
         ],
     )
 

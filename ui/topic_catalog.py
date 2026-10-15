@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import Collection, List, Optional, Tuple
 
 from ui import ids
 from ui.navigation import (
@@ -46,6 +46,16 @@ class ResearchTopic:
     @property
     def pages(self) -> Tuple[PageEntry, ...]:
         return tuple(page for section in self.sections for page in section.pages)
+
+
+@dataclass(frozen=True)
+class StudyStep:
+    topic: ResearchTopic
+    number: int
+    """1-based position of the page in the recommended study order of its topic."""
+    total: int
+    previous: Optional[PageEntry]
+    next: Optional[PageEntry]
 
 
 Crumb = Tuple[str, Optional[str]]
@@ -111,6 +121,41 @@ OPTIMIZATION_TOPIC = ResearchTopic(
 )
 
 RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (MONTE_CARLO_TOPIC, OPTIMIZATION_TOPIC)
+
+
+def study_path(topic: ResearchTopic) -> Tuple[PageEntry, ...]:
+    """Recommended study order: every main page directly followed by the subpages that explain it."""
+    ordered: List[PageEntry] = []
+    for page in topic.pages:
+        if page.parent_page_id is None:
+            ordered.append(page)
+            ordered.extend(subpage for subpage in topic.pages if subpage.parent_page_id == page.page_id)
+    return tuple(ordered)
+
+
+def study_step(page_id: str) -> Optional[StudyStep]:
+    for topic in RESEARCH_TOPICS:
+        path = study_path(topic)
+        page_ids = [page.page_id for page in path]
+        if page_id not in page_ids:
+            continue
+        index = page_ids.index(page_id)
+        return StudyStep(
+            topic=topic,
+            number=index + 1,
+            total=len(path),
+            previous=path[index - 1] if index > 0 else None,
+            next=path[index + 1] if index + 1 < len(path) else None,
+        )
+    return None
+
+
+def next_unstudied_page(topic: ResearchTopic, studied_page_ids: Collection[str]) -> Optional[PageEntry]:
+    return next((page for page in study_path(topic) if page.page_id not in studied_page_ids), None)
+
+
+def section_title(topic: ResearchTopic, page_id: str) -> str:
+    return next(section.title for section in topic.sections if any(page.page_id == page_id for page in section.pages))
 
 
 def topic_href(topic: ResearchTopic) -> str:

@@ -16,7 +16,8 @@ ADVANTAGE_PATH = "/vyhoda-gbs"
 GUIDE_PATH = "/vyhoda-gbs/pruvodce"
 VQE_PAPER_PATH = "/kvantova-optimalizace/vqe-ibm-fez"
 
-VISIBLE = {"display": "block"}
+VISIBLE: dict = {}
+"""No inline display, so the stylesheet decides how a shown element is laid out (reading pages use a grid)."""
 HIDDEN = {"display": "none"}
 ACTIVE_LINK_CLASS = "nav-link active"
 LINK_CLASS = "nav-link"

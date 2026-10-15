@@ -7,18 +7,31 @@ from typing import Callable, List, Sequence
 from dash import dcc, html
 
 from ui.navigation import caveat_href
+from ui.reading_time import reading_minutes, reading_time_label
 from ui.theory_content import Reading, Source, TheoryTopic, all_sources
 
 
 def table_of_contents(topics: Sequence[TheoryTopic], href: Callable[[str], str], sources_anchor: str) -> html.Nav:
+    minutes = [topic_reading_minutes(topic) for topic in topics]
     return html.Nav(
         className="card toc",
         children=[
             html.H2("Obsah"),
-            html.Ol([html.Li(dcc.Link(topic.title, href=href(topic.anchor))) for topic in topics]),
+            html.P(f"Celkem asi {reading_time_label(sum(minutes))}", className="hint small"),
+            html.Ol([
+                toc_item(topic.title, href(topic.anchor), topic_minutes) for topic, topic_minutes in zip(topics, minutes)
+            ]),
             dcc.Link("Všechny zdroje – česky i původní články →", href=href(sources_anchor), className="back-link"),
         ],
     )
+
+
+def toc_item(title: str, href: str, minutes: int) -> html.Li:
+    return html.Li([dcc.Link(title, href=href), html.Span(f" · {minutes} min", className="toc-minutes")])
+
+
+def topic_reading_minutes(topic: TheoryTopic) -> int:
+    return reading_minutes([topic.in_short, topic.explanation])
 
 
 def topic_section(number: int, topic: TheoryTopic, illustrations: Sequence[html.Div] = ()) -> html.Section:
