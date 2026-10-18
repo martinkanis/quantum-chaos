@@ -233,10 +233,10 @@ HYPOTHESIS = TheoryTopic(
         "vypadají. Spojení obojího by mohlo říct, kde ve financích GBS dává smysl (vlastní hypotéza)."
     ),
     explanation=r"""
-**Co víme.** Andersen a Shan zavádějí dva odhady z výstřelů GBS, GBS-P a GBS-I. Pro GBS-I dokazují, že existují
-úlohy, kde potřebuje exponenciálně méně vzorků než klasické Monte Carlo; výhoda ale neplatí pro všechny úlohy.
-V navazujícím článku odhadují, pro jaký podíl náhodných úloh má GBS-I výhodu, a ten závisí na rozměru a stupni
-úlohy. Na 2. stránce i zde počítáme s odhadem GBS-P. GBS přitom matici zpracovává přes její rozklad na vlastní
+**Co víme.** Andersen a Shan zavádějí dva odhady z výstřelů GBS, GBS-P a GBS-I, a dokazují, že na otevřené
+neprázdné podmnožině gaussovských úloh potřebují exponenciálně méně vzorků než klasické Monte Carlo – ne na
+všech. V navazujícím článku odhadují pro oba odhady, pro jaký podíl náhodných úloh výhoda platí; u GBS-P podíl
+s rozměrem klesá a se stupněm roste. Na 2. stránce i zde počítáme s odhadem GBS-P. GBS přitom matici zpracovává přes její rozklad na vlastní
 čísla (síly stlačení) a vlastní vektory (interferometr).
 
 **Co víme o maticích akcií.** Spektrum skutečné korelační matice má jedno velké vlastní číslo (tržní mód,
@@ -248,7 +248,7 @@ a poloha vah portfolia vůči tržnímu módu. Teorie náhodných matic dává r
 by šlo výhodu GBS měřit systematicky – místo náhodně vybraných matic.
 """,
     further_reading=(
-        Reading(ANDERSEN_SHAN_ADVANTAGE, "pro jaký podíl úloh má GBS-I výhodu"),
+        Reading(ANDERSEN_SHAN_ADVANTAGE, "pro jaký podíl úloh mají GBS-P a GBS-I výhodu"),
         Reading(ANDERSEN_SHAN_EXPECTATIONS, "odhady GBS-P a GBS-I a jejich rozptyly"),
         Reading(LALOUX_1999, "jak vypadá spektrum korelační matice akcií"),
     ),
@@ -339,7 +339,7 @@ užitečný (negativní) výsledek.
     further_reading=(
         Reading(BULMER_BOUNDARY, "hranice kvantové výhody GBS"),
         Reading(QUESADA_SPEEDUP, "rychlejší klasická simulace GBS"),
-        Reading(ANDERSEN_SHAN_ADVANTAGE, "pro jaký podíl úloh má GBS-I výhodu"),
+        Reading(ANDERSEN_SHAN_ADVANTAGE, "pro jaký podíl úloh mají GBS-P a GBS-I výhodu"),
     ),
     related_caveats=(CLASSICAL_SIMULATION,),
 )
