@@ -18,7 +18,7 @@ QPURPOSE_PATH = "/vyhoda-gbs/qpurpose"
 VQE_PAPER_PATH = "/kvantova-optimalizace/vqe-ibm-fez"
 LITERATURE_REVIEW_PATH = "/reserse-gbs-financni-riziko"
 RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
-RESEARCH_DIRECTIONS_PATH = "/vyzkumne-smery/nahodne-matice-a-gbs"
+RANDOM_MATRIX_GBS_PATH = "/vyzkumne-smery/nahodne-matice-a-gbs"
 
 VISIBLE: dict = {}
 """No inline display, so the stylesheet decides how a shown element is laid out (reading pages use a grid)."""
@@ -39,7 +39,7 @@ PAGE_IDS = (
     ids.VQE_PAPER_PAGE,
     ids.LITERATURE_REVIEW_PAGE,
     ids.RANDOM_MATRIX_PAGE,
-    ids.RESEARCH_DIRECTIONS_PAGE,
+    ids.RANDOM_MATRIX_GBS_PAGE,
 )
 MONTE_CARLO_PAGES = frozenset({
     ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
@@ -70,7 +70,7 @@ PAGE_BY_PATH = {
     VQE_PAPER_PATH: ids.VQE_PAPER_PAGE,
     LITERATURE_REVIEW_PATH: ids.LITERATURE_REVIEW_PAGE,
     RANDOM_MATRIX_PATH: ids.RANDOM_MATRIX_PAGE,
-    RESEARCH_DIRECTIONS_PATH: ids.RESEARCH_DIRECTIONS_PAGE,
+    RANDOM_MATRIX_GBS_PATH: ids.RANDOM_MATRIX_GBS_PAGE,
 }
 ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.TOPICS_PAGE: frozenset({ids.NAV_TOPICS_LINK}),
@@ -85,7 +85,7 @@ ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.VQE_PAPER_PAGE: frozenset({ids.NAV_OPTIMIZATION_LINK}),
     ids.LITERATURE_REVIEW_PAGE: frozenset({ids.NAV_LITERATURE_REVIEW_LINK}),
     ids.RANDOM_MATRIX_PAGE: frozenset({ids.NAV_RANDOM_MATRIX_LINK}),
-    ids.RESEARCH_DIRECTIONS_PAGE: frozenset({ids.NAV_RESEARCH_DIRECTIONS_LINK}),
+    ids.RANDOM_MATRIX_GBS_PAGE: frozenset({ids.NAV_RESEARCH_DIRECTIONS_LINK}),
 }
 
 # Pages are only hidden, so the browser cannot jump to an anchor on its own. Formulas (MathJax)
@@ -143,8 +143,8 @@ def random_matrix_href(anchor: str) -> str:
     return f"{RANDOM_MATRIX_PATH}#{anchor}"
 
 
-def research_directions_href(anchor: str) -> str:
-    return f"{RESEARCH_DIRECTIONS_PATH}#{anchor}"
+def random_matrix_gbs_href(anchor: str) -> str:
+    return f"{RANDOM_MATRIX_GBS_PATH}#{anchor}"
 
 
 def build_navigation() -> html.Header:
@@ -170,7 +170,7 @@ def build_navigation() -> html.Header:
                         className=LINK_CLASS,
                     ),
                     dcc.Link(
-                        "Výzkumné směry", href=RESEARCH_DIRECTIONS_PATH, id=ids.NAV_RESEARCH_DIRECTIONS_LINK,
+                        "Výzkumné směry", href=RANDOM_MATRIX_GBS_PATH, id=ids.NAV_RESEARCH_DIRECTIONS_LINK,
                         className=LINK_CLASS,
                     ),
                     dcc.Link("Quantum Academy", href=ACADEMY_PATH, id=ids.NAV_ACADEMY_LINK, className=LINK_CLASS),

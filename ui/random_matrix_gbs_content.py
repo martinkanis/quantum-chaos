@@ -1,4 +1,4 @@
-"""Texts of the research directions page: our hypothesis that random matrix spectra decide the GBS advantage."""
+"""Texts of the random matrices and GBS page: our hypothesis that the spectrum decides the GBS advantage."""
 
 from __future__ import annotations
 

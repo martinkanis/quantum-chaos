@@ -15,7 +15,7 @@ from ui.navigation import (
     PORTFOLIO_PATH,
     QPURPOSE_PATH,
     RANDOM_MATRIX_PATH,
-    RESEARCH_DIRECTIONS_PATH,
+    RANDOM_MATRIX_GBS_PATH,
     THEORY_PATH,
     TOPICS_PATH,
     VQE_PAPER_PATH,
@@ -166,8 +166,8 @@ RANDOM_MATRIX_TOPIC = ResearchTopic(
     sections=(TopicSection("Laboratoř a výklad", (RANDOM_MATRIX,)),),
 )
 
-RANDOM_MATRIX_GBS_BRIDGE = PageEntry(
-    ids.RESEARCH_DIRECTIONS_PAGE, "Náhodné matice a GBS: hypotéza", RESEARCH_DIRECTIONS_PATH,
+RANDOM_MATRIX_GBS = PageEntry(
+    ids.RANDOM_MATRIX_GBS_PAGE, "Náhodné matice a GBS: hypotéza", RANDOM_MATRIX_GBS_PATH,
     "Vlastní námět: rozhoduje o výhodě GBS tvar spektra korelační matice? První výpočet na šesti aktivech, "
     "háček se šumem v odhadnuté matici a pět otevřených otázek.",
 )
@@ -179,7 +179,7 @@ RESEARCH_DIRECTIONS_TOPIC = ResearchTopic(
         "Vlastní výzkumné náměty, které propojují ostatní témata. Nejsou to doložené výsledky: každá stránka "
         "odlišuje hypotézu, náš výpočet a literaturu a končí otázkami, na které by výzkum musel odpovědět."
     ),
-    sections=(TopicSection("Náměty", (RANDOM_MATRIX_GBS_BRIDGE,)),),
+    sections=(TopicSection("Náměty", (RANDOM_MATRIX_GBS,)),),
 )
 
 RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (

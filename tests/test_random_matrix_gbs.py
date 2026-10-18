@@ -4,8 +4,8 @@ import pytest
 from gbs.spectrum_study import equicorrelated, spectrum_savings
 from ui import ids
 from ui.gbs_page import squeezing_strength_grid
-from ui.navigation import RESEARCH_DIRECTIONS_PATH
-from ui.research_directions_content import (
+from ui.navigation import RANDOM_MATRIX_GBS_PATH
+from ui.random_matrix_gbs_content import (
     NOISE_EXAMPLE_MOMENT_RATIO,
     NOISY_INPUT,
     SOURCES_ANCHOR,
@@ -17,7 +17,7 @@ from ui.research_directions_content import (
     savings_table,
     study_findings,
 )
-from ui.research_directions_page import build_research_directions_page
+from ui.random_matrix_gbs_page import build_random_matrix_gbs_page
 from ui.theory_content import all_sources
 from ui.topic_catalog import RESEARCH_DIRECTIONS_TOPIC, RESEARCH_TOPICS, breadcrumb_trail
 from tests.test_random_matrix_page import section_ids
@@ -25,10 +25,10 @@ from tests.test_topics import active_links, visible_pages
 
 
 def test_vyzkumne_smery_jsou_samostatnym_tematem_v_horni_liste():
-    assert visible_pages(RESEARCH_DIRECTIONS_PATH) == [ids.RESEARCH_DIRECTIONS_PAGE]
-    assert active_links(RESEARCH_DIRECTIONS_PATH) == [ids.NAV_RESEARCH_DIRECTIONS_LINK]
+    assert visible_pages(RANDOM_MATRIX_GBS_PATH) == [ids.RANDOM_MATRIX_GBS_PAGE]
+    assert active_links(RANDOM_MATRIX_GBS_PATH) == [ids.NAV_RESEARCH_DIRECTIONS_LINK]
     assert RESEARCH_DIRECTIONS_TOPIC in RESEARCH_TOPICS
-    assert [label for label, _ in breadcrumb_trail(ids.RESEARCH_DIRECTIONS_PAGE)][:2] == [
+    assert [label for label, _ in breadcrumb_trail(ids.RANDOM_MATRIX_GBS_PAGE)][:2] == [
         "Témata", RESEARCH_DIRECTIONS_TOPIC.title,
     ]
 
@@ -36,7 +36,7 @@ def test_vyzkumne_smery_jsou_samostatnym_tematem_v_horni_liste():
 def test_kazda_kapitola_ma_unikatni_kotvu_shrnuti_vyklad_a_zdroj():
     anchors = [topic.anchor for topic in TOPICS]
 
-    assert set(anchors + [SOURCES_ANCHOR]) <= set(section_ids(build_research_directions_page()))
+    assert set(anchors + [SOURCES_ANCHOR]) <= set(section_ids(build_random_matrix_gbs_page()))
     assert len(set(anchors)) == len(anchors)
     assert all(anchor.startswith("vs-") for anchor in anchors)
     for topic in TOPICS:

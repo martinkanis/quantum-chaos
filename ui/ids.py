@@ -57,7 +57,7 @@ GUIDE_PAGE = "guide-page"
 QPURPOSE_PAGE = "qpurpose-page"
 LITERATURE_REVIEW_PAGE = "literature-review-page"
 RANDOM_MATRIX_PAGE = "random-matrix-page"
-RESEARCH_DIRECTIONS_PAGE = "research-directions-page"
+RANDOM_MATRIX_GBS_PAGE = "random-matrix-gbs-page"
 
 GBS_ASSET_TABLE = "gbs-asset-table"
 GBS_ADD_ASSET_BUTTON = "gbs-add-asset-button"

@@ -5,8 +5,8 @@ from typing import List
 from dash import dcc, html
 
 from ui import ids
-from ui.navigation import HIDDEN, RANDOM_MATRIX_PATH, research_directions_href
-from ui.research_directions_content import (
+from ui.navigation import HIDDEN, RANDOM_MATRIX_PATH, random_matrix_gbs_href
+from ui.random_matrix_gbs_content import (
     FIRST_STUDY,
     IN_SHORT,
     LEAD,
@@ -19,9 +19,9 @@ from ui.theory_content import TheoryTopic
 from ui.topic_sections import sources_section, table_of_contents, topic_section
 
 
-def build_research_directions_page() -> html.Div:
+def build_random_matrix_gbs_page() -> html.Div:
     return html.Div(
-        id=ids.RESEARCH_DIRECTIONS_PAGE,
+        id=ids.RANDOM_MATRIX_GBS_PAGE,
         className="gbs-page",
         style=HIDDEN,
         children=[
@@ -29,7 +29,7 @@ def build_research_directions_page() -> html.Div:
             html.P(LEAD, className="lead"),
             dcc.Link("Základy v tématu Náhodné matice →", href=RANDOM_MATRIX_PATH, className="back-link"),
             html.Div(className="in-short", children=[html.Strong("V kostce: "), dcc.Markdown(IN_SHORT)]),
-            table_of_contents(TOPICS, research_directions_href, SOURCES_ANCHOR),
+            table_of_contents(TOPICS, random_matrix_gbs_href, SOURCES_ANCHOR),
             *[topic_section(number, topic, _illustrations(topic)) for number, topic in enumerate(TOPICS, start=1)],
             sources_section(TOPICS, SOURCES_ANCHOR),
         ],
