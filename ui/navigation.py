@@ -14,6 +14,7 @@ CAVEATS_PATH = "/gbs/hacky"
 THEORY_PATH = "/gbs/teorie"
 ADVANTAGE_PATH = "/vyhoda-gbs"
 GUIDE_PATH = "/vyhoda-gbs/pruvodce"
+QPURPOSE_PATH = "/vyhoda-gbs/qpurpose"
 VQE_PAPER_PATH = "/kvantova-optimalizace/vqe-ibm-fez"
 LITERATURE_REVIEW_PATH = "/reserse-gbs-financni-riziko"
 RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
@@ -34,6 +35,7 @@ PAGE_IDS = (
     ids.THEORY_PAGE,
     ids.ADVANTAGE_PAGE,
     ids.GUIDE_PAGE,
+    ids.QPURPOSE_PAGE,
     ids.VQE_PAPER_PAGE,
     ids.LITERATURE_REVIEW_PAGE,
     ids.RANDOM_MATRIX_PAGE,
@@ -41,6 +43,7 @@ PAGE_IDS = (
 )
 MONTE_CARLO_PAGES = frozenset({
     ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
+    ids.QPURPOSE_PAGE,
 })
 NAV_LINK_IDS = (
     ids.NAV_TOPICS_LINK,
@@ -63,6 +66,7 @@ PAGE_BY_PATH = {
     THEORY_PATH: ids.THEORY_PAGE,
     ADVANTAGE_PATH: ids.ADVANTAGE_PAGE,
     GUIDE_PATH: ids.GUIDE_PAGE,
+    QPURPOSE_PATH: ids.QPURPOSE_PAGE,
     VQE_PAPER_PATH: ids.VQE_PAPER_PAGE,
     LITERATURE_REVIEW_PATH: ids.LITERATURE_REVIEW_PAGE,
     RANDOM_MATRIX_PATH: ids.RANDOM_MATRIX_PAGE,
@@ -77,6 +81,7 @@ ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.THEORY_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
     ids.ADVANTAGE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
     ids.GUIDE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
+    ids.QPURPOSE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
     ids.VQE_PAPER_PAGE: frozenset({ids.NAV_OPTIMIZATION_LINK}),
     ids.LITERATURE_REVIEW_PAGE: frozenset({ids.NAV_LITERATURE_REVIEW_LINK}),
     ids.RANDOM_MATRIX_PAGE: frozenset({ids.NAV_RANDOM_MATRIX_LINK}),
@@ -124,6 +129,10 @@ def theory_href(anchor: str) -> str:
 
 def guide_href(anchor: str) -> str:
     return f"{GUIDE_PATH}#{anchor}"
+
+
+def qpurpose_href(anchor: str) -> str:
+    return f"{QPURPOSE_PATH}#{anchor}"
 
 
 def literature_review_href(anchor: str) -> str:

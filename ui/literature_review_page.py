@@ -21,7 +21,6 @@ from ui.literature_review_content import (
     TITLE,
     TOPICS,
     TWENTE_TOPIC,
-    KeyFinding,
     ReviewQuestion,
 )
 from ui.navigation import (
@@ -34,7 +33,7 @@ from ui.navigation import (
     theory_href,
 )
 from ui.theory_content import TheoryTopic
-from ui.topic_sections import sources_section, table_of_contents, topic_section
+from ui.topic_sections import key_findings_card, sources_section, table_of_contents, topic_section
 
 REVIEW_QUESTIONS_ANCHOR = "reserse-otazky"
 REVIEW_QUESTIONS_HINT = (
@@ -90,25 +89,12 @@ def build_literature_review_page() -> html.Div:
 
 
 def _key_findings_card() -> html.Section:
-    return html.Section(
-        className="card key-findings",
-        children=[
-            html.H2("TL;DR – to nejdůležitější"),
-            html.Ul([_key_finding(finding) for finding in KEY_FINDINGS]),
-            dcc.Link(
-                "Na konci stránky si můžeš ověřit porozumění →",
-                href=literature_review_href(REVIEW_QUESTIONS_ANCHOR),
-                className="details-link",
-            ),
-        ],
+    footer = dcc.Link(
+        "Na konci stránky si můžeš ověřit porozumění →",
+        href=literature_review_href(REVIEW_QUESTIONS_ANCHOR),
+        className="details-link",
     )
-
-
-def _key_finding(finding: KeyFinding) -> html.Li:
-    return html.Li([
-        dcc.Markdown(finding.text, mathjax=True),
-        dcc.Link("podrobně →", href=literature_review_href(finding.anchor), className="details-link"),
-    ])
+    return key_findings_card(KEY_FINDINGS, literature_review_href, footer)
 
 
 def _related_pages(topic: TheoryTopic) -> List[html.P]:

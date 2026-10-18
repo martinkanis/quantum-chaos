@@ -25,6 +25,7 @@ from ui.theory_content import (
     GLASSERMAN,
     HAMILTON,
     MADSEN,
+    KeyFinding,
     OH_CLASSICAL_SIMULATION,
     SDU_QUANTUM_FINANCE,
     WALRUS_HAFNIAN,
@@ -45,14 +46,6 @@ INTRO = (
     f"znovu ověřeny {SOURCES_CHECKED_DATE}. Začni krátkým TL;DR, podrobnosti jsou v kapitolách a každé tvrzení má "
     "zdroj; kde jde o náš výklad, je to výslovně napsané."
 )
-
-
-@dataclass(frozen=True)
-class KeyFinding:
-    """One point of the TL;DR; the anchor leads to the chapter that explains it."""
-
-    text: str
-    anchor: str
 
 
 @dataclass(frozen=True)

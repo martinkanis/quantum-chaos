@@ -2,13 +2,33 @@
 
 from __future__ import annotations
 
-from typing import Callable, List, Sequence
+from typing import Callable, List, Optional, Sequence
 
 from dash import dcc, html
 
 from ui.navigation import caveat_href
 from ui.reading_time import reading_minutes, reading_time_label
-from ui.theory_content import Reading, Source, TheoryTopic, all_sources
+from ui.theory_content import KeyFinding, Reading, Source, TheoryTopic, all_sources
+
+
+def key_findings_card(
+    findings: Sequence[KeyFinding], href: Callable[[str], str], footer: Optional[dcc.Link] = None
+) -> html.Section:
+    """TL;DR on top of a page: each point links to the chapter that explains it."""
+    return html.Section(
+        className="card key-findings",
+        children=[
+            html.H2("TL;DR – to nejdůležitější"),
+            html.Ul([
+                html.Li([
+                    dcc.Markdown(finding.text, mathjax=True),
+                    dcc.Link("podrobně →", href=href(finding.anchor), className="details-link"),
+                ])
+                for finding in findings
+            ]),
+            *([footer] if footer else []),
+        ],
+    )
 
 
 def table_of_contents(topics: Sequence[TheoryTopic], href: Callable[[str], str], sources_anchor: str) -> html.Nav:

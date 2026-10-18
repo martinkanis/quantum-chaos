@@ -13,6 +13,7 @@ from ui.navigation import (
     GUIDE_PATH,
     LITERATURE_REVIEW_PATH,
     PORTFOLIO_PATH,
+    QPURPOSE_PATH,
     RANDOM_MATRIX_PATH,
     RESEARCH_DIRECTIONS_PATH,
     THEORY_PATH,
@@ -92,6 +93,13 @@ GUIDE = PageEntry(
     parent_page_id=ids.ADVANTAGE_PAGE,
 )
 
+QPURPOSE_CHECK = PageEntry(
+    ids.QPURPOSE_PAGE, "Qpurpose: co skutečně prodávají", QPURPOSE_PATH,
+    "Co má Qpurpose v provozu u Jyske Bank a jak to funguje, co z metody zbude na klasickém počítači a chyba, "
+    "kterou jsme našli ve vzorci pro rozptyl GBS-I.",
+    parent_page_id=ids.ADVANTAGE_PAGE,
+)
+
 MONTE_CARLO_TOPIC = ResearchTopic(
     anchor="tema-monte-carlo",
     title="Monte Carlo a modifikované Monte Carlo",
@@ -103,7 +111,7 @@ MONTE_CARLO_TOPIC = ResearchTopic(
     sections=(
         TopicSection("Klasické Monte Carlo", (PORTFOLIO,)),
         TopicSection("Modifikované Monte Carlo: Gaussian Boson Sampling", (GBS, ADVANTAGE)),
-        TopicSection("Výklad a literatura", (THEORY, CAVEATS, GUIDE)),
+        TopicSection("Výklad a literatura", (THEORY, CAVEATS, GUIDE, QPURPOSE_CHECK)),
     ),
 )
 

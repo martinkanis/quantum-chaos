@@ -33,6 +33,14 @@ class Reading:
 
 
 @dataclass(frozen=True)
+class KeyFinding:
+    """One point of a TL;DR; the anchor leads to the chapter that explains it."""
+
+    text: str
+    anchor: str
+
+
+@dataclass(frozen=True)
 class TheoryTopic:
     anchor: str
     title: str
