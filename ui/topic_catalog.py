@@ -9,6 +9,7 @@ from ui import ids
 from ui.navigation import (
     ADVANTAGE_PATH,
     CAVEATS_PATH,
+    FAILURE_DIAGNOSTICS_PATH,
     GBS_PATH,
     GUIDE_PATH,
     LITERATURE_REVIEW_PATH,
@@ -166,10 +167,16 @@ RANDOM_MATRIX_TOPIC = ResearchTopic(
     sections=(TopicSection("Laboratoř a výklad", (RANDOM_MATRIX,)),),
 )
 
+FAILURE_DIAGNOSTICS = PageEntry(
+    ids.FAILURE_DIAGNOSTICS_PAGE, "Kdy odhad rizika přes GBS selže", FAILURE_DIAGNOSTICS_PATH,
+    "Vlastní námět: tři zdroje chyby – negaussovská data, matice a portfolio, pro které GBS nemá výhodu, a šum "
+    "v odhadnuté matici – a jak každý z nich poznat z dat dřív, než se přístroj spustí.",
+)
 RANDOM_MATRIX_GBS = PageEntry(
     ids.RANDOM_MATRIX_GBS_PAGE, "Náhodné matice a GBS: hypotéza", RANDOM_MATRIX_GBS_PATH,
-    "Vlastní námět: rozhoduje o výhodě GBS tvar spektra korelační matice? První výpočet na šesti aktivech, "
-    "háček se šumem v odhadnuté matici a pět otevřených otázek.",
+    "Podrobný rozbor 2. a 3. zdroje chyby: jak o úspoře vzorků rozhoduje spektrum spolu s polohou vah portfolia "
+    "(šest aktiv, dvě portfolia), šum v odhadnuté matici a šest otevřených otázek.",
+    parent_page_id=ids.FAILURE_DIAGNOSTICS_PAGE,
 )
 
 RESEARCH_DIRECTIONS_TOPIC = ResearchTopic(
@@ -179,7 +186,7 @@ RESEARCH_DIRECTIONS_TOPIC = ResearchTopic(
         "Vlastní výzkumné náměty, které propojují ostatní témata. Nejsou to doložené výsledky: každá stránka "
         "odlišuje hypotézu, náš výpočet a literaturu a končí otázkami, na které by výzkum musel odpovědět."
     ),
-    sections=(TopicSection("Náměty", (RANDOM_MATRIX_GBS,)),),
+    sections=(TopicSection("Náměty", (FAILURE_DIAGNOSTICS, RANDOM_MATRIX_GBS)),),
 )
 
 RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (

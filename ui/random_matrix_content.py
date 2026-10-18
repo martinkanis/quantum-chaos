@@ -124,6 +124,11 @@ HSIEH_1991 = Source(
     "Hsieh, D. A.: *Chaos and nonlinear dynamics: application to financial markets*. Journal of Finance 46 "
     "(1991), 1839–1877, [doi:10.1111/j.1540-6261.1991.tb04646.x](https://doi.org/10.1111/j.1540-6261.1991.tb04646.x)"
 )
+BDS_1996 = Source(
+    "Brock, W. A., Dechert, W. D., Scheinkman, J. A., LeBaron, B.: *A test for independence based on the "
+    "correlation dimension*. Econometric Reviews 15 (1996), 197–235, "
+    "[doi:10.1080/07474939608800353](https://doi.org/10.1080/07474939608800353)"
+)
 BASS_PREDICTORS = Source(
     "Bass, T. A.: *The Predictors: How a Band of Maverick Physicists Used Chaos Theory to Trade Their Way to a "
     "Fortune on Wall Street*. Henry Holt, New York 1999"

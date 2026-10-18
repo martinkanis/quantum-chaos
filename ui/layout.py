@@ -7,6 +7,7 @@ from ui.academy_page import build_academy_page
 from ui.advantage_page import build_advantage_page
 from ui.breadcrumbs import build_breadcrumb
 from ui.caveats_page import build_caveats_page
+from ui.failure_diagnostics_page import build_failure_diagnostics_page
 from ui.gbs_page import build_gbs_page
 from ui.guide_page import build_guide_page
 from ui.literature_review_page import build_literature_review_page
@@ -40,6 +41,7 @@ def build_layout() -> html.Div:
             build_vqe_paper_page(),
             build_literature_review_page(),
             build_random_matrix_page(),
+            build_failure_diagnostics_page(),
             build_random_matrix_gbs_page(),
             build_study_pager(),
         ]

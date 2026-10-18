@@ -58,6 +58,7 @@ QPURPOSE_PAGE = "qpurpose-page"
 LITERATURE_REVIEW_PAGE = "literature-review-page"
 RANDOM_MATRIX_PAGE = "random-matrix-page"
 RANDOM_MATRIX_GBS_PAGE = "random-matrix-gbs-page"
+FAILURE_DIAGNOSTICS_PAGE = "failure-diagnostics-page"
 
 GBS_ASSET_TABLE = "gbs-asset-table"
 GBS_ADD_ASSET_BUTTON = "gbs-add-asset-button"

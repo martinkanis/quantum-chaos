@@ -19,6 +19,7 @@ VQE_PAPER_PATH = "/kvantova-optimalizace/vqe-ibm-fez"
 LITERATURE_REVIEW_PATH = "/reserse-gbs-financni-riziko"
 RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
 RANDOM_MATRIX_GBS_PATH = "/vyzkumne-smery/nahodne-matice-a-gbs"
+FAILURE_DIAGNOSTICS_PATH = "/vyzkumne-smery/kdy-gbs-selze"
 
 VISIBLE: dict = {}
 """No inline display, so the stylesheet decides how a shown element is laid out (reading pages use a grid)."""
@@ -40,6 +41,7 @@ PAGE_IDS = (
     ids.LITERATURE_REVIEW_PAGE,
     ids.RANDOM_MATRIX_PAGE,
     ids.RANDOM_MATRIX_GBS_PAGE,
+    ids.FAILURE_DIAGNOSTICS_PAGE,
 )
 MONTE_CARLO_PAGES = frozenset({
     ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
@@ -71,6 +73,7 @@ PAGE_BY_PATH = {
     LITERATURE_REVIEW_PATH: ids.LITERATURE_REVIEW_PAGE,
     RANDOM_MATRIX_PATH: ids.RANDOM_MATRIX_PAGE,
     RANDOM_MATRIX_GBS_PATH: ids.RANDOM_MATRIX_GBS_PAGE,
+    FAILURE_DIAGNOSTICS_PATH: ids.FAILURE_DIAGNOSTICS_PAGE,
 }
 ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.TOPICS_PAGE: frozenset({ids.NAV_TOPICS_LINK}),
@@ -86,6 +89,7 @@ ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.LITERATURE_REVIEW_PAGE: frozenset({ids.NAV_LITERATURE_REVIEW_LINK}),
     ids.RANDOM_MATRIX_PAGE: frozenset({ids.NAV_RANDOM_MATRIX_LINK}),
     ids.RANDOM_MATRIX_GBS_PAGE: frozenset({ids.NAV_RESEARCH_DIRECTIONS_LINK}),
+    ids.FAILURE_DIAGNOSTICS_PAGE: frozenset({ids.NAV_RESEARCH_DIRECTIONS_LINK}),
 }
 
 # Pages are only hidden, so the browser cannot jump to an anchor on its own. Formulas (MathJax)
@@ -147,6 +151,10 @@ def random_matrix_gbs_href(anchor: str) -> str:
     return f"{RANDOM_MATRIX_GBS_PATH}#{anchor}"
 
 
+def failure_diagnostics_href(anchor: str) -> str:
+    return f"{FAILURE_DIAGNOSTICS_PATH}#{anchor}"
+
+
 def build_navigation() -> html.Header:
     """Topics in the top row; the pages of the Monte Carlo topic in a second row under it."""
     return html.Header(
@@ -170,7 +178,7 @@ def build_navigation() -> html.Header:
                         className=LINK_CLASS,
                     ),
                     dcc.Link(
-                        "Výzkumné směry", href=RANDOM_MATRIX_GBS_PATH, id=ids.NAV_RESEARCH_DIRECTIONS_LINK,
+                        "Výzkumné směry", href=FAILURE_DIAGNOSTICS_PATH, id=ids.NAV_RESEARCH_DIRECTIONS_LINK,
                         className=LINK_CLASS,
                     ),
                     dcc.Link("Quantum Academy", href=ACADEMY_PATH, id=ids.NAV_ACADEMY_LINK, className=LINK_CLASS),
