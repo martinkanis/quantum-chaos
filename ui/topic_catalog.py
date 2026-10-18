@@ -13,6 +13,7 @@ from ui.navigation import (
     GUIDE_PATH,
     LITERATURE_REVIEW_PATH,
     PORTFOLIO_PATH,
+    RANDOM_MATRIX_PATH,
     THEORY_PATH,
     TOPICS_PATH,
     VQE_PAPER_PATH,
@@ -139,7 +140,26 @@ LITERATURE_REVIEW_TOPIC = ResearchTopic(
     sections=(TopicSection("Přehled literatury", (LITERATURE_REVIEW,)),),
 )
 
-RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, OPTIMIZATION_TOPIC)
+RANDOM_MATRIX = PageEntry(
+    ids.RANDOM_MATRIX_PAGE, "Náhodné matice a riziko portfolia", RANDOM_MATRIX_PATH,
+    "Laboratoř se syntetickým trhem a výklad: Marčenkovo–Pasturovo rozdělení, proč Markowitz podhodnocuje riziko, "
+    "čištění korelační matice, stavy trhu a fázový přechod u Expected Shortfall.",
+)
+
+RANDOM_MATRIX_TOPIC = ResearchTopic(
+    anchor="tema-nahodne-matice",
+    title="Náhodné matice: od kvantového chaosu k portfoliu",
+    summary=(
+        "Teorie náhodných matic vznikla pro spektra jader a chaotických kvantových systémů. Od roku 1999 slouží "
+        "i k tomu, aby se v korelační matici akcií oddělila informace od šumu. Jde o doložený a v praxi používaný "
+        "přenos poznatků z kvantového chaosu do řízení portfolií."
+    ),
+    sections=(TopicSection("Laboratoř a výklad", (RANDOM_MATRIX,)),),
+)
+
+RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (
+    MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, OPTIMIZATION_TOPIC, RANDOM_MATRIX_TOPIC,
+)
 
 
 def study_path(topic: ResearchTopic) -> Tuple[PageEntry, ...]:

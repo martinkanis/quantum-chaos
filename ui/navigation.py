@@ -16,6 +16,7 @@ ADVANTAGE_PATH = "/vyhoda-gbs"
 GUIDE_PATH = "/vyhoda-gbs/pruvodce"
 VQE_PAPER_PATH = "/kvantova-optimalizace/vqe-ibm-fez"
 LITERATURE_REVIEW_PATH = "/reserse-gbs-financni-riziko"
+RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
 
 VISIBLE: dict = {}
 """No inline display, so the stylesheet decides how a shown element is laid out (reading pages use a grid)."""
@@ -34,6 +35,7 @@ PAGE_IDS = (
     ids.GUIDE_PAGE,
     ids.VQE_PAPER_PAGE,
     ids.LITERATURE_REVIEW_PAGE,
+    ids.RANDOM_MATRIX_PAGE,
 )
 MONTE_CARLO_PAGES = frozenset({
     ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
@@ -43,6 +45,7 @@ NAV_LINK_IDS = (
     ids.NAV_MONTE_CARLO_LINK,
     ids.NAV_LITERATURE_REVIEW_LINK,
     ids.NAV_OPTIMIZATION_LINK,
+    ids.NAV_RANDOM_MATRIX_LINK,
     ids.NAV_ACADEMY_LINK,
     ids.NAV_PORTFOLIO_LINK,
     ids.NAV_GBS_LINK,
@@ -59,6 +62,7 @@ PAGE_BY_PATH = {
     GUIDE_PATH: ids.GUIDE_PAGE,
     VQE_PAPER_PATH: ids.VQE_PAPER_PAGE,
     LITERATURE_REVIEW_PATH: ids.LITERATURE_REVIEW_PAGE,
+    RANDOM_MATRIX_PATH: ids.RANDOM_MATRIX_PAGE,
 }
 ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.TOPICS_PAGE: frozenset({ids.NAV_TOPICS_LINK}),
@@ -71,6 +75,7 @@ ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.GUIDE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
     ids.VQE_PAPER_PAGE: frozenset({ids.NAV_OPTIMIZATION_LINK}),
     ids.LITERATURE_REVIEW_PAGE: frozenset({ids.NAV_LITERATURE_REVIEW_LINK}),
+    ids.RANDOM_MATRIX_PAGE: frozenset({ids.NAV_RANDOM_MATRIX_LINK}),
 }
 
 # Pages are only hidden, so the browser cannot jump to an anchor on its own. Formulas (MathJax)
@@ -120,6 +125,10 @@ def literature_review_href(anchor: str) -> str:
     return f"{LITERATURE_REVIEW_PATH}#{anchor}"
 
 
+def random_matrix_href(anchor: str) -> str:
+    return f"{RANDOM_MATRIX_PATH}#{anchor}"
+
+
 def build_navigation() -> html.Header:
     """Topics in the top row; the pages of the Monte Carlo topic in a second row under it."""
     return html.Header(
@@ -136,6 +145,10 @@ def build_navigation() -> html.Header:
                     ),
                     dcc.Link(
                         "Kvantová optimalizace", href=VQE_PAPER_PATH, id=ids.NAV_OPTIMIZATION_LINK,
+                        className=LINK_CLASS,
+                    ),
+                    dcc.Link(
+                        "Náhodné matice", href=RANDOM_MATRIX_PATH, id=ids.NAV_RANDOM_MATRIX_LINK,
                         className=LINK_CLASS,
                     ),
                     dcc.Link("Quantum Academy", href=ACADEMY_PATH, id=ids.NAV_ACADEMY_LINK, className=LINK_CLASS),
