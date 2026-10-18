@@ -123,17 +123,45 @@ def mc_relative_error_constant(degree: int) -> float:
     return float(np.sqrt(_double_factorial(2 * degree - 1) / _double_factorial(degree - 1) ** 2 - 1))
 
 
+@dataclass(frozen=True)
+class GbsErrorBreakdown:
+    """The two parts of the GBS estimator's error: c² = (pattern_mismatch / useful_shot_share − 1) / 4."""
+
+    useful_shot_share: float
+    """P(total photons = degree); shots with any other total carry no information and are discarded."""
+    pattern_mismatch: float
+    """Σ share² / p(n | total = degree) ≥ 1; it is 1 when the device shows the patterns exactly in proportion to
+    their share of the moment."""
+    cancellation: float
+    """Σ |share| ≥ 1: how many times the terms of the expansion outweigh their sum; 1 when no terms cancel.
+    The mismatch is at least its square."""
+
+    @property
+    def relative_error_constant(self) -> float:
+        return 0.5 * float(np.sqrt(self.pattern_mismatch / self.useful_shot_share - 1))
+
+
+def gbs_error_breakdown(problem: MomentProblem, program: GbsProgram) -> GbsErrorBreakdown:
+    _, probabilities = pattern_distribution(program, problem.degree)
+    contributions = np.array([term.contribution for term in hafnian_terms(problem)])
+    shares = contributions / contributions.sum()
+    observable = probabilities > 0
+    useful_shot_share = float(probabilities.sum())
+    conditional = probabilities[observable] / useful_shot_share
+    return GbsErrorBreakdown(
+        useful_shot_share=useful_shot_share,
+        pattern_mismatch=float(np.sum(shares[observable] ** 2 / conditional)),
+        cancellation=float(np.sum(np.abs(shares))),
+    )
+
+
 def gbs_relative_error_constant(problem: MomentProblem, program: GbsProgram) -> float:
     """√N × relative RMSE of gbs_estimate for large N (delta method).
 
     As in importance sampling, every pattern adds share² / p(n), where share is its part of the moment, so
     patterns carrying much of the moment but rarely observed dominate; the ½ comes from the square root.
     """
-    _, probabilities = pattern_distribution(program, problem.degree)
-    contributions = np.array([term.contribution for term in hafnian_terms(problem)])
-    shares = contributions / contributions.sum()
-    observable = probabilities > 0
-    return 0.5 * float(np.sqrt(np.sum(shares[observable] ** 2 / probabilities[observable]) - 1))
+    return gbs_error_breakdown(problem, program).relative_error_constant
 
 
 def run_convergence_study(

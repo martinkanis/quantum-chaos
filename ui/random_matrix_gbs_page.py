@@ -10,6 +10,7 @@ from ui.random_matrix_gbs_content import (
     FIRST_STUDY,
     IN_SHORT,
     LEAD,
+    SAVINGS_TABLE_HINT,
     SOURCES_ANCHOR,
     TOPICS,
     savings_table,
@@ -40,7 +41,8 @@ def _illustrations(topic: TheoryTopic) -> List[html.Div]:
     if topic != FIRST_STUDY:
         return []
     return [html.Div([
-        html.H4("Úspora vzorků GBS proti Monte Carlu, rovnoměrné portfolio šesti aktiv"),
+        html.H4("Úspora vzorků GBS proti Monte Carlu, šest aktiv a dvě portfolia"),
         dcc.Markdown(savings_table()),
+        html.P(SAVINGS_TABLE_HINT, className="hint small"),
         dcc.Markdown(study_findings(), mathjax=True),
     ])]
