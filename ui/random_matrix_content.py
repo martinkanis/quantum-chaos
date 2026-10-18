@@ -431,10 +431,11 @@ potřebujeme, aby čísla něco znamenala“ (náš výklad).
 
 DETERMINISTIC_CHAOS = TheoryTopic(
     anchor="nm-chaos-v-cenach",
-    title="A co deterministický chaos v cenách?",
+    title="Teorie chaosu a ceny: předpověď, nebo diagnostika?",
     in_short=(
-        "Hledání nízkodimenzionálního chaosu v cenách dopadlo převážně negativně: výnosy mají nelineární "
-        "závislosti, ale ne podivný atraktor, ze kterého by šly předpovídat."
+        "Předpovídat ceny z nízkodimenzionálního chaosu se doložit nepodařilo. Nástroje teorie chaosu – testy "
+        "nelinearity, entropie, rekurentní analýza – se ale dají použít jinak: jako diagnostika, jestli mají data "
+        "strukturu, kterou gaussovský model nevystihne."
     ),
     explanation=r"""
 **Myšlenka.** Pokud by ceny řídil deterministický chaotický systém s málo proměnnými, šlo by z historie
@@ -449,11 +450,20 @@ předpovídání trhů. Od roku 1992 obchodovala pro O'Connor and Associates, z 
 v roce 2005 koupila. Začátky popisuje kniha Thomase Basse. Jakými modely přesně obchodovala, veřejně popsané
 není, takže z jejího úspěchu nejde usuzovat, že ceny jsou chaotické (náš výklad).
 
-**Závěr pro výzkum.** Z „kvantového chaosu“ je do financí přenositelná hlavně statistika spekter, tedy teorie
-náhodných matic – ne hledání chaotické dynamiky v cenách.
+**Dvě různé otázky (náš výklad).** „Řídí ceny chaotický systém, ze kterého jde předpovídat?“ – na to
+literatura přesvědčivé ano nedala. „Mají výnosy nelineární strukturu, kterou gaussovský model nevystihne,
+a kdy?“ – to je jiná otázka a nástroje teorie chaosu se na ni používají: test BDS, entropie nebo
+kvantitativní rekurentní analýza měří, jak moc se data liší od nezávislého šumu a jak se to mění v čase.
+Pro modely postavené na gaussovském předpokladu – Markowitze, gaussovské Monte Carlo i odhady na GBS – je to
+užitečná diagnostika. Výjimkou je 0-1 test chaosu: na zašuměných datech zaměňuje šum za chaos.
+
+**Závěr pro výzkum.** Z kvantového chaosu se do financí přenáší hlavně statistika spekter, tedy teorie
+náhodných matic. Z klasické teorie chaosu spíš nástroje na měření nelineární struktury dat než předpovědní
+modely.
 """,
     further_reading=(
         Reading(HSIEH_1991, "testy chaosu na výnosech akcií"),
+        Reading(BDS_1996, "test nezávislosti, který Hsieh použil"),
         Reading(BASS_PREDICTORS, "příběh Prediction Company"),
         Reading(WIKIPEDIA_PREDICTION_COMPANY, "data o smlouvě s O'Connor a koupi firmou UBS"),
     ),

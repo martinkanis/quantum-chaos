@@ -4,14 +4,22 @@ from randommatrix.factor_market import FactorMarket
 from randommatrix.marchenko_pastur import NoiseBand
 from randommatrix.study import run_study
 from ui import ids
-from ui.navigation import PORTFOLIO_PATH, RANDOM_MATRIX_PATH, show_page
+from ui.failure_diagnostics_content import DIAGNOSTIC_TOOLS
+from ui.navigation import PORTFOLIO_PATH, RANDOM_MATRIX_PATH, failure_diagnostics_href, show_page
 from ui.random_matrix_callbacks import should_run_lab
-from ui.random_matrix_content import IN_SHORT, MARCHENKO_PASTUR_TOPIC, MARKOWITZ, SOURCES_ANCHOR, TOPICS
+from ui.random_matrix_content import (
+    DETERMINISTIC_CHAOS,
+    IN_SHORT,
+    MARCHENKO_PASTUR_TOPIC,
+    MARKOWITZ,
+    SOURCES_ANCHOR,
+    TOPICS,
+)
 from ui.random_matrix_page import build_random_matrix_page
 from ui.random_matrix_results import build_random_matrix_results
 from ui.theory_content import all_sources
 from ui.topic_catalog import RANDOM_MATRIX_TOPIC, RESEARCH_TOPICS, breadcrumb_trail
-from tests.test_topics import active_links, visible_pages
+from tests.test_topics import active_links, links_in, visible_pages
 
 
 def section_ids(component):
@@ -63,3 +71,9 @@ def test_vysledky_laboratore_se_vykresli(asset_count, observation_count):
     results = build_random_matrix_results(run_study(FactorMarket(asset_count), observation_count, seed=42))
 
     assert len(results.children) == 3
+
+
+def test_kapitola_o_chaosu_odlisuje_predpoved_od_diagnostiky_a_odkazuje_na_ni():
+    assert failure_diagnostics_href(DIAGNOSTIC_TOOLS.anchor) in set(links_in(build_random_matrix_page()))
+    assert "Dvě různé otázky" in DETERMINISTIC_CHAOS.explanation
+    assert "Výjimkou je 0-1 test chaosu" in DETERMINISTIC_CHAOS.explanation

@@ -1,14 +1,24 @@
 from __future__ import annotations
 
-from typing import Dict
+from typing import Dict, List
 
 from dash import dcc, html
 
 from randommatrix.factor_market import DEFAULT_SECTOR_COUNT
 from ui import ids
-from ui.components import REFERENCE_SEED, labelled, seed_dropdown
-from ui.navigation import HIDDEN, random_matrix_href
-from ui.random_matrix_content import IN_SHORT, LAB_ANCHOR, LAB_INTRO, LEAD, SOURCES_ANCHOR, TOPICS
+from ui.components import REFERENCE_SEED, details_link, labelled, seed_dropdown
+from ui.failure_diagnostics_content import DIAGNOSTIC_TOOLS
+from ui.navigation import HIDDEN, failure_diagnostics_href, random_matrix_href
+from ui.random_matrix_content import (
+    DETERMINISTIC_CHAOS,
+    IN_SHORT,
+    LAB_ANCHOR,
+    LAB_INTRO,
+    LEAD,
+    SOURCES_ANCHOR,
+    TOPICS,
+)
+from ui.theory_content import TheoryTopic
 from ui.topic_sections import sources_section, table_of_contents, topic_section
 
 ASSET_COUNT_OPTIONS = (50, 100, 200, 400)
@@ -36,7 +46,7 @@ def build_random_matrix_page() -> html.Div:
             _lab_section(),
             html.Div(id=ids.RANDOM_MATRIX_ERROR_MESSAGE, className="error-message"),
             dcc.Loading(html.Div(id=ids.RANDOM_MATRIX_RESULTS), type="circle"),
-            *[topic_section(number, topic) for number, topic in enumerate(TOPICS, start=1)],
+            *[topic_section(number, topic, _illustrations(topic)) for number, topic in enumerate(TOPICS, start=1)],
             sources_section(TOPICS, SOURCES_ANCHOR),
         ],
     )
@@ -68,3 +78,11 @@ def _lab_section() -> html.Section:
             html.Button("Nasimulovat trh", id=ids.RANDOM_MATRIX_RUN_BUTTON, className="primary-button"),
         ],
     )
+
+
+def _illustrations(topic: TheoryTopic) -> List[dcc.Link]:
+    if topic != DETERMINISTIC_CHAOS:
+        return []
+    return [details_link(
+        "nástroje teorie chaosu jako diagnostika selhání odhadu rizika", failure_diagnostics_href(DIAGNOSTIC_TOOLS.anchor),
+    )]
