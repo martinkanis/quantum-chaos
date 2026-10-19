@@ -144,7 +144,7 @@ CLEMENTS = Source(
 ZHONG = Source("Zhong, H.-S. a kol.: *Quantum computational advantage using photons*. Science 370, 1460 (2020)")
 MADSEN = Source(
     "Madsen, L. S. a kol.: *Quantum computational advantage with a programmable photonic processor*. "
-    "Nature 606, 75 (2022)"
+    "Nature 606, 75 (2022), [doi:10.1038/s41586-022-04725-x](https://doi.org/10.1038/s41586-022-04725-x)"
 )
 BRADLER = Source(
     "Brádler, K., Dallaire-Demers, P.-L., Rebentrost, P., Su, D., Weedbrook, C.: *Gaussian boson sampling for "

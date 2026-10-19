@@ -27,6 +27,7 @@ from ui.navigation import (
     ACADEMY_PATH,
     ADVANTAGE_PATH,
     HIDDEN,
+    PHOTONIC_HARDWARE_PATH,
     caveat_href,
     guide_href,
     literature_review_href,
@@ -62,6 +63,7 @@ RELATED_PAGES: Dict[str, Tuple[RelatedLink, ...]] = {
         ("Háček: reálný hardware není ideální", caveat_href("realny-hardware")),
         ("Platformy Classiq a CUDA-Q (Quantum Academy)", ACADEMY_PATH),
         ("Gaussian Boson Sampler: co je to za zařízení (Teorie)", theory_href("gbs-zarizeni")),
+        ("Quandela a fotonický hardware v Evropě", PHOTONIC_HARDWARE_PATH),
     ),
     CRITICISM_TOPIC.anchor: (
         ("Háček: GBS je tady simulované klasicky", caveat_href("klasicka-simulace")),

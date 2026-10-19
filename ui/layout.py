@@ -12,6 +12,7 @@ from ui.gbs_page import build_gbs_page
 from ui.guide_page import build_guide_page
 from ui.literature_review_page import build_literature_review_page
 from ui.navigation import build_navigation
+from ui.photonic_hardware_page import build_photonic_hardware_page
 from ui.portfolio_page import build_portfolio_page
 from ui.qpurpose_page import build_qpurpose_page
 from ui.random_matrix_page import build_random_matrix_page
@@ -40,6 +41,7 @@ def build_layout() -> html.Div:
             build_qpurpose_page(),
             build_vqe_paper_page(),
             build_literature_review_page(),
+            build_photonic_hardware_page(),
             build_random_matrix_page(),
             build_failure_diagnostics_page(),
             build_random_matrix_gbs_page(),

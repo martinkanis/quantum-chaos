@@ -9,6 +9,7 @@ from ui.navigation import (
     NAV_LINK_IDS,
     PAGE_BY_PATH,
     PAGE_IDS,
+    PHOTONIC_HARDWARE_PATH,
     literature_review_href,
     show_page,
 )
@@ -71,8 +72,9 @@ def test_odpovedi_jsou_schovane_v_rozbalovacich_blocich():
     assert literature_review_href(REVIEW_QUESTIONS_ANCHOR).startswith(LITERATURE_REVIEW_PATH)
 
 
-def test_reserse_je_jedinym_krokem_sveho_tematu():
+def test_reserse_je_prvnim_krokem_sveho_tematu_a_vede_na_fotonicky_hardware():
     style, step_label, links, _, _ = describe_pager(LITERATURE_REVIEW_PATH, None)
 
-    assert step_label.endswith("krok 1 / 1")
-    assert [link.children for link in links] == [None, None]
+    assert step_label.endswith("krok 1 / 2")
+    assert links[0].children is None
+    assert links[1].children.href == PHOTONIC_HARDWARE_PATH

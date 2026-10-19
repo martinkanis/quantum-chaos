@@ -13,6 +13,7 @@ from ui.navigation import (
     GBS_PATH,
     GUIDE_PATH,
     LITERATURE_REVIEW_PATH,
+    PHOTONIC_HARDWARE_PATH,
     PORTFOLIO_PATH,
     QPURPOSE_PATH,
     RANDOM_MATRIX_PATH,
@@ -139,6 +140,13 @@ LITERATURE_REVIEW = PageEntry(
     "Monte Carla ve financích doložené, co ne a kde jsou otevřené otázky. Na konci kontrolní otázky.",
 )
 
+PHOTONIC_HARDWARE = PageEntry(
+    ids.PHOTONIC_HARDWARE_PAGE, "Quandela a fotonický hardware v Evropě", PHOTONIC_HARDWARE_PATH,
+    "Co dělá Quandela, jak funguje jejich hardware a software Perceval, co z toho jde použít na modifikované "
+    "Monte Carlo a kdo v Evropě umí spustit GBS se stlačeným světlem.",
+    parent_page_id=ids.LITERATURE_REVIEW_PAGE,
+)
+
 LITERATURE_REVIEW_TOPIC = ResearchTopic(
     anchor="tema-reserse-gbs",
     title="Rešerše: Gaussian Boson Sampling a finanční riziko",
@@ -147,7 +155,7 @@ LITERATURE_REVIEW_TOPIC = ResearchTopic(
         "finančního rizika: případ Jyske Bank a Qpurpose, teorie, konkurenční výzkum, hardware a kritická "
         "literatura. Začni krátkým TL;DR, podrobnosti jsou v kapitolách."
     ),
-    sections=(TopicSection("Přehled literatury", (LITERATURE_REVIEW,)),),
+    sections=(TopicSection("Přehled literatury", (LITERATURE_REVIEW, PHOTONIC_HARDWARE)),),
 )
 
 RANDOM_MATRIX = PageEntry(

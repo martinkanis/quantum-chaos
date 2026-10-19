@@ -18,6 +18,7 @@ GUIDE_PATH = "/vyhoda-gbs/pruvodce"
 QPURPOSE_PATH = "/vyhoda-gbs/qpurpose"
 VQE_PAPER_PATH = "/kvantova-optimalizace/vqe-ibm-fez"
 LITERATURE_REVIEW_PATH = "/reserse-gbs-financni-riziko"
+PHOTONIC_HARDWARE_PATH = "/reserse-gbs-financni-riziko/fotonicky-hardware"
 RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
 RANDOM_MATRIX_GBS_PATH = "/vyzkumne-smery/nahodne-matice-a-gbs"
 FAILURE_DIAGNOSTICS_PATH = "/vyzkumne-smery/kdy-gbs-selze"
@@ -40,6 +41,7 @@ PAGE_IDS = (
     ids.QPURPOSE_PAGE,
     ids.VQE_PAPER_PAGE,
     ids.LITERATURE_REVIEW_PAGE,
+    ids.PHOTONIC_HARDWARE_PAGE,
     ids.RANDOM_MATRIX_PAGE,
     ids.RANDOM_MATRIX_GBS_PAGE,
     ids.FAILURE_DIAGNOSTICS_PAGE,
@@ -72,6 +74,7 @@ PAGE_BY_PATH = {
     QPURPOSE_PATH: ids.QPURPOSE_PAGE,
     VQE_PAPER_PATH: ids.VQE_PAPER_PAGE,
     LITERATURE_REVIEW_PATH: ids.LITERATURE_REVIEW_PAGE,
+    PHOTONIC_HARDWARE_PATH: ids.PHOTONIC_HARDWARE_PAGE,
     RANDOM_MATRIX_PATH: ids.RANDOM_MATRIX_PAGE,
     RANDOM_MATRIX_GBS_PATH: ids.RANDOM_MATRIX_GBS_PAGE,
     FAILURE_DIAGNOSTICS_PATH: ids.FAILURE_DIAGNOSTICS_PAGE,
@@ -88,6 +91,7 @@ ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.QPURPOSE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
     ids.VQE_PAPER_PAGE: frozenset({ids.NAV_OPTIMIZATION_LINK}),
     ids.LITERATURE_REVIEW_PAGE: frozenset({ids.NAV_LITERATURE_REVIEW_LINK}),
+    ids.PHOTONIC_HARDWARE_PAGE: frozenset({ids.NAV_LITERATURE_REVIEW_LINK}),
     ids.RANDOM_MATRIX_PAGE: frozenset({ids.NAV_RANDOM_MATRIX_LINK}),
     ids.RANDOM_MATRIX_GBS_PAGE: frozenset({ids.NAV_RESEARCH_DIRECTIONS_LINK}),
     ids.FAILURE_DIAGNOSTICS_PAGE: frozenset({ids.NAV_RESEARCH_DIRECTIONS_LINK}),
@@ -142,6 +146,10 @@ def qpurpose_href(anchor: str) -> str:
 
 def literature_review_href(anchor: str) -> str:
     return f"{LITERATURE_REVIEW_PATH}#{anchor}"
+
+
+def photonic_hardware_href(anchor: str) -> str:
+    return f"{PHOTONIC_HARDWARE_PATH}#{anchor}"
 
 
 def random_matrix_href(anchor: str) -> str:
