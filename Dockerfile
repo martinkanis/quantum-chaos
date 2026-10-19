@@ -12,6 +12,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY --chown=appuser:appuser assets ./assets
+COPY --chown=appuser:appuser auth ./auth
 COPY --chown=appuser:appuser gbs ./gbs
 COPY --chown=appuser:appuser montecarlo ./montecarlo
 COPY --chown=appuser:appuser randommatrix ./randommatrix

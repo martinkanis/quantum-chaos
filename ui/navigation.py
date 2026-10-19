@@ -4,6 +4,7 @@ from typing import Dict, FrozenSet, Tuple
 
 from dash import Dash, Input, Output, dcc, html
 
+from auth.login import LOGOUT_PATH
 from ui import ids
 
 TOPICS_PATH = "/"
@@ -182,6 +183,7 @@ def build_navigation() -> html.Header:
                         className=LINK_CLASS,
                     ),
                     dcc.Link("Quantum Academy", href=ACADEMY_PATH, id=ids.NAV_ACADEMY_LINK, className=LINK_CLASS),
+                    html.A("Odhlásit", href=LOGOUT_PATH, className="nav-link logout-link"),
                 ],
             ),
             html.Nav(
