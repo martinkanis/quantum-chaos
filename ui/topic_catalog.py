@@ -13,6 +13,7 @@ from ui.navigation import (
     FAILURE_DIAGNOSTICS_PATH,
     GBS_PATH,
     GUIDE_PATH,
+    HAFNIAN_PATH,
     INTEGRALS_CHEAT_SHEET_PATH,
     LITERATURE_REVIEW_PATH,
     PHOTONIC_HARDWARE_PATH,
@@ -87,6 +88,12 @@ THEORY = PageEntry(
     ids.THEORY_PAGE, "Teorie Monte Carla na GBS", THEORY_PATH,
     "Podrobný výklad každého kroku 2. stránky s českou i původní literaturou.", parent_page_id=ids.GBS_PAGE,
 )
+HAFNIAN = PageEntry(
+    ids.HAFNIAN_PAGE, "Hafnián a permanent polopatě", HAFNIAN_PATH,
+    "Co jsou hafnián a permanent, v čem se liší (i v datových strukturách a kódu), proč se objevují ve financích "
+    "a v GBS a co na to říkají skutečná data o nemovitostech.",
+    parent_page_id=ids.GBS_PAGE,
+)
 CAVEATS = PageEntry(
     ids.CAVEATS_PAGE, "Háčky Monte Carla na GBS", CAVEATS_PATH,
     "Kde má GBS odhad omezení a co se s nimi dá dělat.", parent_page_id=ids.GBS_PAGE,
@@ -122,7 +129,7 @@ MONTE_CARLO_TOPIC = ResearchTopic(
     sections=(
         TopicSection("Klasické Monte Carlo", (PORTFOLIO,)),
         TopicSection("Modifikované Monte Carlo: Gaussian Boson Sampling", (GBS, ADVANTAGE)),
-        TopicSection("Výklad a literatura", (THEORY, CAVEATS, GUIDE, ANDERSEN_SHAN_PAPER, QPURPOSE_CHECK)),
+        TopicSection("Výklad a literatura", (THEORY, HAFNIAN, CAVEATS, GUIDE, ANDERSEN_SHAN_PAPER, QPURPOSE_CHECK)),
     ),
 )
 

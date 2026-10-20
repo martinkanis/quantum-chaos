@@ -151,6 +151,18 @@ def annual_returns(year: int) -> Dict[AssetClass, float]:
     }
 
 
+def standardized_annual_returns(asset_classes: Sequence[AssetClass]) -> np.ndarray:
+    """Annual returns of the chosen asset classes over all years as z-scores (mean 0, sample std 1), one row a year."""
+    columns = [COLUMN_ORDER.index(asset_class) for asset_class in asset_classes]
+    returns = np.array([ANNUAL_RETURNS_PERCENT[year] for year in sorted(ANNUAL_RETURNS_PERCENT)])[:, columns]
+    return (returns - returns.mean(axis=0)) / returns.std(axis=0, ddof=1)
+
+
+def sample_moment(samples: np.ndarray, exponents: Sequence[int]) -> float:
+    """Average of x_1^n_1 · … · x_k^n_k over the rows of `samples`."""
+    return float(np.mean(np.prod(samples ** np.asarray(exponents), axis=1)))
+
+
 def period_statistics(years: Sequence[int]) -> PeriodStatistics:
     """Arithmetic means, sample standard deviations and pairwise correlations over the given years."""
     returns = np.array([ANNUAL_RETURNS_PERCENT[year] for year in years]) / PERCENT

@@ -31,7 +31,7 @@ def hrefs_in(component):
 
 def test_doporucene_poradi_radi_podstranky_hned_za_stranku_kterou_vysvetluji():
     assert ALL_TOPIC_PAGE_IDS == [
-        ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.THEORY_PAGE, ids.CAVEATS_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
+        ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.THEORY_PAGE, ids.HAFNIAN_PAGE, ids.CAVEATS_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
         ids.ANDERSEN_SHAN_PAPER_PAGE, ids.QPURPOSE_PAGE,
     ]
 
@@ -39,9 +39,10 @@ def test_doporucene_poradi_radi_podstranky_hned_za_stranku_kterou_vysvetluji():
 def test_krok_studia_zna_predchozi_a_dalsi_stranku():
     step = study_step(ids.THEORY_PAGE)
 
-    assert (step.number, step.total) == (3, 8)
+    assert (step.number, step.total) == (3, 9)
     assert step.previous.page_id == ids.GBS_PAGE
-    assert step.next.page_id == ids.CAVEATS_PAGE
+    assert step.next.page_id == ids.HAFNIAN_PAGE
+    assert study_step(ids.HAFNIAN_PAGE).next.page_id == ids.CAVEATS_PAGE
     assert study_step(ids.PORTFOLIO_PAGE).previous is None
     assert study_step(ids.GUIDE_PAGE).next.page_id == ids.ANDERSEN_SHAN_PAPER_PAGE
     assert study_step(ids.ANDERSEN_SHAN_PAPER_PAGE).next.page_id == ids.QPURPOSE_PAGE
@@ -65,7 +66,7 @@ def test_karta_dalsiho_kroku_je_jen_na_strankach_temat():
     style, step_label, links, button_label, _ = describe_pager(GBS_PATH, [ids.GBS_PAGE])
 
     assert style == VISIBLE
-    assert step_label.endswith("krok 2 / 8")
+    assert step_label.endswith("krok 2 / 9")
     assert list(hrefs_in(links[0])) == [MONTE_CARLO_TOPIC.pages[0].path]
     assert list(hrefs_in(links[1])) == [THEORY_PATH]
     assert button_label == STUDIED_LABEL
@@ -78,7 +79,7 @@ def test_tema_nabidne_dalsi_neprostudovanou_stranku_a_ukaze_postup():
 
     assert next_unstudied_page(MONTE_CARLO_TOPIC, [ids.PORTFOLIO_PAGE]).page_id == ids.GBS_PAGE
     assert next_unstudied_page(MONTE_CARLO_TOPIC, ALL_TOPIC_PAGE_IDS) is None
-    assert progress_label(2, 8) in texts
+    assert progress_label(2, 9) in texts
     assert "Pokračuj: 2 · Monte Carlo na GBS →" in texts
 
 

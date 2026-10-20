@@ -13,6 +13,7 @@ PORTFOLIO_PATH = "/klasicke-monte-carlo"
 GBS_PATH = "/gbs"
 CAVEATS_PATH = "/gbs/hacky"
 THEORY_PATH = "/gbs/teorie"
+HAFNIAN_PATH = "/gbs/hafnian"
 ADVANTAGE_PATH = "/vyhoda-gbs"
 GUIDE_PATH = "/vyhoda-gbs/pruvodce"
 QPURPOSE_PATH = "/vyhoda-gbs/qpurpose"
@@ -38,6 +39,7 @@ PAGE_IDS = (
     ids.GBS_PAGE,
     ids.CAVEATS_PAGE,
     ids.THEORY_PAGE,
+    ids.HAFNIAN_PAGE,
     ids.ADVANTAGE_PAGE,
     ids.GUIDE_PAGE,
     ids.QPURPOSE_PAGE,
@@ -52,7 +54,7 @@ PAGE_IDS = (
 )
 MONTE_CARLO_PAGES = frozenset({
     ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
-    ids.QPURPOSE_PAGE, ids.ANDERSEN_SHAN_PAPER_PAGE,
+    ids.QPURPOSE_PAGE, ids.ANDERSEN_SHAN_PAPER_PAGE, ids.HAFNIAN_PAGE,
 })
 NAV_LINK_IDS = (
     ids.NAV_TOPICS_LINK,
@@ -74,6 +76,7 @@ PAGE_BY_PATH = {
     GBS_PATH: ids.GBS_PAGE,
     CAVEATS_PATH: ids.CAVEATS_PAGE,
     THEORY_PATH: ids.THEORY_PAGE,
+    HAFNIAN_PATH: ids.HAFNIAN_PAGE,
     ADVANTAGE_PATH: ids.ADVANTAGE_PAGE,
     GUIDE_PATH: ids.GUIDE_PAGE,
     QPURPOSE_PATH: ids.QPURPOSE_PAGE,
@@ -93,6 +96,7 @@ ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.GBS_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
     ids.CAVEATS_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
     ids.THEORY_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
+    ids.HAFNIAN_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
     ids.ADVANTAGE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
     ids.GUIDE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
     ids.QPURPOSE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
@@ -143,6 +147,10 @@ def caveat_href(anchor: str) -> str:
 
 def theory_href(anchor: str) -> str:
     return f"{THEORY_PATH}#{anchor}"
+
+
+def hafnian_href(anchor: str) -> str:
+    return f"{HAFNIAN_PATH}#{anchor}"
 
 
 def guide_href(anchor: str) -> str:

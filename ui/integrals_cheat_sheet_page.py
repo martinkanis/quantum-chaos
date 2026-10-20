@@ -19,6 +19,7 @@ from ui.integrals_cheat_sheet_content import (
     TOPICS,
 )
 from ui.navigation import (
+    HAFNIAN_PATH,
     HIDDEN,
     PORTFOLIO_PATH,
     andersen_shan_paper_href,
@@ -36,6 +37,7 @@ RELATED_PAGES: Dict[str, Tuple[RelatedLink, ...]] = {
     MULTIPLE_TOPIC.anchor: (("Hustota h(x) v článku Andersena a Shan", andersen_shan_paper_href("clanek-hustota")),),
     GAUSSIAN_TOPIC.anchor: (
         ("Wickova–Isserlisova věta a hafnián (Teorie)", theory_href("wickova-veta")),
+        ("Hafnián a permanent polopatě", HAFNIAN_PATH),
         ("Rovnice (1) a (2) v článku Andersena a Shan", andersen_shan_paper_href("clanek-rovnice-1")),
     ),
     MONTE_CARLO_TOPIC.anchor: (

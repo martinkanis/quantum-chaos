@@ -116,11 +116,13 @@ WALRUS_HAFNIAN = Source(
 )
 BARVINOK = Source("Barvinok, A.: *Combinatorics and Complexity of Partition Functions*. Springer 2016")
 VALIANT = Source(
-    "Valiant, L. G.: *The complexity of computing the permanent*. Theoretical Computer Science 8 (1979), 189–201"
+    "Valiant, L. G.: *The complexity of computing the permanent*. Theoretical Computer Science 8 (1979), 189–201, "
+    "[doi:10.1016/0304-3975(79)90044-6](https://doi.org/10.1016/0304-3975(79)90044-6)"
 )
 BJORKLUND_GUPT_QUESADA = Source(
     "Björklund, A., Gupt, B., Quesada, N.: *A faster hafnian formula for complex matrices and its benchmarking on "
-    "a supercomputer*. ACM Journal of Experimental Algorithmics (2019)"
+    "a supercomputer*. ACM Journal of Experimental Algorithmics 24 (2019), "
+    "[doi:10.1145/3325111](https://doi.org/10.1145/3325111)"
 )
 HAMILTON = Source(
     "Hamilton, C. S., Kruse, R., Sansoni, L., Barkhofen, S., Silberhorn, C., Jex, I.: *Gaussian Boson Sampling*. "
@@ -134,7 +136,7 @@ KRUSE = Source(
 )
 AARONSON_ARKHIPOV = Source(
     "Aaronson, S., Arkhipov, A.: *The computational complexity of linear optics*. Theory of Computing 9 (2013), "
-    "143–252"
+    "143–252, [doi:10.4086/toc.2013.v009a004](https://doi.org/10.4086/toc.2013.v009a004)"
 )
 GERRY_KNIGHT = Source("Gerry, C. C., Knight, P. L.: *Introductory Quantum Optics*. Cambridge University Press 2005")
 RECK = Source(

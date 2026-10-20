@@ -27,6 +27,7 @@ from ui.andersen_shan_paper_content import (
 from ui.navigation import (
     ADVANTAGE_PATH,
     GBS_PATH,
+    HAFNIAN_PATH,
     HIDDEN,
     PHOTONIC_HARDWARE_PATH,
     QPURPOSE_PATH,
@@ -59,7 +60,10 @@ RELATED_PAGES: Dict[str, Tuple[RelatedLink, ...]] = {
         ("Nahrání Σ do zařízení (Teorie)", theory_href("nahrani-matice")),
     ),
     EXPECTATION_TOPIC.anchor: (("Quandela a fotonický hardware v Evropě", PHOTONIC_HARDWARE_PATH),),
-    CONDITION_TOPIC.anchor: (("Wickova–Isserlisova věta a hafnián (Teorie)", theory_href("wickova-veta")),),
+    CONDITION_TOPIC.anchor: (
+        ("Wickova–Isserlisova věta a hafnián (Teorie)", theory_href("wickova-veta")),
+        ("Hafnián a permanent polopatě", HAFNIAN_PATH),
+    ),
     NEXT_STEPS_TOPIC.anchor: (
         ("Exponenciální výhoda: co přesně dokázali (Teorie)", theory_href("exponencialni-vyhoda")),
         ("Odhad GBS-P (Průvodce)", guide_href("pruvodce-gbs-p")),
