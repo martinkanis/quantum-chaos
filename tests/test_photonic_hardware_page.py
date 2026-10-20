@@ -10,9 +10,12 @@ from ui.navigation import (
     show_page,
 )
 from ui.photonic_hardware_content import (
+    GBS_EMULATION_AGREEMENT,
+    GBS_EMULATION_INPUT_COMPONENTS,
     KEY_FINDINGS,
     NOISE_SCENARIOS,
     PHOTONIC_MACHINES,
+    SAMPLING_KINDS_TOPIC,
     SOURCES_ANCHOR,
     TOPICS,
 )
@@ -68,3 +71,11 @@ def test_tabulka_hardwaru_ma_radek_pro_kazdy_stroj():
 
     assert len(rows) == len(PHOTONIC_MACHINES)
     assert any(row.startswith("| Quandela |") and "| ne |" in row for row in rows)
+
+
+def test_napodobeni_gbs_v_percevalu_je_popsane_ulozenymi_cisly():
+    cutoff_per_mode, modes = 6, 3
+
+    assert GBS_EMULATION_INPUT_COMPONENTS == (cutoff_per_mode // 2 + 1) ** modes
+    assert f"({GBS_EMULATION_INPUT_COMPONENTS} složek vstupu)" in SAMPLING_KINDS_TOPIC.explanation
+    assert GBS_EMULATION_AGREEMENT in SAMPLING_KINDS_TOPIC.explanation

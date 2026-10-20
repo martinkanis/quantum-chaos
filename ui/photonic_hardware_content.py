@@ -8,6 +8,7 @@ from typing import Tuple
 from ui.advantage_content import ANGUITA_MONTE_CARLO_ACCELERATOR
 from ui.literature_review_content import EUROHPC_LUCY, EUROHPC_QUANTUM_ACCESS, ORCA_PT1, PERCEVAL, PIQUASSO
 from ui.theory_content import (
+    AARONSON_ARKHIPOV,
     ANDERSEN_SHAN_EXPECTATIONS,
     HAMILTON,
     KRUSE,
@@ -57,6 +58,11 @@ PHOTONIC_MACHINES: Tuple[PhotonicMachine, ...] = (
     PhotonicMachine("Xanadu (Kanada, pro srovnání)", "Borealis, 216 módů", "stlačené vakuum", "ano", "od 2023 mimo cloud"),
 )
 """Who could run GBS or single-photon boson sampling for us; the chapter on Europe gives the sources."""
+
+GBS_EMULATION_AGREEMENT = "4 · 10⁻⁸"
+"""Largest deviation from the hafnian formula in scripts/perceval_gbs_emulation.py (3 modes, ≤ 6 photons per mode)."""
+GBS_EMULATION_INPUT_COMPONENTS = 64
+"""(6/2 + 1)³ Fock states in the truncated squeezed-vacuum input of the same script."""
 
 PERCEVAL_AGREEMENT = (
     "Pravděpodobnosti z Percevalu 1.3.1 se od vzorce s permanenty liší nejvýš o 9,7 · 10⁻¹⁷ (přes všech 56 vzorů), "
@@ -144,6 +150,16 @@ HAMILTON_JEX_NON_GAUSSIAN = Source(
     "Hamilton, C. S., Jex, I.: *Boson sampling from non-Gaussian states*, "
     "[arXiv:2403.17183](https://arxiv.org/abs/2403.17183) (2024) – ČVUT FJFI"
 )
+LUND_SCATTERSHOT = Source(
+    "Lund, A. P., Laing, A., Rahimi-Keshari, S. a kol.: *Boson sampling from a Gaussian state*. Physical Review "
+    "Letters 113, 100502 (2014), [doi:10.1103/PhysRevLett.113.100502](https://doi.org/10.1103/PhysRevLett.113.100502) "
+    "– scattershot boson sampling ze stlačeného světla"
+)
+WANG_TWENTY_PHOTONS = Source(
+    "Wang, H. a kol.: *Boson sampling with 20 input photons and a 60-mode interferometer in a 10^14-dimensional "
+    "Hilbert space*. Physical Review Letters 123, 250503 (2019), "
+    "[doi:10.1103/PhysRevLett.123.250503](https://doi.org/10.1103/PhysRevLett.123.250503)"
+)
 BOREALIS_RETIRED = Source(
     "PennyLane fórum: [Access to Borealis device](https://discuss.pennylane.ai/t/access-to-borealis-device/3322), "
     "15. 8. 2023 – Borealis stažen z cloudu Xanadu"
@@ -205,6 +221,69 @@ jejich hardwaru spustit nejde.
         Reading(QUANDELA_CATALOGUE),
         Reading(MARING_PLATFORM),
         Reading(HAMILTON, "proč GBS potřebuje stlačené světlo"),
+    ),
+)
+
+SAMPLING_KINDS_TOPIC = TheoryTopic(
+    anchor="fotonika-bs-a-gbs",
+    title="Boson sampling, nebo Gaussian boson sampling: v čem je rozdíl",
+    in_short=(
+        "Přístroj je v obou případech stejný – interferometr a detektory fotonů –, liší se jen to, co do něj svítí. "
+        "Boson sampling posílá jednotlivé fotony a pravděpodobnosti výstupů jsou permanenty; GBS posílá stlačené "
+        "vakuum, fotony v něm vznikají po párech a pravděpodobnosti jsou hafniány. Quandela umí první: má zdroj "
+        "jednotlivých fotonů, ne stlačeného světla."
+    ),
+    explanation=r"""
+**Co mají společné.** Světlo vstoupí do $m$ módů, projde interferometrem $U$ (síť děličů svazku a fázových
+posuvů) a detektory spočítají fotony v každém výstupu. Výsledek jednoho výstřelu je vzor $S = (s_1, \dots, s_m)$.
+V obou případech je losování z rozdělení vzorů pro klasický počítač prokazatelně těžké (za rozumných předpokladů).
+
+| | boson sampling | Gaussian boson sampling |
+|:---|:---|:---|
+| navrhli | Aaronson a Arkhipov (2011) | Hamilton a kol. (2017) |
+| vstup | $n$ jednotlivých fotonů | stlačené vakuum v každém módu |
+| počet fotonů ve výstřelu | vždy přesně $n$ | náhodný, sudý (fotony vznikají po párech) |
+| pravděpodobnost vzoru | $\lvert\mathrm{Perm}(U_{S,T})\rvert^2 / S!$ | $\lvert\mathrm{Haf}(B_S)\rvert^2 / (S!\,\prod_j \cosh r_j)$ |
+| maticová funkce | permanent | hafnián |
+| zdroj světla | kvantová tečka, ohlašovaný foton | nelineární krystal nebo vlnovod |
+| příklady strojů | Quandela, QuiX, USTC (20 fotonů) | Jiuzhang, Borealis, PaQS |
+| odhad typu GBS-I | permanentní varianta (příloha F) | GBS-I a GBS-P (Andersen a Shan) |
+
+**Proč permanent a proč hafnián.** Při boson samplingu má každý foton svůj vstup a hledá se, který foton skončil
+v kterém detektoru – to je *přiřazení* dvou různých seznamů, a součet přes všechna přiřazení je permanent. Ve
+stlačeném vakuu vznikají fotony po dvojicích a hledá se, které zachycené fotony tvořily pár – to je *rozdělení
+jednoho seznamu do dvojic*, a součet přes všechna taková rozdělení je hafnián. Rozdíl polopatě a v datových
+strukturách vysvětluje stránka o hafniánu.
+
+**Proč GBS na Quandele nejde.**
+
+- *Zdroj:* kvantová tečka vyšle na puls nejvýš jeden foton. Stlačené vakuum je superpozice 0, 2, 4, … fotonů a
+  vzniká v nelineárním materiálu (parametrická down-konverze); takový zdroj procesory Quandely nemají.
+- *Optika to nedožene:* interferometr je lineární a zachovává počet fotonů, takže ze vstupu s pevným počtem fotonů
+  superpozici různých počtů nevyrobí.
+- *Software:* Perceval 1.3.1 ani jeho jádro nemají stlačené stavy, hafniány ani torontiány (jejich obdobu pro
+  detektory, které jen rozliší „foton ano/ne“); jádro počítá permanenty.
+
+**V simulátoru to ale oklikou jde (náš experiment).** Stlačené vakuum jde zapsat jako superpozici Fockových stavů se
+sudým počtem fotonů a simulátor Percevalu umí takovou superpozici poslat interferometrem. Pro 3 módy a nejvýš
+6 fotonů na mód (64 složek vstupu) se pravděpodobnosti shodují s hafniánovým vzorcem
+z této aplikace na 4 · 10⁻⁸. Je to ovšem obyčejná klasická simulace: počet složek roste jako
+$(K/2+1)^m$ pro $K$ fotonů na mód, takže jde jen o malé případy, a na skutečný procesor takový vstup nahrát nejde.
+
+**Obráceně to funguje.** Stroj se stlačeným světlem umí i boson sampling: dvoumódové stlačené vakuum vytvoří pár
+fotonů, detekce jednoho z nich „ohlásí“ druhý a z mnoha takových zdrojů se náhodně vybere vstup (scattershot boson
+sampling, Lund a kol. 2014). Permanent je zvláštní případ hafniánu, GBS je tedy obecnější úloha.
+
+**Co tedy znamená „Quandela umí boson sampling“.** Variantu Aaronsona a Arkhipova s jednotlivými fotony – tu
+předvedli na svém čipu se šesti fotony (Maring a kol.) a jejich dokumentace k ní má příklady. GBS se stlačeným
+světlem to není.
+""",
+    further_reading=(
+        Reading(AARONSON_ARKHIPOV, "boson sampling s jednotlivými fotony"),
+        Reading(HAMILTON, "Gaussian boson sampling"),
+        Reading(LUND_SCATTERSHOT),
+        Reading(WANG_TWENTY_PHOTONS, "boson sampling s 20 fotony z kvantové tečky"),
+        Reading(MARING_PLATFORM, "boson sampling na čipu Quandely"),
     ),
 )
 
@@ -354,6 +433,7 @@ RECOMMENDATION_TOPIC = TheoryTopic(
 TOPICS: Tuple[TheoryTopic, ...] = (
     COMPANY_TOPIC,
     HARDWARE_TOPIC,
+    SAMPLING_KINDS_TOPIC,
     SOFTWARE_TOPIC,
     USE_CASE_TOPIC,
     EUROPE_TOPIC,
@@ -365,6 +445,11 @@ KEY_FINDINGS: Tuple[KeyFinding, ...] = (
         "**Quandela GBS neumí.** Její stroje pracují s jednotlivými fotony z kvantových teček, ne se stlačeným "
         "světlem; Perceval nezná hafniány ani stlačené stavy.",
         HARDWARE_TOPIC.anchor,
+    ),
+    KeyFinding(
+        "**Boson sampling ≠ GBS.** Jednotlivé fotony dávají permanenty, stlačené světlo hafniány. Malé GBS jde "
+        "v simulátoru Percevalu napodobit oklikou, na hardwaru ne.",
+        SAMPLING_KINDS_TOPIC.anchor,
     ),
     KeyFinding(
         "**Umí ale obdobu s jednotlivými fotony.** Odhad GBS-I přeložený na permanenty jsme v Percevalu ověřili: "

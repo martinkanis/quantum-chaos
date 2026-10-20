@@ -10,7 +10,7 @@ from gbs.boson_sampling import REFERENCE_MODES, REFERENCE_PHOTONS, estimate, ref
 from gbs.monomial_problem import required_samples
 from ui import ids
 from ui.advantage_results import format_count, format_number
-from ui.navigation import HIDDEN, LITERATURE_REVIEW_PATH, photonic_hardware_href
+from ui.navigation import HAFNIAN_PATH, HIDDEN, LITERATURE_REVIEW_PATH, photonic_hardware_href
 from ui.photonic_hardware_content import (
     EUROPE_TOPIC,
     INTRO,
@@ -18,13 +18,20 @@ from ui.photonic_hardware_content import (
     NOISE_SCENARIOS,
     PERCEVAL_AGREEMENT,
     PHOTONIC_MACHINES,
+    SAMPLING_KINDS_TOPIC,
     SOURCES_ANCHOR,
     TITLE,
     TOPICS,
     USE_CASE_TOPIC,
 )
 from ui.theory_content import TheoryTopic
-from ui.topic_sections import key_findings_card, sources_section, table_of_contents, topic_section
+from ui.topic_sections import (
+    key_findings_card,
+    related_pages,
+    sources_section,
+    table_of_contents,
+    topic_section,
+)
 
 TARGET_RELATIVE_ERROR = 0.01
 PERCENT_DIGITS = 2
@@ -100,9 +107,12 @@ def _signed_percent(value: float) -> str:
     return f"{100 * value:+.{PERCENT_DIGITS}f}".replace(".", ",").replace("-", "−") + " %"
 
 
-def _illustrations(topic: TheoryTopic) -> List[html.Div]:
+def _illustrations(topic: TheoryTopic) -> List:
     build_illustration = ILLUSTRATIONS.get(topic.anchor)
-    return [build_illustration()] if build_illustration else []
+    illustrations = [build_illustration()] if build_illustration else []
+    if topic.anchor == SAMPLING_KINDS_TOPIC.anchor:
+        illustrations += related_pages((("Hafnián a permanent polopatě", HAFNIAN_PATH),))
+    return illustrations
 
 
 def _perceval_experiment() -> html.Div:
