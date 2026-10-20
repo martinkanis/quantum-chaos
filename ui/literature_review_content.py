@@ -42,7 +42,9 @@ SOURCES_ANCHOR = "reserse-zdroje"
 
 INTRO = (
     "Shrnutí rešerše literatury, patentů, projektů a hardwaru k jedné otázce: může fotonický Gaussian Boson "
-    f"Sampler (GBS) nahradit Monte Carlo při odhadu finančního rizika? Rešerše je ze dne {REVIEW_DATE}, zdroje byly "
+    "Sampler (GBS) jako zdroj vzorků zrychlit Monte Carlo odhad finančního rizika? GBS Monte Carlo nenahrazuje: "
+    "odhad z jeho výstřelů je pořád Monte Carlo, jen losuje z kvantového rozdělení, a funguje jen pro gaussovské "
+    f"střední hodnoty polynomů. Rešerše je ze dne {REVIEW_DATE}, zdroje byly "
     f"znovu ověřeny {SOURCES_CHECKED_DATE}. Začni krátkým TL;DR, podrobnosti jsou v kapitolách a každé tvrzení má "
     "zdroj; kde jde o náš výklad, je to výslovně napsané."
 )

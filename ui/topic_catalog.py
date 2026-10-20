@@ -145,8 +145,8 @@ OPTIMIZATION_TOPIC = ResearchTopic(
 
 LITERATURE_REVIEW = PageEntry(
     ids.LITERATURE_REVIEW_PAGE, "Rešerše: GBS pro odhad finančního rizika", LITERATURE_REVIEW_PATH,
-    "TL;DR a přehled literatury, patentů, hardwaru a kritiky: co je o Gaussian Boson Samplingu jako náhradě "
-    "Monte Carla ve financích doložené, co ne a kde jsou otevřené otázky. Na konci kontrolní otázky.",
+    "TL;DR a přehled literatury, patentů, hardwaru a kritiky: co je o Gaussian Boson Samplingu jako zdroji vzorků "
+    "pro Monte Carlo ve financích doložené, co ne a kde jsou otevřené otázky. Na konci kontrolní otázky.",
 )
 
 PHOTONIC_HARDWARE = PageEntry(
@@ -160,8 +160,8 @@ LITERATURE_REVIEW_TOPIC = ResearchTopic(
     anchor="tema-reserse-gbs",
     title="Rešerše: Gaussian Boson Sampling a finanční riziko",
     summary=(
-        "Shrnutí rešerše k otázce, jestli může fotonický Gaussian Boson Sampler nahradit Monte Carlo při odhadu "
-        "finančního rizika: případ Jyske Bank a Qpurpose, teorie, konkurenční výzkum, hardware a kritická "
+        "Shrnutí rešerše k otázce, jestli může fotonický Gaussian Boson Sampler jako zdroj vzorků zrychlit Monte "
+        "Carlo odhad finančního rizika: případ Jyske Bank a Qpurpose, teorie, konkurenční výzkum, hardware a kritická "
         "literatura. Začni krátkým TL;DR, podrobnosti jsou v kapitolách."
     ),
     sections=(TopicSection("Přehled literatury", (LITERATURE_REVIEW, PHOTONIC_HARDWARE)),),
