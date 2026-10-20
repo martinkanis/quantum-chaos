@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 from dash import dcc, html
 
@@ -33,17 +33,20 @@ from ui.navigation import (
     literature_review_href,
     theory_href,
 )
-from ui.theory_content import TheoryTopic
-from ui.topic_sections import key_findings_card, sources_section, table_of_contents, topic_section
+from ui.topic_sections import (
+    RelatedLink,
+    key_findings_card,
+    related_pages,
+    sources_section,
+    table_of_contents,
+    topic_section,
+)
 
 REVIEW_QUESTIONS_ANCHOR = "reserse-otazky"
 REVIEW_QUESTIONS_HINT = (
     "Zkus nejdřív odpovědět sám a teprve pak odpověď rozbal. Vybavování si látky ji upevní víc než další čtení "
     "(tzv. testing effect)."
 )
-
-RelatedLink = Tuple[str, str]
-"""Label and link to a page of the app that explains the topic in detail."""
 
 RELATED_PAGES: Dict[str, Tuple[RelatedLink, ...]] = {
     CLAIMS_TOPIC.anchor: (
@@ -83,7 +86,10 @@ def build_literature_review_page() -> html.Div:
             html.P(INTRO, className="lead"),
             _key_findings_card(),
             table_of_contents(TOPICS, literature_review_href, SOURCES_ANCHOR),
-            *[topic_section(number, topic, _related_pages(topic)) for number, topic in enumerate(TOPICS, start=1)],
+            *[
+                topic_section(number, topic, related_pages(RELATED_PAGES.get(topic.anchor, ())))
+                for number, topic in enumerate(TOPICS, start=1)
+            ],
             _review_questions_card(),
             sources_section(TOPICS, SOURCES_ANCHOR),
         ],
@@ -97,18 +103,6 @@ def _key_findings_card() -> html.Section:
         className="details-link",
     )
     return key_findings_card(KEY_FINDINGS, literature_review_href, footer)
-
-
-def _related_pages(topic: TheoryTopic) -> List[html.P]:
-    related = RELATED_PAGES.get(topic.anchor, ())
-    if not related:
-        return []
-    links: List = []
-    for label, href in related:
-        if links:
-            links.append(", ")
-        links.append(dcc.Link(label, href=href))
-    return [html.P(className="hint", children=["Podrobně v aplikaci: ", *links])]
 
 
 def _review_questions_card() -> html.Section:

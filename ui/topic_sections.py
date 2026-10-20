@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Callable, List, Optional, Sequence
+from typing import Callable, List, Optional, Sequence, Tuple
 
 from dash import dcc, html
 
 from ui.navigation import caveat_href
 from ui.reading_time import reading_minutes, reading_time_label
 from ui.theory_content import KeyFinding, Reading, Source, TheoryTopic, all_sources
+
+RelatedLink = Tuple[str, str]
+"""Label and link to a page of the app that explains a topic in detail."""
 
 
 def key_findings_card(
@@ -75,6 +78,18 @@ def topic_section(number: int, topic: TheoryTopic, illustrations: Sequence[html.
             markdown_list([_reading_item(reading) for reading in topic.further_reading]),
         ],
     )
+
+
+def related_pages(links: Sequence[RelatedLink]) -> List[html.P]:
+    """One hint line with the app pages that explain a topic in detail; nothing when there are none."""
+    if not links:
+        return []
+    children: List = []
+    for label, href in links:
+        if children:
+            children.append(", ")
+        children.append(dcc.Link(label, href=href))
+    return [html.P(className="hint", children=["Podrobně v aplikaci: ", *children])]
 
 
 def sources_section(topics: Sequence[TheoryTopic], anchor: str) -> html.Section:
