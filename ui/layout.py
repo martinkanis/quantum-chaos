@@ -11,6 +11,7 @@ from ui.caveats_page import build_caveats_page
 from ui.failure_diagnostics_page import build_failure_diagnostics_page
 from ui.gbs_page import build_gbs_page
 from ui.guide_page import build_guide_page
+from ui.integrals_cheat_sheet_page import build_integrals_cheat_sheet_page
 from ui.literature_review_page import build_literature_review_page
 from ui.navigation import build_navigation
 from ui.photonic_hardware_page import build_photonic_hardware_page
@@ -47,6 +48,7 @@ def build_layout() -> html.Div:
             build_random_matrix_page(),
             build_failure_diagnostics_page(),
             build_random_matrix_gbs_page(),
+            build_integrals_cheat_sheet_page(),
             build_study_pager(),
         ]
     )

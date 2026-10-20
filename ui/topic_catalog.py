@@ -13,6 +13,7 @@ from ui.navigation import (
     FAILURE_DIAGNOSTICS_PATH,
     GBS_PATH,
     GUIDE_PATH,
+    INTEGRALS_CHEAT_SHEET_PATH,
     LITERATURE_REVIEW_PATH,
     PHOTONIC_HARDWARE_PATH,
     PORTFOLIO_PATH,
@@ -205,8 +206,25 @@ RESEARCH_DIRECTIONS_TOPIC = ResearchTopic(
     sections=(TopicSection("Náměty", (FAILURE_DIAGNOSTICS, RANDOM_MATRIX_GBS)),),
 )
 
+INTEGRALS_CHEAT_SHEET = PageEntry(
+    ids.INTEGRALS_CHEAT_SHEET_PAGE, "Tahák: integrály", INTEGRALS_CHEAT_SHEET_PATH,
+    "Kuchařka základních integrálů, per partes, substituce, určitý a nevlastní integrál, Fubiniova věta "
+    "a gaussovské integrály, na kterých stojí GBS a Monte Carlo.",
+)
+
+CHEAT_SHEETS_TOPIC = ResearchTopic(
+    anchor="tema-tahaky",
+    title="Matematické taháky",
+    summary=(
+        "Stručné přehledy matematiky, kterou potřebují ostatní témata: vzorce a pravidla s krátkými příklady "
+        "a odkazy na výklad v aplikaci i na videa a učebnice."
+    ),
+    sections=(TopicSection("Taháky", (INTEGRALS_CHEAT_SHEET,)),),
+)
+
 RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (
     MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, OPTIMIZATION_TOPIC, RANDOM_MATRIX_TOPIC, RESEARCH_DIRECTIONS_TOPIC,
+    CHEAT_SHEETS_TOPIC,
 )
 
 

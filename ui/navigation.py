@@ -23,6 +23,7 @@ PHOTONIC_HARDWARE_PATH = "/reserse-gbs-financni-riziko/fotonicky-hardware"
 RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
 RANDOM_MATRIX_GBS_PATH = "/vyzkumne-smery/nahodne-matice-a-gbs"
 FAILURE_DIAGNOSTICS_PATH = "/vyzkumne-smery/kdy-gbs-selze"
+INTEGRALS_CHEAT_SHEET_PATH = "/tahaky/integraly"
 
 VISIBLE: dict = {}
 """No inline display, so the stylesheet decides how a shown element is laid out (reading pages use a grid)."""
@@ -47,6 +48,7 @@ PAGE_IDS = (
     ids.RANDOM_MATRIX_PAGE,
     ids.RANDOM_MATRIX_GBS_PAGE,
     ids.FAILURE_DIAGNOSTICS_PAGE,
+    ids.INTEGRALS_CHEAT_SHEET_PAGE,
 )
 MONTE_CARLO_PAGES = frozenset({
     ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
@@ -59,6 +61,7 @@ NAV_LINK_IDS = (
     ids.NAV_OPTIMIZATION_LINK,
     ids.NAV_RANDOM_MATRIX_LINK,
     ids.NAV_RESEARCH_DIRECTIONS_LINK,
+    ids.NAV_CHEAT_SHEETS_LINK,
     ids.NAV_ACADEMY_LINK,
     ids.NAV_PORTFOLIO_LINK,
     ids.NAV_GBS_LINK,
@@ -81,6 +84,7 @@ PAGE_BY_PATH = {
     RANDOM_MATRIX_PATH: ids.RANDOM_MATRIX_PAGE,
     RANDOM_MATRIX_GBS_PATH: ids.RANDOM_MATRIX_GBS_PAGE,
     FAILURE_DIAGNOSTICS_PATH: ids.FAILURE_DIAGNOSTICS_PAGE,
+    INTEGRALS_CHEAT_SHEET_PATH: ids.INTEGRALS_CHEAT_SHEET_PAGE,
 }
 ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.TOPICS_PAGE: frozenset({ids.NAV_TOPICS_LINK}),
@@ -99,6 +103,7 @@ ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.RANDOM_MATRIX_PAGE: frozenset({ids.NAV_RANDOM_MATRIX_LINK}),
     ids.RANDOM_MATRIX_GBS_PAGE: frozenset({ids.NAV_RESEARCH_DIRECTIONS_LINK}),
     ids.FAILURE_DIAGNOSTICS_PAGE: frozenset({ids.NAV_RESEARCH_DIRECTIONS_LINK}),
+    ids.INTEGRALS_CHEAT_SHEET_PAGE: frozenset({ids.NAV_CHEAT_SHEETS_LINK}),
 }
 
 # Pages are only hidden, so the browser cannot jump to an anchor on its own. Formulas (MathJax)
@@ -152,6 +157,10 @@ def andersen_shan_paper_href(anchor: str) -> str:
     return f"{ANDERSEN_SHAN_PAPER_PATH}#{anchor}"
 
 
+def integrals_cheat_sheet_href(anchor: str) -> str:
+    return f"{INTEGRALS_CHEAT_SHEET_PATH}#{anchor}"
+
+
 def literature_review_href(anchor: str) -> str:
     return f"{LITERATURE_REVIEW_PATH}#{anchor}"
 
@@ -197,6 +206,9 @@ def build_navigation() -> html.Header:
                     dcc.Link(
                         "Výzkumné směry", href=FAILURE_DIAGNOSTICS_PATH, id=ids.NAV_RESEARCH_DIRECTIONS_LINK,
                         className=LINK_CLASS,
+                    ),
+                    dcc.Link(
+                        "Taháky", href=INTEGRALS_CHEAT_SHEET_PATH, id=ids.NAV_CHEAT_SHEETS_LINK, className=LINK_CLASS,
                     ),
                     dcc.Link("Quantum Academy", href=ACADEMY_PATH, id=ids.NAV_ACADEMY_LINK, className=LINK_CLASS),
                     html.A("Odhlásit", href=LOGOUT_PATH, className="nav-link logout-link"),
