@@ -5,6 +5,7 @@ from dash import dcc, html
 from ui import ids
 from ui.academy_page import build_academy_page
 from ui.advantage_page import build_advantage_page
+from ui.andersen_shan_paper_page import build_andersen_shan_paper_page
 from ui.breadcrumbs import build_breadcrumb
 from ui.caveats_page import build_caveats_page
 from ui.failure_diagnostics_page import build_failure_diagnostics_page
@@ -39,6 +40,7 @@ def build_layout() -> html.Div:
             build_advantage_page(),
             build_guide_page(),
             build_qpurpose_page(),
+            build_andersen_shan_paper_page(),
             build_vqe_paper_page(),
             build_literature_review_page(),
             build_photonic_hardware_page(),

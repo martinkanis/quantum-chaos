@@ -8,6 +8,7 @@ from typing import Collection, List, Optional, Tuple
 from ui import ids
 from ui.navigation import (
     ADVANTAGE_PATH,
+    ANDERSEN_SHAN_PAPER_PATH,
     CAVEATS_PATH,
     FAILURE_DIAGNOSTICS_PATH,
     GBS_PATH,
@@ -102,6 +103,13 @@ QPURPOSE_CHECK = PageEntry(
     parent_page_id=ids.ADVANTAGE_PAGE,
 )
 
+ANDERSEN_SHAN_PAPER = PageEntry(
+    ids.ANDERSEN_SHAN_PAPER_PAGE, "Článek Andersena a Shan krok za krokem", ANDERSEN_SHAN_PAPER_PATH,
+    "Čtení s komentářem k hlavnímu článku o výhodě GBS: motivace, zadání gaussovské úlohy, multiindexy, hustota "
+    "normálního rozdělení a podmínka (A1), každý vzorec po částech a s příkladem.",
+    parent_page_id=ids.ADVANTAGE_PAGE,
+)
+
 MONTE_CARLO_TOPIC = ResearchTopic(
     anchor="tema-monte-carlo",
     title="Monte Carlo a modifikované Monte Carlo",
@@ -113,7 +121,7 @@ MONTE_CARLO_TOPIC = ResearchTopic(
     sections=(
         TopicSection("Klasické Monte Carlo", (PORTFOLIO,)),
         TopicSection("Modifikované Monte Carlo: Gaussian Boson Sampling", (GBS, ADVANTAGE)),
-        TopicSection("Výklad a literatura", (THEORY, CAVEATS, GUIDE, QPURPOSE_CHECK)),
+        TopicSection("Výklad a literatura", (THEORY, CAVEATS, GUIDE, ANDERSEN_SHAN_PAPER, QPURPOSE_CHECK)),
     ),
 )
 

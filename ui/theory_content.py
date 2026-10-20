@@ -93,7 +93,10 @@ METROPOLIS_ULAM = Source(
     "Metropolis, N., Ulam, S.: *The Monte Carlo Method*. Journal of the American Statistical Association 44 "
     "(1949), 335–341"
 )
-GLASSERMAN = Source("Glasserman, P.: *Monte Carlo Methods in Financial Engineering*. Springer, New York 2004")
+GLASSERMAN = Source(
+    "Glasserman, P.: *Monte Carlo Methods in Financial Engineering*. Springer, New York 2004, "
+    "[doi:10.1007/978-0-387-21617-1](https://doi.org/10.1007/978-0-387-21617-1)"
+)
 MARKOWITZ = Source("Markowitz, H.: *Portfolio Selection*. The Journal of Finance 7 (1952), 77–91")
 ISSERLIS = Source(
     "Isserlis, L.: *On a formula for the product-moment coefficient of any order of a normal frequency "
@@ -141,18 +144,22 @@ RECK = Source(
 CLEMENTS = Source(
     "Clements, W. R. a kol.: *Optimal design for universal multiport interferometers*. Optica 3, 1460 (2016)"
 )
-ZHONG = Source("Zhong, H.-S. a kol.: *Quantum computational advantage using photons*. Science 370, 1460 (2020)")
+ZHONG = Source(
+    "Zhong, H.-S. a kol.: *Quantum computational advantage using photons*. Science 370, 1460 (2020), "
+    "[doi:10.1126/science.abe8770](https://doi.org/10.1126/science.abe8770)"
+)
 MADSEN = Source(
     "Madsen, L. S. a kol.: *Quantum computational advantage with a programmable photonic processor*. "
     "Nature 606, 75 (2022), [doi:10.1038/s41586-022-04725-x](https://doi.org/10.1038/s41586-022-04725-x)"
 )
 BRADLER = Source(
     "Brádler, K., Dallaire-Demers, P.-L., Rebentrost, P., Su, D., Weedbrook, C.: *Gaussian boson sampling for "
-    "perfect matchings of arbitrary graphs*. Physical Review A 98, 032310 (2018)"
+    "perfect matchings of arbitrary graphs*. Physical Review A 98, 032310 (2018), "
+    "[doi:10.1103/PhysRevA.98.032310](https://doi.org/10.1103/PhysRevA.98.032310)"
 )
 ARRAZOLA_BROMLEY = Source(
     "Arrazola, J. M., Bromley, T. R.: *Using Gaussian Boson Sampling to Find Dense Subgraphs*. Physical Review "
-    "Letters 121, 030503 (2018)"
+    "Letters 121, 030503 (2018), [doi:10.1103/PhysRevLett.121.030503](https://doi.org/10.1103/PhysRevLett.121.030503)"
 )
 QUESADA_THRESHOLD_DETECTORS = Source(
     "Quesada, N., Arrazola, J. M., Killoran, N.: *Gaussian boson sampling using threshold detectors*. Physical "

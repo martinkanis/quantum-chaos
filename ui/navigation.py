@@ -16,6 +16,7 @@ THEORY_PATH = "/gbs/teorie"
 ADVANTAGE_PATH = "/vyhoda-gbs"
 GUIDE_PATH = "/vyhoda-gbs/pruvodce"
 QPURPOSE_PATH = "/vyhoda-gbs/qpurpose"
+ANDERSEN_SHAN_PAPER_PATH = "/vyhoda-gbs/clanek-andersen-shan"
 VQE_PAPER_PATH = "/kvantova-optimalizace/vqe-ibm-fez"
 LITERATURE_REVIEW_PATH = "/reserse-gbs-financni-riziko"
 PHOTONIC_HARDWARE_PATH = "/reserse-gbs-financni-riziko/fotonicky-hardware"
@@ -39,6 +40,7 @@ PAGE_IDS = (
     ids.ADVANTAGE_PAGE,
     ids.GUIDE_PAGE,
     ids.QPURPOSE_PAGE,
+    ids.ANDERSEN_SHAN_PAPER_PAGE,
     ids.VQE_PAPER_PAGE,
     ids.LITERATURE_REVIEW_PAGE,
     ids.PHOTONIC_HARDWARE_PAGE,
@@ -48,7 +50,7 @@ PAGE_IDS = (
 )
 MONTE_CARLO_PAGES = frozenset({
     ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
-    ids.QPURPOSE_PAGE,
+    ids.QPURPOSE_PAGE, ids.ANDERSEN_SHAN_PAPER_PAGE,
 })
 NAV_LINK_IDS = (
     ids.NAV_TOPICS_LINK,
@@ -72,6 +74,7 @@ PAGE_BY_PATH = {
     ADVANTAGE_PATH: ids.ADVANTAGE_PAGE,
     GUIDE_PATH: ids.GUIDE_PAGE,
     QPURPOSE_PATH: ids.QPURPOSE_PAGE,
+    ANDERSEN_SHAN_PAPER_PATH: ids.ANDERSEN_SHAN_PAPER_PAGE,
     VQE_PAPER_PATH: ids.VQE_PAPER_PAGE,
     LITERATURE_REVIEW_PATH: ids.LITERATURE_REVIEW_PAGE,
     PHOTONIC_HARDWARE_PATH: ids.PHOTONIC_HARDWARE_PAGE,
@@ -89,6 +92,7 @@ ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.ADVANTAGE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
     ids.GUIDE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
     ids.QPURPOSE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
+    ids.ANDERSEN_SHAN_PAPER_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
     ids.VQE_PAPER_PAGE: frozenset({ids.NAV_OPTIMIZATION_LINK}),
     ids.LITERATURE_REVIEW_PAGE: frozenset({ids.NAV_LITERATURE_REVIEW_LINK}),
     ids.PHOTONIC_HARDWARE_PAGE: frozenset({ids.NAV_LITERATURE_REVIEW_LINK}),
@@ -142,6 +146,10 @@ def guide_href(anchor: str) -> str:
 
 def qpurpose_href(anchor: str) -> str:
     return f"{QPURPOSE_PATH}#{anchor}"
+
+
+def andersen_shan_paper_href(anchor: str) -> str:
+    return f"{ANDERSEN_SHAN_PAPER_PATH}#{anchor}"
 
 
 def literature_review_href(anchor: str) -> str:

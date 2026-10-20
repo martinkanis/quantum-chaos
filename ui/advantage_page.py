@@ -34,7 +34,7 @@ from ui.components import (
 from ui.gbs_page import DEFAULT_MAX_SAMPLE_SIZE, SAMPLE_SIZE_OPTIONS
 from ui.guide_basics import BIG_PICTURE
 from ui.guide_practice import CAVEATS, FIVE_PROBLEMS, QISKIT, QPURPOSE
-from ui.navigation import GUIDE_PATH, HIDDEN, guide_href
+from ui.navigation import ANDERSEN_SHAN_PAPER_PATH, GUIDE_PATH, HIDDEN, guide_href
 from ui.topic_sections import markdown_list, source_items
 
 TUNING_OPTIONS = [
@@ -55,6 +55,10 @@ def build_advantage_page() -> html.Div:
             html.P(LEAD, className="lead"),
             dcc.Link(
                 "Průvodce pro začínajícího doktoranda: proč a jak to celé funguje →", href=GUIDE_PATH,
+                className="back-link",
+            ),
+            dcc.Link(
+                "Článek Andersena a Shan krok za krokem: co přesně počítají →", href=ANDERSEN_SHAN_PAPER_PATH,
                 className="back-link",
             ),
             html.Div(className="in-short", children=[html.Strong("V kostce: "), dcc.Markdown(IN_SHORT)]),
