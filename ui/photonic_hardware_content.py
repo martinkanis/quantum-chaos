@@ -82,6 +82,10 @@ MARING_PLATFORM = Source(
     "[arXiv:2306.00874](https://arxiv.org/abs/2306.00874) (2023) – první šestifotonový boson sampling na univerzálním "
     "programovatelném čipu"
 )
+PERCEVAL_LICENCE = Source(
+    "GitHub: [licence Percevalu](https://github.com/Quandela/Perceval/blob/main/LICENSE) – MIT s výjimkou pro jádro "
+    "exqalibur"
+)
 EXQALIBUR_LICENCE = Source(
     "PyPI: [exqalibur](https://pypi.org/project/exqalibur/) – výpočetní jádro Percevalu, licence CC BY-NC-ND 4.0"
 )
@@ -222,12 +226,14 @@ SLOS (přesné rozdělení), Naive a NaiveApprox (permanent přesně, nebo Gurvi
 gaussovskými stavy, hafniány ani torontiány; jádro počítá permanenty (Glynn, Ryser) a jejich Gurvitsův odhad.
 
 **Praktické podmínky.** Perceval potřebuje Python ≥ 3.10, takže v této aplikaci (lokálně Python 3.9) běží zvlášť –
-skript `scripts/perceval_boson_sampling.py` přes Podman. Perceval je pod licencí MIT, jeho jádro exqalibur ale pod
-**CC BY-NC-ND 4.0**, tedy jen pro nekomerční použití – pro výzkum v pořádku, pro komerční službu nutné řešit
-s Quandelou.
+skript `scripts/perceval_boson_sampling.py` přes Podman. Perceval je pod licencí MIT. Jeho výpočetní jádro exqalibur
+má samo o sobě licenci **CC BY-NC-ND 4.0** (jen nekomerční použití), licence Percevalu ale obsahuje výjimku: exqalibur
+se smí v rámci Percevalu, tedy přes jeho pythonovské vazby, používat a šířit za podmínek MIT. Pro výzkum to
+neznamená žádné omezení; před komerčním nasazením bychom tento výklad (náš) ověřili s Quandelou.
 """,
     further_reading=(
         Reading(PERCEVAL, "dokumentace a kód"),
+        Reading(PERCEVAL_LICENCE),
         Reading(EXQALIBUR_LICENCE),
     ),
 )
@@ -246,8 +252,10 @@ pro libovolný sampler s $P(S) = w_S\,\varphi(S)$. U jednotlivých fotonů je $P
 takže výstřel se vzorem $S$ přispěje hodnotou $Z(S) = a_S\,S!$ a průměr odhaduje
 $$\mu = \sum_S a_S\,|\mathrm{Perm}(U_{S,T})|^2.$$
 Místo hafniánů reálné gaussovské míry tak vystupují permanenty – obdoba rodiny $\mathrm{Haf}^2$ pro komplexní
-gaussovská rozdělení. Sama Qpurpose na své stránce partnerů píše, že podobné exponenciální zrychlení očekává i pro
-boson sampling; experimentálně tuto cestu předvedla skupina z Twente.
+gaussovská rozdělení. Sami autoři v příloze F prvního článku popisují komplexní obdobu gaussovské úlohy, ve které
+místo hafniánů vystupují permanenty, a obdobné výsledky pro boson sampling slibují v samostatné práci. Qpurpose na
+své stránce partnerů píše, že podobné exponenciální zrychlení očekává i pro boson sampling; experimentálně tuto
+cestu předvedla skupina z Twente.
 
 **Náš experiment v Percevalu.** Haarovsky náhodný interferometr se 6 módy, 3 fotony na vstupu, koeficienty $a_S$
 náhodně z $(0{,}5;\,1{,}5)$. Pravděpodobnosti z Percevalu se shodují se vzorcem s permanenty, odhad je nevychýlený
@@ -263,7 +271,7 @@ stroje v cloudu a nakonec procesor Belenos v cloudu Quandela nebo Lucy přes vý
 světlem Quandela použít nejde – viz další kapitola.
 """,
     further_reading=(
-        Reading(ANDERSEN_SHAN_EXPECTATIONS, "obecný odhad GBS-I, Def. 3.3"),
+        Reading(ANDERSEN_SHAN_EXPECTATIONS, "obecný odhad GBS-I (Def. 3.3) a permanenty v příloze F"),
         Reading(ANGUITA_MONTE_CARLO_ACCELERATOR, "boson sampling jako akcelerátor Monte Carla"),
         Reading(QPURPOSE_PARTNERSHIPS),
         Reading(EUROHPC_QUANTUM_CALL, "přístup k Lucy"),
@@ -333,7 +341,7 @@ RECOMMENDATION_TOPIC = TheoryTopic(
    DTU PhotoQ, až zpřístupní cloud.
 3. **Quandela pro obdobu s jednotlivými fotony:** v Percevalu zkoumat, jak šum zdroje vychyluje odhad; pak žádost
    do pilotní výzvy EuroHPC o čas na stroji Lucy – nejbližší uzávěrka je 1. 11. 2026, přístup na 3 nebo 6 měsíců.
-4. **Na co dát pozor:** licence jádra Percevalu (nekomerční), patentová přihláška Twente na Monte Carlo s optickým
+4. **Na co dát pozor:** licence jádra exqalibur mimo Perceval (nekomerční), patentová přihláška Twente na Monte Carlo s optickým
    kvantovým počítačem a to, že sama obdoba GBS-I pro permanenty zatím nemá důkaz výhody – jde o otevřenou otázku.
 """,
     further_reading=(
