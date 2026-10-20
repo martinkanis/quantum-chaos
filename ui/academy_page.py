@@ -10,7 +10,7 @@ from dash import dcc, html
 from ui import ids
 from ui.advantage_content import QISKIT_DOCUMENTATION
 from ui.guide_practice import STRAWBERRY_FIELDS
-from ui.navigation import HIDDEN
+from ui.navigation import HIDDEN, PHOTONIC_HARDWARE_PATH
 from ui.theory_content import (
     AARONSON_ARKHIPOV,
     ANDERSEN_SHAN_EXPECTATIONS,
@@ -128,6 +128,56 @@ ACADEMY_SECTIONS: Tuple[AcademySection, ...] = (
                 "CUDA-Q a reálný hardware",
                 "https://nvidia.github.io/cuda-quantum/latest/using/examples/hardware_providers.html",
                 "Příklady připojení k poskytovatelům, mj. k fotonickému boson sampleru ORCA s časovými biny.",
+            ),
+        ),
+    ),
+    AcademySection(
+        "Quandela: fotonický hardware a Perceval",
+        tldr=(
+            "**Quandela** (Francie) staví fotonické kvantové počítače na jednotlivých fotonech z kvantových teček. "
+            "Procesor **Belenos** (12 qubitů, 24 módů) je v jejich cloudu a stejný typ stroje, **Lucy**, provozuje "
+            "EuroHPC v TGCC u Paříže; výzkumníci z Evropy na něj mohou žádat zdarma v pilotní výzvě s měsíčními "
+            "uzávěrkami.\n\n"
+            "**Perceval** je jejich otevřený framework v Pythonu (verze ≥ 3.10, `pip install perceval-quandela`, "
+            "licence MIT): lineárně optické obvody, realistický šum zdroje, přesné i vzorkovací simulátory "
+            "a odesílání úloh na skutečné procesory přes cloud Quandela nebo Scaleway.\n\n"
+            "**Pro naši úlohu:** GBS se stlačeným světlem Quandela neumí, umí ale boson sampling s jednotlivými "
+            "fotony, na který jde odhad GBS-I přeložit pomocí permanentů. Rozbor, náš experiment v Percevalu "
+            "a přehled, kdo v Evropě umí GBS, je na stránce [Quandela a fotonický hardware v Evropě]"
+            f"({PHOTONIC_HARDWARE_PATH})."
+        ),
+        links=(
+            AcademyLink(
+                "Perceval: dokumentace", "https://perceval.quandela.net/docs/",
+                "Rychlý start, tutoriály pro začátečníky, pokročilé i experty, reference simulátorů a backendů "
+                "a příklady algoritmů.",
+            ),
+            AcademyLink(
+                "Perceval: příklady boson samplingu",
+                "https://perceval.quandela.net/docs/v1.3/examples_boson_sampling.html",
+                "Ideální boson sampling, sampling s nedokonalými zdroji a simulace metodou MPS – nejbližší start "
+                "pro naši permanentní variantu odhadu GBS-I.",
+            ),
+            AcademyLink(
+                "Perceval: kód na GitHubu", "https://github.com/Quandela/Perceval",
+                "Zdrojový kód pod licencí MIT; výpočetní jádro exqalibur smí přes Perceval používat podle výjimky "
+                "v licenci.",
+            ),
+            AcademyLink(
+                "Perceval: white paper", "https://arxiv.org/abs/2204.00602",
+                "Heurtel a kol.: architektura frameworku, simulátory a model zdroje fotonů.",
+            ),
+            AcademyLink(
+                "Quandela Cloud", "https://cloud.quandela.com",
+                "Cloudová platforma, přes kterou Perceval posílá úlohy na simulátory a procesory Quandela.",
+            ),
+            AcademyLink(
+                "Procesor Belenos", "https://www.quandela.com/qpus/belenos/",
+                "Parametry procesoru dostupného v cloudu.",
+            ),
+            AcademyLink(
+                "EuroHPC: pilotní přístup ke kvantovým počítačům", "https://access.eurohpc-ju.europa.eu/calls/61",
+                "Přihláška do výzvy, přes kterou jde žádat o čas na stroji Lucy (přístup na 3 nebo 6 měsíců).",
             ),
         ),
     ),

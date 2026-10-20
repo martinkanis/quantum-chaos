@@ -11,6 +11,7 @@ from ui.navigation import (
     NAV_LINK_IDS,
     PAGE_BY_PATH,
     PAGE_IDS,
+    PHOTONIC_HARDWARE_PATH,
     PORTFOLIO_PATH,
     TOPICS_PATH,
     VISIBLE,
@@ -119,3 +120,12 @@ def test_quantum_academy_ma_classiq_a_cuda_q_s_tldr():
     assert "https://github.com/Classiq/classiq-library" in urls
     assert "https://nvidia.github.io/cuda-quantum/latest/" in urls
     assert "Classiq" in platforms.tldr and "CUDA-Q" in platforms.tldr
+
+
+def test_quantum_academy_ma_quandelu_s_perceval_a_odkazem_na_rozbor():
+    quandela = next(section for section in ACADEMY_SECTIONS if "Quandela" in section.title)
+    urls = {link.url for link in quandela.links}
+
+    assert {"https://perceval.quandela.net/docs/", "https://github.com/Quandela/Perceval"} <= urls
+    assert "https://access.eurohpc-ju.europa.eu/calls/61" in urls
+    assert f"]({PHOTONIC_HARDWARE_PATH})" in quandela.tldr
