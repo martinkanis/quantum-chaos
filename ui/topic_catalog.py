@@ -230,9 +230,11 @@ CHEAT_SHEETS_TOPIC = ResearchTopic(
 )
 
 RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (
-    MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, OPTIMIZATION_TOPIC, RANDOM_MATRIX_TOPIC, RESEARCH_DIRECTIONS_TOPIC,
+    MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, RESEARCH_DIRECTIONS_TOPIC, RANDOM_MATRIX_TOPIC, OPTIMIZATION_TOPIC,
     CHEAT_SHEETS_TOPIC,
 )
+"""In the order of the story: the method, what the literature says, our own research, its supporting topic,
+a contrasting quantum approach and the maths cheat sheets."""
 
 
 def study_path(topic: ResearchTopic) -> Tuple[PageEntry, ...]:

@@ -5,7 +5,9 @@ from typing import Collection, List
 from dash import dcc, html
 
 from ui import ids
-from ui.navigation import ACADEMY_PATH
+from ui.knowledge_map_content import CENTRAL_QUESTION
+from ui.knowledge_map_page import layer_overview
+from ui.navigation import ACADEMY_PATH, KNOWLEDGE_MAP_PATH
 from ui.topic_catalog import (
     RESEARCH_TOPICS,
     TOPICS_TITLE,
@@ -33,6 +35,8 @@ def build_topics_page() -> html.Div:
         children=[
             html.H1(TOPICS_TITLE),
             html.P(LEAD, className="lead"),
+            _structure_card(),
+            html.H2("Studijní cesty", className="topics-heading"),
             html.Div(id=ids.TOPICS_LIST, children=topic_cards(studied_page_ids=())),
             html.P(
                 className="hint",
@@ -44,6 +48,20 @@ def build_topics_page() -> html.Div:
             ),
         ],
     )
+
+
+def _structure_card() -> html.Section:
+    return html.Section(className="card structure-card", children=[
+        html.H2("Jak spolu témata souvisí"),
+        html.P([html.Strong("Ústřední otázka: "), CENTRAL_QUESTION], className="central-question-text"),
+        html.P(
+            "Stránky tvoří pět vrstev, které na otázku odpovídají z různých stran. Studijní cesty níže je procházejí "
+            "v pořadí, ve kterém se dobře čtou; mapa znalostí ukazuje, jak spolu jednotlivé stránky souvisí.",
+            className="hint",
+        ),
+        layer_overview(),
+        dcc.Link("Otevřít mapu znalostí →", href=KNOWLEDGE_MAP_PATH, className="primary-link"),
+    ])
 
 
 def topic_cards(studied_page_ids: Collection[str]) -> List[html.Section]:

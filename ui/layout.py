@@ -13,6 +13,7 @@ from ui.gbs_page import build_gbs_page
 from ui.guide_page import build_guide_page
 from ui.hafnian_page import build_hafnian_page
 from ui.integrals_cheat_sheet_page import build_integrals_cheat_sheet_page
+from ui.knowledge_map_page import build_knowledge_map_page
 from ui.literature_review_page import build_literature_review_page
 from ui.navigation import build_navigation
 from ui.photonic_hardware_page import build_photonic_hardware_page
@@ -34,6 +35,7 @@ def build_layout() -> html.Div:
             build_navigation(),
             build_breadcrumb(),
             build_topics_page(),
+            build_knowledge_map_page(),
             build_academy_page(),
             build_portfolio_page(),
             build_gbs_page(),

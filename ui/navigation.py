@@ -9,6 +9,7 @@ from ui import ids
 
 TOPICS_PATH = "/"
 ACADEMY_PATH = "/quantum-academy"
+KNOWLEDGE_MAP_PATH = "/mapa"
 PORTFOLIO_PATH = "/klasicke-monte-carlo"
 GBS_PATH = "/gbs"
 CAVEATS_PATH = "/gbs/hacky"
@@ -34,6 +35,7 @@ LINK_CLASS = "nav-link"
 
 PAGE_IDS = (
     ids.TOPICS_PAGE,
+    ids.KNOWLEDGE_MAP_PAGE,
     ids.ACADEMY_PAGE,
     ids.PORTFOLIO_PAGE,
     ids.GBS_PAGE,
@@ -58,6 +60,7 @@ MONTE_CARLO_PAGES = frozenset({
 })
 NAV_LINK_IDS = (
     ids.NAV_TOPICS_LINK,
+    ids.NAV_KNOWLEDGE_MAP_LINK,
     ids.NAV_MONTE_CARLO_LINK,
     ids.NAV_LITERATURE_REVIEW_LINK,
     ids.NAV_OPTIMIZATION_LINK,
@@ -71,6 +74,7 @@ NAV_LINK_IDS = (
 )
 PAGE_BY_PATH = {
     TOPICS_PATH: ids.TOPICS_PAGE,
+    KNOWLEDGE_MAP_PATH: ids.KNOWLEDGE_MAP_PAGE,
     ACADEMY_PATH: ids.ACADEMY_PAGE,
     PORTFOLIO_PATH: ids.PORTFOLIO_PAGE,
     GBS_PATH: ids.GBS_PAGE,
@@ -91,6 +95,7 @@ PAGE_BY_PATH = {
 }
 ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.TOPICS_PAGE: frozenset({ids.NAV_TOPICS_LINK}),
+    ids.KNOWLEDGE_MAP_PAGE: frozenset({ids.NAV_KNOWLEDGE_MAP_LINK}),
     ids.ACADEMY_PAGE: frozenset({ids.NAV_ACADEMY_LINK}),
     ids.PORTFOLIO_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_PORTFOLIO_LINK}),
     ids.GBS_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
@@ -198,6 +203,9 @@ def build_navigation() -> html.Header:
                 className="top-nav",
                 children=[
                     dcc.Link("Témata", href=TOPICS_PATH, id=ids.NAV_TOPICS_LINK, className=LINK_CLASS),
+                    dcc.Link(
+                        "Mapa znalostí", href=KNOWLEDGE_MAP_PATH, id=ids.NAV_KNOWLEDGE_MAP_LINK, className=LINK_CLASS,
+                    ),
                     dcc.Link("Monte Carlo", href=PORTFOLIO_PATH, id=ids.NAV_MONTE_CARLO_LINK, className=LINK_CLASS),
                     dcc.Link(
                         "Rešerše GBS", href=LITERATURE_REVIEW_PATH, id=ids.NAV_LITERATURE_REVIEW_LINK,

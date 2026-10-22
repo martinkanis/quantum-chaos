@@ -54,7 +54,7 @@ def test_uvodni_strankou_jsou_temata_a_vedle_nich_quantum_academy():
 def test_kazda_stranka_aplikace_patri_do_nektereho_tematu():
     topic_pages = {page.page_id for topic in RESEARCH_TOPICS for page in topic.pages}
 
-    assert topic_pages == set(PAGE_IDS) - {ids.TOPICS_PAGE, ids.ACADEMY_PAGE}
+    assert topic_pages == set(PAGE_IDS) - {ids.TOPICS_PAGE, ids.ACADEMY_PAGE, ids.KNOWLEDGE_MAP_PAGE}
     assert all(PAGE_BY_PATH[page.path] == page.page_id for topic in RESEARCH_TOPICS for page in topic.pages)
     assert ids.GUIDE_PAGE in {page.page_id for page in MONTE_CARLO_TOPIC.pages}
 

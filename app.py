@@ -10,6 +10,7 @@ from ui.advantage_callbacks import register_advantage_callbacks
 from ui.breadcrumbs import register_breadcrumb_callbacks
 from ui.callbacks import register_callbacks
 from ui.gbs_callbacks import register_gbs_callbacks
+from ui.knowledge_map_callbacks import register_knowledge_map_callbacks
 from ui.layout import build_layout
 from ui.navigation import register_navigation_callbacks
 from ui.random_matrix_callbacks import register_random_matrix_callbacks
@@ -26,6 +27,7 @@ register_gbs_callbacks(app)
 register_advantage_callbacks(app)
 register_random_matrix_callbacks(app)
 register_study_progress_callbacks(app)
+register_knowledge_map_callbacks(app)
 
 server = app.server
 install_login(server, settings_from_environment())
