@@ -55,9 +55,9 @@ def test_hafnian_je_podstrankou_monte_carla_na_gbs():
     active = [link_id for link_id, link_class in zip(NAV_LINK_IDS, link_classes) if link_class == ACTIVE_LINK_CLASS]
 
     assert PAGE_BY_PATH[HAFNIAN_PATH] == ids.HAFNIAN_PAGE
-    assert active == [ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK]
+    assert active == [ids.NAV_PHOTONICS_MENU]
     assert [label for label, _ in breadcrumb_trail(ids.HAFNIAN_PAGE)][-2:] == [
-        "2 · Monte Carlo na GBS", "Hafnián a permanent polopatě",
+        "Fotonika a GBS", "Hafnián a permanent polopatě",
     ]
 
 

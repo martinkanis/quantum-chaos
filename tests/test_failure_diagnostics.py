@@ -9,7 +9,8 @@ from ui.failure_diagnostics_content import (
     failure_sources_table,
 )
 from ui.failure_diagnostics_page import DETAIL_LINKS, build_failure_diagnostics_page
-from ui.navigation import FAILURE_DIAGNOSTICS_PATH, RANDOM_MATRIX_GBS_PATH, RANDOM_MATRIX_PATH, build_navigation
+from ui.knowledge_map_content import LAYERS, Layer
+from ui.navigation import FAILURE_DIAGNOSTICS_PATH, RANDOM_MATRIX_GBS_PATH, RANDOM_MATRIX_PATH
 from ui.random_matrix_content import LAB_ANCHOR
 from ui.random_matrix_gbs_content import FIRST_STUDY
 from ui.random_matrix_gbs_page import build_random_matrix_gbs_page
@@ -33,8 +34,9 @@ def link_with_id(component, component_id):
 
 def test_vyzkumne_smery_zacinaji_strankou_o_selhani_gbs():
     assert visible_pages(FAILURE_DIAGNOSTICS_PATH) == [ids.FAILURE_DIAGNOSTICS_PAGE]
-    assert active_links(FAILURE_DIAGNOSTICS_PATH) == [ids.NAV_RESEARCH_DIRECTIONS_LINK]
-    assert link_with_id(build_navigation(), ids.NAV_RESEARCH_DIRECTIONS_LINK).href == FAILURE_DIAGNOSTICS_PATH
+    assert active_links(FAILURE_DIAGNOSTICS_PATH) == [ids.NAV_RESEARCH_MENU]
+    research = next(info for info in LAYERS if info.layer == Layer.RESEARCH)
+    assert research.page_ids[0] == ids.FAILURE_DIAGNOSTICS_PAGE
     assert [page.page_id for page in study_path(RESEARCH_DIRECTIONS_TOPIC)] == [
         ids.FAILURE_DIAGNOSTICS_PAGE, ids.RANDOM_MATRIX_GBS_PAGE,
     ]
@@ -42,7 +44,7 @@ def test_vyzkumne_smery_zacinaji_strankou_o_selhani_gbs():
 
 def test_stranka_nahodne_matice_a_gbs_je_podstrankou_diagnostiky():
     assert [label for label, _ in breadcrumb_trail(ids.RANDOM_MATRIX_GBS_PAGE)] == [
-        "Témata", RESEARCH_DIRECTIONS_TOPIC.title, "Kdy odhad rizika přes GBS selže", "Náhodné matice a GBS: hypotéza",
+        "Témata", "Vlastní výzkum", "Kdy odhad rizika přes GBS selže", "Náhodné matice a GBS: hypotéza",
     ]
     assert breadcrumb_trail(ids.RANDOM_MATRIX_GBS_PAGE)[2][1] == FAILURE_DIAGNOSTICS_PATH
 

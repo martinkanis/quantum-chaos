@@ -28,11 +28,11 @@ def test_reserse_je_samostatne_tema_na_strance_temat_i_v_horni_liste():
     link_classes = show_page(LITERATURE_REVIEW_PATH)[len(PAGE_IDS):len(PAGE_IDS) + len(NAV_LINK_IDS)]
     active_links = [link_id for link_id, link_class in zip(NAV_LINK_IDS, link_classes) if link_class == ACTIVE_LINK_CLASS]
 
-    assert active_links == [ids.NAV_LITERATURE_REVIEW_LINK]
+    assert active_links == [ids.NAV_CORE_MENU]
     assert LITERATURE_REVIEW_TOPIC in RESEARCH_TOPICS
     assert PAGE_BY_PATH[LITERATURE_REVIEW_PATH] == ids.LITERATURE_REVIEW_PAGE
     assert [label for label, _ in breadcrumb_trail(ids.LITERATURE_REVIEW_PAGE)] == [
-        "Témata", LITERATURE_REVIEW_TOPIC.title, LITERATURE_REVIEW_TOPIC.pages[0].title,
+        "Témata", "GBS ve financích", LITERATURE_REVIEW_TOPIC.pages[0].title,
     ]
 
 

@@ -36,10 +36,10 @@ from tests.test_topics import active_links, visible_pages
 
 def test_vyzkumne_smery_jsou_samostatnym_tematem_v_horni_liste():
     assert visible_pages(RANDOM_MATRIX_GBS_PATH) == [ids.RANDOM_MATRIX_GBS_PAGE]
-    assert active_links(RANDOM_MATRIX_GBS_PATH) == [ids.NAV_RESEARCH_DIRECTIONS_LINK]
+    assert active_links(RANDOM_MATRIX_GBS_PATH) == [ids.NAV_RESEARCH_MENU]
     assert RESEARCH_DIRECTIONS_TOPIC in RESEARCH_TOPICS
     assert [label for label, _ in breadcrumb_trail(ids.RANDOM_MATRIX_GBS_PAGE)][:2] == [
-        "Témata", RESEARCH_DIRECTIONS_TOPIC.title,
+        "Témata", "Vlastní výzkum",
     ]
 
 

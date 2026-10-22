@@ -1,32 +1,42 @@
+import base64
+import json
+
 import pytest
 from dash import no_update
 
 from ui import ids
-from ui.knowledge_map import (
-    CENTER_ID,
+from ui.knowledge_map import CENTER_ID, build_figure, map_nodes, node_options, page_ids, relations_of
+from ui.knowledge_map_callbacks import click_node, upload_backup
+from ui.knowledge_map_content import LAYERS, RELATION_KINDS, RELATIONS, RelationKind
+from ui.knowledge_map_notes import (
     KnowledgeMapError,
     add_connection,
-    build_figure,
-    map_nodes,
+    add_subtopic,
+    export_backup,
+    import_backup,
     parse_connections,
-    relations_of,
+    parse_subtopics,
     remove_connections,
+    remove_subtopics,
 )
-from ui.knowledge_map_callbacks import select_node
-from ui.knowledge_map_content import LAYERS, RELATION_KINDS, RELATIONS, RelationKind
+from ui.knowledge_map_page import ClickMode, describe_node
 from ui.navigation import ACTIVE_LINK_CLASS, KNOWLEDGE_MAP_PATH, NAV_LINK_IDS, PAGE_IDS, show_page
 from ui.topic_catalog import RESEARCH_TOPICS
 
 ALL_LAYERS = [info.layer.value for info in LAYERS]
 ALL_KINDS = [info.kind.value for info in RELATION_KINDS]
+PAGES = page_ids()
 
 
-def test_kazda_stranka_temat_je_v_prave_jedne_vrstve_mapy():
-    layer_pages = [page_id for info in LAYERS for page_id in info.page_ids]
+def encoded(backup):
+    return "data:application/json;base64," + base64.b64encode(json.dumps(backup).encode("utf-8")).decode("ascii")
+
+
+def test_kazda_stranka_temat_je_v_prave_jedne_skupine_mapy():
     topic_pages = {page.page_id for topic in RESEARCH_TOPICS for page in topic.pages}
 
-    assert len(layer_pages) == len(set(layer_pages))
-    assert set(layer_pages) == topic_pages | {ids.ACADEMY_PAGE}
+    assert len(PAGES) == len(set(PAGES))
+    assert set(PAGES) == topic_pages | {ids.ACADEMY_PAGE}
 
 
 def test_vztahy_spojuji_ruzne_existujici_stranky_a_kazda_stranka_nejaky_ma():
@@ -35,17 +45,19 @@ def test_vztahy_spojuji_ruzne_existujici_stranky_a_kazda_stranka_nejaky_ma():
 
     assert all(relation.source in nodes and relation.target in nodes for relation in RELATIONS)
     assert all(relation.source != relation.target for relation in RELATIONS)
-    assert {page_id for info in LAYERS for page_id in info.page_ids} <= connected
+    assert set(PAGES) <= connected
 
 
-def test_mapa_ma_vlastni_odkaz_v_horni_liste():
-    link_classes = show_page(KNOWLEDGE_MAP_PATH)[len(PAGE_IDS):len(PAGE_IDS) + len(NAV_LINK_IDS)]
+def test_mapa_je_na_uvodni_strance_a_stara_adresa_tam_vede():
+    styles = show_page(KNOWLEDGE_MAP_PATH)
+    link_classes = styles[len(PAGE_IDS):len(PAGE_IDS) + len(NAV_LINK_IDS)]
     active = [link_id for link_id, link_class in zip(NAV_LINK_IDS, link_classes) if link_class == ACTIVE_LINK_CLASS]
 
-    assert active == [ids.NAV_KNOWLEDGE_MAP_LINK]
+    assert styles[PAGE_IDS.index(ids.TOPICS_PAGE)] == {}
+    assert active == [ids.NAV_TOPICS_LINK]
 
 
-def test_filtry_skryji_vrstvy_i_druhy_vztahu():
+def test_filtry_skryji_skupiny_i_druhy_vztahu():
     full = build_figure(ALL_LAYERS, ALL_KINDS, [])
     without_research = build_figure([layer for layer in ALL_LAYERS if layer != "vyzkum"], ALL_KINDS, [])
     only_follows = build_figure(ALL_LAYERS, [RelationKind.FOLLOWS.value], [])
@@ -55,30 +67,101 @@ def test_filtry_skryji_vrstvy_i_druhy_vztahu():
     assert len(only_follows.layout.annotations) == sum(r.kind == RelationKind.FOLLOWS for r in RELATIONS)
 
 
-def test_vlastni_propojeni_jde_pridat_odebrat_a_spatne_zadani_ma_ceskou_hlasku():
-    stored = add_connection(None, ids.HAFNIAN_PAGE, "vysvetluje", ids.RANDOM_MATRIX_PAGE, "  spektrum a páry  ")
+def test_klik_na_stranku_ji_otevre_a_v_rezimu_souvislosti_ji_vybere():
+    click = {"points": [{"customdata": ids.HAFNIAN_PAGE}]}
 
-    assert stored == [{
-        "source": ids.HAFNIAN_PAGE, "kind": "vysvetluje", "target": ids.RANDOM_MATRIX_PAGE, "note": "spektrum a páry",
-    }]
-    assert any(item.is_own for item in relations_of(ids.HAFNIAN_PAGE, parse_connections(stored)))
-    assert len(build_figure(ALL_LAYERS, ALL_KINDS, parse_connections(stored)).layout.annotations) == len(RELATIONS) + 1
-    assert remove_connections(stored, {0}) == []
-    with pytest.raises(KnowledgeMapError, match="Takové propojení už máš"):
-        add_connection(stored, ids.HAFNIAN_PAGE, "vysvetluje", ids.RANDOM_MATRIX_PAGE, "")
+    assert click_node(click, ClickMode.OPEN_PAGE.value, None) == ("/gbs/hafnian", no_update)
+    assert click_node(click, ClickMode.SHOW_LINKS.value, None) == (no_update, ids.HAFNIAN_PAGE)
+    assert click_node({"points": [{"customdata": CENTER_ID}]}, ClickMode.OPEN_PAGE.value, None) == (no_update, CENTER_ID)
+    assert click_node({"points": [{"x": 0.5, "y": 0.5}]}, ClickMode.OPEN_PAGE.value, None) == (no_update, no_update)
+
+
+def test_podtema_se_objevi_v_mape_u_sve_stranky_a_jde_propojit():
+    stored = add_subtopic(None, "  Steinovo lemma ", "Per partes pro gaussovské momenty.", [ids.HAFNIAN_PAGE], PAGES)
+    subtopics = parse_subtopics(stored, PAGES)
+    nodes = map_nodes(subtopics)
+    subtopic = nodes["vlastni-1"]
+
+    assert stored[0]["title"] == "Steinovo lemma"
+    assert subtopic.kind == "subtopic" and subtopic.layer == nodes[ids.HAFNIAN_PAGE].layer
+    assert {"label": "Steinovo lemma (vlastní podtéma)", "value": "vlastni-1"} in node_options(subtopics)
+    connections = add_connection(None, "vlastni-1", "vysvetluje", ids.GBS_PAGE, "", nodes)
+    own = parse_connections(connections, nodes)
+    assert {relation.kind_label for relation in relations_of("vlastni-1", own, subtopics)} == {"rozvíjí", "vysvětluje"}
+    figure = build_figure(ALL_LAYERS, ALL_KINDS, own, subtopics)
+    assert len(figure.layout.annotations) == len(RELATIONS) + 2
+
+
+def test_spatne_zadane_podtema_ma_ceskou_hlasku():
+    stored = add_subtopic(None, "Steinovo lemma", "", [ids.HAFNIAN_PAGE], PAGES)
+
+    with pytest.raises(KnowledgeMapError, match="Napiš název"):
+        add_subtopic(None, "  ", "", [ids.HAFNIAN_PAGE], PAGES)
+    with pytest.raises(KnowledgeMapError, match="aspoň jednu stránku"):
+        add_subtopic(None, "Chaos", "", [], PAGES)
+    with pytest.raises(KnowledgeMapError, match="už máš"):
+        add_subtopic(stored, "steinovo LEMMA", "", [ids.GBS_PAGE], PAGES)
+    assert add_subtopic(stored, "0-1 test chaosu", "", [ids.FAILURE_DIAGNOSTICS_PAGE], PAGES)[1]["id"] == "vlastni-2"
+
+
+def test_odebrani_podtematu_odebere_i_jeho_propojeni():
+    stored = add_subtopic(None, "Steinovo lemma", "", [ids.HAFNIAN_PAGE], PAGES)
+    nodes = map_nodes(parse_subtopics(stored, PAGES))
+    connections = add_connection(None, "vlastni-1", "vysvetluje", ids.GBS_PAGE, "", nodes)
+    connections = add_connection(connections, ids.HAFNIAN_PAGE, "vysvetluje", ids.PORTFOLIO_PAGE, "", nodes)
+
+    subtopics_left, connections_left = remove_subtopics(stored, connections, {0}, PAGES)
+
+    assert subtopics_left == []
+    assert [item["source"] for item in connections_left] == [ids.HAFNIAN_PAGE]
+    assert remove_connections(connections_left, {0}, nodes) == []
+
+
+def test_vlastni_propojeni_hlida_spatne_zadani():
+    nodes = map_nodes()
+
     with pytest.raises(KnowledgeMapError, match="samu se sebou"):
-        add_connection(None, ids.HAFNIAN_PAGE, "vysvetluje", ids.HAFNIAN_PAGE, "")
+        add_connection(None, ids.HAFNIAN_PAGE, "vysvetluje", ids.HAFNIAN_PAGE, "", nodes)
     with pytest.raises(KnowledgeMapError, match="Vyber obě stránky"):
-        add_connection(None, ids.HAFNIAN_PAGE, None, ids.GBS_PAGE, "")
+        add_connection(None, ids.HAFNIAN_PAGE, None, ids.GBS_PAGE, "", nodes)
+    stored = add_connection(None, ids.HAFNIAN_PAGE, "vysvetluje", ids.GBS_PAGE, "", nodes)
+    with pytest.raises(KnowledgeMapError, match="Takové propojení už máš"):
+        add_connection(stored, ids.HAFNIAN_PAGE, "vysvetluje", ids.GBS_PAGE, "", nodes)
 
 
-def test_poskozena_ulozena_propojeni_se_preskoci():
-    stored = [{"source": "neexistuje", "kind": "vysvetluje", "target": ids.GBS_PAGE}, {"kind": "zadny"}]
+def test_poskozena_ulozena_data_se_preskoci():
+    assert parse_connections([{"source": "neexistuje", "kind": "vysvetluje", "target": ids.GBS_PAGE}, {}], map_nodes()) == []
+    assert parse_subtopics([{"id": "vlastni-1", "title": "X", "pages": ["neexistuje"]}, {"title": 1}], PAGES) == []
 
-    assert parse_connections(stored) == []
+
+def test_zaloha_jde_stahnout_a_nahrat_bez_duplicit():
+    subtopics = add_subtopic(None, "Steinovo lemma", "poznámka", [ids.HAFNIAN_PAGE], PAGES)
+    nodes = map_nodes(parse_subtopics(subtopics, PAGES))
+    connections = add_connection(None, "vlastni-1", "vysvetluje", ids.GBS_PAGE, "", nodes)
+    backup = json.loads(export_backup(subtopics, connections))
+
+    merged_subtopics, merged_connections = import_backup(encoded(backup), subtopics, connections, PAGES)
+    restored_subtopics, restored_connections = import_backup(encoded(backup), None, None, PAGES)
+
+    assert (len(merged_subtopics), len(merged_connections)) == (1, 1)
+    assert restored_subtopics == subtopics and restored_connections == connections
 
 
-def test_klik_vybere_jen_uzel():
-    assert select_node({"points": [{"customdata": ids.GBS_PAGE}]}) == ids.GBS_PAGE
-    assert select_node({"points": [{"customdata": CENTER_ID}]}) == CENTER_ID
-    assert select_node({"points": [{"x": 0.5, "y": 0.5}]}) is no_update
+def test_nahrani_cizeho_souboru_ma_ceskou_hlasku():
+    _, _, message = upload_backup(encoded({"neco": 1}), None, None)
+    _, _, broken = upload_backup("data:application/json;base64,bm90IGpzb24=", None, None)
+
+    assert "není záloha mapy znalostí" in message.children
+    assert "není platná záloha" in broken.children
+
+
+def test_detail_podtematu_ukaze_poznamku_a_stranky_ktere_rozviji():
+    stored = add_subtopic(None, "Steinovo lemma", "Per partes pro **momenty**.", [ids.HAFNIAN_PAGE], PAGES)
+    subtopics = parse_subtopics(stored, PAGES)
+
+    details = describe_node("vlastni-1", [], subtopics)
+
+    assert details[1].children == "Per partes pro **momenty**."
+    assert click_node({"points": [{"customdata": "vlastni-1"}]}, ClickMode.OPEN_PAGE.value, stored) == (
+        no_update, "vlastni-1",
+    )

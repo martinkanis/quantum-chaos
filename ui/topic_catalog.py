@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Collection, List, Optional, Tuple
+from typing import Collection, Dict, List, Optional, Tuple
 
 from ui import ids
+from ui.knowledge_map_content import LAYERS, LayerInfo
 from ui.navigation import (
+    ACADEMY_PATH,
     ADVANTAGE_PATH,
     ANDERSEN_SHAN_PAPER_PATH,
     CAVEATS_PATH,
@@ -117,6 +119,12 @@ ANDERSEN_SHAN_PAPER = PageEntry(
     "normálního rozdělení a podmínka (A1), každý vzorec po částech a s příkladem.",
     parent_page_id=ids.ADVANTAGE_PAGE,
 )
+
+ACADEMY = PageEntry(
+    ids.ACADEMY_PAGE, "Quantum Academy", ACADEMY_PATH,
+    "Kurzy, videa, blogy a platformy (Classiq, CUDA-Q, Quandela) pro samostudium kvantového počítání.",
+)
+"""Not part of any study path, but of the foundations group in the menu, on the dashboard and in the map."""
 
 MONTE_CARLO_TOPIC = ResearchTopic(
     anchor="tema-monte-carlo",
@@ -276,17 +284,34 @@ def topic_href(topic: ResearchTopic) -> str:
     return f"{TOPICS_PATH}#{topic.anchor}"
 
 
+def page_entries() -> Dict[str, PageEntry]:
+    """Every page that belongs to a group: the pages of all topics and Quantum Academy."""
+    entries = {page.page_id: page for topic in RESEARCH_TOPICS for page in topic.pages}
+    entries[ACADEMY.page_id] = ACADEMY
+    return entries
+
+
+def group_of(page_id: str) -> Optional[LayerInfo]:
+    return next((info for info in LAYERS if page_id in info.page_ids), None)
+
+
+def group_href(group: LayerInfo) -> str:
+    return f"{TOPICS_PATH}#{group.anchor}"
+
+
 def breadcrumb_trail(page_id: str) -> List[Crumb]:
-    """Témata › topic › parent page › page; empty for pages outside every topic."""
-    for topic in RESEARCH_TOPICS:
-        pages_by_id = {page.page_id: page for page in topic.pages}
-        if page_id not in pages_by_id:
-            continue
-        page = pages_by_id[page_id]
-        trail: List[Crumb] = [(TOPICS_TITLE, TOPICS_PATH), (topic.title, topic_href(topic))]
-        if page.parent_page_id:
-            parent = pages_by_id[page.parent_page_id]
-            trail.append((parent.title, parent.path))
-        trail.append((page.title, None))
-        return trail
-    return []
+    """Témata › group › parent page (when it is in the same group) › page, the same groups as the top menu.
+
+    Empty for the topics dashboard and the knowledge map, which sit outside the groups.
+    """
+    group = group_of(page_id)
+    if group is None:
+        return []
+    entries = page_entries()
+    page = entries[page_id]
+    trail: List[Crumb] = [(TOPICS_TITLE, TOPICS_PATH), (group.title, group_href(group))]
+    if page.parent_page_id in group.page_ids:
+        parent = entries[page.parent_page_id]
+        trail.append((parent.title, parent.path))
+    trail.append((page.title, None))
+    return trail

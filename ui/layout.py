@@ -13,9 +13,8 @@ from ui.gbs_page import build_gbs_page
 from ui.guide_page import build_guide_page
 from ui.hafnian_page import build_hafnian_page
 from ui.integrals_cheat_sheet_page import build_integrals_cheat_sheet_page
-from ui.knowledge_map_page import build_knowledge_map_page
 from ui.literature_review_page import build_literature_review_page
-from ui.navigation import build_navigation
+from ui.main_menu import build_main_menu
 from ui.photonic_hardware_page import build_photonic_hardware_page
 from ui.portfolio_page import build_portfolio_page
 from ui.qpurpose_page import build_qpurpose_page
@@ -30,12 +29,11 @@ from ui.vqe_paper_page import build_vqe_paper_page
 def build_layout() -> html.Div:
     return html.Div(
         children=[
-            dcc.Location(id=ids.URL),
+            dcc.Location(id=ids.URL, refresh="callback-nav"),
             build_progress_store(),
-            build_navigation(),
+            build_main_menu(),
             build_breadcrumb(),
             build_topics_page(),
-            build_knowledge_map_page(),
             build_academy_page(),
             build_portfolio_page(),
             build_gbs_page(),

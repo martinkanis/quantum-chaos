@@ -30,7 +30,7 @@ def test_stranka_qpurpose_je_podstrankou_vyhody_gbs():
     active = [link_id for link_id, link_class in zip(NAV_LINK_IDS, link_classes) if link_class == ACTIVE_LINK_CLASS]
 
     assert PAGE_BY_PATH[QPURPOSE_PATH] == ids.QPURPOSE_PAGE
-    assert active == [ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK]
+    assert active == [ids.NAV_CORE_MENU]
     assert [label for label, _ in breadcrumb_trail(ids.QPURPOSE_PAGE)][-2:] == [
         "3 · Výhoda GBS", "Qpurpose: co skutečně prodávají",
     ]

@@ -41,10 +41,10 @@ def test_tahak_je_vlastnim_tematem_s_odkazem_v_horni_liste():
     active = [link_id for link_id, link_class in zip(NAV_LINK_IDS, link_classes) if link_class == ACTIVE_LINK_CLASS]
 
     assert PAGE_BY_PATH[INTEGRALS_CHEAT_SHEET_PATH] == ids.INTEGRALS_CHEAT_SHEET_PAGE
-    assert active == [ids.NAV_CHEAT_SHEETS_LINK]
+    assert active == [ids.NAV_FOUNDATIONS_MENU]
     assert CHEAT_SHEETS_TOPIC in RESEARCH_TOPICS
     assert [label for label, _ in breadcrumb_trail(ids.INTEGRALS_CHEAT_SHEET_PAGE)] == [
-        "Témata", "Matematické taháky", "Tahák: integrály",
+        "Témata", "Základy", "Tahák: integrály",
     ]
 
 

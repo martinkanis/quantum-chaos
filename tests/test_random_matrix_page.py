@@ -5,7 +5,7 @@ from randommatrix.marchenko_pastur import NoiseBand
 from randommatrix.study import run_study
 from ui import ids
 from ui.failure_diagnostics_content import DIAGNOSTIC_TOOLS
-from ui.navigation import PORTFOLIO_PATH, RANDOM_MATRIX_PATH, failure_diagnostics_href, show_page
+from ui.navigation import PORTFOLIO_PATH, RANDOM_MATRIX_PATH, failure_diagnostics_href
 from ui.random_matrix_callbacks import should_run_lab
 from ui.random_matrix_content import (
     DETERMINISTIC_CHAOS,
@@ -33,10 +33,9 @@ def section_ids(component):
 
 def test_stranka_nahodnych_matic_je_samostatnym_tematem_v_horni_liste():
     assert visible_pages(RANDOM_MATRIX_PATH) == [ids.RANDOM_MATRIX_PAGE]
-    assert active_links(RANDOM_MATRIX_PATH) == [ids.NAV_RANDOM_MATRIX_LINK]
+    assert active_links(RANDOM_MATRIX_PATH) == [ids.NAV_FINANCE_MENU]
     assert RANDOM_MATRIX_TOPIC in RESEARCH_TOPICS
-    assert [label for label, _ in breadcrumb_trail(ids.RANDOM_MATRIX_PAGE)][:2] == ["Témata", RANDOM_MATRIX_TOPIC.title]
-    assert show_page(RANDOM_MATRIX_PATH)[-1] != show_page(PORTFOLIO_PATH)[-1]
+    assert [label for label, _ in breadcrumb_trail(ids.RANDOM_MATRIX_PAGE)][:2] == ["Témata", "Finance a riziko"]
 
 
 def test_kazda_kapitola_ma_unikatni_kotvu_shrnuti_vyklad_a_zdroj():

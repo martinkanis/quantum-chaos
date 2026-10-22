@@ -116,24 +116,12 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 
 .top-nav {
   display: flex;
+  align-items: stretch;
   gap: 4px;
   padding: 0 20px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
-
-.sub-nav {
-  display: flex;
-  gap: 4px;
-  padding: 0 20px 0 36px;
-  background: var(--surface-muted);
-  border-bottom: 1px solid var(--border);
-}
-
-.sub-nav .nav-link { padding: 9px 14px; font-size: 0.92rem; }
-
-.top-nav, .sub-nav { overflow-x: auto; scrollbar-width: none; }
-.top-nav::-webkit-scrollbar, .sub-nav::-webkit-scrollbar { display: none; }
 
 .nav-link {
   padding: 14px 16px;
@@ -189,8 +177,6 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 
 @media (max-width: 800px) {
   .gbs-page { padding: 16px; }
-  .top-nav, .sub-nav { padding: 0 8px; overflow-x: auto; }
-  .nav-link { padding: 12px 10px; white-space: nowrap; }
 }
 
 .caveat-section, .theory-section { scroll-margin-top: 110px; }
@@ -333,8 +319,7 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 .tldr-box { background: var(--surface-muted); border-left: 4px solid var(--accent); border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; max-width: 80ch; line-height: 1.6; }
 .tldr-box p { margin: 6px 0; }
 
-/* Login page and the logout link in the top navigation. */
-.logout-link { margin-left: auto; }
+/* Login page. */
 .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; }
 .login-card { width: 100%; max-width: 380px; }
 .login-card h1 { margin-bottom: 4px; }
@@ -354,3 +339,47 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 .own-connections label { display: block; margin: 6px 0; }
 .map-scroll { overflow-x: auto; }
 .map-scroll > div { min-width: 760px; }
+
+/* Top menu: one drop-down per group of pages; on narrow screens the whole menu hides behind a toggle. */
+.menu-bar { display: none; background: var(--surface); border-bottom: 1px solid var(--border); padding: 6px 12px; }
+.menu-toggle { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 8px 14px; font-weight: 600; font-size: 1rem; color: var(--text); cursor: pointer; }
+details.nav-link { position: relative; padding: 0; }
+details.nav-link > summary { list-style: none; cursor: pointer; padding: 14px 16px; display: flex; align-items: center; gap: 8px; }
+details.nav-link > summary::-webkit-details-marker { display: none; }
+details.nav-link > summary::after { content: "▾"; font-size: 0.8rem; }
+details.nav-link[open] > summary::after { content: "▴"; }
+details.nav-link > summary:hover { color: var(--text); }
+.submenu { display: flex; flex-direction: column; min-width: 280px; padding: 8px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(28, 35, 48, 0.12); }
+.submenu-role { margin: 4px 16px 8px; font-size: 0.8rem; font-weight: 400; color: var(--text-muted); white-space: normal; }
+.submenu-link { padding: 8px 16px; color: var(--text); text-decoration: none; font-weight: 500; white-space: normal; }
+.submenu-link:hover { background: var(--surface-muted); color: var(--accent); }
+.logout-link { margin-left: auto; }
+
+@media (min-width: 1101px) {
+  .submenu { position: absolute; top: 100%; left: 0; z-index: 30; }
+}
+
+@media (max-width: 1100px) {
+  .menu-bar { display: block; }
+  .top-nav { display: none; flex-direction: column; padding: 0 12px 12px; }
+  .menu-open .top-nav { display: flex; }
+  .nav-link { border-bottom: none; border-left: 3px solid transparent; padding: 10px 12px; }
+  .nav-link.active { border-left-color: var(--accent); }
+  details.nav-link > summary { padding: 10px 12px; }
+  .submenu { border: none; box-shadow: none; padding: 0 0 8px 20px; min-width: 0; }
+  .logout-link { margin-left: 0; }
+}
+.subtopic-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; align-items: start; }
+.subtopic-form input, .subtopic-form textarea { width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font: inherit; }
+.subtopic-form textarea { min-height: 90px; grid-column: 1 / -1; }
+.backup-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* Home page: the knowledge map spans the whole width, the rest keeps the reading width. */
+.home-intro { max-width: 1150px; margin: 0 auto; padding: 24px 32px 8px; }
+.home-intro h1 { margin-bottom: 8px; }
+.map-card { margin: 0 16px 16px; }
+.home-content { padding-top: 8px; }
+@media (max-width: 800px) {
+  .home-intro { padding: 16px 16px 4px; }
+  .map-card { margin: 0 8px 12px; }
+}

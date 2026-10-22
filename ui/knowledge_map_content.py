@@ -1,4 +1,4 @@
-"""Structure of the knowledge base: the central question, layers of pages and typed relations between pages."""
+"""Structure of the knowledge base: the central question, groups of pages and typed relations between pages."""
 
 from __future__ import annotations
 
@@ -8,28 +8,35 @@ from typing import Tuple
 
 from ui import ids
 
-TITLE = "Mapa znalostí"
 CENTRAL_QUESTION = (
     "Kdy může fotonický Gaussian Boson Sampler zrychlit Monte Carlo odhad finančního rizika – a jak z dat poznat, "
     "že selže?"
 )
 CENTRAL_QUESTION_SHORT = "Ústřední otázka"
 INTRO = (
-    "Celá aplikace stojí na jedné otázce a pět vrstev na ni odpovídá z různých stran: základy dávají jazyk, metody "
-    "a laboratoře počítají, literatura a trh říkají, co je doložené, hardware ukazuje, kde se to dá spustit, a vlastní "
-    "výzkum hledá, kde to selže. Klikni na uzel a uvidíš, s čím souvisí; vlastní propojení si můžeš přidat dole."
+    "Odpovídají na ni dva obory – finance a fotonika – a jejich průnik, GBS ve financích, je jádro disertace; vlastní "
+    "výzkum hledá, kde to selže, a základy dávají potřebnou matematiku. Kliknutím na stránku v mapě ji otevřeš, "
+    "kolečkem nebo tlačítky mapu přiblížíš. Když tě studium zavede hlouběji, založ si dole vlastní podtéma."
 )
 OWN_CONNECTIONS_HINT = (
-    "Vlastní propojení se ukládají jen v tomto prohlížeči. Hodí se na poznámky typu „tohle by šlo použít tam“."
+    "Propoj dvě stránky nebo svá podtémata, třeba „tohle by šlo použít tam“. Ukládá se jen v tomto prohlížeči."
+)
+SUBTOPICS_HINT = (
+    "Když tě při studiu něco zavede hlouběji, založ si podtéma: název, poznámka a stránky, které rozvíjí. Na mapě se "
+    "objeví jako kosočtverec u první vybrané stránky a dál ho můžeš propojovat s dalšími tématy."
+)
+BACKUP_HINT = (
+    "Podtémata a propojení se ukládají jen v tomto prohlížeči. Záloha je soubor JSON, který jde nahrát na jiném "
+    "zařízení nebo po smazání dat prohlížeče; nahrání ji přidá ke stávajícím poznámkám."
 )
 
 
 class Layer(str, Enum):
-    FOUNDATIONS = "zaklady"
-    METHODS = "metody"
-    LITERATURE = "literatura"
-    HARDWARE = "hardware"
+    FINANCE = "finance"
+    PHOTONICS = "fotonika"
+    CORE = "gbs-ve-financich"
     RESEARCH = "vyzkum"
+    FOUNDATIONS = "zaklady"
 
 
 @dataclass(frozen=True)
@@ -37,36 +44,49 @@ class LayerInfo:
     layer: Layer
     title: str
     role: str
-    """What the layer contributes to the central question."""
+    """What the group contributes to the central question."""
     color: str
     page_ids: Tuple[str, ...]
+    menu_id: str
+    """The drop-down of the top navigation that lists the pages of the group."""
+
+    @property
+    def anchor(self) -> str:
+        """Section of the group on the topics dashboard; breadcrumbs link to it."""
+        return f"skupina-{self.layer.value}"
 
 
 LAYERS: Tuple[LayerInfo, ...] = (
     LayerInfo(
-        Layer.FOUNDATIONS, "Základy", "matematika a fyzika, bez kterých se zbytek nedá číst", "#2e9e5b",
-        (ids.INTEGRALS_CHEAT_SHEET_PAGE, ids.HAFNIAN_PAGE, ids.THEORY_PAGE, ids.ACADEMY_PAGE),
+        Layer.FINANCE, "Finance a riziko", "co se ve financích počítá a čím se to dělá dnes", "#2a6fdb",
+        (ids.PORTFOLIO_PAGE, ids.RANDOM_MATRIX_PAGE, ids.VQE_PAPER_PAGE),
+        ids.NAV_FINANCE_MENU,
     ),
     LayerInfo(
-        Layer.METHODS, "Metody a laboratoře", "výpočty, ve kterých si metody vyzkoušíš na číslech", "#2a6fdb",
+        Layer.PHOTONICS, "Fotonika a GBS", "kvantová optika, na které GBS stojí, a hardware, na kterém běží", "#d9822b",
+        (ids.HAFNIAN_PAGE, ids.PHOTONIC_HARDWARE_PAGE),
+        ids.NAV_PHOTONICS_MENU,
+    ),
+    LayerInfo(
+        Layer.CORE, "GBS ve financích", "průnik obou oborů a jádro disertace: odhad rizika z výstřelů GBS", "#7b3fe4",
         (
-            ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.ADVANTAGE_PAGE, ids.CAVEATS_PAGE, ids.GUIDE_PAGE,
-            ids.RANDOM_MATRIX_PAGE,
+            ids.GBS_PAGE, ids.THEORY_PAGE, ids.CAVEATS_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
+            ids.ANDERSEN_SHAN_PAPER_PAGE, ids.QPURPOSE_PAGE, ids.LITERATURE_REVIEW_PAGE,
         ),
-    ),
-    LayerInfo(
-        Layer.LITERATURE, "Literatura a trh", "co je doložené, kdo co tvrdí a jak to obstojí", "#7b3fe4",
-        (ids.LITERATURE_REVIEW_PAGE, ids.ANDERSEN_SHAN_PAPER_PAGE, ids.QPURPOSE_PAGE, ids.VQE_PAPER_PAGE),
-    ),
-    LayerInfo(
-        Layer.HARDWARE, "Hardware", "kde a na čem se dá výpočet skutečně spustit", "#d9822b",
-        (ids.PHOTONIC_HARDWARE_PAGE,),
+        ids.NAV_CORE_MENU,
     ),
     LayerInfo(
         Layer.RESEARCH, "Vlastní výzkum", "otevřené otázky a hypotézy disertace", "#c53d3d",
         (ids.FAILURE_DIAGNOSTICS_PAGE, ids.RANDOM_MATRIX_GBS_PAGE),
+        ids.NAV_RESEARCH_MENU,
+    ),
+    LayerInfo(
+        Layer.FOUNDATIONS, "Základy", "matematika a zdroje pro samostudium", "#2e9e5b",
+        (ids.INTEGRALS_CHEAT_SHEET_PAGE, ids.ACADEMY_PAGE),
+        ids.NAV_FOUNDATIONS_MENU,
     ),
 )
+"""Five groups: the two fields, their intersection, our own research and the foundations."""
 
 
 MAP_LABELS = {
@@ -98,6 +118,7 @@ class RelationKind(str, Enum):
     CHECKS = "proveruje"
     MOTIVATES = "motivuje"
     CONTRASTS = "srovnava"
+    EXPANDS = "rozviji"
 
 
 @dataclass(frozen=True)
@@ -115,6 +136,7 @@ RELATION_KINDS: Tuple[RelationKindInfo, ...] = (
     RelationKindInfo(RelationKind.CHECKS, "prověřuje", "#d9822b"),
     RelationKindInfo(RelationKind.MOTIVATES, "otevírá otázku pro", "#c53d3d"),
     RelationKindInfo(RelationKind.CONTRASTS, "srovnává se", "#9aa3b2"),
+    RelationKindInfo(RelationKind.EXPANDS, "rozvíjí", "#139a9a"),
 )
 
 

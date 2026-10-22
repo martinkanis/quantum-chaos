@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from typing import Dict, FrozenSet, Tuple
 
-from dash import Dash, Input, Output, dcc, html
+from dash import Dash, Input, Output
 
-from auth.login import LOGOUT_PATH
 from ui import ids
+from ui.knowledge_map_content import LAYERS
 
 TOPICS_PATH = "/"
 ACADEMY_PATH = "/quantum-academy"
 KNOWLEDGE_MAP_PATH = "/mapa"
+"""Kept as an alias of the home page, where the knowledge map now lives."""
 PORTFOLIO_PATH = "/klasicke-monte-carlo"
 GBS_PATH = "/gbs"
 CAVEATS_PATH = "/gbs/hacky"
@@ -35,7 +36,6 @@ LINK_CLASS = "nav-link"
 
 PAGE_IDS = (
     ids.TOPICS_PAGE,
-    ids.KNOWLEDGE_MAP_PAGE,
     ids.ACADEMY_PAGE,
     ids.PORTFOLIO_PAGE,
     ids.GBS_PAGE,
@@ -54,27 +54,11 @@ PAGE_IDS = (
     ids.FAILURE_DIAGNOSTICS_PAGE,
     ids.INTEGRALS_CHEAT_SHEET_PAGE,
 )
-MONTE_CARLO_PAGES = frozenset({
-    ids.PORTFOLIO_PAGE, ids.GBS_PAGE, ids.CAVEATS_PAGE, ids.THEORY_PAGE, ids.ADVANTAGE_PAGE, ids.GUIDE_PAGE,
-    ids.QPURPOSE_PAGE, ids.ANDERSEN_SHAN_PAPER_PAGE, ids.HAFNIAN_PAGE,
-})
-NAV_LINK_IDS = (
-    ids.NAV_TOPICS_LINK,
-    ids.NAV_KNOWLEDGE_MAP_LINK,
-    ids.NAV_MONTE_CARLO_LINK,
-    ids.NAV_LITERATURE_REVIEW_LINK,
-    ids.NAV_OPTIMIZATION_LINK,
-    ids.NAV_RANDOM_MATRIX_LINK,
-    ids.NAV_RESEARCH_DIRECTIONS_LINK,
-    ids.NAV_CHEAT_SHEETS_LINK,
-    ids.NAV_ACADEMY_LINK,
-    ids.NAV_PORTFOLIO_LINK,
-    ids.NAV_GBS_LINK,
-    ids.NAV_ADVANTAGE_LINK,
-)
+NAV_LINK_IDS = (ids.NAV_TOPICS_LINK,) + tuple(info.menu_id for info in LAYERS)
+"""Top-level menu entries: the home page with the knowledge map and one drop-down per group of pages."""
 PAGE_BY_PATH = {
     TOPICS_PATH: ids.TOPICS_PAGE,
-    KNOWLEDGE_MAP_PATH: ids.KNOWLEDGE_MAP_PAGE,
+    KNOWLEDGE_MAP_PATH: ids.TOPICS_PAGE,
     ACADEMY_PATH: ids.ACADEMY_PAGE,
     PORTFOLIO_PATH: ids.PORTFOLIO_PAGE,
     GBS_PATH: ids.GBS_PAGE,
@@ -95,24 +79,7 @@ PAGE_BY_PATH = {
 }
 ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.TOPICS_PAGE: frozenset({ids.NAV_TOPICS_LINK}),
-    ids.KNOWLEDGE_MAP_PAGE: frozenset({ids.NAV_KNOWLEDGE_MAP_LINK}),
-    ids.ACADEMY_PAGE: frozenset({ids.NAV_ACADEMY_LINK}),
-    ids.PORTFOLIO_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_PORTFOLIO_LINK}),
-    ids.GBS_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
-    ids.CAVEATS_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
-    ids.THEORY_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
-    ids.HAFNIAN_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_GBS_LINK}),
-    ids.ADVANTAGE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
-    ids.GUIDE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
-    ids.QPURPOSE_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
-    ids.ANDERSEN_SHAN_PAPER_PAGE: frozenset({ids.NAV_MONTE_CARLO_LINK, ids.NAV_ADVANTAGE_LINK}),
-    ids.VQE_PAPER_PAGE: frozenset({ids.NAV_OPTIMIZATION_LINK}),
-    ids.LITERATURE_REVIEW_PAGE: frozenset({ids.NAV_LITERATURE_REVIEW_LINK}),
-    ids.PHOTONIC_HARDWARE_PAGE: frozenset({ids.NAV_LITERATURE_REVIEW_LINK}),
-    ids.RANDOM_MATRIX_PAGE: frozenset({ids.NAV_RANDOM_MATRIX_LINK}),
-    ids.RANDOM_MATRIX_GBS_PAGE: frozenset({ids.NAV_RESEARCH_DIRECTIONS_LINK}),
-    ids.FAILURE_DIAGNOSTICS_PAGE: frozenset({ids.NAV_RESEARCH_DIRECTIONS_LINK}),
-    ids.INTEGRALS_CHEAT_SHEET_PAGE: frozenset({ids.NAV_CHEAT_SHEETS_LINK}),
+    **{page_id: frozenset({info.menu_id}) for info in LAYERS for page_id in info.page_ids},
 }
 
 # Pages are only hidden, so the browser cannot jump to an anchor on its own. Formulas (MathJax)
@@ -194,61 +161,9 @@ def failure_diagnostics_href(anchor: str) -> str:
     return f"{FAILURE_DIAGNOSTICS_PATH}#{anchor}"
 
 
-def build_navigation() -> html.Header:
-    """Topics in the top row; the pages of the Monte Carlo topic in a second row under it."""
-    return html.Header(
-        className="site-header",
-        children=[
-            html.Nav(
-                className="top-nav",
-                children=[
-                    dcc.Link("Témata", href=TOPICS_PATH, id=ids.NAV_TOPICS_LINK, className=LINK_CLASS),
-                    dcc.Link(
-                        "Mapa znalostí", href=KNOWLEDGE_MAP_PATH, id=ids.NAV_KNOWLEDGE_MAP_LINK, className=LINK_CLASS,
-                    ),
-                    dcc.Link("Monte Carlo", href=PORTFOLIO_PATH, id=ids.NAV_MONTE_CARLO_LINK, className=LINK_CLASS),
-                    dcc.Link(
-                        "Rešerše GBS", href=LITERATURE_REVIEW_PATH, id=ids.NAV_LITERATURE_REVIEW_LINK,
-                        className=LINK_CLASS,
-                    ),
-                    dcc.Link(
-                        "Kvantová optimalizace", href=VQE_PAPER_PATH, id=ids.NAV_OPTIMIZATION_LINK,
-                        className=LINK_CLASS,
-                    ),
-                    dcc.Link(
-                        "Náhodné matice", href=RANDOM_MATRIX_PATH, id=ids.NAV_RANDOM_MATRIX_LINK,
-                        className=LINK_CLASS,
-                    ),
-                    dcc.Link(
-                        "Výzkumné směry", href=FAILURE_DIAGNOSTICS_PATH, id=ids.NAV_RESEARCH_DIRECTIONS_LINK,
-                        className=LINK_CLASS,
-                    ),
-                    dcc.Link(
-                        "Taháky", href=INTEGRALS_CHEAT_SHEET_PATH, id=ids.NAV_CHEAT_SHEETS_LINK, className=LINK_CLASS,
-                    ),
-                    dcc.Link("Quantum Academy", href=ACADEMY_PATH, id=ids.NAV_ACADEMY_LINK, className=LINK_CLASS),
-                    html.A("Odhlásit", href=LOGOUT_PATH, className="nav-link logout-link"),
-                ],
-            ),
-            html.Nav(
-                id=ids.MONTE_CARLO_SUBNAV,
-                className="sub-nav",
-                style=HIDDEN,
-                children=[
-                    dcc.Link("Klasické", href=PORTFOLIO_PATH, id=ids.NAV_PORTFOLIO_LINK, className=LINK_CLASS),
-                    dcc.Link("Na GBS", href=GBS_PATH, id=ids.NAV_GBS_LINK, className=LINK_CLASS),
-                    dcc.Link("Výhoda GBS", href=ADVANTAGE_PATH, id=ids.NAV_ADVANTAGE_LINK, className=LINK_CLASS),
-                ],
-            ),
-        ],
-    )
-
-
 def register_navigation_callbacks(app: Dash) -> None:
     app.callback(
-        [Output(page_id, "style") for page_id in PAGE_IDS]
-        + [Output(link_id, "className") for link_id in NAV_LINK_IDS]
-        + [Output(ids.MONTE_CARLO_SUBNAV, "style")],
+        [Output(page_id, "style") for page_id in PAGE_IDS] + [Output(link_id, "className") for link_id in NAV_LINK_IDS],
         Input(ids.URL, "pathname"),
     )(show_page)
     app.clientside_callback(SCROLL_TO_ANCHOR_JS, Input(ids.URL, "hash"), Input(ids.URL, "pathname"))
@@ -260,5 +175,4 @@ def show_page(pathname: str) -> Tuple:
     styles = tuple(VISIBLE if page_id == page else HIDDEN for page_id in PAGE_IDS)
     active_links = ACTIVE_LINKS_BY_PAGE[page]
     link_classes = tuple(ACTIVE_LINK_CLASS if link_id in active_links else LINK_CLASS for link_id in NAV_LINK_IDS)
-    subnav_style = VISIBLE if page in MONTE_CARLO_PAGES else HIDDEN
-    return styles + link_classes + (subnav_style,)
+    return styles + link_classes

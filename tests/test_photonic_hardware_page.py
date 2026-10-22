@@ -31,7 +31,7 @@ def test_stranka_je_druhym_krokem_reserse_gbs():
     _, step_label, links, _, _ = describe_pager(PHOTONIC_HARDWARE_PATH, None)
 
     assert PAGE_BY_PATH[PHOTONIC_HARDWARE_PATH] == ids.PHOTONIC_HARDWARE_PAGE
-    assert active == [ids.NAV_LITERATURE_REVIEW_LINK]
+    assert active == [ids.NAV_PHOTONICS_MENU]
     assert step_label.endswith("krok 2 / 2")
     assert links[0].children.href == LITERATURE_REVIEW_PATH
     assert [label for label, _ in breadcrumb_trail(ids.PHOTONIC_HARDWARE_PAGE)][-1] == (

@@ -5,9 +5,9 @@ from typing import Collection, List
 from dash import dcc, html
 
 from ui import ids
-from ui.knowledge_map_content import CENTRAL_QUESTION
-from ui.knowledge_map_page import layer_overview
-from ui.navigation import ACADEMY_PATH, KNOWLEDGE_MAP_PATH
+from ui.knowledge_map_content import CENTRAL_QUESTION, INTRO
+from ui.knowledge_map_page import details_card, layer_overview, map_card, map_stores, notes_cards
+from ui.navigation import ACADEMY_PATH
 from ui.topic_catalog import (
     RESEARCH_TOPICS,
     TOPICS_TITLE,
@@ -21,46 +21,54 @@ from ui.topic_catalog import (
 PERCENT = 100
 STUDIED_MARK = "✓"
 
-LEAD = (
-    "Přehled témat aplikace. Každé téma má vlastní stránky s interaktivními výpočty a podrobným výkladem psaným pro "
-    "začínající doktorandy. Stránky jdou číst v doporučeném pořadí; dole na každé stránce ji můžeš označit jako "
-    "prostudovanou a pokračovat dalším krokem. Postup se ukládá jen v tomto prohlížeči."
+STUDY_PATHS_LEAD = (
+    "Studijní cesty procházejí stránky v pořadí, ve kterém se dobře čtou. Dole na každé stránce ji můžeš označit jako "
+    "prostudovanou a pokračovat dalším krokem; postup se ukládá jen v tomto prohlížeči."
 )
 
 
 def build_topics_page() -> html.Div:
+    """Home page: the knowledge map across the whole width, then the study paths and the user's own notes."""
     return html.Div(
         id=ids.TOPICS_PAGE,
-        className="gbs-page",
+        className="home-page",
         children=[
-            html.H1(TOPICS_TITLE),
-            html.P(LEAD, className="lead"),
-            _structure_card(),
-            html.H2("Studijní cesty", className="topics-heading"),
-            html.Div(id=ids.TOPICS_LIST, children=topic_cards(studied_page_ids=())),
-            html.P(
-                className="hint",
-                children=[
-                    "Odkazy na kurzy, blogy a další materiály ke kvantovému počítání jsou na stránce ",
-                    dcc.Link("Quantum Academy", href=ACADEMY_PATH),
-                    ".",
-                ],
-            ),
+            html.Div(className="home-intro", children=[
+                html.H1(TOPICS_TITLE),
+                html.P([html.Strong("Ústřední otázka: "), CENTRAL_QUESTION], className="central-question-text"),
+                html.P(INTRO, className="lead"),
+            ]),
+            map_card(),
+            html.Div(className="gbs-page home-content", children=[
+                details_card(),
+                html.H2("Studijní cesty", className="topics-heading"),
+                html.P(STUDY_PATHS_LEAD, className="hint"),
+                html.Div(id=ids.TOPICS_LIST, children=topic_cards(studied_page_ids=())),
+                _groups_card(),
+                *notes_cards(),
+                html.P(
+                    className="hint",
+                    children=[
+                        "Odkazy na kurzy, blogy a další materiály ke kvantovému počítání jsou na stránce ",
+                        dcc.Link("Quantum Academy", href=ACADEMY_PATH),
+                        ".",
+                    ],
+                ),
+            ]),
+            *map_stores(),
         ],
     )
 
 
-def _structure_card() -> html.Section:
+def _groups_card() -> html.Section:
     return html.Section(className="card structure-card", children=[
-        html.H2("Jak spolu témata souvisí"),
-        html.P([html.Strong("Ústřední otázka: "), CENTRAL_QUESTION], className="central-question-text"),
+        html.H2("Skupiny stránek"),
         html.P(
-            "Stránky tvoří pět vrstev, které na otázku odpovídají z různých stran. Studijní cesty níže je procházejí "
-            "v pořadí, ve kterém se dobře čtou; mapa znalostí ukazuje, jak spolu jednotlivé stránky souvisí.",
+            "Stejných pět skupin jako v horním menu a v mapě: finance, fotonika, jejich průnik GBS ve financích, "
+            "vlastní výzkum a základy.",
             className="hint",
         ),
         layer_overview(),
-        dcc.Link("Otevřít mapu znalostí →", href=KNOWLEDGE_MAP_PATH, className="primary-link"),
     ])
 
 
