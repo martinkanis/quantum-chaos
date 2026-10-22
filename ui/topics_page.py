@@ -5,7 +5,6 @@ from typing import Collection, List
 from dash import dcc, html
 
 from ui import ids
-from ui.knowledge_map_content import CENTRAL_QUESTION, INTRO
 from ui.knowledge_map_page import details_card, layer_overview, map_card, map_stores, notes_cards
 from ui.navigation import ACADEMY_PATH
 from ui.topic_catalog import (
@@ -33,11 +32,7 @@ def build_topics_page() -> html.Div:
         id=ids.TOPICS_PAGE,
         className="home-page",
         children=[
-            html.Div(className="home-intro", children=[
-                html.H1(TOPICS_TITLE),
-                html.P([html.Strong("Ústřední otázka: "), CENTRAL_QUESTION], className="central-question-text"),
-                html.P(INTRO, className="lead"),
-            ]),
+            html.Div(className="home-intro", children=html.H1(TOPICS_TITLE)),
             map_card(),
             html.Div(className="gbs-page home-content", children=[
                 details_card(),

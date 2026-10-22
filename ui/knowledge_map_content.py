@@ -13,11 +13,6 @@ CENTRAL_QUESTION = (
     "že selže?"
 )
 CENTRAL_QUESTION_SHORT = "Ústřední otázka"
-INTRO = (
-    "Odpovídají na ni dva obory – finance a fotonika – a jejich průnik, GBS ve financích, je jádro disertace; vlastní "
-    "výzkum hledá, kde to selže, a základy dávají potřebnou matematiku. Kliknutím na stránku v mapě ji otevřeš, "
-    "kolečkem nebo tlačítky mapu přiblížíš. Když tě studium zavede hlouběji, založ si dole vlastní podtéma."
-)
 OWN_CONNECTIONS_HINT = (
     "Propoj dvě stránky nebo svá podtémata, třeba „tohle by šlo použít tam“. Ukládá se jen v tomto prohlížeči."
 )

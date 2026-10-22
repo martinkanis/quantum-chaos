@@ -326,7 +326,6 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 .login-card .primary-button { width: 100%; margin-top: 4px; }
 
 /* Knowledge map and the structure overview on the topics page. */
-.central-question-text { font-size: 1.1rem; line-height: 1.6; max-width: 80ch; }
 .topics-heading { margin-top: 28px; }
 .layer-overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px 24px; margin: 12px 0; }
 .map-layer h3 { display: flex; align-items: center; gap: 8px; margin: 8px 0 2px; font-size: 1rem; }
