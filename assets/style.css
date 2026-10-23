@@ -336,8 +336,6 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 .connection-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; align-items: center; }
 .connection-form input { width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--border); border-radius: 6px; }
 .own-connections label { display: block; margin: 6px 0; }
-.map-scroll { overflow-x: auto; }
-.map-scroll > div { min-width: 760px; }
 
 /* Top menu: one drop-down per group of pages; on narrow screens the whole menu hides behind a toggle. */
 .menu-bar { display: none; background: var(--surface); border-bottom: 1px solid var(--border); padding: 6px 12px; }
@@ -382,3 +380,10 @@ details.nav-link > summary:hover { color: var(--text); }
   .home-intro { padding: 16px 16px 4px; }
   .map-card { margin: 0 8px 12px; }
 }
+.map-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.map-hover { min-height: 1.4em; margin: 6px 0 0; }
+.map-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 8px 0 4px; font-size: 0.85rem; color: var(--text-muted); }
+.legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.legend-line { display: inline-block; width: 22px; height: 3px; border-radius: 2px; }
+.legend-line.own { background: repeating-linear-gradient(90deg, var(--text) 0 5px, transparent 5px 9px); }
+.legend-diamond { display: inline-block; width: 10px; height: 10px; background: var(--text-muted); transform: rotate(45deg); }

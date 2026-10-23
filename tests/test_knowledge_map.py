@@ -5,7 +5,16 @@ import pytest
 from dash import no_update
 
 from ui import ids
-from ui.knowledge_map import CENTER_ID, build_figure, map_nodes, node_options, page_ids, relations_of
+from ui.knowledge_map import (
+    CENTER_ID,
+    build_elements,
+    describe_hover,
+    map_nodes,
+    node_options,
+    page_ids,
+    positions_of,
+    relations_of,
+)
 from ui.knowledge_map_callbacks import click_node, upload_backup
 from ui.knowledge_map_content import LAYERS, RELATION_KINDS, RELATIONS, RelationKind
 from ui.knowledge_map_notes import (
@@ -26,6 +35,10 @@ from ui.topic_catalog import RESEARCH_TOPICS
 ALL_LAYERS = [info.layer.value for info in LAYERS]
 ALL_KINDS = [info.kind.value for info in RELATION_KINDS]
 PAGES = page_ids()
+
+
+def relation_edges(elements):
+    return [item for item in elements if "relation" in item.get("classes", "")]
 
 
 def encoded(backup):
@@ -58,22 +71,23 @@ def test_mapa_je_na_uvodni_strance_a_stara_adresa_tam_vede():
 
 
 def test_filtry_skryji_skupiny_i_druhy_vztahu():
-    full = build_figure(ALL_LAYERS, ALL_KINDS, [])
-    without_research = build_figure([layer for layer in ALL_LAYERS if layer != "vyzkum"], ALL_KINDS, [])
-    only_follows = build_figure(ALL_LAYERS, [RelationKind.FOLLOWS.value], [])
+    full = relation_edges(build_elements(ALL_LAYERS, ALL_KINDS, []))
+    without_research = relation_edges(build_elements([layer for layer in ALL_LAYERS if layer != "vyzkum"], ALL_KINDS, []))
+    only_follows = relation_edges(build_elements(ALL_LAYERS, [RelationKind.FOLLOWS.value], []))
 
-    assert len(full.layout.annotations) == len(RELATIONS)
-    assert len(without_research.layout.annotations) < len(full.layout.annotations)
-    assert len(only_follows.layout.annotations) == sum(r.kind == RelationKind.FOLLOWS for r in RELATIONS)
+    assert len(full) == len(RELATIONS)
+    assert len(without_research) < len(full)
+    assert len(only_follows) == sum(r.kind == RelationKind.FOLLOWS for r in RELATIONS)
 
 
 def test_klik_na_stranku_ji_otevre_a_v_rezimu_souvislosti_ji_vybere():
-    click = {"points": [{"customdata": ids.HAFNIAN_PAGE}]}
+    click = {"id": ids.HAFNIAN_PAGE, "path": "/gbs/hafnian"}
 
     assert click_node(click, ClickMode.OPEN_PAGE.value, None) == ("/gbs/hafnian", no_update)
     assert click_node(click, ClickMode.SHOW_LINKS.value, None) == (no_update, ids.HAFNIAN_PAGE)
-    assert click_node({"points": [{"customdata": CENTER_ID}]}, ClickMode.OPEN_PAGE.value, None) == (no_update, CENTER_ID)
-    assert click_node({"points": [{"x": 0.5, "y": 0.5}]}, ClickMode.OPEN_PAGE.value, None) == (no_update, no_update)
+    assert click_node({"id": CENTER_ID}, ClickMode.OPEN_PAGE.value, None) == (no_update, CENTER_ID)
+    assert click_node({"id": "neexistuje"}, ClickMode.OPEN_PAGE.value, None) == (no_update, no_update)
+    assert click_node(None, ClickMode.OPEN_PAGE.value, None) == (no_update, no_update)
 
 
 def test_podtema_se_objevi_v_mape_u_sve_stranky_a_jde_propojit():
@@ -88,8 +102,9 @@ def test_podtema_se_objevi_v_mape_u_sve_stranky_a_jde_propojit():
     connections = add_connection(None, "vlastni-1", "vysvetluje", ids.GBS_PAGE, "", nodes)
     own = parse_connections(connections, nodes)
     assert {relation.kind_label for relation in relations_of("vlastni-1", own, subtopics)} == {"rozvíjí", "vysvětluje"}
-    figure = build_figure(ALL_LAYERS, ALL_KINDS, own, subtopics)
-    assert len(figure.layout.annotations) == len(RELATIONS) + 2
+    elements = build_elements(ALL_LAYERS, ALL_KINDS, own, subtopics)
+    assert len(relation_edges(elements)) == len(RELATIONS) + 2
+    assert "subtopic" in next(item for item in elements if item["data"]["id"] == "vlastni-1")["classes"]
 
 
 def test_spatne_zadane_podtema_ma_ceskou_hlasku():
@@ -162,6 +177,30 @@ def test_detail_podtematu_ukaze_poznamku_a_stranky_ktere_rozviji():
     details = describe_node("vlastni-1", [], subtopics)
 
     assert details[1].children == "Per partes pro **momenty**."
-    assert click_node({"points": [{"customdata": "vlastni-1"}]}, ClickMode.OPEN_PAGE.value, stored) == (
+    assert click_node({"id": "vlastni-1"}, ClickMode.OPEN_PAGE.value, stored) == (
         no_update, "vlastni-1",
     )
+
+
+def test_presunuty_uzel_zustane_kde_ho_uzivatel_nechal():
+    elements = build_elements(ALL_LAYERS, ALL_KINDS, [])
+    hafnian = next(item for item in elements if item["data"]["id"] == ids.HAFNIAN_PAGE)
+    hafnian["position"] = {"x": 12.5, "y": -40.0}
+
+    remembered = positions_of(elements)
+    redrawn = build_elements(ALL_LAYERS, ALL_KINDS, [], selected=ids.GBS_PAGE, positions=remembered)
+
+    assert remembered[ids.HAFNIAN_PAGE] == {"x": 12.5, "y": -40.0}
+    assert all("source" not in item["data"] for item in elements if item["data"]["id"] in remembered)
+    assert next(item for item in redrawn if item["data"]["id"] == ids.HAFNIAN_PAGE)["position"] == {"x": 12.5, "y": -40.0}
+
+
+def test_vyber_uzlu_ztlumi_nesouvisejici_a_najeti_mysi_popise_prvek():
+    elements = build_elements(ALL_LAYERS, ALL_KINDS, [], selected=ids.HAFNIAN_PAGE)
+    by_id = {item["data"]["id"]: item for item in elements}
+
+    assert "chosen" in by_id[ids.HAFNIAN_PAGE]["classes"]
+    assert "faded" not in by_id[ids.GBS_PAGE]["classes"]
+    assert "faded" in by_id[ids.VQE_PAPER_PAGE]["classes"]
+    assert describe_hover(by_id[ids.HAFNIAN_PAGE]["data"]).startswith("Hafnián a permanent polopatě: ")
+    assert describe_hover(None) == ""

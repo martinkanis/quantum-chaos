@@ -1,14 +1,22 @@
-"""Callbacks of the knowledge map: filters, clicks on nodes and the user's own notes stored in the browser."""
+"""Callbacks of the knowledge map: filters, dragging and clicking nodes, and the user's own notes in the browser."""
 
 from __future__ import annotations
 
+import time
 from typing import Dict, List, Optional, Sequence, Tuple
 
-import plotly.graph_objects as go
-from dash import Dash, Input, Output, State, dcc, html, no_update
+from dash import Dash, Input, Output, State, callback_context, dcc, html, no_update
 
 from ui import ids
-from ui.knowledge_map import build_figure, connection_label, map_nodes, node_options, page_ids
+from ui.knowledge_map import (
+    build_elements,
+    connection_label,
+    describe_hover,
+    map_nodes,
+    node_options,
+    page_ids,
+    positions_of,
+)
 from ui.knowledge_map_notes import (
     BACKUP_FILENAME,
     KnowledgeMapError,
@@ -22,7 +30,8 @@ from ui.knowledge_map_notes import (
     remove_connections,
     remove_subtopics,
 )
-from ui.knowledge_map_page import ClickMode, describe_node
+from ui.knowledge_map_page import DEFAULT_LAYOUT, ClickMode, describe_node
+from ui.navigation import PAGE_BY_PATH
 
 Stored = Optional[List[Dict[str, object]]]
 IMPORT_SUCCESS = "Záloha je nahraná: {subtopics} podtémat a {connections} propojení."
@@ -30,17 +39,37 @@ IMPORT_SUCCESS = "Záloha je nahraná: {subtopics} podtémat a {connections} pro
 
 def register_knowledge_map_callbacks(app: Dash) -> None:
     app.callback(
-        Output(ids.KNOWLEDGE_MAP_GRAPH, "figure"),
+        Output(ids.KNOWLEDGE_MAP_GRAPH, "elements"),
         Input(ids.KNOWLEDGE_MAP_LAYER_FILTER, "value"),
         Input(ids.KNOWLEDGE_MAP_KIND_FILTER, "value"),
         Input(ids.KNOWLEDGE_MAP_CONNECTIONS, "data"),
         Input(ids.KNOWLEDGE_MAP_SUBTOPICS, "data"),
         Input(ids.KNOWLEDGE_MAP_SELECTION, "data"),
-    )(update_figure)
+        Input(ids.KNOWLEDGE_MAP_RESET_LAYOUT, "n_clicks"),
+        State(ids.KNOWLEDGE_MAP_POSITIONS, "data"),
+    )(update_elements)
+    app.callback(
+        Output(ids.KNOWLEDGE_MAP_POSITIONS, "data"),
+        Input(ids.KNOWLEDGE_MAP_GRAPH, "elements"),
+        prevent_initial_call=True,
+    )(remember_positions)
+    app.callback(
+        Output(ids.KNOWLEDGE_MAP_GRAPH, "layout"),
+        Input(ids.KNOWLEDGE_MAP_FIT, "n_clicks"),
+        Input(ids.KNOWLEDGE_MAP_RESET_LAYOUT, "n_clicks"),
+        Input(ids.URL, "pathname"),
+        prevent_initial_call=True,
+    )(fit_map)
+    app.callback(
+        Output(ids.KNOWLEDGE_MAP_HOVER, "children"),
+        Input(ids.KNOWLEDGE_MAP_GRAPH, "mouseoverNodeData"),
+        Input(ids.KNOWLEDGE_MAP_GRAPH, "mouseoverEdgeData"),
+        prevent_initial_call=True,
+    )(show_hover)
     app.callback(
         Output(ids.URL, "pathname"),
         Output(ids.KNOWLEDGE_MAP_SELECTION, "data"),
-        Input(ids.KNOWLEDGE_MAP_GRAPH, "clickData"),
+        Input(ids.KNOWLEDGE_MAP_GRAPH, "tapNodeData"),
         State(ids.KNOWLEDGE_MAP_CLICK_MODE, "value"),
         State(ids.KNOWLEDGE_MAP_SUBTOPICS, "data"),
         prevent_initial_call=True,
@@ -141,21 +170,46 @@ def _register_backup_callbacks(app: Dash) -> None:
     )(upload_backup)
 
 
-def update_figure(
+def update_elements(
     layers: Optional[Sequence[str]], kinds: Optional[Sequence[str]], stored_connections: Stored,
-    stored_subtopics: Stored, selected: Optional[str],
-) -> go.Figure:
+    stored_subtopics: Stored, selected: Optional[str], _reset_clicks: Optional[int],
+    stored_positions: Optional[Dict[str, Dict[str, float]]],
+) -> List[dict]:
+    """Redraws the map and keeps every node where the user dragged it, unless the original layout was asked for."""
     subtopics = _subtopics(stored_subtopics)
-    return build_figure(layers or [], kinds or [], _connections(stored_connections, subtopics), subtopics, selected)
+    positions = None if _triggered_by(ids.KNOWLEDGE_MAP_RESET_LAYOUT) else stored_positions
+    return build_elements(
+        layers or [], kinds or [], _connections(stored_connections, subtopics), subtopics, selected, positions,
+    )
 
 
-def click_node(click_data: Optional[dict], mode: Optional[str], stored_subtopics: Stored) -> Tuple[object, object]:
+def remember_positions(elements: Optional[List[dict]]) -> Dict[str, Dict[str, float]]:
+    return positions_of(elements)
+
+
+def fit_map(fit_clicks: Optional[int], reset_clicks: Optional[int], pathname: Optional[str]) -> object:
+    """A changed layout prop makes Cytoscape place the nodes from the elements again and fit the whole map.
+
+    The home page is only hidden while another page is shown, and a map drawn while hidden has no size, so the
+    map is fitted again every time the user comes back to it.
+    """
+    if _triggered_by(ids.URL) and PAGE_BY_PATH.get(pathname or "") != ids.TOPICS_PAGE:
+        return no_update
+    return {**DEFAULT_LAYOUT, "refit": f"{fit_clicks or 0}-{reset_clicks or 0}-{pathname}-{time.monotonic()}"}
+
+
+def show_hover(node_data: Optional[dict], edge_data: Optional[dict]) -> str:
+    if _triggered_by(ids.KNOWLEDGE_MAP_GRAPH, "mouseoverEdgeData"):
+        return describe_hover(edge_data)
+    return describe_hover(node_data)
+
+
+def click_node(node_data: Optional[dict], mode: Optional[str], stored_subtopics: Stored) -> Tuple[object, object]:
     """A click on a page opens it (or selects it in the „show links“ mode); hubs and subtopics are always selected.
 
-    Clicks on arrows (their invisible hover points) carry no node id and change nothing.
+    Dragging a node is not a click, so moving pages around never opens them.
     """
-    points = (click_data or {}).get("points") or []
-    node_id = points[0].get("customdata") if points else None
+    node_id = (node_data or {}).get("id")
     node = map_nodes(_subtopics(stored_subtopics)).get(node_id)
     if node is None:
         return no_update, no_update
@@ -234,6 +288,11 @@ def upload_backup(contents: Optional[str], stored_subtopics: Stored, stored_conn
         return no_update, no_update, html.P(str(error), className="error-message")
     message = IMPORT_SUCCESS.format(subtopics=len(subtopics), connections=len(connections))
     return subtopics, connections, html.P(message, className="hint")
+
+
+def _triggered_by(component_id: str, prop: Optional[str] = None) -> bool:
+    triggered = callback_context.triggered[0]["prop_id"] if callback_context.triggered else ""
+    return triggered.startswith(f"{component_id}.") and (prop is None or triggered.endswith(f".{prop}"))
 
 
 def _subtopics(stored_subtopics: Stored) -> List[Subtopic]:

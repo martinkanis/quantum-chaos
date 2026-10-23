@@ -1,6 +1,7 @@
-"""Knowledge map: nodes with positions, typed relations and the Plotly figure that draws them.
+"""Knowledge map: nodes with positions, typed relations and the Cytoscape elements that draw them.
 
-The user's own subtopics and connections are parsed in ui/knowledge_map_notes.py and passed in here.
+The user's own subtopics and connections are parsed in ui/knowledge_map_notes.py and passed in here. Nodes can be
+dragged in the browser; the positions the user chose come back as `positions` and win over the default layout.
 """
 
 from __future__ import annotations
@@ -8,8 +9,6 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from typing import Collection, Dict, List, Mapping, Optional, Sequence, Tuple
-
-import plotly.graph_objects as go
 
 from ui.knowledge_map_content import (
     CENTRAL_QUESTION,
@@ -33,20 +32,42 @@ SUBTOPIC_RADIUS = 4.6
 SUBTOPIC_SPREAD_DEGREES = 9.0
 MIN_SECTOR_PAGES = 2
 """A group with a single page still gets the room of two, so its hub does not sit right next to a neighbour."""
+PIXELS_PER_UNIT = 120
+"""Cytoscape works in pixels with y pointing down; the layout above is in units with y pointing up."""
 LABEL_WIDTH = 16
 LABEL_SIDE_THRESHOLD = 0.35
-NODE_SIZES = {"center": 46, "layer": 30, "page": 18, "subtopic": 16}
-NODE_SYMBOLS = {"subtopic": "diamond"}
 CENTER_COLOR = "#1c2330"
 STRUCTURE_COLOR = "#dde2ea"
 OWN_CONNECTION_COLOR = "#1c2330"
-FADED_OPACITY = 0.2
-ARROW_STANDOFF = 12
-LABEL_MARGIN = 1.0
-"""Room around the outermost ring for the labels that point outwards."""
-WIDTH_TO_HEIGHT = 1.4
-FIGURE_HEIGHT = 780
+FADED_OPACITY = 0.15
 HOVER_NOTE_LENGTH = 160
+
+Position = Dict[str, float]
+
+STYLESHEET: List[dict] = [
+    {"selector": "node", "style": {
+        "label": "data(label)", "text-wrap": "wrap", "font-size": 14, "color": CENTER_COLOR,
+        "background-color": "data(color)", "width": 26, "height": 26, "text-valign": "bottom", "text-margin-y": 5,
+        "text-background-color": "#ffffff", "text-background-opacity": 0.7, "text-background-padding": 1,
+    }},
+    {"selector": "node.center", "style": {"width": 70, "height": 70, "font-size": 17, "font-weight": "bold"}},
+    {"selector": "node.layer", "style": {"width": 44, "height": 44, "font-size": 16, "font-weight": "bold"}},
+    {"selector": "node.subtopic", "style": {"shape": "diamond", "width": 26, "height": 26, "font-style": "italic"}},
+    {"selector": "node.label-right", "style": {"text-halign": "right", "text-valign": "center", "text-margin-x": 8}},
+    {"selector": "node.label-left", "style": {"text-halign": "left", "text-valign": "center", "text-margin-x": -8}},
+    {"selector": "node.label-top", "style": {"text-valign": "top", "text-margin-y": -5}},
+    {"selector": "node.page, node.subtopic", "style": {"cursor": "pointer"}},
+    {"selector": "edge.structure", "style": {"line-color": STRUCTURE_COLOR, "width": 2, "curve-style": "straight"}},
+    {"selector": "edge.relation", "style": {
+        "width": 2.5, "line-color": "data(color)", "target-arrow-color": "data(color)",
+        "target-arrow-shape": "triangle", "curve-style": "bezier", "arrow-scale": 1.1,
+    }},
+    {"selector": "edge.own", "style": {"line-style": "dashed", "width": 3}},
+    {"selector": ".faded", "style": {"opacity": FADED_OPACITY}},
+    {"selector": "node.chosen", "style": {"border-width": 3, "border-color": CENTER_COLOR}},
+    {"selector": "node:selected", "style": {"overlay-opacity": 0}},
+]
+"""Colours come from each element's data, so one stylesheet serves every group and kind of relation."""
 
 
 @dataclass(frozen=True)
@@ -62,7 +83,7 @@ class MapNode:
     layer: Optional[Layer] = None
     path: Optional[str] = None
     label: str = ""
-    """Short text drawn next to the node; the title is shown on hover."""
+    """Short text drawn next to the node; the title is shown in the details and on hover."""
 
 
 @dataclass(frozen=True)
@@ -158,10 +179,16 @@ def relations_of(node_id: str, own: Sequence[Relation], subtopics: Sequence[Subt
     return found
 
 
-def build_figure(
+def default_positions(subtopics: Sequence[Subtopic] = ()) -> Dict[str, Position]:
+    return {node_id: _pixels(node) for node_id, node in map_nodes(subtopics).items()}
+
+
+def build_elements(
     visible_layers: Collection[str], visible_kinds: Collection[str], own: Sequence[Relation],
     subtopics: Sequence[Subtopic] = (), selected: Optional[str] = None,
-) -> go.Figure:
+    positions: Optional[Mapping[str, Mapping[str, float]]] = None,
+) -> List[dict]:
+    """Nodes and edges for Cytoscape; a dragged node keeps the position from `positions`."""
     nodes = map_nodes(subtopics)
     shown = {node_id: node for node_id, node in nodes.items() if node.layer is None or node.layer.value in visible_layers}
     relations = [
@@ -169,35 +196,30 @@ def build_figure(
         if (is_own or relation.kind.value in visible_kinds) and relation.source in shown and relation.target in shown
     ]
     neighbours = _neighbours(selected, relations)
-    extent = (SUBTOPIC_RADIUS if subtopics else PAGE_RADIUS) + LABEL_MARGIN
+    elements = [_node_element(node, neighbours, selected, positions or {}) for node in shown.values()]
+    elements += _structure_edges(shown)
+    elements += [
+        _relation_edge(index, relation, is_own, nodes, selected) for index, (relation, is_own) in enumerate(relations)
+    ]
+    return elements
 
-    figure = go.Figure()
-    figure.add_trace(_structure_trace(shown))
-    for info in RELATION_KINDS:
-        if info.kind.value in visible_kinds:
-            figure.add_trace(_legend_line(info.label, info.color))
-    if own:
-        figure.add_trace(_legend_line("vlastní propojení", OWN_CONNECTION_COLOR, dash="dash"))
-    for relation, is_own in relations:
-        figure.add_annotation(_arrow(nodes[relation.source], nodes[relation.target], relation, is_own, selected))
-    figure.add_trace(_relation_hover_trace(relations, nodes))
-    hubs = [node for node in shown.values() if node.kind in ("center", "layer")]
-    figure.add_trace(_node_trace(hubs, neighbours, selected))
-    for info in LAYERS:
-        layer_pages = [node for node in shown.values() if node.kind == "page" and node.layer == info.layer]
-        if layer_pages:
-            figure.add_trace(_node_trace(layer_pages, neighbours, selected, name=info.title))
-    own_nodes = [node for node in shown.values() if node.kind == "subtopic"]
-    if own_nodes:
-        figure.add_trace(_node_trace(own_nodes, neighbours, selected, name="vlastní podtémata"))
-    figure.update_layout(
-        height=FIGURE_HEIGHT, margin=dict(l=10, r=10, t=10, b=10), dragmode="pan", hovermode="closest",
-        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)", uirevision="mapa",
-        legend=dict(orientation="v", yanchor="top", y=1.0, xanchor="left", x=1.0),
-        xaxis=dict(visible=False, range=[-extent * WIDTH_TO_HEIGHT, extent * WIDTH_TO_HEIGHT]),
-        yaxis=dict(visible=False, range=[-extent, extent], scaleanchor="x"),
-    )
-    return figure
+
+def positions_of(elements: Optional[Sequence[Mapping[str, object]]]) -> Dict[str, Position]:
+    """Node positions as Cytoscape reports them after the user dragged something."""
+    found = {}
+    for element in elements or []:
+        data = element.get("data") or {}
+        position = element.get("position")
+        if isinstance(data, Mapping) and "source" not in data and isinstance(position, Mapping):
+            found[str(data.get("id"))] = {"x": float(position["x"]), "y": float(position["y"])}
+    return found
+
+
+def describe_hover(data: Optional[Mapping[str, object]]) -> str:
+    """One line under the map for the node or arrow under the pointer."""
+    if not data:
+        return ""
+    return str(data.get("hover", ""))
 
 
 def wrap_label(text: str, width: int = LABEL_WIDTH) -> str:
@@ -207,7 +229,7 @@ def wrap_label(text: str, width: int = LABEL_WIDTH) -> str:
             lines[-1] += f" {word}"
         else:
             lines.append(word)
-    return "<br>".join(lines)
+    return "\n".join(lines)
 
 
 def _all_relations(own: Sequence[Relation], subtopics: Sequence[Subtopic]) -> List[Tuple[Relation, bool]]:
@@ -243,16 +265,20 @@ def _layer_node_id(layer: Layer) -> str:
     return f"vrstva-{layer.value}"
 
 
-def _text_position(node: MapNode) -> str:
+def _pixels(node: MapNode) -> Position:
+    return {"x": node.x * PIXELS_PER_UNIT, "y": -node.y * PIXELS_PER_UNIT}
+
+
+def _label_side(node: MapNode) -> str:
     """Labels of the outer rings point away from the centre, so they do not cover the arrows."""
     if node.kind not in ("page", "subtopic"):
-        return "bottom center"
+        return "label-bottom"
     radius = math.hypot(node.x, node.y)
     if node.x / radius > LABEL_SIDE_THRESHOLD:
-        return "middle right"
+        return "label-right"
     if node.x / radius < -LABEL_SIDE_THRESHOLD:
-        return "middle left"
-    return "top center" if node.y > 0 else "bottom center"
+        return "label-left"
+    return "label-top" if node.y > 0 else "label-bottom"
 
 
 def _neighbours(selected: Optional[str], relations: Sequence[Tuple[Relation, bool]]) -> Optional[set]:
@@ -265,70 +291,57 @@ def _neighbours(selected: Optional[str], relations: Sequence[Tuple[Relation, boo
     return linked
 
 
-def _structure_trace(shown: Mapping[str, MapNode]) -> go.Scatter:
-    xs: List[Optional[float]] = []
-    ys: List[Optional[float]] = []
+def _node_element(
+    node: MapNode, neighbours: Optional[set], selected: Optional[str], positions: Mapping[str, Mapping[str, float]],
+) -> dict:
+    classes = [node.kind, _label_side(node)]
+    if neighbours is not None and node.node_id not in neighbours:
+        classes.append("faded")
+    if node.node_id == selected:
+        classes.append("chosen")
+    position = positions.get(node.node_id) or _pixels(node)
+    return {
+        "data": {
+            "id": node.node_id, "label": wrap_label(node.label), "title": node.title, "kind": node.kind,
+            "color": node.color, "path": node.path or "", "hover": f"{node.title}: {node.description}",
+        },
+        "position": {"x": float(position["x"]), "y": float(position["y"])},
+        "classes": " ".join(classes),
+    }
+
+
+def _structure_edges(shown: Mapping[str, MapNode]) -> List[dict]:
+    edges = []
     for node in shown.values():
         if node.kind not in ("layer", "page"):
             continue
-        anchor = shown[CENTER_ID] if node.kind == "layer" else shown.get(_layer_node_id(node.layer))
-        if anchor is None:
-            continue
-        xs += [anchor.x, node.x, None]
-        ys += [anchor.y, node.y, None]
-    return go.Scatter(
-        x=xs, y=ys, mode="lines", line=dict(color=STRUCTURE_COLOR, width=2), hoverinfo="skip", showlegend=False,
-    )
+        anchor_id = CENTER_ID if node.kind == "layer" else _layer_node_id(node.layer)
+        if anchor_id in shown:
+            edges.append({
+                "data": {"id": f"struktura-{node.node_id}", "source": anchor_id, "target": node.node_id},
+                "classes": "structure",
+                "selectable": False,
+            })
+    return edges
 
 
-def _legend_line(name: str, color: str, dash: str = "solid") -> go.Scatter:
-    return go.Scatter(x=[None], y=[None], mode="lines", line=dict(color=color, width=3, dash=dash), name=name)
-
-
-def _arrow(source: MapNode, target: MapNode, relation: Relation, is_own: bool, selected: Optional[str]) -> dict:
-    involved = selected is None or selected in (relation.source, relation.target)
+def _relation_edge(
+    index: int, relation: Relation, is_own: bool, nodes: Mapping[str, MapNode], selected: Optional[str],
+) -> dict:
     is_free_connection = is_own and relation.kind != RelationKind.EXPANDS
-    return dict(
-        x=target.x, y=target.y, ax=source.x, ay=source.y, xref="x", yref="y", axref="x", ayref="y",
-        showarrow=True, arrowhead=3, arrowsize=1.2, arrowwidth=2.6 if is_free_connection else 1.8,
-        arrowcolor=OWN_CONNECTION_COLOR if is_free_connection else kind_info(relation.kind).color,
-        standoff=ARROW_STANDOFF, startstandoff=ARROW_STANDOFF, text="",
-        opacity=1.0 if involved else FADED_OPACITY,
-    )
-
-
-def _relation_hover_trace(relations: Sequence[Tuple[Relation, bool]], nodes: Mapping[str, MapNode]) -> go.Scatter:
-    """Invisible points in the middle of each arrow, so hovering an arrow says what the relation means."""
-    texts = []
-    xs, ys = [], []
-    for relation, is_own in relations:
-        source, target = nodes[relation.source], nodes[relation.target]
-        xs.append((source.x + target.x) / 2)
-        ys.append((source.y + target.y) / 2)
-        prefix = "vlastní: " if is_own else ""
-        note = f"<br>{relation.note}" if relation.note else ""
-        texts.append(f"{prefix}{source.label} <b>{kind_info(relation.kind).label}</b> {target.label}{note}")
-    return go.Scatter(
-        x=xs, y=ys, mode="markers", marker=dict(size=14, opacity=0), text=texts,
-        hovertemplate="%{text}<extra></extra>", showlegend=False,
-    )
-
-
-def _node_trace(
-    nodes: Sequence[MapNode], neighbours: Optional[set], selected: Optional[str], name: Optional[str] = None,
-) -> go.Scatter:
-    return go.Scatter(
-        x=[node.x for node in nodes], y=[node.y for node in nodes], mode="markers+text", name=name,
-        showlegend=name is not None,
-        text=[wrap_label(node.label) for node in nodes], textposition=[_text_position(node) for node in nodes],
-        textfont=dict(size=11, color=CENTER_COLOR),
-        customdata=[node.node_id for node in nodes],
-        hovertext=[f"<b>{node.title}</b><br>{wrap_label(node.description, 50)}" for node in nodes],
-        hovertemplate="%{hovertext}<extra></extra>",
-        marker=dict(
-            size=[NODE_SIZES[node.kind] for node in nodes], color=[node.color for node in nodes],
-            symbol=[NODE_SYMBOLS.get(node.kind, "circle") for node in nodes],
-            opacity=[1.0 if neighbours is None or node.node_id in neighbours else FADED_OPACITY for node in nodes],
-            line=dict(color=CENTER_COLOR, width=[3 if node.node_id == selected else 0 for node in nodes]),
-        ),
-    )
+    classes = ["relation", relation.kind.value]
+    if is_free_connection:
+        classes.append("own")
+    if selected is not None and selected not in (relation.source, relation.target):
+        classes.append("faded")
+    prefix = "vlastní: " if is_own else ""
+    note = f" – {relation.note}" if relation.note else ""
+    source, target = nodes[relation.source], nodes[relation.target]
+    return {
+        "data": {
+            "id": f"vztah-{index}", "source": relation.source, "target": relation.target,
+            "color": OWN_CONNECTION_COLOR if is_free_connection else kind_info(relation.kind).color,
+            "hover": f"{prefix}{source.label} {kind_info(relation.kind).label} {target.label}{note}",
+        },
+        "classes": " ".join(classes),
+    }

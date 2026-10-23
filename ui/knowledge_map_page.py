@@ -5,10 +5,19 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional, Sequence
 
+import dash_cytoscape as cyto
 from dash import dcc, html
 
 from ui import ids
-from ui.knowledge_map import CENTER_ID, NodeRelation, build_figure, map_nodes, node_options, relations_of
+from ui.knowledge_map import (
+    CENTER_ID,
+    STYLESHEET,
+    NodeRelation,
+    build_elements,
+    map_nodes,
+    node_options,
+    relations_of,
+)
 from ui.knowledge_map_content import (
     BACKUP_HINT,
     LAYERS,
@@ -23,14 +32,10 @@ from ui.knowledge_map_notes import MAX_CONNECTION_NOTE_LENGTH, MAX_SUBTOPIC_NOTE
 ALL_LAYERS = [info.layer.value for info in LAYERS]
 ALL_KINDS = [info.kind.value for info in RELATION_KINDS]
 SELECTION_HINT = "Klikni na skupinu nebo podtéma a ukáže se tu, s čím souvisí."
-MAP_CONFIG = {
-    "scrollZoom": True,
-    "responsive": True,
-    "displaylogo": False,
-    "displayModeBar": True,
-    "modeBarButtons": [["zoomIn2d", "zoomOut2d", "resetScale2d"]],
-}
-"""Zoom with the wheel, two fingers or the buttons in the corner; drag to move around."""
+DEFAULT_LAYOUT = {"name": "preset", "fit": True, "padding": 30}
+"""Positions come from the elements; fit shows the whole map. Changing the layout prop fits the map again."""
+MAP_HEIGHT = "78vh"
+MIN_MAP_HEIGHT = "520px"
 
 
 class ClickMode(str, Enum):
@@ -42,6 +47,7 @@ def map_stores() -> List[dcc.Store]:
     return [
         dcc.Store(id=ids.KNOWLEDGE_MAP_CONNECTIONS, storage_type="local"),
         dcc.Store(id=ids.KNOWLEDGE_MAP_SUBTOPICS, storage_type="local"),
+        dcc.Store(id=ids.KNOWLEDGE_MAP_POSITIONS, storage_type="local"),
         dcc.Store(id=ids.KNOWLEDGE_MAP_SELECTION),
     ]
 
@@ -139,18 +145,43 @@ def map_card() -> html.Section:
                     options=[{"label": f" {info.label}", "value": info.kind.value} for info in RELATION_KINDS],
                 ),
             ]),
-            html.Button("Zrušit výběr", id=ids.KNOWLEDGE_MAP_SHOW_ALL, className="secondary-button"),
+            html.Div(className="map-buttons", children=[
+                html.Button("Zrušit výběr", id=ids.KNOWLEDGE_MAP_SHOW_ALL, className="secondary-button"),
+                html.Button("Celá mapa", id=ids.KNOWLEDGE_MAP_FIT, className="secondary-button"),
+                html.Button("Původní rozmístění", id=ids.KNOWLEDGE_MAP_RESET_LAYOUT, className="secondary-button"),
+            ]),
         ]),
-        html.Div(className="map-scroll", children=dcc.Graph(
-            id=ids.KNOWLEDGE_MAP_GRAPH, figure=build_figure(ALL_LAYERS, ALL_KINDS, []), config=MAP_CONFIG,
-            className="map-graph",
-        )),
+        cyto.Cytoscape(
+            id=ids.KNOWLEDGE_MAP_GRAPH, elements=build_elements(ALL_LAYERS, ALL_KINDS, []), stylesheet=STYLESHEET,
+            layout=DEFAULT_LAYOUT, autoRefreshLayout=False, minZoom=0.2, maxZoom=3, wheelSensitivity=0.3,
+            boxSelectionEnabled=False, style={"width": "100%", "height": MAP_HEIGHT, "minHeight": MIN_MAP_HEIGHT},
+        ),
+        html.Div(id=ids.KNOWLEDGE_MAP_HOVER, className="map-hover hint small"),
+        _legend(),
         html.P(
-            "Přibližuj kolečkem myši, dvěma prsty nebo tlačítky + a − vpravo nahoře, posouvej tažením; dvojklik vrátí "
-            "celou mapu. Najetím na šipku uvidíš, co vztah znamená.",
+            "Uzly přetahuj myší nebo prstem, rozmístění si mapa pamatuje v tomto prohlížeči. Přibližuj kolečkem nebo "
+            "dvěma prsty, posouvej tažením prázdného místa.",
             className="hint small",
         ),
     ])
+
+
+def _legend() -> html.Div:
+    groups = [
+        html.Span(className="legend-item", children=[
+            html.Span(className="layer-dot", style={"background": info.color}), info.title,
+        ])
+        for info in LAYERS
+    ]
+    kinds = [
+        html.Span(className="legend-item", children=[
+            html.Span(className="legend-line", style={"background": info.color}), info.label,
+        ])
+        for info in RELATION_KINDS
+    ]
+    own = html.Span(className="legend-item", children=[html.Span(className="legend-line own"), "vlastní propojení"])
+    subtopic = html.Span(className="legend-item", children=[html.Span(className="legend-diamond"), "vlastní podtéma"])
+    return html.Div(className="map-legend", children=groups + kinds + [own, subtopic])
 
 
 def _subtopics_card() -> html.Section:
