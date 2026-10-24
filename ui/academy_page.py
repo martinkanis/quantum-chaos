@@ -10,7 +10,8 @@ from dash import dcc, html
 from ui import ids
 from ui.advantage_content import QISKIT_DOCUMENTATION
 from ui.guide_practice import STRAWBERRY_FIELDS
-from ui.navigation import HIDDEN, PHOTONIC_HARDWARE_PATH
+from ui.literature_review_content import PIQUASSO
+from ui.navigation import HIDDEN, PHOTONIC_HARDWARE_PATH, PHOTONICS_LANDSCAPE_PATH
 from ui.theory_content import (
     AARONSON_ARKHIPOV,
     ANDERSEN_SHAN_EXPECTATIONS,
@@ -83,7 +84,13 @@ ACADEMY_SECTIONS: Tuple[AcademySection, ...] = (
     ),
     AcademySection(
         "Software",
-        sources=(QISKIT_DOCUMENTATION, STRAWBERRY_FIELDS, WALRUS_HAFNIAN),
+        sources=(QISKIT_DOCUMENTATION, STRAWBERRY_FIELDS, WALRUS_HAFNIAN, PIQUASSO),
+        tldr=(
+            "**Pozor:** Strawberry Fields a The Walrus od Xanadu jsou od roku 2026 archivované a dál se nevyvíjejí. "
+            "Pořád jdou nainstalovat (verzi je dobré zafixovat) a The Walrus zůstává referencí pro hafniány; "
+            "aktivně vyvíjený simulátor GBS je **Piquasso**. Přehled firem, hardwaru a softwaru je na stránce "
+            f"[Fotonika ve světě]({PHOTONICS_LANDSCAPE_PATH})."
+        ),
     ),
     AcademySection(
         "Platformy pro kvantové algoritmy: Classiq a CUDA-Q",

@@ -19,6 +19,7 @@ from ui.navigation import (
     INTEGRALS_CHEAT_SHEET_PATH,
     LITERATURE_REVIEW_PATH,
     PHOTONIC_HARDWARE_PATH,
+    PHOTONICS_LANDSCAPE_PATH,
     PORTFOLIO_PATH,
     QPURPOSE_PATH,
     RANDOM_MATRIX_PATH,
@@ -182,6 +183,23 @@ LITERATURE_REVIEW_TOPIC = ResearchTopic(
     sections=(TopicSection("Přehled literatury", (LITERATURE_REVIEW, PHOTONIC_HARDWARE)),),
 )
 
+PHOTONICS_LANDSCAPE = PageEntry(
+    ids.PHOTONICS_LANDSCAPE_PAGE, "Fotonika ve světě: konkurence a partneři", PHOTONICS_LANDSCAPE_PATH,
+    "Kdo ve světě staví fotonické kvantové počítače, co prodává a kdo dodává součástky; tabulka, kdo umí GBS, "
+    "a odhad, kdo je pro disertaci konkurence a kdo partner.",
+)
+
+PHOTONICS_LANDSCAPE_TOPIC = ResearchTopic(
+    anchor="tema-fotonika-ve-svete",
+    title="Fotonika ve světě",
+    summary=(
+        "Přehled firem, výzkumných skupin a dodavatelů fotonické kvantové techniky: co přesně dělají a prodávají, "
+        "kdo umí Gaussian Boson Sampling, kdo nabízí kvantové výpočty bankám a kdo je pro disertaci konkurence "
+        "a kdo partner."
+    ),
+    sections=(TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE,)),),
+)
+
 RANDOM_MATRIX = PageEntry(
     ids.RANDOM_MATRIX_PAGE, "Náhodné matice a riziko portfolia", RANDOM_MATRIX_PATH,
     "Laboratoř se syntetickým trhem a výklad: Marčenkovo–Pasturovo rozdělení, proč Markowitz podhodnocuje riziko, "
@@ -238,11 +256,11 @@ CHEAT_SHEETS_TOPIC = ResearchTopic(
 )
 
 RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (
-    MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, RESEARCH_DIRECTIONS_TOPIC, RANDOM_MATRIX_TOPIC, OPTIMIZATION_TOPIC,
-    CHEAT_SHEETS_TOPIC,
+    MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, PHOTONICS_LANDSCAPE_TOPIC, RESEARCH_DIRECTIONS_TOPIC,
+    RANDOM_MATRIX_TOPIC, OPTIMIZATION_TOPIC, CHEAT_SHEETS_TOPIC,
 )
-"""In the order of the story: the method, what the literature says, our own research, its supporting topic,
-a contrasting quantum approach and the maths cheat sheets."""
+"""In the order of the story: the method, what the literature says, who builds the hardware, our own research,
+its supporting topic, a contrasting quantum approach and the maths cheat sheets."""
 
 
 def study_path(topic: ResearchTopic) -> Tuple[PageEntry, ...]:

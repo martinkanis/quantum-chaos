@@ -221,6 +221,9 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 .theory-section th, .theory-section td { padding: 4px 12px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
 .theory-section th { white-space: normal; vertical-align: bottom; }
 .theory-section th:first-child, .theory-section td:first-child { text-align: left; }
+/* Tables of words, not numbers: cells wrap and read from the left. */
+.theory-section .text-table th, .theory-section .text-table td { text-align: left; }
+.theory-section .text-table td { white-space: normal; vertical-align: top; min-width: 9em; }
 .theory-section pre { background: var(--surface-muted); border-radius: 6px; padding: 10px 14px; overflow-x: auto; }
 
 .breadcrumb { padding: 8px 20px; font-size: 0.85rem; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--surface); }

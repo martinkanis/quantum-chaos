@@ -59,7 +59,7 @@ LAYERS: Tuple[LayerInfo, ...] = (
     ),
     LayerInfo(
         Layer.PHOTONICS, "Fotonika a GBS", "kvantová optika, na které GBS stojí, a hardware, na kterém běží", "#d9822b",
-        (ids.HAFNIAN_PAGE, ids.PHOTONIC_HARDWARE_PAGE),
+        (ids.HAFNIAN_PAGE, ids.PHOTONIC_HARDWARE_PAGE, ids.PHOTONICS_LANDSCAPE_PAGE),
         ids.NAV_PHOTONICS_MENU,
     ),
     LayerInfo(
@@ -100,6 +100,7 @@ MAP_LABELS = {
     ids.QPURPOSE_PAGE: "Qpurpose",
     ids.VQE_PAPER_PAGE: "VQE na IBM Fez",
     ids.PHOTONIC_HARDWARE_PAGE: "Quandela a hardware v Evropě",
+    ids.PHOTONICS_LANDSCAPE_PAGE: "Fotonika ve světě",
     ids.FAILURE_DIAGNOSTICS_PAGE: "Kdy GBS selže",
     ids.RANDOM_MATRIX_GBS_PAGE: "Náhodné matice a GBS",
 }
@@ -148,6 +149,10 @@ RELATIONS: Tuple[Relation, ...] = (
     Relation(ids.GBS_PAGE, RelationKind.FOLLOWS, ids.ADVANTAGE_PAGE, "od momentu portfolia k obecným gaussovským úlohám"),
     Relation(ids.LITERATURE_REVIEW_PAGE, RelationKind.FOLLOWS, ids.PHOTONIC_HARDWARE_PAGE, "kdo by úlohu spustil"),
     Relation(
+        ids.PHOTONICS_LANDSCAPE_PAGE, RelationKind.EXPANDS, ids.PHOTONIC_HARDWARE_PAGE,
+        "od jedné firmy k celému oboru",
+    ),
+    Relation(
         ids.FAILURE_DIAGNOSTICS_PAGE, RelationKind.FOLLOWS, ids.RANDOM_MATRIX_GBS_PAGE,
         "podrobný rozbor 2. a 3. zdroje chyby",
     ),
@@ -180,6 +185,10 @@ RELATIONS: Tuple[Relation, ...] = (
         "co z výhody zbude na klasickém počítači a chyba ve vzorci",
     ),
     Relation(ids.LITERATURE_REVIEW_PAGE, RelationKind.CHECKS, ids.QPURPOSE_PAGE, "případ Jyske Bank"),
+    Relation(
+        ids.PHOTONICS_LANDSCAPE_PAGE, RelationKind.CHECKS, ids.QPURPOSE_PAGE,
+        "Qpurpose mezi ostatními nabídkami pro banky",
+    ),
     Relation(ids.CAVEATS_PAGE, RelationKind.MOTIVATES, ids.FAILURE_DIAGNOSTICS_PAGE, "omezení GBS jako výzkumná otázka"),
     Relation(
         ids.HAFNIAN_PAGE, RelationKind.MOTIVATES, ids.FAILURE_DIAGNOSTICS_PAGE,
@@ -189,6 +198,10 @@ RELATIONS: Tuple[Relation, ...] = (
     Relation(
         ids.PHOTONIC_HARDWARE_PAGE, RelationKind.MOTIVATES, ids.FAILURE_DIAGNOSTICS_PAGE,
         "šum zdroje fotonů vychyluje odhad",
+    ),
+    Relation(
+        ids.PHOTONICS_LANDSCAPE_PAGE, RelationKind.MOTIVATES, ids.FAILURE_DIAGNOSTICS_PAGE,
+        "bez dokladu výhody je nezávislá diagnostika nejvěrohodnější nabídka",
     ),
     Relation(
         ids.VQE_PAPER_PAGE, RelationKind.CONTRASTS, ids.LITERATURE_REVIEW_PAGE,
