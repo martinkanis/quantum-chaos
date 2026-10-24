@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Tuple
 
 from ui.caveats_content import CLOSED_FORM, SIGN_PROBLEM
+from ui.navigation import PHOTONICS_TERMS_HREF
 from ui.theory_content import (
     AARONSON_ARKHIPOV,
     ANDEL_STATISTICS,
@@ -256,10 +257,12 @@ GBS_DEVICE = TheoryTopic(
     ),
     explanation=r"""
 **Módy a fotony.** Mód je jeden světelný kanál – optické vlákno nebo vlnovod na čipu. Stav módu nás zajímá jen
-přes to, kolik fotonů v něm detektor napočítá: 0, 1, 2, …
+přes to, kolik fotonů v něm detektor napočítá: 0, 1, 2, … Podrobněji v
+""" + f"[pojmech na stránce Fotonika ve světě]({PHOTONICS_TERMS_HREF})" + r""".
 
-**Stlačené světlo.** Zdroj (nelineární krystal čerpaný laserem) vyrábí světlo, ve kterém fotony vznikají po
-dvojicích. Síla zdroje je *parametr stlačení* $r$. Pravděpodobnost $2k$ fotonů je
+**Stlačené světlo.** Zdroj (nelineární krystal čerpaný laserem, """ + f"[co to je]({PHOTONICS_TERMS_HREF})" + r""")
+vyrábí světlo, ve kterém fotony vznikají po dvojicích. Síla zdroje je *parametr stlačení* $r$. Pravděpodobnost
+$2k$ fotonů je
 
 $$
 P(2k) = \frac{(2k)!}{4^k (k!)^2}\,\frac{\tanh^{2k} r}{\cosh r},

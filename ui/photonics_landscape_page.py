@@ -12,6 +12,7 @@ from ui.navigation import (
     HIDDEN,
     PHOTONIC_HARDWARE_PATH,
     QPURPOSE_PATH,
+    THEORY_PATH,
     photonics_landscape_href,
 )
 from ui.photonics_landscape_content import (
@@ -23,6 +24,7 @@ from ui.photonics_landscape_content import (
     RESEARCH_DATE,
     SINGLE_PHOTON_TOPIC,
     SOURCES_ANCHOR,
+    TERMS_TOPIC,
     TITLE,
     TOPICS,
     VERDICT_TOPIC,
@@ -35,6 +37,10 @@ from ui.topic_sections import RelatedLink, key_findings_card, related_pages, sou
 VERDICT_ORDER: Tuple[GbsVerdict, ...] = tuple(GbsVerdict)
 
 RELATED_PAGES: Dict[str, Sequence[RelatedLink]] = {
+    TERMS_TOPIC.anchor: (
+        ("Hafnián a permanent polopatě", HAFNIAN_PATH),
+        ("Teorie: jak se portfolio nahraje do stlačení a módů", THEORY_PATH),
+    ),
     CHAIN_TOPIC.anchor: (
         ("Hafnián a permanent polopatě", HAFNIAN_PATH),
         ("Boson sampling, nebo GBS (stránka o Quandele)", PHOTONIC_HARDWARE_PATH),

@@ -1,4 +1,6 @@
-from ui import ids
+import math
+
+from ui import guide_basics, ids, theory_content
 from ui.academy_page import ACADEMY_SECTIONS
 from ui.navigation import (
     ACTIVE_LINK_CLASS,
@@ -6,10 +8,22 @@ from ui.navigation import (
     PAGE_BY_PATH,
     PAGE_IDS,
     PHOTONICS_LANDSCAPE_PATH,
+    PHOTONICS_TERMS_HREF,
     photonics_landscape_href,
     show_page,
 )
-from ui.photonics_landscape_content import KEY_FINDINGS, PLAYERS, SOURCES_ANCHOR, TOPICS, GbsVerdict
+from ui.photonic_hardware_content import SAMPLING_KINDS_TOPIC
+from ui.photonics_landscape_content import (
+    BUILT_TOPIC,
+    CHAIN_TOPIC,
+    KEY_FINDINGS,
+    PLAYERS,
+    SOURCES_ANCHOR,
+    SUPPLY_TOPIC,
+    TERMS_TOPIC,
+    TOPICS,
+    GbsVerdict,
+)
 from ui.photonics_landscape_page import build_photonics_landscape_page, players_markdown
 from ui.study_progress import describe_pager
 from ui.theory_content import all_sources
@@ -76,3 +90,22 @@ def test_quantum_academy_upozornuje_na_archivovany_software_xanadu():
 
     assert "archivované" in software.tldr
     assert f"]({PHOTONICS_LANDSCAPE_PATH})" in software.tldr
+
+
+def test_cisla_o_stlaceni_v_pojmech_odpovidaji_vypoctu():
+    decibels_per_r = 20 * math.log10(math.e)
+    r_for_ten_decibels = 10 / decibels_per_r
+    mean_photons = math.sinh(r_for_ten_decibels) ** 2
+
+    assert f"{decibels_per_r:.2f}".replace(".", "{,}") in TERMS_TOPIC.explanation
+    assert f"r \\approx {r_for_ten_decibels:.2f}".replace(".", "{,}") in TERMS_TOPIC.explanation
+    assert round(mean_photons) == 2 and "asi 2 fotonům" in TERMS_TOPIC.explanation
+
+
+def test_texty_zminujici_mody_a_nelinearni_krystal_odkazuji_na_pojmy():
+    mentioning_topics = (
+        theory_content.GBS_DEVICE, guide_basics.GBS_DEVICE, SAMPLING_KINDS_TOPIC, CHAIN_TOPIC, BUILT_TOPIC, SUPPLY_TOPIC,
+    )
+
+    assert PHOTONICS_TERMS_HREF == photonics_landscape_href(TERMS_TOPIC.anchor)
+    assert all(f"]({PHOTONICS_TERMS_HREF})" in topic.explanation for topic in mentioning_topics)

@@ -7,6 +7,7 @@ from typing import Tuple
 
 from ui.advantage_content import ANGUITA_MONTE_CARLO_ACCELERATOR
 from ui.literature_review_content import EUROHPC_LUCY, EUROHPC_QUANTUM_ACCESS, ORCA_PT1, PERCEVAL, PIQUASSO
+from ui.navigation import PHOTONICS_TERMS_HREF
 from ui.theory_content import (
     AARONSON_ARKHIPOV,
     ANDERSEN_SHAN_EXPECTATIONS,
@@ -258,7 +259,8 @@ strukturách vysvětluje stránka o hafniánu.
 **Proč GBS na Quandele nejde.**
 
 - *Zdroj:* kvantová tečka vyšle na puls nejvýš jeden foton. Stlačené vakuum je superpozice 0, 2, 4, … fotonů a
-  vzniká v nelineárním materiálu (parametrická down-konverze); takový zdroj procesory Quandely nemají.
+  vzniká v nelineárním materiálu (parametrická down-konverze, """ + f"[co to je]({PHOTONICS_TERMS_HREF})" + r""");
+  takový zdroj procesory Quandely nemají.
 - *Optika to nedožene:* interferometr je lineární a zachovává počet fotonů, takže ze vstupu s pevným počtem fotonů
   superpozici různých počtů nevyrobí.
 - *Software:* Perceval 1.3.1 ani jeho jádro nemají stlačené stavy, hafniány ani torontiány (jejich obdobu pro

@@ -156,6 +156,10 @@ def photonics_landscape_href(anchor: str) -> str:
     return f"{PHOTONICS_LANDSCAPE_PATH}#{anchor}"
 
 
+PHOTONICS_TERMS_HREF = photonics_landscape_href("svet-pojmy")
+"""Chapter on modes, nonlinear crystals and squeezed light; pages that mention them link to it."""
+
+
 def random_matrix_href(anchor: str) -> str:
     return f"{RANDOM_MATRIX_PATH}#{anchor}"
 

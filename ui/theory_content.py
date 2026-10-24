@@ -13,6 +13,7 @@ from ui.caveats_content import (
     SIGN_PROBLEM,
     Caveat,
 )
+from ui.navigation import PHOTONICS_TERMS_HREF
 
 
 SOURCES_ANCHOR = "zdroje"
@@ -626,10 +627,12 @@ GBS_DEVICE = TheoryTopic(
     explanation=r"""
 **Kanály (módy).** Světlo v zařízení běží v $k$ oddělených kanálech – optických vláknech, vlnovodech na čipu
 nebo časových oknech jednoho svazku. Fyzika jim říká **módy**. V každém módu může být libovolný počet fotonů.
+Jak se módy vyrábějí, vysvětlují """ + f"[pojmy na stránce Fotonika ve světě]({PHOTONICS_TERMS_HREF})" + r""".
 
 **Tři části obvodu** (schéma je v kroku 3 na 2. stránce):
 
-1. **Zdroje stlačeného světla.** Silný laserový puls prochází nelineárním krystalem nebo vlnovodem. Při
+1. **Zdroje stlačeného světla.** Silný laserový puls prochází nelineárním krystalem nebo vlnovodem
+   (""" + f"[co to je a proč je potřeba]({PHOTONICS_TERMS_HREF})" + r"""). Při
    takzvané spontánní parametrické konverzi se foton čerpacího svazku občas rozpadne na **dva** fotony.
    Výsledný stav se jmenuje **stlačené vakuum** a obsahuje jen 0, 2, 4, … fotonů. Parametr stlačení $r_j$
    určuje, jak ochotně páry vznikají; střední počet fotonů v módu $j$ je $\sinh^2 r_j$. Název „stlačené“

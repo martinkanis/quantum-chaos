@@ -15,6 +15,7 @@ from ui.literature_review_content import (
     HE_GRAPH_FINANCE,
     JIUZHANG_4,
     PERCEVAL,
+    QI_NOISY_SIMULABILITY,
     TWENTE_PATENT,
 )
 from ui.photonic_hardware_content import (
@@ -32,8 +33,10 @@ from ui.photonic_hardware_content import (
     QUIX_BIA,
     WANG_TWENTY_PHOTONS,
 )
+from ui.navigation import PHOTONICS_TERMS_HREF
 from ui.theory_content import (
     HAMILTON,
+    KRUSE,
     MADSEN,
     OH_CLASSICAL_SIMULATION,
     SDU_QUANTUM_FINANCE,
@@ -387,6 +390,108 @@ CTU_GROUP = Source(
     czech=True,
 )
 
+NONLINEAR_OPTICS_WIKI = Source(
+    "Wikipedie: [Nelineární optika](https://cs.wikipedia.org/wiki/Neline%C3%A1rn%C3%AD_optika)", czech=True
+)
+SPDC_WIKI = Source(
+    "Wikipedia: [Spontaneous parametric down-conversion]"
+    "(https://en.wikipedia.org/wiki/Spontaneous_parametric_down-conversion) – vznik fotonových párů v krystalu"
+)
+SQUEEZED_LIGHT_WIKI = Source(
+    "Wikipedia: [Squeezed states of light](https://en.wikipedia.org/wiki/Squeezed_states_of_light) – stlačené světlo "
+    "a jeho měření v decibelech"
+)
+
+TERMS_TOPIC = TheoryTopic(
+    anchor="svet-pojmy",
+    title="Pojmy: mód, nelineární krystal a stlačené světlo",
+    in_short=(
+        "Mód je jedna „přihrádka“ pro světlo – určitá dráha, časové okno, barva a polarizace; fotony jsou její "
+        "obsah. Počet módů udává velikost úlohy a v GBS z této aplikace odpovídá jeden mód jednomu aktivu. "
+        "Nelineární krystal je jediná součást, která umí vyrobit stlačené světlo, tedy fotony po dvojicích, ze "
+        "kterých se skládají hafniány."
+    ),
+    explanation=r"""
+**Mód.** Světlo se dá rozložit na samostatné „přihrádky“ – módy. Mód je určitý tvar elektromagnetického pole:
+*kudy* světlo letí (vlnovod na čipu, vlákno), *kdy* (časové okno, „bin“), jakou *barvou* (frekvencí) a s jakou
+*polarizací*. Fotony jsou obsah přihrádky: v jednom módu může být 0, 1, 2 i víc fotonů a detektor na konci módu je
+počítá.
+
+Jako datová struktura: jeden výstřel GBS s $M$ módy je pole celých čísel délky $M$. Mód je index, hodnota je počet
+fotonů. Výstřel `[0, 2, 1, 0]` znamená čtyři módy a tři fotony – dva v druhém módu, jeden ve třetím.
+
+Módy se fyzicky vyrábějí různě:
+
+- *prostorově* – každý mód má vlastní dráhu: Jiuzhang 1.0 posílal 50 stlačených stavů do interferometru se
+  100 módy;
+- *časově* – módy jsou pulzy za sebou v jednom vlákně a „míchají“ je smyčky se zpožděním: Borealis měl takto
+  216 módů;
+- *kombinací obojího* – Jiuzhang 4.0 dosáhl 8 176 módů v prostoru i čase.
+
+**Mód v této aplikaci.** Vstupní mód $j$ nese hlavní komponentu $j$ kovarianční matice, výstupní mód $i$ (tedy
+detektor $i$) odpovídá aktivu $i$ a počet fotonů $n_i$ v něm je mocnina $X_i$ v odhadovaném momentu. Portfolio
+se třemi aktivy tedy potřebuje tři módy a velikost matic v hafniánech roste s počtem módů a fotonů.
+
+**Proč se mluví o počtu módů.** Víc módů znamená větší matice a astronomicky víc možných výstřelů, takže je těžší
+rozdělení spočítat klasicky – proto experimenty soutěží v počtu módů. Rekord ale říká jen to, jak velký je
+přístroj, ne že je užitečný. Klasické algoritmy z roku 2026 napodobí dnešní experimenty zhruba do 1 000 módů,
+mimo jiné proto, že ztráty fotonů dělají zašuměné GBS „klasičtějším“. Pro odhad rizika z toho plyne (náš odhad):
+portfolio se stovkami aktiv by potřebovalo stovky módů, tedy velikost, kterou klasické algoritmy u zašuměných
+přístrojů zvládají. Výhodu je proto potřeba ukázat přímo na úloze – menší chybou odhadu rizika za stejný čas
+než klasické Monte Carlo –, ne rekordem ve vzorkování.
+
+**Nelineární krystal.** V obyčejném, *lineárním* prostředí (sklo, dělič svazku) je odezva materiálu – polarizace
+$P$ – úměrná elektrickému poli světla $E$:
+
+$$
+P = \varepsilon_0\,\chi^{(1)} E .
+$$
+
+Světlo se zpomalí nebo ohne, ale barva zůstane a nové fotony nevznikají; dva paprsky projdou skrz sebe, jako by
+o sobě nevěděly. Takový je i celý interferometr GBS. V některých krystalech (KTP, niobičnan lithný, BBO) má
+odezva navíc člen s druhou mocninou pole:
+
+$$
+P = \varepsilon_0\left(\chi^{(1)} E + \chi^{(2)} E^2 + \dots\right).
+$$
+
+Člen $E^2$ se projeví jen při silném světle a umí „míchat“ frekvence: dva fotony spojí v jeden s dvojnásobnou
+frekvencí (tak svítí zelené laserové ukazovátko) a hlavně obráceně – **jeden foton čerpacího laseru rozdělí na
+dva** (sestupná konverze, SPDC). Přirovnání: lineární prostředí je čistý zesilovač, nelineární krystal přebuzený
+kytarový zesilovač, který při velké hlasitosti přidá tóny, jež v původním zvuku nebyly.
+
+**Proč ho GBS potřebuje.** Laser ani žádná lineární optika stlačené světlo nevyrobí; laser dává jen „koherentní“
+světlo, které jde snadno simulovat klasicky. Nelineární krystal je tak jediná „kvantová“ součást na začátku
+řetězce GBS – interferometr za ním je lineární a detektory jen počítají. Zkratky u krystalů:
+
+- *PP* (PPKTP, PPLN, „periodicky polarizovaný“) – orientace krystalu se po mikrometrech pravidelně překlápí, aby
+  se vlny vzniklé v různých místech sčítaly ve fázi a nerušily se;
+- *vlnovod* – světlo je sevřené do malého průřezu, pole je silnější a stačí slabší laser;
+- *pulzní čerpání* – efekt roste s $E^2$, krátké silné pulzy proto fungují lépe a navíc určují, kdy fotony
+  přijdou, aby se z různých zdrojů potkaly v interferometru;
+- *jednomódový zdroj* – každý pulz musí dát páry v jediném spektrálním módu, jinak jsou fotony částečně
+  rozlišitelné a interference, na které GBS stojí, slábne.
+
+**Stlačené vakuum.** Stav ze sestupné konverze s oběma fotony páru ve stejném módu. Obsahuje jen sudé počty
+fotonů (0, 2, 4, …) – odtud párování a hafnián, který sčítá přes všechna rozdělení fotonů do dvojic. „Stlačené“ je
+proto, že šum v jedné složce pole klesne pod šum vakua; měří se v decibelech: 10 dB znamená šum desetkrát menší.
+Síla stlačení je parametr $r$, platí $\text{dB} = 20\,r \log_{10} e \approx 8{,}69\,r$ a střední počet fotonů
+v módu je $\sinh^2 r$. Stlačení 10 dB tedy odpovídá $r \approx 1{,}15$ a v průměru asi 2 fotonům na mód. Posuvník
+„síla stlačení“ v této aplikaci nastavuje právě $r$; v přístroji ho určuje výkon čerpacího laseru v krystalu.
+""",
+    further_reading=(
+        Reading(NONLINEAR_OPTICS_WIKI),
+        Reading(SPDC_WIKI),
+        Reading(SQUEEZED_LIGHT_WIKI),
+        Reading(KRUSE, "módy, stlačení a hafniány v GBS podrobně"),
+        Reading(ZHONG, "Jiuzhang 1.0: 50 stlačených stavů, 100 módů"),
+        Reading(MADSEN, "Borealis: 216 časových módů"),
+        Reading(JIUZHANG_4),
+        Reading(QI_NOISY_SIMULABILITY, "ztráty dělají GBS klasicky simulovatelným"),
+        Reading(GBS_BENCHMARK_2026),
+    ),
+)
+
 CHAIN_TOPIC = TheoryTopic(
     anchor="svet-co-je-potreba",
     title="Co je potřeba pro GBS a jak číst verdikty",
@@ -398,8 +503,9 @@ CHAIN_TOPIC = TheoryTopic(
     explanation=r"""
 **Řetězec GBS.**
 
-1. **Zdroj stlačeného vakua** – nelineární krystal nebo vlnovod (PPKTP, PPLN, niobičnan lithný na izolátoru) čerpaný
-   pulzním laserem. Pro GBS musí být pulzní a jednomódový; spojité zdroje pro gravitační detektory nestačí.
+1. **Zdroj stlačeného vakua** – nelineární krystal (""" + f"[co to je]({PHOTONICS_TERMS_HREF})" + r""") nebo
+   vlnovod (PPKTP, PPLN, niobičnan lithný na izolátoru) čerpaný pulzním laserem. Pro GBS musí být pulzní
+   a jednomódový; spojité zdroje pro gravitační detektory nestačí.
 2. **Programovatelný interferometr** – síť děličů svazku a fázových posuvů na čipu (nitrid křemíku, sklo, niobičnan
    lithný) nebo ve vláknových smyčkách s časovými biny.
 3. **Detektory počtu fotonů** – supravodivé TES (skutečné rozlišení počtu) nebo vícepixelové SNSPD (rozliší nejvýš
@@ -453,7 +559,8 @@ přes 10 000 detekovaných fotonů za milisekundu. Recenze zatím chybí a firma
 
 **Pozor na „kvantovou výhodu“.** Klasické modely („squashed states“) vysvětlují Jiuzhang 1.0 lépe než ideální GBS
 a klasické algoritmy z roku 2026 napodobí experimenty až do zhruba 1 000 módů. Pro výzkum odhadů rizika to
-znamená: výhodu je potřeba dokazovat na úloze, ne na rekordu ve vzorkování.
+znamená: výhodu je potřeba dokazovat na úloze, ne na rekordu ve vzorkování. Co jsou módy a proč na jejich počtu
+záleží, vysvětluje """ + f"[první kapitola]({PHOTONICS_TERMS_HREF})" + r""".
 """,
     further_reading=(
         Reading(ZHONG, "Jiuzhang 1.0"),
@@ -623,7 +730,8 @@ SUPPLY_TOPIC = TheoryTopic(
         "programovatelný interferometr ani detektory počtu fotonů."
     ),
     explanation=r"""
-**Zdroje stlačeného světla a nelineární krystaly.** Krystaly a vlnovody PPKTP (Raicol, Izrael; AdvR a Covesion,
+**Zdroje stlačeného světla a nelineární krystaly** (""" + f"[k čemu jsou]({PHOTONICS_TERMS_HREF})" + r""").
+Krystaly a vlnovody PPKTP (Raicol, Izrael; AdvR a Covesion,
 dnes Hawthorn Photonics) a PPLN (HC Photonics, Tchaj-wan; NTT). Komerční „stlačený laser“ nabízí hamburská Noisy
 Labs, ale spojitý – pro GBS je potřeba pulzní jednomódový zdroj, který zatím staví každá skupina sama.
 
@@ -837,6 +945,7 @@ inspirovanými metodami, které jde spočítat třeba na superpočítači Karoli
 )
 
 TOPICS: Tuple[TheoryTopic, ...] = (
+    TERMS_TOPIC,
     CHAIN_TOPIC,
     BUILT_TOPIC,
     SQUEEZED_TOPIC,
