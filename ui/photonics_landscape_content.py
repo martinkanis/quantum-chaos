@@ -824,9 +824,10 @@ z hlediska disertace, ne doložený fakt.
 - *klasické a kvantově inspirované algoritmy* – největší reálná konkurence: co jde spočítat klasicky, banka koupí
   klasicky.
 
-**Co z toho plyne pro disertaci (náš odhad).** Veřejný doklad výhody na bankovní úloze se skutečným hardwarem
-chybí. Nejvěrohodnější česká nabídka proto není slib kvantové výhody, ale nezávislé srovnání a diagnostika selhání
-GBS a kvantového Monte Carla, doplněné kvantově inspirovanými odhady na Karolině.
+**Co z toho plyne pro disertaci (náš odhad).** Nikdo zatím veřejně nedoložil, že kvantový hardware dá výhodu na
+skutečné bankovní úloze. Disertace proto nemá slibovat kvantovou výhodu. Obhajitelnější příspěvek je nezávisle ověřit,
+kdy GBS a kvantové Monte Carlo pomůžou a kdy selžou (diagnostika selhání), a srovnat je s klasickými a kvantově
+inspirovanými metodami, které jde spočítat třeba na superpočítači Karolina v IT4I.
 """,
     further_reading=(
         Reading(PIQUASSO_PAPER),

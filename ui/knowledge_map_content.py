@@ -201,7 +201,7 @@ RELATIONS: Tuple[Relation, ...] = (
     ),
     Relation(
         ids.PHOTONICS_LANDSCAPE_PAGE, RelationKind.MOTIVATES, ids.FAILURE_DIAGNOSTICS_PAGE,
-        "bez dokladu výhody je nezávislá diagnostika nejvěrohodnější nabídka",
+        "bez dokladu výhody je nezávislá diagnostika obhajitelnější příspěvek",
     ),
     Relation(
         ids.VQE_PAPER_PAGE, RelationKind.CONTRASTS, ids.LITERATURE_REVIEW_PAGE,
