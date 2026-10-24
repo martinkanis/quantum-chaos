@@ -12,7 +12,7 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 ## Příkazy
 
 - Testy: `/Users/martinkanis/Work/Projects/quantum-chaos/.venv/bin/python -m pytest -q` (z kořene repa i z worktree)
-- Lint: stejný Python `-m pyflakes app.py gbs ui montecarlo tests`
+- Lint: stejný Python `-m pyflakes app.py auth gbs montecarlo randommatrix scripts ui web tests`
 - Lokální běh: `python app.py` → http://localhost:8050 (debug mód); náhled v Claude Code přes `.claude/launch.json`
 - Lokálně Python 3.9, v Dockeru 3.12 – žádná syntaxe novější než 3.9 (`X | Y` v typech, `match`).
 - Qiskit není závislost aplikace. Test exportu se bez něj přeskočí; ověřit ho jde v pomocném venv
@@ -55,7 +55,8 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 - Rock8Cloud: služba `01a0df3e-9287-76ca-b5c4-3b38297b296f`, organizace `tV6KVvfs0A6NByhPquPHpEUaKjhkzQ7h`,
   https://quantum-chaos.rock8cloud.app
 - Push do `main` nenasazuje automaticky: nasadit přes MCP `deploy_service`, pak ověřit `/healthz` a `/_dash-layout`.
-- Dockerfile kopíruje jen `assets gbs montecarlo ui app.py` – nový adresář nebo soubor v kořeni do něj přidej.
+- Dockerfile kopíruje jen `assets auth gbs montecarlo randommatrix ui web app.py` – nový adresář nebo soubor
+  v kořeni do něj přidej.
 
 ## Git
 
