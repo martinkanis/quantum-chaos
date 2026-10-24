@@ -3,28 +3,15 @@ from __future__ import annotations
 from dash import dcc, html
 
 from ui import ids
-from ui.academy_page import build_academy_page
 from ui.advantage_page import build_advantage_page
-from ui.andersen_shan_paper_page import build_andersen_shan_paper_page
 from ui.breadcrumbs import build_breadcrumb
-from ui.caveats_page import build_caveats_page
-from ui.failure_diagnostics_page import build_failure_diagnostics_page
 from ui.gbs_page import build_gbs_page
-from ui.guide_page import build_guide_page
-from ui.hafnian_page import build_hafnian_page
-from ui.integrals_cheat_sheet_page import build_integrals_cheat_sheet_page
-from ui.literature_review_page import build_literature_review_page
+from ui.lazy_pages import build_rendered_pages_store, page_placeholder
 from ui.main_menu import build_main_menu
-from ui.photonic_hardware_page import build_photonic_hardware_page
-from ui.photonics_landscape_page import build_photonics_landscape_page
 from ui.portfolio_page import build_portfolio_page
-from ui.qpurpose_page import build_qpurpose_page
 from ui.random_matrix_page import build_random_matrix_page
-from ui.random_matrix_gbs_page import build_random_matrix_gbs_page
 from ui.study_progress import build_progress_store, build_study_pager
-from ui.theory_page import build_theory_page
 from ui.topics_page import build_topics_page
-from ui.vqe_paper_page import build_vqe_paper_page
 
 
 def build_layout() -> html.Div:
@@ -32,27 +19,28 @@ def build_layout() -> html.Div:
         children=[
             dcc.Location(id=ids.URL, refresh="callback-nav"),
             build_progress_store(),
+            build_rendered_pages_store(),
             build_main_menu(),
             build_breadcrumb(),
             build_topics_page(),
-            build_academy_page(),
+            page_placeholder(ids.ACADEMY_PAGE),
             build_portfolio_page(),
             build_gbs_page(),
-            build_caveats_page(),
-            build_theory_page(),
-            build_hafnian_page(),
+            page_placeholder(ids.CAVEATS_PAGE),
+            page_placeholder(ids.THEORY_PAGE),
+            page_placeholder(ids.HAFNIAN_PAGE),
             build_advantage_page(),
-            build_guide_page(),
-            build_qpurpose_page(),
-            build_andersen_shan_paper_page(),
-            build_vqe_paper_page(),
-            build_literature_review_page(),
-            build_photonic_hardware_page(),
-            build_photonics_landscape_page(),
+            page_placeholder(ids.GUIDE_PAGE),
+            page_placeholder(ids.QPURPOSE_PAGE),
+            page_placeholder(ids.ANDERSEN_SHAN_PAPER_PAGE),
+            page_placeholder(ids.VQE_PAPER_PAGE),
+            page_placeholder(ids.LITERATURE_REVIEW_PAGE),
+            page_placeholder(ids.PHOTONIC_HARDWARE_PAGE),
+            page_placeholder(ids.PHOTONICS_LANDSCAPE_PAGE),
             build_random_matrix_page(),
-            build_failure_diagnostics_page(),
-            build_random_matrix_gbs_page(),
-            build_integrals_cheat_sheet_page(),
+            page_placeholder(ids.FAILURE_DIAGNOSTICS_PAGE),
+            page_placeholder(ids.RANDOM_MATRIX_GBS_PAGE),
+            page_placeholder(ids.INTEGRALS_CHEAT_SHEET_PAGE),
             build_study_pager(),
         ]
     )

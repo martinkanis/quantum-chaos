@@ -12,6 +12,7 @@ from ui.callbacks import register_callbacks
 from ui.gbs_callbacks import register_gbs_callbacks
 from ui.knowledge_map_callbacks import register_knowledge_map_callbacks
 from ui.layout import build_layout
+from ui.lazy_pages import register_lazy_page_callbacks
 from ui.navigation import register_navigation_callbacks
 from ui.random_matrix_callbacks import register_random_matrix_callbacks
 from ui.study_progress import register_study_progress_callbacks
@@ -21,6 +22,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name
 app = Dash(__name__, title="Monte Carlo portfolio")
 app.layout = build_layout()
 register_navigation_callbacks(app)
+register_lazy_page_callbacks(app)
 register_breadcrumb_callbacks(app)
 register_callbacks(app)
 register_gbs_callbacks(app)

@@ -4,6 +4,7 @@ from app import app
 from ui import ids
 from ui.callbacks import run_simulation
 from ui.form_parsing import DEFAULT_ASSET_ROWS, asset_names, default_correlation_rows
+from ui.lazy_pages import LAZY_PAGE_IDS, built_page
 from ui.navigation import HIDDEN, VISIBLE
 from ui.portfolio_page import build_portfolio_page
 
@@ -48,7 +49,10 @@ def test_tlacitko_stazeni_je_skryte_dokud_neni_co_stahnout():
 
 
 def test_id_komponent_jsou_v_celem_layoutu_unikatni():
-    duplicate_ids = [component_id for component_id, count in Counter(app.layout).items() if count > 1]
+    lazy_page_ids = [component_id for page_id in LAZY_PAGE_IDS for component_id in built_page(page_id)]
+    duplicate_ids = [
+        component_id for component_id, count in Counter(list(app.layout) + lazy_page_ids).items() if count > 1
+    ]
 
     assert duplicate_ids == []
 

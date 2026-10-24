@@ -27,7 +27,9 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 - `ui/` – Dash vrstva: `*_page.py` layout, `*_callbacks.py` callbacky, `*_content.py` texty, `ids.py` všechna id,
   `navigation.py` cesty a přepínání stránek.
 - Business logika patří do `gbs/` a `montecarlo/`; UI jen parsuje formulář a vykresluje výsledek.
-- Všechny stránky jsou trvale v layoutu a jen se skrývají (`show_page`), takže formuláře přežijí přepnutí.
+- Stránky s formuláři jsou trvale v layoutu a jen se skrývají (`show_page`), takže formuláře přežijí přepnutí.
+  Čtecí stránky bez formulářů se posílají až při první návštěvě (`ui/lazy_pages.py`, jinak by prohlížeč při každém
+  načtení sázel vzorce všech skrytých stránek); novou stránku bez formuláře přidej do `PAGE_BUILDERS`.
 
 ## Konvence
 
