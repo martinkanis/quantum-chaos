@@ -1,0 +1,98 @@
+/* Toolbar of the text highlighter (assets/highlighter.js); the colours of the marks themselves come from the script. */
+.qc-highlighter {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: calc(100vw - 16px);
+  box-sizing: border-box;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(28, 35, 48, 0.18);
+  font-size: 0.9rem;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.qc-highlighter[hidden] { display: none; }
+.qc-highlighter button { font: inherit; color: var(--text); cursor: pointer; }
+.qc-highlighter-row { display: flex; align-items: center; gap: 6px; }
+
+.qc-highlighter-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 4px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.qc-highlighter-kind[aria-pressed="true"] { background: #eaf1fd; border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.qc-highlighter-icon { padding: 0 3px; border-radius: 3px; color: var(--text); font-weight: 700; line-height: 1.3; }
+.qc-highlighter-icon.mark { background: var(--qc-fill); }
+.qc-highlighter-icon.underline {
+  text-decoration: underline;
+  text-decoration-color: var(--qc-line);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 2px;
+}
+
+.qc-highlighter-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-left: auto;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.qc-highlighter .qc-highlighter-remove { color: var(--danger); }
+.qc-highlighter-remove[hidden] { display: none; }
+
+/* Nine colours in one row; on the narrowest phones the swatches shrink instead of wrapping. */
+.qc-highlighter-colors { display: grid; grid-template-columns: repeat(9, minmax(0, 30px)); gap: 6px; }
+
+.qc-highlighter-swatch {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  background: var(--qc-fill);
+  border: 1px solid rgba(28, 35, 48, 0.14);
+  border-radius: 50%;
+}
+
+.qc-highlighter[data-kind="underline"] .qc-highlighter-swatch { background: var(--surface); }
+.qc-highlighter[data-kind="underline"] .qc-highlighter-swatch::after {
+  content: "";
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  bottom: 32%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--qc-line);
+}
+
+.qc-highlighter-swatch[aria-pressed="true"] { outline: 2px solid var(--text); outline-offset: 2px; }
+.qc-highlighter button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (pointer: coarse) {
+  .qc-highlighter-colors { grid-template-columns: repeat(9, minmax(0, 34px)); }
+  .qc-highlighter-kind, .qc-highlighter-remove { min-height: 38px; }
+  .qc-highlighter-remove { width: 38px; height: 38px; }
+}

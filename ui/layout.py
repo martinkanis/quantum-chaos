@@ -8,14 +8,19 @@ from ui.breadcrumbs import build_breadcrumb
 from ui.gbs_page import build_gbs_page
 from ui.lazy_pages import build_rendered_pages_store, page_placeholder
 from ui.main_menu import build_main_menu
+from ui.navigation import PAGE_IDS
 from ui.portfolio_page import build_portfolio_page
 from ui.random_matrix_page import build_random_matrix_page
 from ui.study_progress import build_progress_store, build_study_pager
 from ui.topics_page import build_topics_page
 
+HIGHLIGHT_ROOTS_ATTRIBUTE = "data-highlight-roots"
+"""Pages whose text the reader can highlight (assets/highlighter.js); the marks are anchored to these containers."""
+
 
 def build_layout() -> html.Div:
     return html.Div(
+        **{HIGHLIGHT_ROOTS_ATTRIBUTE: " ".join(PAGE_IDS)},
         children=[
             dcc.Location(id=ids.URL, refresh="callback-nav"),
             build_progress_store(),
