@@ -1,4 +1,4 @@
-"""Charts of the advantage lab (page 3)."""
+"""Charts of the advantage lab."""
 
 from __future__ import annotations
 

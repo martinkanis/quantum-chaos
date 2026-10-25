@@ -15,9 +15,9 @@ from ui.theory_content import COMPARISON, SOURCES_ANCHOR, TOPICS, WICK_THEOREM, 
 from ui.topic_sections import sources_section, table_of_contents, topic_section
 
 INTRO = (
-    "Veškerá podrobná vysvětlení ke 2. stránce na jednom místě: co jednotlivé pojmy znamenají, proč jednotlivé "
-    "kroky fungují, čísla pro výchozí portfolio (akcie 60 %, dluhopisy 30 %, zlato 10 %) a literatura – u každého "
-    "tématu i souhrnně na konci stránky, česká i původní články."
+    "Veškerá podrobná vysvětlení ke stránce „Monte Carlo na GBS“ na jednom místě: co jednotlivé pojmy znamenají, proč "
+    "jednotlivé kroky fungují, čísla pro výchozí portfolio (akcie 60 %, dluhopisy 30 %, zlato 10 %) a literatura – "
+    "u každého tématu i souhrnně na konci stránky, česká i původní články."
 )
 
 

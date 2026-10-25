@@ -19,8 +19,8 @@ GUIDE_TOPICS: Tuple[TheoryTopic, ...] = BASICS + PRACTICE
 GUIDE_SOURCES_ANCHOR = "pruvodce-zdroje"
 
 INTRO = (
-    "Podrobný výklad ke 3. stránce psaný pro začínajícího doktoranda: proč a jak celé Monte Carlo na Gaussian "
-    "Boson Sampleru funguje, od gaussovských momentů přes fotony a ladění přístroje až po skript pro Qiskit, "
+    "Podrobný výklad ke stránce „Výhoda GBS“ psaný pro začínajícího doktoranda: proč a jak celé Monte Carlo na "
+    "Gaussian Boson Sampleru funguje, od gaussovských momentů přes fotony a ladění přístroje až po skript pro Qiskit, "
     "tvrzení firmy Qpurpose a náměty na vlastní práci. Stačí základy pravděpodobnosti a lineární algebry; "
     "kapitoly jdou číst popořadě a každá začíná krátkým shrnutím."
 )

@@ -15,8 +15,8 @@ from ui.reading_time import reading_minutes, reading_time_label
 from ui.topic_sections import toc_item
 
 INTRO = (
-    "Rozvedení omezení z 2. stránky. U každého háčku: co přesně znamená, proč vzniká, konkrétní příklad "
-    "a co by se s ním dalo dělat."
+    "Rozvedení omezení ze stránky „Monte Carlo na GBS“. U každého háčku: co přesně znamená, proč vzniká, konkrétní "
+    "příklad a co by se s ním dalo dělat."
 )
 
 

@@ -20,7 +20,7 @@ def build_vqe_paper_page() -> html.Div:
         className="gbs-page",
         style=HIDDEN,
         children=[
-            html.H1("VQE pro optimalizaci portfolia na IBM Fez: TL;DR"),
+            html.H1("Článek De Leóna a kol.: VQE pro optimalizaci portfolia na IBM Fez"),
             html.P(LEAD, className="lead"),
             html.Div(className="in-short", children=[html.Strong("V jedné větě: "), html.Span(IN_ONE_SENTENCE)]),
             *[_section(section) for section in paper_sections()],

@@ -55,7 +55,7 @@ RELATED_PAGES: Dict[str, Tuple[RelatedLink, ...]] = {
     MARKETS_TOPIC.anchor: (
         ("Wickova–Isserlisova věta a hafnián (Teorie)", theory_href("wickova-veta")),
         ("Gaussovská úloha: střední hodnota polynomu (Průvodce)", guide_href("pruvodce-gaussovska-uloha")),
-        ("2 · Monte Carlo na GBS: moment výnosu portfolia", GBS_PATH),
+        ("Monte Carlo na GBS: moment výnosu portfolia", GBS_PATH),
     ),
     PHOTONS_TOPIC.anchor: (
         ("Boson sampling, nebo GBS (stránka o Quandele)", photonic_hardware_href("fotonika-bs-a-gbs")),
@@ -185,7 +185,7 @@ def _decimal(value: float) -> str:
 
 
 def _back_link() -> dcc.Link:
-    return dcc.Link("← Zpět na 2 · Monte Carlo na GBS", href=GBS_PATH, className="back-link")
+    return dcc.Link("← Zpět na Monte Carlo na GBS", href=GBS_PATH, className="back-link")
 
 
 ILLUSTRATIONS: Dict[str, Callable[[], html.Div]] = {

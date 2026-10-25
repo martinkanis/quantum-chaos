@@ -308,7 +308,7 @@ $$
 
 je polynom s $a_{(2,0)} = 0{,}36$, $a_{(1,1)} = 0{,}48$, $a_{(0,2)} = 0{,}16$ a ostatními koeficienty nulovými;
 $\mathbb{E}[L^2]$ je rozptyl výnosu portfolia. Vyšší mocniny $L^d$ (šikmost, špičatost, chvosty) dávají polynomy
-vyššího stupně – to je úloha 2. stránky aplikace.
+vyššího stupně – to je úloha stránky „Monte Carlo na GBS“.
 
 **Kolik je koeficientů.** Monomů stupně nejvýš $K$ v $N$ proměnných je $\binom{N+K}{K}$; pro $N = 2$, $K = 2$
 právě šest. Počet roste rychle – pro 20 proměnných a stupeň 8 je to už 3 108 105 koeficientů (tabulka níže).
@@ -498,8 +498,8 @@ NEXT_STEPS_TOPIC = TheoryTopic(
         "přímo původní úlohu."
     ),
     explanation=r"""
-**Vlastní čísla $B$ pod 1.** Přístroj umí nahrát jen takové matice; vysvětlení je v teorii k 2. stránce
-(Nahrání $\Sigma$ do zařízení).
+**Vlastní čísla $B$ pod 1.** Přístroj umí nahrát jen takové matice; vysvětlení je v teorii ke stránce „Monte Carlo na
+GBS“ (Nahrání $\Sigma$ do zařízení).
 
 **Přesnost $(\epsilon, \delta)$, rovnice (4).** Hledá se odhad $e$, pro který
 $P\big(|\mu_{\mathrm{Haf}} - e| > \epsilon\,|\mu_{\mathrm{Haf}}|\big) < \delta$. Pro $\epsilon = 0{,}01$

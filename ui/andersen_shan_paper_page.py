@@ -53,7 +53,7 @@ RELATED_PAGES: Dict[str, Tuple[RelatedLink, ...]] = {
     INTEGRAL_TOPIC.anchor: (("Monte Carlo a rozptyl jednoho vzorku (Průvodce)", guide_href("pruvodce-monte-carlo")),),
     POLYNOMIAL_TOPIC.anchor: (
         ("Gaussovská úloha: střední hodnota polynomu (Průvodce)", guide_href("pruvodce-gaussovska-uloha")),
-        ("2 · Monte Carlo na GBS: moment výnosu portfolia", GBS_PATH),
+        ("Monte Carlo na GBS: moment výnosu portfolia", GBS_PATH),
     ),
     DENSITY_TOPIC.anchor: (
         ("Korelace mezi aktivy (Teorie)", theory_href("korelace")),

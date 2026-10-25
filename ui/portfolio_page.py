@@ -60,7 +60,7 @@ def build_portfolio_page() -> html.Div:
             html.Main(
                 className="content",
                 children=[
-                    html.H1("🎲 Monte Carlo simulace portfolia"),
+                    html.H1("Klasické Monte Carlo: simulace portfolia"),
                     html.P(
                         "Zadej složení portfolia a parametry simulace. Výnosy aktiv se modelují jako "
                         "korelovaný geometrický Brownův pohyb s měsíčním rebalancováním na cílové váhy.",

@@ -69,7 +69,7 @@ def test_drobeckova_navigace_ukaze_stejnou_skupinu_jako_horni_menu_i_nadrazenou_
     trail = breadcrumb_trail(ids.GUIDE_PAGE)
 
     assert [label for label, _ in trail] == [
-        "Témata", "GBS ve financích", "3 · Výhoda GBS", "Průvodce pro začínajícího doktoranda",
+        "Témata", "GBS ve financích", "Výhoda GBS", "Průvodce: proč a jak funguje výhoda GBS",
     ]
     assert trail[1][1] == "/#skupina-gbs-ve-financich"
     assert trail[-1][1] is None

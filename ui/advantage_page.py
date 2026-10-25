@@ -51,10 +51,10 @@ def build_advantage_page() -> html.Div:
         className="gbs-page",
         style=HIDDEN,
         children=[
-            html.H1("🚀 Výhoda GBS: kdy kvantové vzorkování porazí Monte Carlo"),
+            html.H1("Výhoda GBS: kdy kvantové vzorkování porazí Monte Carlo"),
             html.P(LEAD, className="lead"),
             dcc.Link(
-                "Průvodce pro začínajícího doktoranda: proč a jak to celé funguje →", href=GUIDE_PATH,
+                "Průvodce: proč a jak funguje výhoda GBS →", href=GUIDE_PATH,
                 className="back-link",
             ),
             dcc.Link(

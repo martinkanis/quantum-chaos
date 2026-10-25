@@ -74,22 +74,23 @@ Crumb = Tuple[str, Optional[str]]
 """Label and link; the current page has no link."""
 
 PORTFOLIO = PageEntry(
-    ids.PORTFOLIO_PAGE, "1 · Klasické Monte Carlo", PORTFOLIO_PATH,
+    ids.PORTFOLIO_PAGE, "Klasické Monte Carlo", PORTFOLIO_PATH,
     "Simulace portfolia korelovaným geometrickým Brownovým pohybem, předvolby trhu z historie USA 1928–2023 "
     "a stresové scénáře.",
 )
 GBS = PageEntry(
-    ids.GBS_PAGE, "2 · Monte Carlo na GBS", GBS_PATH,
+    ids.GBS_PAGE, "Monte Carlo na GBS", GBS_PATH,
     "Moment výnosu portfolia odhadnutý z četností fotonů Gaussian Boson Sampleru, krok za krokem od Wickovy věty "
     "po srovnání s klasickým Monte Carlem.",
 )
 ADVANTAGE = PageEntry(
-    ids.ADVANTAGE_PAGE, "3 · Výhoda GBS", ADVANTAGE_PATH,
+    ids.ADVANTAGE_PAGE, "Výhoda GBS", ADVANTAGE_PATH,
     "Laboratoř s vlastní maticí, pět úloh s exponenciální výhodou, skript pro Qiskit a rozbor tvrzení Qpurpose.",
 )
 THEORY = PageEntry(
     ids.THEORY_PAGE, "Teorie Monte Carla na GBS", THEORY_PATH,
-    "Podrobný výklad každého kroku 2. stránky s českou i původní literaturou.", parent_page_id=ids.GBS_PAGE,
+    "Podrobný výklad každého kroku stránky „Monte Carlo na GBS“ s českou i původní literaturou.",
+    parent_page_id=ids.GBS_PAGE,
 )
 HAFNIAN = PageEntry(
     ids.HAFNIAN_PAGE, "Hafnián a permanent polopatě", HAFNIAN_PATH,
@@ -102,7 +103,7 @@ CAVEATS = PageEntry(
     "Kde má GBS odhad omezení a co se s nimi dá dělat.", parent_page_id=ids.GBS_PAGE,
 )
 GUIDE = PageEntry(
-    ids.GUIDE_PAGE, "Průvodce pro začínajícího doktoranda", GUIDE_PATH,
+    ids.GUIDE_PAGE, "Průvodce: proč a jak funguje výhoda GBS", GUIDE_PATH,
     "13 kapitol o tom, proč a jak výhoda GBS funguje, včetně Qiskitu a námětů na další práci.",
     parent_page_id=ids.ADVANTAGE_PAGE,
 )
@@ -143,7 +144,7 @@ MONTE_CARLO_TOPIC = ResearchTopic(
 )
 
 VQE_PAPER = PageEntry(
-    ids.VQE_PAPER_PAGE, "VQE na IBM Fez (De León a kol. 2025)", VQE_PAPER_PATH,
+    ids.VQE_PAPER_PAGE, "Článek De Leóna a kol.: VQE na IBM Fez", VQE_PAPER_PATH,
     "TL;DR článku o dynamické optimalizaci portfolia až 38 aktiv na 156qubitovém čipu: jak funguje VQE s opravou "
     "ISQR, co znamená „srovnatelné s CPLEX“ a proč to není kvantová výhoda.",
 )
@@ -231,7 +232,7 @@ RANDOM_MATRIX_GBS = PageEntry(
 
 RESEARCH_DIRECTIONS_TOPIC = ResearchTopic(
     anchor="tema-vyzkumne-smery",
-    title="Výzkumné směry",
+    title="Vlastní výzkum",
     summary=(
         "Vlastní výzkumné náměty, které propojují ostatní témata. Nejsou to doložené výsledky: každá stránka "
         "odlišuje hypotézu, náš výpočet a literaturu a končí otázkami, na které by výzkum musel odpovědět."

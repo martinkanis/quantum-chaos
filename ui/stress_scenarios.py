@@ -1,4 +1,4 @@
-"""Stress-scenario section of page 1: what one historical year would do to the portfolio."""
+"""Stress-scenario section of the classical Monte Carlo page: what one historical year would do to the portfolio."""
 
 from __future__ import annotations
 

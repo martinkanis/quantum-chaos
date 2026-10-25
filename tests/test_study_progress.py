@@ -80,7 +80,7 @@ def test_tema_nabidne_dalsi_neprostudovanou_stranku_a_ukaze_postup():
     assert next_unstudied_page(MONTE_CARLO_TOPIC, [ids.PORTFOLIO_PAGE]).page_id == ids.GBS_PAGE
     assert next_unstudied_page(MONTE_CARLO_TOPIC, ALL_TOPIC_PAGE_IDS) is None
     assert progress_label(2, 9) in texts
-    assert "Pokračuj: 2 · Monte Carlo na GBS →" in texts
+    assert "Pokračuj: Monte Carlo na GBS →" in texts
 
 
 def test_doba_cteni_se_odvozuje_z_poctu_slov():

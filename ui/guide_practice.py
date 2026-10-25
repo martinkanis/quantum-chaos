@@ -156,7 +156,7 @@ QISKIT = TheoryTopic(
         "qubity a z četnosti cílového vzoru spočítá odhad GBS-P. Ověřuje vzorce; kvantovou výhodu nepřináší."
     ),
     explanation=r"""
-**Spuštění.** Stáhni skript tlačítkem na 3. stránce (obsahuje matici a exponenty z laboratoře) a v terminálu:
+**Spuštění.** Stáhni skript tlačítkem na stránce „Výhoda GBS“ (obsahuje matici a exponenty z laboratoře) a v terminálu:
 
 ```
 pip install "qiskit>=1.0" numpy
@@ -246,7 +246,7 @@ Qpurpose mluví o „quantum-inspired“ modelech na HPC.
 **5. Znaménkový problém.** Přístroj měří $\mathrm{Haf}^2$. U polynomů se smíšenými znaménky koeficientů nebo
 se zápornými korelacemi a lichými exponenty je potřeba znaménko každého členu zjistit jinak.
 
-**6. Malé úlohy jsou klasicky snadné.** Všechno na 3. stránce spočítáme přesně za milisekundy. Těžké jsou
+**6. Malé úlohy jsou klasicky snadné.** Všechno na stránce „Výhoda GBS“ spočítáme přesně za milisekundy. Těžké jsou
 hafniány velkých matic s malými exponenty – a tam je zase výhoda v rozptylu nejslabší (kapitola 7).
 
 **7. Věta o existenci.** Exponenciální výhoda platí pro *některé* úlohy vysokého stupně. Že mezi nimi jsou

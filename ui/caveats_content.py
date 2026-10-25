@@ -19,8 +19,8 @@ CLASSICAL_SIMULATION = Caveat(
     anchor="klasicka-simulace",
     title="GBS je tady simulované klasicky",
     summary=(
-        "Všechno na 2. stránce počítá obyčejný procesor. Kvantový počítač by se mohl vyplatit jen tam, "
-        "kde takový výpočet nezvládne ani superpočítač – a tahle hranice se neustále posouvá."
+        "Všechno na stránce „Monte Carlo na GBS“ počítá obyčejný procesor. Kvantový počítač by se mohl vyplatit jen "
+        "tam, kde takový výpočet nezvládne ani superpočítač – a tahle hranice se neustále posouvá."
     ),
     explanation=r"""
 Aplikace nepoužívá žádný kvantový hardware. Pravděpodobnost $p(n)$ každého vzoru fotonů spočítá přímo
@@ -54,8 +54,8 @@ CLOSED_FORM = Caveat(
     title="Pro tento moment existuje vzorec",
     summary=(
         r"Momenty výnosu gaussovského portfolia jdou spočítat na kalkulačce: "
-        r"$\mathbb{E}[L^d] = (d-1)!!\,(w^\top\Sigma w)^{d/2}$. Na 2. stránce slouží jen jako testovací úloha "
-        "se známým výsledkem."
+        r"$\mathbb{E}[L^d] = (d-1)!!\,(w^\top\Sigma w)^{d/2}$. Na stránce „Monte Carlo na GBS“ slouží jen jako "
+        "testovací úloha se známým výsledkem."
     ),
     explanation=r"""
 Výnos portfolia $L = w^\top X$ je lineární kombinace gaussovských veličin, takže je sám gaussovský:
@@ -151,8 +151,8 @@ ani jednou pozorovat, natož spolehlivě odhadnout jejich četnosti. Nepozorovan
 nulu, takže výsledek je systematicky podhodnocený.
 """,
     remedies=r"""
-- **Vyladit stlačení** na konkrétní úlohu – vyzkoušej posuvník na 2. stránce; v literatuře se optimalizuje
-  střední počet fotonů.
+- **Vyladit stlačení** na konkrétní úlohu – vyzkoušej posuvník na stránce „Monte Carlo na GBS“; v literatuře se
+  optimalizuje střední počet fotonů.
 - Uvažovat estimátory, které **průměrují přes jednotlivé výstřely** (typ importance sampling) místo odhadu
   pravděpodobnosti každého vzoru zvlášť. Mívají ale vlastní cenu – často je nutné pro každý pozorovaný vzor
   klasicky spočítat hafnián.

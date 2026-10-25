@@ -42,7 +42,7 @@ RELATED_PAGES: Dict[str, Tuple[RelatedLink, ...]] = {
     ),
     MONTE_CARLO_TOPIC.anchor: (
         ("Klasické Monte Carlo (Teorie)", theory_href("monte-carlo")),
-        ("1 · Klasické Monte Carlo portfolia", PORTFOLIO_PATH),
+        ("Klasické Monte Carlo portfolia", PORTFOLIO_PATH),
     ),
 }
 

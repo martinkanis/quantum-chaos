@@ -20,7 +20,7 @@ from web.compression import install_compression
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
-app = Dash(__name__, title="Monte Carlo portfolio")
+app = Dash(__name__, title="Quantum Knowledge Base")
 app.layout = build_layout()
 register_navigation_callbacks(app)
 register_lazy_page_callbacks(app)

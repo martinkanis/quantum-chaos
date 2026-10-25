@@ -101,8 +101,8 @@ PRINCIPLE_BLOCKS = (
 )
 
 PORTFOLIO_HINT = (
-    "Nastavuje se zvlášť, nezávisle na 1. stránce. Stačí váhy, volatility a korelace: úloha pracuje s výnosy "
-    "očištěnými o střední hodnotu, takže očekávané výnosy nehrají roli. "
+    "Nastavuje se zvlášť, nezávisle na stránce „Klasické Monte Carlo“. Stačí váhy, volatility a korelace: úloha "
+    "pracuje s výnosy očištěnými o střední hodnotu, takže očekávané výnosy nehrají roli. "
     f"Simulace zvládne nejvýše {MAX_MODES} aktiv a jen nezáporné korelace – "
 )
 
@@ -118,7 +118,7 @@ def build_gbs_page() -> html.Div:
         className="gbs-page",
         style=HIDDEN,
         children=[
-            html.H1("⚛️ Monte Carlo na Gaussian Boson Sampleru"),
+            html.H1("Monte Carlo na GBS: moment výnosu portfolia"),
             html.P(
                 "Jak by vypadal odhad rizikového ukazatele portfolia, kdyby vzorky místo generátoru "
                 "náhodných čísel dodával fotonický kvantový počítač. Všechno níže je klasická simulace "
@@ -199,7 +199,8 @@ def _portfolio_section() -> html.Section:
             )),
             html.P(PRESET_HINT, className="hint small"),
             html.P(id=ids.GBS_MARKET_PRESET_SUMMARY, className="hint small"),
-            # The rows keep the hidden expected-return column of page 1; build_centered_portfolio ignores it.
+            # The rows keep the hidden expected-return column of the classical Monte Carlo page;
+            # build_centered_portfolio ignores it.
             # No horizontal scrolling here: a scroll container would clip the asset-class dropdown menus.
             dash_table.DataTable(
                 id=ids.GBS_ASSET_TABLE,

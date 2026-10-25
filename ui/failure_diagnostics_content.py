@@ -179,8 +179,8 @@ MODEL_SOURCE = TheoryTopic(
     ),
     explanation=r"""
 **Co počítá GBS.** Andersen a Shan řeší gaussovské úlohy: střední hodnotu funkce náhodného vektoru s normálním
-rozdělením. Monte Carlo na 2. stránce dělá totéž klasicky. Obě metody tedy odhadují číslo, které platí, *pokud*
-jsou výnosy gaussovské.
+rozdělením. Klasické Monte Carlo, se kterým GBS srovnává stránka „Monte Carlo na GBS“, dělá totéž losováním. Obě metody
+tedy odhadují číslo, které platí, *pokud* jsou výnosy gaussovské.
 
 **Co ukazují data.** Cont (2001) shrnuje tzv. stylizovaná fakta – vlastnosti výnosů, které se opakují napříč
 trhy a obdobími – Cont jich uvádí jedenáct. Patří mezi ně nevýznamná (lineární) autokorelace výnosů, těžké
@@ -359,8 +359,8 @@ VERIFICATION_PLAN = TheoryTopic(
 5. **Výsledek i při neúspěchu.** Když diagnostiky chybu nepředpovídají, je to také zjištění: selhání odhadu pak
    nejde poznat předem a je potřeba jiný přístup.
 
-**Háčky.** VaR a CVaR nejsou polynomy, takže odhad z 2. stránky na ně přímo nestačí. Emulace GBS zvládne jen
-malý počet módů a hranice klasické simulace se posouvá. A diagnostiky zdroje 1 potřebují delší okna než
+**Háčky.** VaR a CVaR nejsou polynomy, takže odhad ze stránky „Monte Carlo na GBS“ na ně přímo nestačí. Emulace GBS
+zvládne jen malý počet módů a hranice klasické simulace se posouvá. A diagnostiky zdroje 1 potřebují delší okna než
 odhad matice (náš odhad).
 """,
     further_reading=(

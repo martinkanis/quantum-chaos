@@ -68,9 +68,9 @@ Carlu. Nedokázané (a nepublikované) je, že to přináší užitek na skuteč
 hardwaru a proti nejlepším klasickým metodám. Rozlišovat tyto dvě roviny je asi nejdůležitější dovednost
 při čtení podobných tvrzení.
 
-**Co najdeš v aplikaci.** Na 2. stránce GBS odhaduje moment výnosu portfolia (polynom nízkého stupně). Na
-3. stránce je laboratoř: zadáš kovarianční matici a monom, aplikace spočítá přesnou hodnotu, rozptyl obou
-metod a obě metody nasimuluje; k tomu pět připravených úloh a skript pro Qiskit. Tento průvodce vysvětluje
+**Co najdeš v aplikaci.** Na stránce „Monte Carlo na GBS“ odhaduje GBS moment výnosu portfolia (polynom nízkého
+stupně). Na stránce „Výhoda GBS“ je laboratoř: zadáš kovarianční matici a monom, aplikace spočítá přesnou hodnotu,
+rozptyl obou metod a obě metody nasimuluje; k tomu pět připravených úloh a skript pro Qiskit. Tento průvodce vysvětluje
 všechno od nuly.
 
 **Co budeš potřebovat.** Základy pravděpodobnosti (střední hodnota, rozptyl, normální rozdělení), lineární
@@ -125,8 +125,8 @@ s koeficienty, $f(x) = \sum_n a_n x^n$. Střední hodnota je lineární, takže 
 $\mathbb{E}[f(x)] = \sum_n a_n \mathbb{E}[x^n]$.
 
 **Proč zrovna polynomy.** Hladké funkce jde polynomy aproximovat (Taylorův rozvoj). Momenty výnosu portfolia
-($\mathbb{E}[L^d]$ na 2. stránce) jsou polynomy, společné momenty několika aktiv měří „společné chvosty“ – jak
-často jsou aktiva zároveň daleko od průměru. Článek Andersena a Shan pracuje přesně s úlohou
+($\mathbb{E}[L^d]$ na stránce „Monte Carlo na GBS“) jsou polynomy, společné momenty několika aktiv měří „společné
+chvosty“ – jak často jsou aktiva zároveň daleko od průměru. Článek Andersena a Shan pracuje přesně s úlohou
 $\mathbb{E}[f(x)]$ pro polynom $f$ stupně nejvýš $K$.
 
 **Liché stupně dávají nulu.** Normální rozdělení se střední hodnotou nula je symetrické: $x$ a $-x$ jsou stejně
@@ -166,7 +166,7 @@ $$
 
 Různých mezivýsledků je jen $\prod_i (n_i + 1)$, takže pro málo proměnných je výpočet rychlý i pro stupeň 40.
 Těžkost hafniánu se projeví u mnoha proměnných s malými exponenty: padesát proměnných s exponentem 1 by
-znamenalo $2^{50}$ mezivýsledků. Úlohy na 3. stránce jsou proto klasicky snadné – záměrně, abychom mohli chybu
+znamenalo $2^{50}$ mezivýsledků. Úlohy na stránce „Výhoda GBS“ jsou proto klasicky snadné – záměrně, abychom mohli chybu
 obou metod porovnat s přesnou hodnotou.
 """,
     further_reading=(
@@ -415,8 +415,8 @@ $\sum_n a_n \mathrm{Haf}(B_n)^2$, tedy „zdvojenou“ úlohu pro gaussovský ve
 původní střední hodnotu. Pro tuto upravenou úlohu dokazuje článek nejsilnější exponenciální výhodu.
 Laboratoř počítá jen GBS-P.
 
-**Polynom místo monomu.** Pro $f = \sum a_n x^n$ sečte GBS-P odhady pro všechny vzory; 2. stránka to dělá pro
-moment portfolia $(w^\top x)^d$. Rozptyl se pak skládá z podílů jednotlivých vzorů, viz Srovnání na stránce
+**Polynom místo monomu.** Pro $f = \sum a_n x^n$ sečte GBS-P odhady pro všechny vzory; stránka „Monte Carlo na GBS“ to
+dělá pro moment portfolia $(w^\top x)^d$. Rozptyl se pak skládá z podílů jednotlivých vzorů, viz Srovnání na stránce
 Teorie.
 """,
     further_reading=(

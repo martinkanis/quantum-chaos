@@ -245,8 +245,8 @@ $$
 
 a hodnota, která se průměruje, $f(X) = L^4 \approx 0{,}000063$. Počítač scénáře losuje tak, aby každé
 aktivum kolísalo se svou volatilitou a aktiva se hýbala spolu podle korelací – většinou tedy vyjde obyčejný
-rok, jen občas extrémní. Na 1. stránce je scénářem celá jedna možná budoucnost portfolia měsíc po měsíci
-přes celý horizont; u GBS hraje roli scénáře výstřel.
+rok, jen občas extrémní. Na stránce „Klasické Monte Carlo“ je scénářem celá jedna možná budoucnost portfolia měsíc po
+měsíci přes celý horizont; u GBS hraje roli scénáře výstřel.
 
 **Proč to funguje.**
 
@@ -274,8 +274,8 @@ o kolísání toho, co se v Monte Carlu průměruje.
 **Pravidlo odmocniny.** Desetkrát přesnější výsledek stojí stokrát víc scénářů. Výhodou je, že rychlost
 $1/\sqrt{N}$ nezávisí na počtu proměnných: mřížka s 10 body na osu by pro 6 aktiv potřebovala milion bodů
 a pro 20 aktiv $10^{20}$, kdežto Monte Carlu stačí pořád zhruba stejný počet scénářů. Proto se tolik
-používá ve financích – pro ceny derivátů, pro VaR i pro simulaci portfolia na 1. stránce. Zmenšit se dá
-konstanta $\sigma_f$: k tomu slouží *metody snižování rozptylu (disperze)*, třeba *metoda váženého výběru*
+používá ve financích – pro ceny derivátů, pro VaR i pro simulaci portfolia na stránce „Klasické Monte Carlo“. Zmenšit
+se dá konstanta $\sigma_f$: k tomu slouží *metody snižování rozptylu (disperze)*, třeba *metoda váženého výběru*
 (importance sampling). Vrátíme se k ní u srovnání s GBS, protože GBS estimátor se chová velmi podobně.
 
 **Na naší úloze.** Pro $\mathbb{E}[L^d]$ klasické Monte Carlo v každém scénáři
@@ -333,7 +333,7 @@ X_i = R_i - \mu_i ,
 $$
 
 tedy s „překvapením“, o kolik se konkrétní rok liší od očekávání. Odchylky mají střední hodnotu nula
-a očekávané výnosy na ně nemají vliv – proto je na 2. stránce nezadáváš.
+a očekávané výnosy na ně nemají vliv – proto je na stránce „Monte Carlo na GBS“ nezadáváš.
 
 **Model: vícerozměrné normální rozdělení.** Vektor odchylek $X = (X_1, \dots, X_k)$ má rozdělení
 $\mathcal{N}(0, \Sigma)$ s kovarianční maticí
@@ -443,8 +443,8 @@ $$
 
 - Posuvník nastaví stejnou korelaci všem párům, v matici jde upravit každý pár zvlášť (počítají se hodnoty
   nad diagonálou). Po změně aktiv nebo posuvníku se matice znovu vyplní jednotně.
-- Simulace na 1. stránce: z volatilit a korelací vznikne kovarianční matice $\Sigma$. Každý měsíc generátor
-  vylosuje nezávislá náhodná čísla a smíchá je přes rozklad $\Sigma$ na hlavní komponenty – jeden společný
+- Simulace na stránce „Klasické Monte Carlo“: z volatilit a korelací vznikne kovarianční matice $\Sigma$. Každý měsíc
+  generátor vylosuje nezávislá náhodná čísla a smíchá je přes rozklad $\Sigma$ na hlavní komponenty – jeden společný
   „tržní“ šok tak zasáhne víc aktiv najednou a ta se pohnou spolu. Pak se spočítá výnos portfolia a portfolio
   se vrátí na cílové váhy.
 - Stránka GBS: korelace vstupují do $\Sigma$, která se nahraje do zařízení – rozklad na hlavní komponenty je
@@ -602,7 +602,7 @@ $\mathbb{E}[L^4] \approx 3{,}57\cdot 10^{-4}$.
 **Proč je to pro GBS důležité.** Klasický výpočet hafniánu je exponenciálně drahý: nejlepší známé algoritmy
 potřebují řádově $n^3\,2^{n/2}$ operací pro matici $n \times n$. GBS je fyzikální zařízení, jehož
 pravděpodobnosti jsou hafniány – umí tedy vzorkovat z rozdělení daného hafniány, aniž by je kdokoli počítal.
-Na tom stojí celá myšlenka 2. stránky.
+Na tom stojí celá myšlenka stránky „Monte Carlo na GBS“.
 """,
     further_reading=(
         Reading(ISSERLIS),
@@ -629,7 +629,7 @@ GBS_DEVICE = TheoryTopic(
 nebo časových oknech jednoho svazku. Fyzika jim říká **módy**. V každém módu může být libovolný počet fotonů.
 Jak se módy vyrábějí, vysvětlují """ + f"[pojmy na stránce Fotonika ve světě]({PHOTONICS_TERMS_HREF})" + r""".
 
-**Tři části obvodu** (schéma je v kroku 3 na 2. stránce):
+**Tři části obvodu** (schéma je v kroku 3 na stránce „Monte Carlo na GBS“):
 
 1. **Zdroje stlačeného světla.** Silný laserový puls prochází nelineárním krystalem nebo vlnovodem
    (""" + f"[co to je a proč je potřeba]({PHOTONICS_TERMS_HREF})" + r"""). Při
@@ -938,7 +938,7 @@ $$
 tedy typická odchylka odhadu od přesné hodnoty $\mu$ v procentech. Relativní chyba 1 % znamená, že se odhad
 obvykle trefí do ±1 % přesné hodnoty. Pozor, i RMSE z 20 opakování je jen odhad s relativní nejistotou zhruba
 $1/\sqrt{2\cdot 20} \approx 16\,\%$. Naměřené chyby se proto mezi běhy liší a spolehlivější je srovnat
-teoretické konstanty níže (na 2. stránce jsou v grafu konvergence čárkovaně).
+teoretické konstanty níže (na stránce „Monte Carlo na GBS“ jsou v grafu konvergence čárkovaně).
 
 **Obě chyby klesají jako $1/\sqrt{N}$.** U MC to říká centrální limitní věta; u GBS totéž platí pro četnosti
 a odmocnina na tom nic nemění. V logaritmickém grafu jsou to rovnoběžné přímky se sklonem $-\tfrac12$:
@@ -987,8 +987,8 @@ Pro $P_d = 8{,}4\,\%$ je to 1,65 – nejlepší možný případ je tedy asi dva
 užitečných výstřelů – to je v pořádku. Vzor $(3, 1, 0)$ ale nese 8,9 % momentu a přitom tvoří jen 0,6 %
 užitečných výstřelů: dluhopisy mají malou volatilitu, takže fotonů v jejich detektoru je málo, jenže váha
 30 % dělá z jejich kombinací s akciemi nezanedbatelnou část momentu. Takové vzory konstantu zvětšují.
-Výsledek $c_{\mathrm{GBS}} \approx 3{,}15$ proti $c_{\mathrm{MC}} \approx 3{,}27$ – proto na 2. stránce
-vychází chyba obou metod **srovnatelná**.
+Výsledek $c_{\mathrm{GBS}} \approx 3{,}15$ proti $c_{\mathrm{MC}} \approx 3{,}27$ – proto na stránce „Monte Carlo na
+GBS“ vychází chyba obou metod **srovnatelná**.
 
 **Kdy vyhraje která metoda** (graf níže, výchozí portfolio):
 
@@ -1038,8 +1038,8 @@ $a_I$ – naše $\mathbb{E}[L^d]$ je speciální případ.
   nestranný, ale řeší upravenou úlohu, ve které místo hafniánů vystupují jejich druhé mocniny,
   $\sum_I a_I\,\mathrm{Haf}(B_I)^2$ – střední hodnotu přes „zdvojený“ gaussovský vektor s kovariancí
   $B \oplus B$.
-- *GBS-P* odmocňuje relativní četnosti vzorů – přesně odhad z 2. stránky. Je mírně vychýlený, ale řeší
-  původní úlohu.
+- *GBS-P* odmocňuje relativní četnosti vzorů – přesně odhad ze stránky „Monte Carlo na GBS“. Je mírně vychýlený, ale
+  řeší původní úlohu.
 
 **Co tvrdí.** Srovnávají zaručený počet vzorků, se kterým má odhad s pravděpodobností aspoň $1-\delta$ relativní
 chybu nejvýš $\varepsilon$ (odvozený z rozptylu přes Čebyševovu nerovnost). Hlavní věty říkají, že pro dost velký
@@ -1050,8 +1050,8 @@ $K \ge \zeta N^2$ stačí GBS řádově $N^{3+p}$ vzorků, zatímco Monte Carlo 
 **Jaká je to množina, polopatě.** „Otevřená neprázdná podmnožina“ znamená, že takové úlohy existují a malá změna
 matice nebo koeficientů výhodu nezničí; věta ale neříká, jak velká ta oblast je. Tvoří ji hlavně polynomy velmi
 vysokého stupně (stupeň roste aspoň s druhou mocninou počtu proměnných) s koeficienty sladěnými s rozdělením GBS.
-Důvod je stejný jako ve srovnání na 2. stránce: rozptyl klasického Monte Carla roste se stupněm polynomu
-exponenciálně – u nás konstanta $c_{\mathrm{MC}}$ roste z 1,41 přes 3,27 na 6,72 pro $d = 2, 4, 6$ – kdežto GBS
+Důvod je stejný jako ve srovnání na stránce „Monte Carlo na GBS“: rozptyl klasického Monte Carla roste se stupněm
+polynomu exponenciálně – u nás konstanta $c_{\mathrm{MC}}$ roste z 1,41 přes 3,27 na 6,72 pro $d = 2, 4, 6$ – kdežto GBS
 se chová jako vážený výběr, který sám losuje vzory úměrně hafniánům na druhou. Druhý článek odhaduje, jak velký
 podíl úloh je výhodný: po vyladění středního počtu fotonů „podstatný“, ve speciálních případech téměř 100 %.
 

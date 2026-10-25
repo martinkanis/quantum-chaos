@@ -51,13 +51,13 @@ REVIEW_QUESTIONS_HINT = (
 RELATED_PAGES: Dict[str, Tuple[RelatedLink, ...]] = {
     CLAIMS_TOPIC.anchor: (
         ("Co tvrdí Qpurpose a jak to číst (Průvodce)", guide_href("pruvodce-qpurpose")),
-        ("3 · Výhoda GBS", ADVANTAGE_PATH),
+        ("Výhoda GBS", ADVANTAGE_PATH),
     ),
     THEORY_TOPIC.anchor: (
         ("Co přesně dokázali Andersen a Shan (Teorie)", theory_href("exponencialni-vyhoda")),
         ("Proč je výhoda exponenciální (Průvodce)", guide_href("pruvodce-proc-exponencialne")),
     ),
-    TWENTE_TOPIC.anchor: (("Příbuzné práce na stránce 3 · Výhoda GBS", ADVANTAGE_PATH),),
+    TWENTE_TOPIC.anchor: (("Příbuzné práce na stránce Výhoda GBS", ADVANTAGE_PATH),),
     GATE_BASED_TOPIC.anchor: (
         ("Háček: VaR a CVaR nejsou polynomy", caveat_href("var-cvar")),
         ("Classiq a CUDA-Q v Quantum Academy", ACADEMY_PATH),

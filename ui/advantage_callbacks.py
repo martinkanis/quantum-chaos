@@ -1,4 +1,4 @@
-"""Callbacks of page 3: the matrix table, the lab run and the Qiskit download."""
+"""Callbacks of the GBS advantage page: the matrix table, the lab run and the Qiskit download."""
 
 from __future__ import annotations
 
@@ -141,7 +141,7 @@ def download_qiskit_script(_clicks: int, rows: List[Row], tuning: str, seed: Any
 
 
 def should_run_lab(triggered_id: Optional[str], pathname: str, current_results: Any) -> bool:
-    """Runs on an explicit click, or automatically the first time page 3 is shown."""
+    """Runs on an explicit click, or automatically the first time the page is shown."""
     if triggered_id == ids.ADVANTAGE_RUN_BUTTON:
         return True
     return pathname == ADVANTAGE_PATH and not current_results

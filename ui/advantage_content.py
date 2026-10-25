@@ -1,4 +1,4 @@
-"""Texts and sources of page 3: what Qpurpose claims, how it probably works and how to read the claims."""
+"""Texts and sources of the GBS advantage page: what Qpurpose claims, how it probably works and how to read them."""
 
 from __future__ import annotations
 
@@ -98,7 +98,7 @@ HYPOTHESIS = r"""
    a kovariancí odhadnutými z živých dat. To je ve financích standard.
 2. **Hledaná veličina jako gaussovský integrál.** Očekávaný pohyb ceny, výplata nebo zisk či ztráta zajištění
    se zapíše jako $\mathbb{E}[f(X)]$, kde $f$ je polynom nebo mocninná řada. Podle Wickovy věty je to
-   $\sum_I a_I\,\mathrm{Haf}(B_I)$ – stejně jako u momentu portfolia na 2. stránce.
+   $\sum_I a_I\,\mathrm{Haf}(B_I)$ – stejně jako u momentu portfolia na stránce „Monte Carlo na GBS“.
 3. **Odhad místo obyčejného Monte Carla.** Místo scénářů z normálního rozdělení použijí jeden ze dvou odhadů
    z článku: **GBS-I** je vážený výběr, kde se vzory losují úměrně $\mathrm{Haf}^2$, **GBS-P** odmocňuje četnosti
    vzorů – přesně ten odhad, který počítá laboratoř níže. U vhodných úloh mají mnohem menší rozptyl než Monte

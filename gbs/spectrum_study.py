@@ -50,7 +50,7 @@ def spectrum_savings(
     weights: np.ndarray, correlations: Sequence[float], degrees: Sequence[int], strengths: Sequence[float]
 ) -> Tuple[SpectrumSaving, ...]:
     """For every correlation and degree the best squeezing strength on the grid; the device is programmed with
-    the covariance matrix of the assets, as on page 2."""
+    the covariance matrix of the assets, as on the GBS page."""
     asset_count = len(weights)
     savings = []
     for correlation in correlations:

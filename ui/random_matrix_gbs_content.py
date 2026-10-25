@@ -48,7 +48,7 @@ EQUAL_SAVINGS: Tuple[SpectrumSaving, ...] = (
     SpectrumSaving(0.9, 6, market_mode_share=0.9167, best_strength=0.9, sample_saving=14.10,
                    useful_shot_share=0.0724, pattern_mismatch=1.001, cancellation=1),
 )
-"""spectrum_savings(equal_weights(6), STUDY_CORRELATIONS, STUDY_DEGREES, squeezing slider grid of page 2)."""
+"""spectrum_savings(equal_weights(6), STUDY_CORRELATIONS, STUDY_DEGREES, squeezing slider grid of the GBS page)."""
 LONG_SHORT_SAVINGS: Tuple[SpectrumSaving, ...] = (
     SpectrumSaving(0.0, 4, market_mode_share=0.1667, best_strength=0.65, sample_saving=8.991,
                    useful_shot_share=0.2063, pattern_mismatch=1.185, cancellation=1),
@@ -236,8 +236,8 @@ HYPOTHESIS = TheoryTopic(
 **Co víme.** Andersen a Shan zavádějí dva odhady z výstřelů GBS, GBS-P a GBS-I, a dokazují, že na otevřené
 neprázdné podmnožině gaussovských úloh potřebují exponenciálně méně vzorků než klasické Monte Carlo – ne na
 všech. V navazujícím článku odhadují pro oba odhady, pro jaký podíl náhodných úloh výhoda platí; u GBS-P podíl
-s rozměrem klesá a se stupněm roste. Na 2. stránce i zde počítáme s odhadem GBS-P. GBS přitom matici zpracovává přes její rozklad na vlastní
-čísla (síly stlačení) a vlastní vektory (interferometr).
+s rozměrem klesá a se stupněm roste. Na stránce „Monte Carlo na GBS“ i zde počítáme s odhadem GBS-P. GBS přitom matici
+zpracovává přes její rozklad na vlastní čísla (síly stlačení) a vlastní vektory (interferometr).
 
 **Co víme o maticích akcií.** Spektrum skutečné korelační matice má jedno velké vlastní číslo (tržní mód,
 u Laloux a kol. asi 25× nad horní mezí šumu), několik sektorových a široký pás šumu podle Marčenka
@@ -268,13 +268,13 @@ FIRST_STUDY = TheoryTopic(
 spektrum „tržní mód plus šum“. Rovnoměrné portfolio leží pro každé $\rho > 0$ přesně ve směru tržního módu,
 portfolio long–short s vahami $(1, -1, 1, -1, 1, -1)/6$ je na něj kolmé.
 
-**Co měříme.** Konstanty relativní chyby $c$ z 2. stránky: chyba po $N$ vzorcích je $c/\sqrt{N}$. Úspora
-vzorků je $(c_{\text{MC}}/c_{\text{GBS}})^2$, u GBS pro nejlepší sílu stlačení na mřížce posuvníku 2. stránky
-(0,1 až 0,95). Je to teoretická hodnota pro velké $N$, ne simulace.
+**Co měříme.** Konstanty relativní chyby $c$ ze stránky „Monte Carlo na GBS“: chyba po $N$ vzorcích je $c/\sqrt{N}$.
+Úspora vzorků je $(c_{\text{MC}}/c_{\text{GBS}})^2$, u GBS pro nejlepší sílu stlačení na mřížce posuvníku na stránce
+„Monte Carlo na GBS“ (0,1 až 0,95). Je to teoretická hodnota pro velké $N$, ne simulace.
 
 **Omezení.** Jen šest módů (víc simulátor v aplikaci nezvládne), dvě portfolia a jeden typ spektra. Přístroj
-programujeme přímo kovarianční maticí aktiv, stejně jako na 2. stránce; jiné zakódování (otočení souřadnic,
-jiné ladění stlačení) by mohlo dopadnout jinak. Sektory ani pás šumu podle Marčenka a Pastura tu nejsou.
+programujeme přímo kovarianční maticí aktiv, stejně jako na stránce „Monte Carlo na GBS“; jiné zakódování (otočení
+souřadnic, jiné ladění stlačení) by mohlo dopadnout jinak. Sektory ani pás šumu podle Marčenka a Pastura tu nejsou.
 """,
     further_reading=(
         Reading(ANDERSEN_SHAN_EXPECTATIONS, "odhad GBS-P, ze kterého vychází konstanta chyby"),
@@ -322,12 +322,12 @@ OPEN_QUESTIONS = TheoryTopic(
    z úhlu mezi vahami a hlavními vlastními vektory a ze spektra – bez výpočtu hafniánů? Taková diagnostika by
    šla spočítat ještě před spuštěním přístroje.
 2. **Volba zakódování.** Přístroj tu programujeme přímo kovarianční maticí aktiv. Pomůže otočit souřadnice nebo
-   ladit stlačení po módech (jako na 3. stránce), aby fotony šly tam, kde leží moment?
+   ladit stlačení po módech (jako na stránce „Výhoda GBS“), aby fotony šly tam, kde leží moment?
 3. **Realistická spektra.** Spektrum „tržní mód + sektory + pás Marčenka a Pastura“ pro desítky aktiv. To je
    mimo dosah simulátoru v aplikaci (6 módů) a vyžaduje rychlejší klasickou simulaci GBS.
 4. **Surová vs. vyčištěná matice.** Mění čištění spektrum tak, že se výhoda GBS zvětší, nebo zmenší?
 5. **Úlohy bez vzorce.** Momenty portfolia mají uzavřený vzorec, takže GBS tu slouží jen jako test. Smysl
-   mají úlohy bez vzorce, např. monomy z 3. stránky nebo nelineární payoffy – na spektrech z teorie
+   mají úlohy bez vzorce, např. monomy ze stránky „Výhoda GBS“ nebo nelineární payoffy – na spektrech z teorie
    náhodných matic.
 6. **Hranice klasické simulace.** Kde je GBS s takovou maticí ještě klasicky simulovatelný? Bulmer a kol.
    a Quesada a kol. tuto hranici posunuli; výhoda ve vzorcích se musí porovnat s cenou simulace.
