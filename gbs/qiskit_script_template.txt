@@ -19,7 +19,7 @@ Co skript dělá:
 
 Qiskit fotonické módy nemá, proto je tady emulujeme na qubitech. Kvantovou výhodu to nepřináší: skript ukazuje,
 jak výpočet probíhá, a ověřuje vzorce. Skutečný GBS je fotonický čip. Obvod by šlo po transpilaci poslat
-i na qubitový počítač (qiskit-ibm-runtime), brány na 5–10 qubitech se ale rozloží na tisíce dvouqubitových
+i na qubitový počítač (qiskit-ibm-runtime), brány se ale rozloží na desítky až stovky tisíc dvouqubitových
 bran a dnešní šum by výsledek zničil – proto skript používá přesný simulátor StatevectorSampler.
 """
 

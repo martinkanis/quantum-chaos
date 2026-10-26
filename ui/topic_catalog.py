@@ -22,6 +22,7 @@ from ui.navigation import (
     LITERATURE_REVIEW_PATH,
     PHOTONIC_HARDWARE_PATH,
     PHOTONICS_LANDSCAPE_PATH,
+    PIQUASSO_PATH,
     PORTFOLIO_PATH,
     QPURPOSE_PATH,
     RANDOM_MATRIX_PATH,
@@ -192,6 +193,13 @@ PHOTONICS_LANDSCAPE = PageEntry(
     "a odhad, kdo je pro disertaci konkurence a kdo partner.",
 )
 
+PIQUASSO = PageEntry(
+    ids.PIQUASSO_PAGE, "Piquasso: simulátor fotonického kvantového počítače", PIQUASSO_PATH,
+    "Open-source simulátor z Budapešti: jak v něm napsat GBS, který simulátor zvolit, ověření výpočtů aplikace, "
+    "pasti s ořezy a překlad mezi qubity a fotony včetně otázky, jestli jde GBS spustit na VLQ.",
+    parent_page_id=ids.PHOTONICS_LANDSCAPE_PAGE,
+)
+
 PHOTONICS_LANDSCAPE_TOPIC = ResearchTopic(
     anchor="tema-fotonika-ve-svete",
     title="Fotonika ve světě",
@@ -200,7 +208,7 @@ PHOTONICS_LANDSCAPE_TOPIC = ResearchTopic(
         "kdo umí Gaussian Boson Sampling, kdo nabízí kvantové výpočty bankám a kdo je pro disertaci konkurence "
         "a kdo partner."
     ),
-    sections=(TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE,)),),
+    sections=(TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE,)), TopicSection("Software", (PIQUASSO,))),
 )
 
 RANDOM_MATRIX = PageEntry(

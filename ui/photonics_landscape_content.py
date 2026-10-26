@@ -39,6 +39,7 @@ from ui.theory_content import (
     KRUSE,
     MADSEN,
     OH_CLASSICAL_SIMULATION,
+    PIQUASSO_PAPER,
     SDU_QUANTUM_FINANCE,
     ZHONG,
     KeyFinding,
@@ -329,10 +330,6 @@ BLUEFORS = Source(
     "The Quantum Insider: [Bluefors PT205 pro detektory SNSPD](https://thequantuminsider.com/2025/03/18/bluefors-"
     "announces-compact-high-performance-pt205-pulse-tube-cryocooler-designed-for-quantum-sensing-and-communication-"
     "applications/), 2025"
-)
-PIQUASSO_PAPER = Source(
-    "Kolarovszki, Z. a kol.: *Piquasso: a photonic quantum computer simulation software platform*. Quantum 9, 1708 "
-    "(2025), [quantum-journal.org](https://quantum-journal.org/papers/q-2025-04-15-1708/)"
 )
 BOSONIC_QISKIT = Source("C2QA: [Bosonic Qiskit](https://github.com/C2QA/bosonic-qiskit) – bosonické módy vedle qubitů")
 OLOMOUC_PNR = Source(

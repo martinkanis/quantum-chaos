@@ -25,6 +25,7 @@ VQE_PAPER_PATH = "/kvantova-optimalizace/vqe-ibm-fez"
 LITERATURE_REVIEW_PATH = "/reserse-gbs-financni-riziko"
 PHOTONIC_HARDWARE_PATH = "/reserse-gbs-financni-riziko/fotonicky-hardware"
 PHOTONICS_LANDSCAPE_PATH = "/fotonika-ve-svete"
+PIQUASSO_PATH = "/fotonika-ve-svete/piquasso"
 RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
 RANDOM_MATRIX_GBS_PATH = "/vyzkumne-smery/nahodne-matice-a-gbs"
 FAILURE_DIAGNOSTICS_PATH = "/vyzkumne-smery/kdy-gbs-selze"
@@ -52,6 +53,7 @@ PAGE_IDS = (
     ids.LITERATURE_REVIEW_PAGE,
     ids.PHOTONIC_HARDWARE_PAGE,
     ids.PHOTONICS_LANDSCAPE_PAGE,
+    ids.PIQUASSO_PAGE,
     ids.RANDOM_MATRIX_PAGE,
     ids.RANDOM_MATRIX_GBS_PAGE,
     ids.FAILURE_DIAGNOSTICS_PAGE,
@@ -76,6 +78,7 @@ PAGE_BY_PATH = {
     LITERATURE_REVIEW_PATH: ids.LITERATURE_REVIEW_PAGE,
     PHOTONIC_HARDWARE_PATH: ids.PHOTONIC_HARDWARE_PAGE,
     PHOTONICS_LANDSCAPE_PATH: ids.PHOTONICS_LANDSCAPE_PAGE,
+    PIQUASSO_PATH: ids.PIQUASSO_PAGE,
     RANDOM_MATRIX_PATH: ids.RANDOM_MATRIX_PAGE,
     RANDOM_MATRIX_GBS_PATH: ids.RANDOM_MATRIX_GBS_PAGE,
     FAILURE_DIAGNOSTICS_PATH: ids.FAILURE_DIAGNOSTICS_PAGE,
@@ -156,6 +159,10 @@ def photonic_hardware_href(anchor: str) -> str:
 
 def photonics_landscape_href(anchor: str) -> str:
     return f"{PHOTONICS_LANDSCAPE_PATH}#{anchor}"
+
+
+def piquasso_href(anchor: str) -> str:
+    return f"{PIQUASSO_PATH}#{anchor}"
 
 
 PHOTONICS_TERMS_HREF = photonics_landscape_href("svet-pojmy")

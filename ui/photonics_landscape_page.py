@@ -11,6 +11,7 @@ from ui.navigation import (
     HAFNIAN_PATH,
     HIDDEN,
     PHOTONIC_HARDWARE_PATH,
+    PIQUASSO_PATH,
     QPURPOSE_PATH,
     THEORY_PATH,
     photonics_landscape_href,
@@ -23,6 +24,7 @@ from ui.photonics_landscape_content import (
     PLAYERS,
     RESEARCH_DATE,
     SINGLE_PHOTON_TOPIC,
+    SOFTWARE_TOPIC,
     SOURCES_ANCHOR,
     TERMS_TOPIC,
     TITLE,
@@ -47,6 +49,7 @@ RELATED_PAGES: Dict[str, Sequence[RelatedLink]] = {
     ),
     SINGLE_PHOTON_TOPIC.anchor: (("Quandela a fotonický hardware v Evropě", PHOTONIC_HARDWARE_PATH),),
     FINANCE_TOPIC.anchor: (("Co Qpurpose skutečně provozuje u Jyske Bank", QPURPOSE_PATH),),
+    SOFTWARE_TOPIC.anchor: (("Piquasso: simulátor, ověření aplikace a GBS na qubitech", PIQUASSO_PATH),),
 }
 
 

@@ -135,6 +135,10 @@ KRUSE = Source(
     "Gaussian boson sampling*. Physical Review A 100, 032326 (2019), "
     "[doi:10.1103/PhysRevA.100.032326](https://doi.org/10.1103/PhysRevA.100.032326)"
 )
+PIQUASSO_PAPER = Source(
+    "Kolarovszki, Z. a kol.: *Piquasso: a photonic quantum computer simulation software platform*. Quantum 9, 1708 "
+    "(2025), [quantum-journal.org](https://quantum-journal.org/papers/q-2025-04-15-1708/)"
+)
 AARONSON_ARKHIPOV = Source(
     "Aaronson, S., Arkhipov, A.: *The computational complexity of linear optics*. Theory of Computing 9 (2013), "
     "143–252, [doi:10.4086/toc.2013.v009a004](https://doi.org/10.4086/toc.2013.v009a004)"

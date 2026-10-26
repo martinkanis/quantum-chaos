@@ -26,6 +26,7 @@ from ui.theory_content import (
     HAMILTON,
     KRUSE,
     OH_CLASSICAL_SIMULATION,
+    PIQUASSO_PAPER,
     RECK,
     SDU_QUANTUM_FINANCE,
     WALRUS_HAFNIAN,
@@ -199,9 +200,11 @@ a porovná ho s přesnou hodnotou (Steinova rekurze) a s klasickým Monte Carlem
 
 **Proč žádná kvantová výhoda.** Emulace na qubitech je jen jiný zápis téže fyziky: simulátor drží celý stav
 ($2^{20}$ amplitud pro 20 qubitů) a amplitudy jsme připravili z klasického výpočtu. Na skutečném qubitovém
-počítači by se brány na 5–10 qubitech rozložily na tisíce dvouqubitových bran a dnešní šum by výsledek zničil.
-Skutečný GBS je fotonický čip (Xanadu, USTC); pro simulaci fotonických obvodů jsou knihovny Strawberry Fields
-a The Walrus.
+počítači by se brány rozložily na desítky až stovky tisíc dvouqubitových bran – po překladu do nativních bran
+IQM je to 16 812 bran CZ u úlohy 1 a 479 535 u úlohy 2 – a dnešní šum by výsledek zničil (podrobně na stránce
+Piquasso ve skupině Fotonika a GBS). Skutečný GBS je fotonický čip (Xanadu, USTC); fotonické obvody simuluje
+aktivně vyvíjený Piquasso, archivované knihovny Strawberry Fields a The Walrus jdou dál použít v zafixované
+verzi.
 
 **Limity skriptu.** Nejvýš 20 qubitů; pro víc módů nejvýš 5 qubitů na mód (dělič svazku je pak matice
 1024 × 1024), takže stupeň do 31.
@@ -212,6 +215,7 @@ a The Walrus.
         Reading(RECK, "složení libovolného interferometru z děličů svazku"),
         Reading(CLEMENTS, "úspornější uspořádání děličů"),
         Reading(KRUSE, "stav GBS ve Fockově bázi"),
+        Reading(PIQUASSO_PAPER, "aktivně vyvíjený simulátor fotonických obvodů"),
         Reading(STRAWBERRY_FIELDS),
         Reading(WALRUS_HAFNIAN),
     ),

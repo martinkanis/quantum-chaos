@@ -61,7 +61,7 @@ BASE_LAYERS: Tuple[LayerInfo, ...] = (
     ),
     LayerInfo(
         Layer.PHOTONICS, "Fotonika a GBS", "kvantová optika, na které GBS stojí, a hardware, na kterém běží", "#d9822b",
-        (ids.HAFNIAN_PAGE, ids.PHOTONIC_HARDWARE_PAGE, ids.PHOTONICS_LANDSCAPE_PAGE),
+        (ids.HAFNIAN_PAGE, ids.PHOTONIC_HARDWARE_PAGE, ids.PHOTONICS_LANDSCAPE_PAGE, ids.PIQUASSO_PAGE),
         ids.NAV_PHOTONICS_MENU,
     ),
     LayerInfo(
@@ -122,6 +122,7 @@ MAP_LABELS = {
     ids.VQE_PAPER_PAGE: "VQE na IBM Fez",
     ids.PHOTONIC_HARDWARE_PAGE: "Quandela a hardware v Evropě",
     ids.PHOTONICS_LANDSCAPE_PAGE: "Fotonika ve světě",
+    ids.PIQUASSO_PAGE: "Piquasso",
     ids.FAILURE_DIAGNOSTICS_PAGE: "Kdy GBS selže",
     ids.RANDOM_MATRIX_GBS_PAGE: "Náhodné matice a GBS",
 }
@@ -173,6 +174,11 @@ BASE_RELATIONS: Tuple[Relation, ...] = (
         ids.PHOTONICS_LANDSCAPE_PAGE, RelationKind.EXPANDS, ids.PHOTONIC_HARDWARE_PAGE,
         "od jedné firmy k celému oboru",
     ),
+    Relation(
+        ids.PIQUASSO_PAGE, RelationKind.EXPANDS, ids.PHOTONICS_LANDSCAPE_PAGE,
+        "simulátor z kapitoly o softwaru podrobně",
+    ),
+    Relation(ids.PIQUASSO_PAGE, RelationKind.CHECKS, ids.ADVANTAGE_PAGE, "stejné pravděpodobnosti vzorů jako aplikace"),
     Relation(
         ids.FAILURE_DIAGNOSTICS_PAGE, RelationKind.FOLLOWS, ids.RANDOM_MATRIX_GBS_PAGE,
         "podrobný rozbor 2. a 3. zdroje chyby",

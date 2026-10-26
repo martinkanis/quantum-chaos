@@ -45,6 +45,7 @@ def build_layout() -> html.Div:
             page_placeholder(ids.LITERATURE_REVIEW_PAGE),
             page_placeholder(ids.PHOTONIC_HARDWARE_PAGE),
             page_placeholder(ids.PHOTONICS_LANDSCAPE_PAGE),
+            page_placeholder(ids.PIQUASSO_PAGE),
             build_random_matrix_page(),
             page_placeholder(ids.FAILURE_DIAGNOSTICS_PAGE),
             page_placeholder(ids.RANDOM_MATRIX_GBS_PAGE),

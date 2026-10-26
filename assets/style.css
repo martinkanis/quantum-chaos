@@ -225,6 +225,8 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 .theory-section .text-table th, .theory-section .text-table td { text-align: left; }
 .theory-section .text-table td { white-space: normal; vertical-align: top; min-width: 9em; }
 .theory-section pre { background: var(--surface-muted); border-radius: 6px; padding: 10px 14px; overflow-x: auto; }
+/* A long identifier in running text breaks rather than widening the page on a phone; code blocks scroll instead. */
+.gbs-page :not(pre) > code { overflow-wrap: break-word; }
 
 .breadcrumb { padding: 8px 20px; font-size: 0.85rem; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--surface); }
 .breadcrumb a { color: var(--accent); text-decoration: none; }
