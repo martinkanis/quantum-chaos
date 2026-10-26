@@ -1,5 +1,6 @@
 // Text highlighter: select text with the mouse (on a phone or tablet hold it, or swipe a finger sideways across it),
-// then highlight or underline it in one of nine pastel colours; a tap on a mark changes or removes it.
+// then highlight or underline it in one of nine pastel colours; a tap on a mark changes or removes it. The same
+// toolbar asks Claude to explain the selection or to expand it into a new topic (assets/assistant.js).
 // The marks are painted with the CSS Custom Highlight API, so the DOM that Dash (React) renders is never changed,
 // and they are kept in this browser's localStorage, anchored to the page container (ids in data-highlight-roots,
 // set in ui/layout.py) by text offsets and the text around them, so they survive edits elsewhere on the page.
@@ -561,7 +562,14 @@
             '<button type="button" class="qc-highlighter-remove" data-action="remove" title="Odebrat" ' +
             'aria-label="Odebrat">' + TRASH_ICON + "</button>" +
             "</div>" +
-            '<div class="qc-highlighter-colors">' + swatches + "</div>";
+            '<div class="qc-highlighter-colors">' + swatches + "</div>" +
+            // Claude (assets/assistant.js); the row shows only when the assistant is on the page.
+            '<div class="qc-highlighter-row qc-highlighter-assistant" hidden>' +
+            '<button type="button" class="qc-highlighter-ask" data-assistant="explain" ' +
+            'title="Claude vysvětlí označený text v okně">💡 Dovysvětlit</button>' +
+            '<button type="button" class="qc-highlighter-ask" data-assistant="expand" ' +
+            'title="Agent napíše o označeném textu novou stránku, kterou pak schválíš">➕ Rozvést na téma</button>' +
+            "</div>";
         // Pressing a button must neither move the focus nor clear the selection it is about to mark.
         bar.addEventListener("mousedown", (event) => event.preventDefault());
         bar.addEventListener("click", onToolbarClick);
@@ -586,6 +594,7 @@
             button.setAttribute("aria-pressed", String(Number(button.dataset.color) === current.color));
         });
         toolbar.querySelector("[data-action='remove']").hidden = state.mode !== "edit";
+        toolbar.querySelector(".qc-highlighter-assistant").hidden = !window.qcAssistant;
     }
 
     function showToolbar(nextState) {
@@ -658,7 +667,14 @@
         }
         toolbarTouchedAt = Date.now();
         const editing = shownMark();
-        if (button.dataset.kind) {
+        if (button.dataset.assistant) {
+            const range = activeRange();
+            if (range && window.qcAssistant) {
+                window.qcAssistant.ask(button.dataset.assistant, range.cloneRange());
+            }
+            document.getSelection().removeAllRanges();
+            hideToolbar();
+        } else if (button.dataset.kind) {
             preferences = {kind: button.dataset.kind, color: editing ? editing.color : preferences.color};
             writeJson(PREFERENCES_KEY, preferences);
             if (editing) {

@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum
-from typing import Tuple
+from typing import Collection, Tuple
 
+from assistant.topics import TopicPage
 from ui import ids
+from ui.generated_topics import GENERATED_TOPICS, generated_page_id
 
 CENTRAL_QUESTION = (
     "Kdy může fotonický Gaussian Boson Sampler zrychlit Monte Carlo odhad finančního rizika – a jak z dat poznat, "
@@ -51,7 +53,7 @@ class LayerInfo:
         return f"skupina-{self.layer.value}"
 
 
-LAYERS: Tuple[LayerInfo, ...] = (
+BASE_LAYERS: Tuple[LayerInfo, ...] = (
     LayerInfo(
         Layer.FINANCE, "Finance a riziko", "co se ve financích počítá a čím se to dělá dnes", "#2a6fdb",
         (ids.PORTFOLIO_PAGE, ids.RANDOM_MATRIX_PAGE, ids.VQE_PAPER_PAGE),
@@ -82,6 +84,25 @@ LAYERS: Tuple[LayerInfo, ...] = (
     ),
 )
 """Five groups: the two fields, their intersection, our own research and the foundations."""
+
+
+def layers_with(layers: Tuple[LayerInfo, ...], topics: Collection[TopicPage]) -> Tuple[LayerInfo, ...]:
+    """Accepted topics join the group of the page they expand; an unknown group means our own research."""
+    known = {info.layer.value for info in layers}
+
+    def joins(topic: TopicPage, info: LayerInfo) -> bool:
+        layer = topic.placement.layer if topic.placement.layer in known else Layer.RESEARCH.value
+        return layer == info.layer.value
+
+    return tuple(
+        replace(info, page_ids=info.page_ids + tuple(
+            generated_page_id(topic.slug) for topic in topics if joins(topic, info)
+        ))
+        for info in layers
+    )
+
+
+LAYERS = layers_with(BASE_LAYERS, GENERATED_TOPICS)
 
 
 MAP_LABELS = {
@@ -144,7 +165,7 @@ class Relation:
     note: str
 
 
-RELATIONS: Tuple[Relation, ...] = (
+BASE_RELATIONS: Tuple[Relation, ...] = (
     Relation(ids.PORTFOLIO_PAGE, RelationKind.FOLLOWS, ids.GBS_PAGE, "od losování scénářů k odhadu z fotonů"),
     Relation(ids.GBS_PAGE, RelationKind.FOLLOWS, ids.ADVANTAGE_PAGE, "od momentu portfolia k obecným gaussovským úlohám"),
     Relation(ids.LITERATURE_REVIEW_PAGE, RelationKind.FOLLOWS, ids.PHOTONIC_HARDWARE_PAGE, "kdo by úlohu spustil"),
@@ -208,3 +229,28 @@ RELATIONS: Tuple[Relation, ...] = (
         "hradlová optimalizace proti fotonickému vzorkování",
     ),
 )
+
+
+def relations_with(
+    relations: Tuple[Relation, ...], topics: Collection[TopicPage], layers: Tuple[LayerInfo, ...]
+) -> Tuple[Relation, ...]:
+    """Each accepted topic expands the page whose text it grew from (or the page it sits under)."""
+    pages = {page_id for info in layers for page_id in info.page_ids}
+    added = []
+    for topic in topics:
+        target = next(
+            (page_id for page_id in (topic.origin.page_id, topic.placement.parent_page_id) if page_id in pages), None
+        )
+        if target:
+            added.append(Relation(
+                generated_page_id(topic.slug), RelationKind.EXPANDS, target,
+                f"rozvádí úryvek „{_excerpt(topic.origin.selection)}“",
+            ))
+    return relations + tuple(added)
+
+
+def _excerpt(text: str, length: int = 60) -> str:
+    return text if len(text) <= length else text[:length].rsplit(" ", 1)[0] + "…"
+
+
+RELATIONS = relations_with(BASE_RELATIONS, GENERATED_TOPICS, LAYERS)

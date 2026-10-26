@@ -7,7 +7,7 @@ from the start.
 
 from __future__ import annotations
 
-from functools import lru_cache
+from functools import lru_cache, partial
 from typing import Callable, Dict, List, Optional
 
 from dash import Dash, Input, Output, State, dcc, html, no_update
@@ -17,6 +17,8 @@ from ui.academy_page import build_academy_page
 from ui.andersen_shan_paper_page import build_andersen_shan_paper_page
 from ui.caveats_page import build_caveats_page
 from ui.failure_diagnostics_page import build_failure_diagnostics_page
+from ui.generated_page import build_generated_page
+from ui.generated_topics import GENERATED_TOPICS, generated_page_id
 from ui.guide_page import build_guide_page
 from ui.hafnian_page import build_hafnian_page
 from ui.integrals_cheat_sheet_page import build_integrals_cheat_sheet_page
@@ -44,6 +46,7 @@ PAGE_BUILDERS: Dict[str, Callable[[], html.Div]] = {
     ids.FAILURE_DIAGNOSTICS_PAGE: build_failure_diagnostics_page,
     ids.RANDOM_MATRIX_GBS_PAGE: build_random_matrix_gbs_page,
     ids.INTEGRALS_CHEAT_SHEET_PAGE: build_integrals_cheat_sheet_page,
+    **{generated_page_id(topic.slug): partial(build_generated_page, topic) for topic in GENERATED_TOPICS},
 }
 """Pages loaded on their first visit; none of their components may be a callback input, state or output."""
 LAZY_PAGE_IDS = tuple(PAGE_BUILDERS)

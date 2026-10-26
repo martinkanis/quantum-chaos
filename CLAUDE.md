@@ -12,7 +12,7 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 ## Příkazy
 
 - Testy: `/Users/martinkanis/Work/Projects/quantum-chaos/.venv/bin/python -m pytest -q` (z kořene repa i z worktree)
-- Lint: stejný Python `-m pyflakes app.py auth gbs montecarlo randommatrix scripts ui web tests`
+- Lint: stejný Python `-m pyflakes app.py assistant auth gbs montecarlo randommatrix scripts ui web tests`
 - Lokální běh: `python app.py` → http://localhost:8050 (debug mód); náhled v Claude Code přes `.claude/launch.json`
 - Lokálně Python 3.9, v Dockeru 3.12 – žádná syntaxe novější než 3.9 (`X | Y` v typech, `match`).
 - Qiskit není závislost aplikace. Test exportu se bez něj přeskočí; ověřit ho jde v pomocném venv
@@ -22,6 +22,12 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 
 - `montecarlo/` – doména klasického Monte Carla: portfolio, simulace, historická data (Damodaran 1928–2023),
   předvolby trhu, stresové scénáře.
+- `assistant/` – Claude v aplikaci: dovysvětlení označeného textu (`claude.explain`), agenti, kteří úryvek
+  rozvedou na novou stránku (`agent.py`, webové vyhledávání + strukturované odevzdání), jejich stav v Postgresu
+  (`jobs.py`, bez `DATABASE_URL` jen v paměti) a commit přijatého tématu přes GitHub API (`publish.py`).
+- `content/topics/*.json` – témata, která napsal asistent a uživatel přijal; aplikace je zapisuje sama commitem
+  do `main` (před vlastní prací `git pull`). Čte je `ui/generated_topics.py`, stránky staví `ui/generated_page.py`
+  a zařazuje je skupina zdrojové stránky v menu a na mapě a téma „Rozvedená témata“ (`topic_catalog.topics_with`).
 - `gbs/` – doména GBS: hafnián, sampler, gaussovské momenty (Steinova rekurze), ladění stlačení, odhad GBS-P,
   export do Qiskitu (šablona `qiskit_script_template.txt`).
 - `ui/` – Dash vrstva: `*_page.py` layout, `*_callbacks.py` callbacky, `*_content.py` texty, `ids.py` všechna id,
@@ -57,9 +63,13 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 
 - Rock8Cloud: služba `01a0df3e-9287-76ca-b5c4-3b38297b296f`, organizace `tV6KVvfs0A6NByhPquPHpEUaKjhkzQ7h`,
   https://quantum-chaos.rock8cloud.app
-- Push do `main` nenasazuje automaticky: nasadit přes MCP `deploy_service`, pak ověřit `/healthz` a `/_dash-layout`.
-- Dockerfile kopíruje jen `assets auth gbs montecarlo randommatrix ui web app.py` – nový adresář nebo soubor
-  v kořeni do něj přidej.
+- Push do `main` nasazuje automaticky (zapnuto v Rock8Cloud kvůli přijímání témat z aplikace); po pushi ověř
+  `/healthz` a `/_dash-layout`, ručně jde nasadit přes MCP `deploy_service`.
+- Proměnné služby pro asistenta: `ANTHROPIC_API_KEY`, `GITHUB_TOKEN` (fine-grained, jen Contents: read and write
+  na tento repozitář), `DATABASE_URL` (propojená z Postgresu); volitelně `ASSISTANT_MODEL`, `GITHUB_REPOSITORY`,
+  `GITHUB_BRANCH`. Bez nich asistent v okně napíše, co chybí, zbytek aplikace běží.
+- Dockerfile kopíruje jen `assets assistant auth content gbs montecarlo randommatrix ui web app.py` – nový
+  adresář nebo soubor v kořeni do něj přidej.
 
 ## Git
 

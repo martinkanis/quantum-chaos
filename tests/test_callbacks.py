@@ -16,8 +16,10 @@ def outputs_of(callback):
 
 
 def component_ids_used_by(callback):
+    """Pattern-matching ids (the buttons of the agents list) are left out: Dash allows them to match nothing."""
     dependencies = callback["inputs"] + callback["state"]
-    return {output.component_id for output in outputs_of(callback)} | {dependency["id"] for dependency in dependencies}
+    used = {output.component_id for output in outputs_of(callback)} | {dependency["id"] for dependency in dependencies}
+    return {component_id for component_id in used if not component_id.startswith("{")}
 
 
 def callback_writing(component_id):

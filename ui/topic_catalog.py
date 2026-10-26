@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Collection, Dict, List, Optional, Tuple
 
+from assistant.topics import TopicPage
 from ui import ids
+from ui.generated_topics import GENERATED_SECTION_TITLE, GENERATED_TOPICS, generated_page_id, generated_path
 from ui.knowledge_map_content import LAYERS, LayerInfo
 from ui.navigation import (
     ACADEMY_PATH,
@@ -256,21 +258,68 @@ CHEAT_SHEETS_TOPIC = ResearchTopic(
     sections=(TopicSection("Taháky", (INTEGRALS_CHEAT_SHEET,)),),
 )
 
-RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (
+BASE_RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (
     MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, PHOTONICS_LANDSCAPE_TOPIC, RESEARCH_DIRECTIONS_TOPIC,
     RANDOM_MATRIX_TOPIC, OPTIMIZATION_TOPIC, CHEAT_SHEETS_TOPIC,
 )
 """In the order of the story: the method, what the literature says, who builds the hardware, our own research,
 its supporting topic, a contrasting quantum approach and the maths cheat sheets."""
 
+EXPANDED_TOPIC = ResearchTopic(
+    anchor="tema-rozvedena",
+    title=GENERATED_SECTION_TITLE,
+    summary=(
+        "Témata, která asistent rozvedl z úryvků ostatních stránek a která jsi schválil. Píše je model Claude podle "
+        "nalezených zdrojů, tvrzení proto ověřuj podle odkazů na konci každé stránky. V menu a na mapě je každé "
+        "u stránky, ze které vzešlo."
+    ),
+    sections=(),
+)
+"""Accepted topics stay apart from the hand-written study paths; a topic file can name another topic to join."""
+
+
+def generated_entry(topic: TopicPage) -> PageEntry:
+    return PageEntry(
+        generated_page_id(topic.slug), topic.title, generated_path(topic.slug), topic.description,
+        parent_page_id=topic.placement.parent_page_id,
+    )
+
+
+def topics_with(topics: Tuple[ResearchTopic, ...], generated: Collection[TopicPage]) -> Tuple[ResearchTopic, ...]:
+    """Accepted topics join the topic their file names, in a section of their own; the rest form EXPANDED_TOPIC."""
+    anchors = {topic.anchor for topic in topics}
+    extended = []
+    for topic in topics:
+        pages = tuple(generated_entry(page) for page in generated if page.placement.topic_anchor == topic.anchor)
+        if pages:
+            topic = replace(topic, sections=topic.sections + (TopicSection(GENERATED_SECTION_TITLE, pages),))
+        extended.append(topic)
+    homeless = tuple(generated_entry(page) for page in generated if page.placement.topic_anchor not in anchors)
+    if homeless:
+        extended.append(replace(EXPANDED_TOPIC, sections=(TopicSection("Stránky", homeless),)))
+    return tuple(extended)
+
+
+RESEARCH_TOPICS = topics_with(BASE_RESEARCH_TOPICS, GENERATED_TOPICS)
+
 
 def study_path(topic: ResearchTopic) -> Tuple[PageEntry, ...]:
-    """Recommended study order: every main page directly followed by the subpages that explain it."""
+    """Recommended study order: every page directly followed by the subpages that explain it, at any depth.
+
+    A page whose parent is in another topic starts a branch of its own.
+    """
+    in_topic = {page.page_id for page in topic.pages}
     ordered: List[PageEntry] = []
+
+    def add_with_subpages(page: PageEntry) -> None:
+        ordered.append(page)
+        for subpage in topic.pages:
+            if subpage.parent_page_id == page.page_id:
+                add_with_subpages(subpage)
+
     for page in topic.pages:
-        if page.parent_page_id is None:
-            ordered.append(page)
-            ordered.extend(subpage for subpage in topic.pages if subpage.parent_page_id == page.page_id)
+        if page.parent_page_id not in in_topic:
+            add_with_subpages(page)
     return tuple(ordered)
 
 
@@ -334,3 +383,14 @@ def breadcrumb_trail(page_id: str) -> List[Crumb]:
         trail.append((parent.title, parent.path))
     trail.append((page.title, None))
     return trail
+
+
+def placement_for(page_id: str) -> Optional[Dict[str, Optional[str]]]:
+    """Where a topic expanded from this page belongs: the page's group, the expanded topics, under the page itself.
+
+    None for pages outside every group (the topics dashboard), which have nothing to expand.
+    """
+    group = group_of(page_id)
+    if group is None:
+        return None
+    return {"layer": group.layer.value, "topic_anchor": EXPANDED_TOPIC.anchor, "parent_page_id": page_id}

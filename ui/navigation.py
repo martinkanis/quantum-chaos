@@ -5,6 +5,7 @@ from typing import Dict, FrozenSet, Tuple
 from dash import Dash, Input, Output
 
 from ui import ids
+from ui.generated_topics import generated_page_ids, generated_paths
 from ui.knowledge_map_content import LAYERS
 
 TOPICS_PATH = "/"
@@ -55,7 +56,7 @@ PAGE_IDS = (
     ids.RANDOM_MATRIX_GBS_PAGE,
     ids.FAILURE_DIAGNOSTICS_PAGE,
     ids.INTEGRALS_CHEAT_SHEET_PAGE,
-)
+) + generated_page_ids()
 NAV_LINK_IDS = (ids.NAV_TOPICS_LINK,) + tuple(info.menu_id for info in LAYERS)
 """Top-level menu entries: the home page with the knowledge map and one drop-down per group of pages."""
 PAGE_BY_PATH = {
@@ -79,6 +80,7 @@ PAGE_BY_PATH = {
     RANDOM_MATRIX_GBS_PATH: ids.RANDOM_MATRIX_GBS_PAGE,
     FAILURE_DIAGNOSTICS_PATH: ids.FAILURE_DIAGNOSTICS_PAGE,
     INTEGRALS_CHEAT_SHEET_PATH: ids.INTEGRALS_CHEAT_SHEET_PAGE,
+    **generated_paths(),
 }
 ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.TOPICS_PAGE: frozenset({ids.NAV_TOPICS_LINK}),

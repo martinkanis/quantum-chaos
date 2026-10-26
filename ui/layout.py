@@ -4,8 +4,10 @@ from dash import dcc, html
 
 from ui import ids
 from ui.advantage_page import build_advantage_page
+from ui.assistant_panel import build_assistant
 from ui.breadcrumbs import build_breadcrumb
 from ui.gbs_page import build_gbs_page
+from ui.generated_topics import generated_page_ids
 from ui.lazy_pages import build_rendered_pages_store, page_placeholder
 from ui.main_menu import build_main_menu
 from ui.navigation import PAGE_IDS
@@ -46,6 +48,8 @@ def build_layout() -> html.Div:
             page_placeholder(ids.FAILURE_DIAGNOSTICS_PAGE),
             page_placeholder(ids.RANDOM_MATRIX_GBS_PAGE),
             page_placeholder(ids.INTEGRALS_CHEAT_SHEET_PAGE),
+            *[page_placeholder(page_id) for page_id in generated_page_ids()],
             build_study_pager(),
+            build_assistant(),
         ]
     )

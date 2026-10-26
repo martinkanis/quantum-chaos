@@ -1,0 +1,87 @@
+/* Pop-up with Claude's explanations and page previews, and the agents panel (ui/assistant_panel.py). */
+.assistant-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  background: rgba(28, 35, 48, 0.45);
+}
+.assistant-modal.open { display: flex; }
+
+.assistant-dialog {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 820px;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  box-sizing: border-box;
+  padding: 20px 24px 0;
+  overflow-y: auto;
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(28, 35, 48, 0.3);
+}
+.assistant-title { margin: 0 0 12px; font-size: 1.25rem; }
+.assistant-body { line-height: 1.6; min-height: 48px; }
+.assistant-body p, .assistant-body li { max-width: 75ch; }
+.assistant-quote {
+  margin: 0 0 12px;
+  padding: 6px 12px;
+  border-left: 4px solid #fff1a6;
+  background: var(--surface-muted);
+  border-radius: 4px;
+  color: var(--text-muted);
+}
+.assistant-body mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
+.assistant-preview { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 8px; }
+.assistant-preview .gbs-page, .assistant-preview .card { box-shadow: none; }
+/* The buttons stay in view at the bottom while a long preview scrolls. */
+.assistant-actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding: 12px 0 16px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.assistant .error-message:empty { display: none; }
+.generated-note { font-size: 0.9rem; }
+
+.agents-panel { position: fixed; top: 60px; right: 16px; z-index: 900; max-width: calc(100vw - 32px); }
+.agents-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 6px 18px rgba(28, 35, 48, 0.14); }
+.agents-box > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 8px 12px; font-weight: 600; }
+.agents-box > summary::-webkit-details-marker { display: none; }
+.agents-box > summary::before { content: "🤖"; }
+.agents-badge { padding: 1px 8px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
+.agents-badge.running { background: #eaf1fd; color: var(--accent); }
+.agents-badge.ready { background: #fff1a6; color: var(--text); }
+.agents-list { width: 340px; max-width: calc(100vw - 32px); max-height: 60vh; overflow-y: auto; border-top: 1px solid var(--border); }
+.agent-item { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.agent-item:last-child { border-bottom: none; }
+.agent-title { font-weight: 600; line-height: 1.35; }
+.agent-status { display: flex; align-items: center; gap: 6px; margin: 4px 0 6px; font-size: 0.85rem; color: var(--text-muted); }
+.agent-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; }
+.status-running .agent-dot, .status-deploying .agent-dot { background: var(--accent); animation: agent-pulse 1.2s ease-in-out infinite; }
+.status-ready .agent-dot { background: #e0b814; }
+.status-deployed .agent-dot { background: var(--success); }
+.status-failed .agent-dot, .status-interrupted .agent-dot { background: var(--danger); }
+.agent-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+.agent-buttons .secondary-button { padding: 4px 10px; font-size: 0.85rem; }
+@keyframes agent-pulse { 50% { opacity: 0.3; } }
+@media (prefers-reduced-motion: reduce) { .status-running .agent-dot, .status-deploying .agent-dot { animation: none; } }
+
+@media (max-width: 1100px) { .agents-panel { top: 64px; right: 8px; } }
+@media (max-width: 600px) {
+  .assistant-modal { padding: 8px; align-items: flex-start; }
+  .assistant-dialog { padding: 16px 16px 0; max-height: calc(100vh - 16px); max-height: calc(100dvh - 16px); }
+  .assistant-actions .primary-button, .assistant-actions .secondary-button { flex: 1 1 100%; }
+}

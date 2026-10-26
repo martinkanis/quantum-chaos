@@ -96,3 +96,18 @@
   .qc-highlighter-kind, .qc-highlighter-remove { min-height: 38px; }
   .qc-highlighter-remove { width: 38px; height: 38px; }
 }
+
+/* Claude: explain the selection or expand it into a new topic (assets/assistant.js). */
+.qc-highlighter-assistant { border-top: 1px solid var(--border); padding-top: 8px; }
+.qc-highlighter-assistant[hidden] { display: none; }
+.qc-highlighter-ask {
+  flex: 1;
+  min-height: 34px;
+  padding: 4px 10px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.qc-highlighter-ask:hover { border-color: var(--accent); color: var(--accent); }
+@media (pointer: coarse) { .qc-highlighter-ask { min-height: 38px; } }

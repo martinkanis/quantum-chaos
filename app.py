@@ -7,6 +7,7 @@ from dash import Dash
 from auth.login import HEALTH_PATH, install_login
 from auth.settings import settings_from_environment
 from ui.advantage_callbacks import register_advantage_callbacks
+from ui.assistant_callbacks import register_assistant_callbacks
 from ui.breadcrumbs import register_breadcrumb_callbacks
 from ui.callbacks import register_callbacks
 from ui.gbs_callbacks import register_gbs_callbacks
@@ -31,6 +32,7 @@ register_advantage_callbacks(app)
 register_random_matrix_callbacks(app)
 register_study_progress_callbacks(app)
 register_knowledge_map_callbacks(app)
+register_assistant_callbacks(app)
 
 server = app.server
 install_login(server, settings_from_environment())
