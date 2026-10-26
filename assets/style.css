@@ -291,7 +291,18 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 }
 .study-mark:empty::before { content: counter(study-step); }
 .study-path-item.studied .study-mark { background: var(--success); border-color: var(--success); color: #fff; }
-.section-tag { margin-left: 8px; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px; background: var(--surface-muted); color: var(--text-muted); white-space: nowrap; }
+/* An inline block moves to the next line whole; only a tag wider than the column (on phones) wraps inside. */
+.section-tag {
+  display: inline-block;
+  max-width: calc(100% - 8px);
+  box-sizing: border-box;
+  margin-left: 8px;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
 
 /* Pager under every topic page: mark the page as studied and move to the next step. */
 .study-pager { max-width: 1150px; margin: 0 auto 48px; padding: 0 32px; box-sizing: border-box; }

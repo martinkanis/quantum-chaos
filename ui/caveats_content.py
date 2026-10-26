@@ -94,7 +94,12 @@ SIGN_PROBLEM = Caveat(
         r"$|\mathrm{Haf}|$ – znaménko se ztratí. Estimátor proto funguje jen pro nezáporné korelace."
     ),
     explanation=r"""
-Estimátor z kroku 5 počítá $\mathrm{Haf}(\Sigma_n) \approx \gamma^{-d/2}\sqrt{\hat p(n)\, n!\, \prod_j \cosh r_j}$.
+Estimátor z kroku 5 počítá
+
+$$
+\mathrm{Haf}(\Sigma_n) \approx \gamma^{-d/2}\sqrt{\hat p(n)\, n!\, \prod_j \cosh r_j}.
+$$
+
 Odmocnina z pravděpodobnosti je vždy nezáporná, takže dostaneme jen **absolutní hodnotu** hafniánu.
 Moment $\mathbb{E}[L^d] = \sum_n c_n\, \mathrm{Haf}(\Sigma_n)$ ale potřebuje hafniány i se znaménky –
 kladné a záporné členy se v součtu navzájem ruší.
@@ -105,10 +110,14 @@ korelace odmítne.
 
 **Proč na tom ve financích záleží:** záporná korelace je podstata zajištění (hedgingu). Vezměme portfolio
 50/50 ze dvou aktiv s volatilitou 20 % a korelací −0,5. Skutečný rozptyl je
-$0{,}25 \cdot 0{,}04 + 2 \cdot 0{,}25 \cdot (-0{,}02) + 0{,}25 \cdot 0{,}04 = 0{,}01$, tedy volatilita
-**10 %**. Estimátor bez znamének by prostřední člen přičetl místo odečetl: rozptyl $0{,}03$ a volatilita
-**17,3 %**. Zajištěné portfolio by vypadalo o 73 % rizikovější, než ve skutečnosti je – a to právě
-u portfolií, kde na přesném odhadu rizika záleží nejvíc.
+
+$$
+0{,}25 \cdot 0{,}04 + 2 \cdot 0{,}25 \cdot (-0{,}02) + 0{,}25 \cdot 0{,}04 = 0{,}01,
+$$
+
+tedy volatilita **10 %**. Estimátor bez znamének by prostřední člen přičetl místo odečetl: rozptyl $0{,}03$
+a volatilita **17,3 %**. Zajištěné portfolio by vypadalo o 73 % rizikovější, než ve skutečnosti je – a to
+právě u portfolií, kde na přesném odhadu rizika záleží nejvíc.
 """,
     remedies=r"""
 - **Otočit znaménko některých aktiv.** Když se aktivum $i$ nahradí veličinou $-X_i$ (short místo long),
@@ -134,7 +143,9 @@ informaci o úplně jiných hafniánech – pro danou úlohu je k ničemu. Celko
 a **neřídí ho interferometr**, protože ten fotony jen přerozděluje mezi módy. Určuje ho jen stlačení:
 každý vstupní mód nezávisle vyzáří $0, 2, 4, \dots$ fotonů s pravděpodobností
 
-$$P(2m) = \frac{(2m)!}{(2^m\, m!)^2}\,\frac{\tanh^{2m} r}{\cosh r}.$$
+$$
+P(2m) = \frac{(2m)!}{(2^m\, m!)^2}\,\frac{\tanh^{2m} r}{\cosh r}.
+$$
 
 Síla stlačení je proto **kompromis**. Při slabém stlačení je většina výstřelů prázdná (vakuum) a vzory
 se 6 fotony jsou vzácné. Při silném stlačení roste střední počet fotonů $\bar n = \sum_j \sinh^2 r_j$ velmi
@@ -175,7 +186,9 @@ REAL_HARDWARE = Caveat(
 $\mathrm{Haf}(B_n)^2 / (n! \prod_j \cosh r_j)$, ale hafniány větší matice $A$ rozměru $2k \times 2k$
 sestavené z kovarianční matice smíšeného stavu:
 
-$$p(n) = \frac{\mathrm{Haf}(A_n)}{n!\,\sqrt{\det \sigma_Q}}.$$
+$$
+p(n) = \frac{\mathrm{Haf}(A_n)}{n!\,\sqrt{\det \sigma_Q}}.
+$$
 
 Estimátor, který s tím nepočítá a pořád jen odmocňuje, je **vychýlený** – a tuto chybu nesníží žádný počet
 výstřelů. Ztráty navíc jdou proti kvantové výhodě podruhé: čím víc fotonů se ztratí, tím snáz jde zařízení
@@ -214,12 +227,16 @@ GBS estimátor umí $\mathbb{E}[f(X)]$ jen pro polynom $f$, protože jen polynom
 hafniánů. Ukazatele rizika jsou ale jiné:
 
 - **Pravděpodobnost ztráty nad prahem** je očekávaná hodnota indikátorové funkce:
-  $P(\text{ztráta} > v) = \mathbb{E}[\mathbf{1}\{\text{ztráta} > v\}]$. Funkce $\mathbf{1}\{\cdot\}$
-  má skok.
+  $$
+  P(\text{ztráta} > v) = \mathbb{E}[\mathbf{1}\{\text{ztráta} > v\}].
+  $$
+  Funkce $\mathbf{1}\{\cdot\}$ má skok.
 - **VaR** na hladině 99 % je práh $v$, pro který je tato pravděpodobnost 1 % – kvantil, který se hledá
   opakovaným vyhodnocením indikátoru.
 - **CVaR (Expected Shortfall)** je průměrná ztráta v tomto chvostu:
-  $\mathbb{E}[\text{ztráta} \cdot \mathbf{1}\{\text{ztráta} > \mathrm{VaR}\}] / 0{,}01$.
+  $$
+  \mathbb{E}[\text{ztráta} \cdot \mathbf{1}\{\text{ztráta} > \mathrm{VaR}\}] / 0{,}01.
+  $$
 
 Indikátor se dá polynomem jen **aproximovat**, pro gaussovská rozdělení přirozeně rozvojem do Hermitových
 polynomů. Rozvoj funkce se skokem ale konverguje pomalu a kolem skoku osciluje (Gibbsův jev) – a nás přitom
@@ -253,7 +270,9 @@ Chyba obou metod klesá zhruba jako $1/\sqrt{N}$. Když má GBS estimátor při 
 menší, potřebuje k téže přesnosti $q^2$-krát méně vzorků – při 1,6× menší chybě asi 2,6× méně.
 **V čase** ale vyhraje jen tehdy, když jeden výstřel GBS není dražší než $q^2$ klasických vzorků:
 
-$$T(\varepsilon) \approx \frac{\sigma^2_{\text{na vzorek}}}{\varepsilon^2}\cdot t_{\text{vzorek}}.$$
+$$
+T(\varepsilon) \approx \frac{\sigma^2_{\text{na vzorek}}}{\varepsilon^2}\cdot t_{\text{vzorek}}.
+$$
 
 A tady je klasické Monte Carlo velmi silné: vygenerovat gaussovský vektor a spočítat $f(X)$ stojí na
 procesoru zlomek mikrosekundy a úloha se triviálně paralelizuje na tisíce jader nebo GPU. Na straně GBS se
