@@ -14,9 +14,12 @@ from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Callable, Collection, Dict, List, Mapping, Optional
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 MAX_RUNNING_AGENTS = 3
 DATABASE_URL_ENV = "DATABASE_URL"
+NODE_DRIVER_PARAMETERS = frozenset({"uselibpqcompat"})
+"""Options of the Node.js driver that the platform adds to the database URL; libpq (psycopg) rejects them."""
 INTERRUPTED_MESSAGE = "Aplikace se mezitím restartovala (třeba kvůli nasazení), agent nedoběhl. Spusť ho znovu."
 CRASH_MESSAGE = "Agent spadl na neočekávané chybě. Spusť ho znovu."
 
@@ -182,9 +185,19 @@ JobStore = Any
 def job_store_from_environment(environment: Mapping[str, str] = os.environ) -> JobStore:
     dsn = environment.get(DATABASE_URL_ENV)
     if dsn:
-        return PostgresJobStore(dsn)
+        return PostgresJobStore(libpq_dsn(dsn))
     logger.warning("%s is not set: assistant agents are kept in memory and end with the process.", DATABASE_URL_ENV)
     return MemoryJobStore()
+
+
+def libpq_dsn(dsn: str) -> str:
+    """The database URL without query parameters that only the Node.js driver understands."""
+    parts = urlsplit(dsn)
+    if not parts.query:
+        return dsn
+    query = [(key, value) for key, value in parse_qsl(parts.query, keep_blank_values=True)
+             if key not in NODE_DRIVER_PARAMETERS]
+    return urlunsplit(parts._replace(query=urlencode(query)))
 
 
 def recover_jobs(store: JobStore, published_slugs: Collection[str]) -> None:

@@ -20,6 +20,7 @@ from assistant.jobs import (
     JobStatus,
     MemoryJobStore,
     PostgresJobStore,
+    libpq_dsn,
     recover_jobs,
 )
 from assistant.prompts import TOPIC_TOOL_NAME
@@ -236,9 +237,16 @@ def test_po_restartu_se_bezici_agenti_preruseni_a_nasazene_tema_oznaci():
     assert store.get(waiting.id).status == JobStatus.DEPLOYING
 
 
+def test_adresa_databaze_ztrati_parametry_ovladace_pro_node():
+    url = "postgresql://user:heslo@db.internal:5432/agents?sslmode=require&uselibpqcompat=true"
+
+    assert libpq_dsn(url) == "postgresql://user:heslo@db.internal:5432/agents?sslmode=require"
+    assert libpq_dsn("postgresql://db/agents") == "postgresql://db/agents"
+
+
 @pytest.mark.skipif(not os.environ.get("TEST_DATABASE_URL"), reason="TEST_DATABASE_URL není nastavená")
 def test_agenti_se_ukladaji_do_postgresu():
-    store = PostgresJobStore(os.environ["TEST_DATABASE_URL"])
+    store = PostgresJobStore(libpq_dsn(os.environ["TEST_DATABASE_URL"] + "?uselibpqcompat=true"))
     job = store.create({"selection": SELECTION})
 
     updated = store.update(job.id, {"status": JobStatus.READY, "result": topic_data()})
