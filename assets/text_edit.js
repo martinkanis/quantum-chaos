@@ -1,6 +1,6 @@
-// Bridge between the highlighter toolbar (assets/highlighter.js) and the paragraph editor in Dash
-// (ui/text_edit_panel.py): finds the editable paragraph under the selection by its pattern-matching id
-// (ui/editable_text.py), opens the pop-up at once and asks the callback for the paragraph's source text.
+// Bridge between the highlighter toolbar (assets/highlighter.js) and the text editor in Dash
+// (ui/text_edit_panel.py): finds the editable text under the selection by its pattern-matching id
+// (ui/editable_text.py), opens the pop-up at once and asks the callback for the text's source.
 // Escape closes the pop-up unless the reader is typing in it, so a stray key does not throw away an edit.
 (function () {
     "use strict";
@@ -23,7 +23,7 @@
         return node && (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement);
     }
 
-    /** The page and key of the editable paragraph around the node; Dash writes dict ids as JSON. */
+    /** The page and key of the editable text around the node; Dash writes dict ids as JSON. */
     function blockOf(node) {
         for (let element = elementOf(node); element; element = element.parentElement) {
             if (element.id && element.id.charAt(0) === "{") {

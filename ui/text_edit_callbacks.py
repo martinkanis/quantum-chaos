@@ -1,8 +1,8 @@
-"""Callbacks of the paragraph editor: opening a paragraph, saving the new text and returning to the original.
+"""Callbacks of the text editor: opening a text, saving the new version and returning to the original.
 
-A saved paragraph changes on the page at once (set_props on its editable id), and every page served afterwards
-is built with the edit (ui/editable_text.py). The work is in plain functions that return an EditorView, which the
-tests call directly.
+A saved text changes on the page at once – every copy of it (set_props on their editable ids) – and every page
+served afterwards is built with the edit (ui/editable_text.py). The work is in plain functions that return an
+EditorView, which the tests call directly.
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ from dash import Dash, Input, Output, State, ctx, no_update, set_props
 
 from edits.store import TextEditError
 from ui import ids
-from ui.editable_text import Block, EditablePages, editable_id
+from ui.editable_text import Block, EditablePages, copy_ids, shown_text
 from ui.navigation import HIDDEN, VISIBLE
 from ui.text_edit_content import MARKDOWN_HINT, MEMORY_HINT, MISSING_BLOCK, PLAIN_HINT
 from ui.text_edit_panel import MODAL_CLASS, OPEN_MODAL_CLASS
@@ -35,8 +35,8 @@ class EditorView:
     message: Any = ""
     can_revert: Any = no_update
     context: Any = no_update
-    changed: Optional[Tuple[dict, str]] = None
-    """Editable id and new children of the paragraph on the page."""
+    changed: Tuple[Tuple[dict, str], ...] = ()
+    """Editable id and new children of every copy of the text on the page."""
 
 
 def handle_editor_action(
@@ -98,8 +98,11 @@ def editor_outputs(view: EditorView) -> Tuple:
     return modal_class, view.text, view.hint, original_style, original, view.message, revert_style, view.context
 
 
-def _closed(block: Block, children: str) -> EditorView:
-    return EditorView(open=False, context=None, changed=(editable_id(block.page_id, block.key), children))
+def _closed(block: Block, text: str) -> EditorView:
+    changed = tuple(
+        (copy_id, shown_text(block, number, text)) for number, copy_id in enumerate(copy_ids(block), start=1)
+    )
+    return EditorView(open=False, context=None, changed=changed)
 
 
 def _hint(pages: EditablePages, block: Block) -> List[str]:
@@ -124,8 +127,8 @@ CANCEL_JS = "function(clicks) { return clicks ? '" + MODAL_CLASS + "' : window.d
 def register_text_edit_callbacks(app: Dash, pages: EditablePages) -> None:
     def on_action(request, _save, _revert, text, context):
         view = handle_editor_action(pages, ctx.triggered_id, request, text, context)
-        if view.changed:
-            set_props(view.changed[0], {"children": view.changed[1]})
+        for copy_id, children in view.changed:
+            set_props(copy_id, {"children": children})
         return editor_outputs(view)
 
     app.callback(

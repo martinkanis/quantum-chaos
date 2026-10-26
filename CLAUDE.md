@@ -28,12 +28,14 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 - `content/topics/*.json` – témata, která napsal asistent a uživatel přijal; aplikace je zapisuje sama commitem
   do `main` (před vlastní prací `git pull`). Čte je `ui/generated_topics.py`, stránky staví `ui/generated_page.py`
   a zařazuje je skupina zdrojové stránky v menu a na mapě a téma „Rozvedená témata“ (`topic_catalog.topics_with`).
-- `edits/` – ruční úpravy odstavců (např. špatně přeložený termín): Markdown rozdělený na bloky (`blocks.py`)
+- `edits/` – ruční úpravy textů (např. špatně přeložený termín): Markdown rozdělený na bloky (`blocks.py`)
   a úpravy v Postgresu (`store.py`, tabulka `text_edits`, bez `DATABASE_URL` jen v paměti). `ui/editable_text.py` dá
-  na každé stránce každému `dcc.Markdown` a `html.P` s textem bez vlastního id id `{"type": "text-edit", "page", "key"}`
-  (klíč = hash původního textu bloku) a vícebloký Markdown rozdělí po odstavcích. `app.layout` je proto funkce
-  (`EditablePages.layout`) a odložené stránky se posílají s úpravami. Editor otevírá „Upravit odstavec“ v liště
-  zvýrazňovače (`assets/text_edit.js`). Když se změní původní text odstavce ve zdroji, jeho úprava se přestane
+  na každé stránce id `{"type": "text-edit", "page", "key", "copy"}` každému bloku `dcc.Markdown` (vícebloký
+  rozdělí po odstavcích) a každému prostému textu v html komponentě nebo `dcc.Link` (text mezi jinými prvky obalí
+  do `html.Span`); vynechá komponenty s vlastním id, tlačítka, kód a texty bez písmen. Klíč = hash původního textu,
+  stejný text na jedné stránce je jeden blok s více kopiemi (nadpis i položka obsahu se mění spolu). `app.layout`
+  je proto funkce (`EditablePages.layout`) a odložené stránky se posílají s úpravami. Editor otevírá „Upravit text“
+  v liště zvýrazňovače (`assets/text_edit.js`). Když se změní původní text ve zdroji, jeho úprava se přestane
   uplatňovat (zůstane v tabulce i s původním zněním).
 - `gbs/` – doména GBS: hafnián, sampler, gaussovské momenty (Steinova rekurze), ladění stlačení, odhad GBS-P,
   export do Qiskitu (šablona `qiskit_script_template.txt`).

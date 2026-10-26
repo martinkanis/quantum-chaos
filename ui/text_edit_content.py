@@ -1,11 +1,15 @@
-"""Texts of the paragraph editor (ui/text_edit_panel.py)."""
+"""Texts of the text editor (ui/text_edit_panel.py)."""
 
-TITLE = "Upravit odstavec"
+TITLE = "Upravit text"
+SHOWN = (
+    "Uložená úprava se ukáže hned, i na dalších místech stránky se stejným textem (třeba v obsahu), a uvidí ji "
+    "každý, kdo stránku otevře."
+)
 MARKDOWN_HINT = (
     "Text je v Markdownu: **tučně**, *kurzívou*, vzorce v LaTeXu mezi $ … $ v řádku a $$ … $$ samostatně. "
-    "Uložená úprava se ukáže hned a uvidí ji každý, kdo stránku otevře."
+    + SHOWN
 )
-PLAIN_HINT = "Prostý text bez formátování. Uložená úprava se ukáže hned a uvidí ji každý, kdo stránku otevře."
+PLAIN_HINT = "Prostý text bez formátování (nadpis, popisek nebo část odstavce). " + SHOWN
 MEMORY_HINT = (
     "Pozor: aplikace nemá databázi (chybí proměnná DATABASE_URL), takže úpravy drží jen v paměti "
     "a po restartu zmizí."
@@ -15,6 +19,6 @@ SAVE_LABEL = "Uložit"
 REVERT_LABEL = "Vrátit původní"
 CANCEL_LABEL = "Zrušit"
 MISSING_BLOCK = (
-    "Tenhle odstavec se mezitím změnil, třeba po nasazení nové verze aplikace. Načti stránku znovu a zkus to ještě "
+    "Tenhle text se mezitím změnil, třeba po nasazení nové verze aplikace. Načti stránku znovu a zkus to ještě "
     "jednou."
 )

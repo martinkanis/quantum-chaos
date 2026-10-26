@@ -597,7 +597,7 @@
             '<button type="button" class="qc-highlighter-ask" data-assistant="expand" ' +
             'title="Agent napíše o označeném textu novou stránku, kterou pak schválíš">➕ Rozvést na téma</button>' +
             '<button type="button" class="qc-highlighter-ask" data-text-edit ' +
-            'title="Ručně přepsat odstavec, ve kterém je označený text">✏️ Upravit odstavec</button>' +
+            'title="Ručně přepsat odstavec, nadpis nebo popisek, ve kterém je označený text">✏️ Upravit text</button>' +
             "</div>";
         // Pressing a button must neither move the focus nor clear the selection it is about to mark.
         bar.addEventListener("mousedown", (event) => event.preventDefault());

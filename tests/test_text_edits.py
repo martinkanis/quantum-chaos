@@ -173,7 +173,8 @@ def test_markdown_na_strance_se_rozdeli_a_kazdy_odstavec_dostane_id():
     assert [part.children for part in parts] == split_blocks(EXPLANATION)
     assert all(part.mathjax and part.link_target == "_blank" for part in parts)
     assert [part.id for part in parts] == [editable_id(PAGE, block_key(text)) for text in split_blocks(EXPLANATION)]
-    assert {block.markdown for block in blocks.values()} == {True} and len(blocks) == 3
+    assert sorted(block.markdown for block in blocks.values()) == [False, True, True, True]
+    assert blocks[(PAGE, block_key("Nadpis"))].original == "Nadpis"
     assert markdowns(source)[0].children == EXPLANATION and not hasattr(markdowns(source)[0], "id")
 
 
@@ -191,10 +192,47 @@ def test_upravy_se_promitnou_a_komponenty_s_id_ani_text_mimo_stranky_se_nemeni()
     assert not blocks[(PAGE, key)].markdown and blocks[(PAGE, key)].original == "Úvod stránky."
 
 
-def test_stejny_odstavec_dvakrat_na_strance_ma_ruzna_id():
-    _, blocks = editable(page(html.P("Znovu."), html.P("Znovu.")), no_edits)
+def test_stejny_text_dvakrat_na_strance_je_jeden_blok_se_dvema_kopiemi():
+    key = block_key("Kde číst dál")
+    edited, blocks = editable(
+        page(html.H3("Kde číst dál"), html.Li(dcc.Link("Kde číst dál", href="#zdroje")), html.H3("Kde číst dál")),
+        lambda page_id: {key: "Literatura"},
+    )
+    heading, item, last = edited.children
 
-    assert sorted(key for _, key in blocks) == [block_key("Znovu."), block_key("Znovu.") + "-2"]
+    assert list(blocks) == [(PAGE, key)] and blocks[(PAGE, key)].copies == 3
+    assert [heading.id, item.children.id, last.id] == [editable_id(PAGE, key, number) for number in (1, 2, 3)]
+    assert [heading.children, item.children.children, last.children] == ["Literatura"] * 3
+
+
+def test_text_mezi_jinymi_prvky_se_obali_a_mezery_kolem_uprava_zachova():
+    label = block_key("V kostce:")
+    rest = block_key("Celkem asi")
+    source = page(
+        html.Div(className="in-short", children=[html.Strong("V kostce: "), dcc.Markdown("Text.")]),
+        html.P(["Celkem asi ", html.Strong("12"), " minut čtení."]),
+    )
+
+    edited, blocks = editable(source, lambda page_id: {label: "Shrnutí:", rest: "Zhruba"})
+    in_short, reading = edited.children
+    before, number, after = reading.children
+
+    assert in_short.children[0].children == "Shrnutí: " and in_short.children[0].id == editable_id(PAGE, label)
+    assert isinstance(before, html.Span) and (before.id, before.children) == (editable_id(PAGE, rest), "Zhruba ")
+    assert number.children == "12" and not hasattr(number, "id")
+    assert after.children == " minut čtení." and blocks[(PAGE, block_key("minut čtení."))].edges == ((" ", ""),)
+
+
+def test_tlacitka_kod_a_texty_bez_pismen_upravit_nejde():
+    source = page(
+        html.Button("Spustit"), html.Pre("x = 1"), html.Span("3", className="step-number"),
+        html.H2([html.Span("1", className="step-number"), "Kapitola"]),
+    )
+
+    edited, blocks = editable(source, no_edits)
+
+    assert list(blocks) == [(PAGE, block_key("Kapitola"))]
+    assert edited.children[:3] == source.children[:3]
 
 
 def test_stranka_se_postavi_znovu_az_po_zmene_upravy():
@@ -244,10 +282,22 @@ def test_ulozeni_zmeni_odstavec_na_strance_a_zavre_okno():
     view = handle_editor_action(pages, ids.TEXT_EDIT_SAVE_BUTTON, None, "Správný překlad.", context)
     reopened = handle_editor_action(pages, ids.TEXT_EDIT_REQUEST, context, None, None)
 
-    assert view.changed == (editable_id(PAGE, context["key"]), "Správný překlad.")
+    assert view.changed == ((editable_id(PAGE, context["key"]), "Správný překlad."),)
     assert editor_outputs(view)[0] == MODAL_CLASS
     assert (reopened.text, reopened.original, reopened.can_revert) == ("Správný překlad.", "Špatný překlad.", True)
     assert editor_outputs(reopened)[0] == OPEN_MODAL_CLASS
+
+
+def test_ulozeni_zmeni_vsechny_kopie_textu_a_zachova_mezery():
+    pages = editable_pages(page(html.Strong("V kostce: "), html.H3("V kostce:")))
+    context = request("V kostce:")
+
+    view = handle_editor_action(pages, ids.TEXT_EDIT_SAVE_BUTTON, None, "Shrnutí:", context)
+
+    assert view.changed == (
+        (editable_id(PAGE, context["key"], 1), "Shrnutí: "),
+        (editable_id(PAGE, context["key"], 2), "Shrnutí:"),
+    )
 
 
 def test_vraceni_puvodniho_znovu_ukaze_text_ze_zdroje():
@@ -257,7 +307,7 @@ def test_vraceni_puvodniho_znovu_ukaze_text_ze_zdroje():
 
     view = handle_editor_action(pages, ids.TEXT_EDIT_REVERT_BUTTON, None, None, context)
 
-    assert view.changed == (editable_id(PAGE, context["key"]), "Původní.")
+    assert view.changed == ((editable_id(PAGE, context["key"]), "Původní."),)
     assert pages.text_edits.get(PAGE, context["key"]) is None
 
 
@@ -268,7 +318,7 @@ def test_chybu_ukaze_okno_a_text_v_nem_necha():
     empty = handle_editor_action(pages, ids.TEXT_EDIT_SAVE_BUTTON, None, "   ", context)
     missing = handle_editor_action(pages, ids.TEXT_EDIT_REQUEST, {"page": PAGE, "key": "neexistuje"}, None, None)
 
-    assert (empty.message, empty.changed) == (EMPTY_TEXT, None)
+    assert (empty.message, empty.changed) == (EMPTY_TEXT, ())
     assert editor_outputs(empty)[:2] == (no_update, no_update)
     assert missing.message == MISSING_BLOCK and missing.context is None
     assert handle_editor_action(pages, ids.TEXT_EDIT_REQUEST, {"page": 1, "key": None}, None, None).message == MISSING_BLOCK

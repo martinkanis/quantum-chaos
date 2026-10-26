@@ -1,7 +1,7 @@
-"""The paragraph editor in the layout: a pop-up with the paragraph's source text, opened from the highlighter toolbar.
+"""The text editor in the layout: a pop-up with the source of a text, opened from the highlighter toolbar.
 
 It is always in the layout, so that the callbacks have their inputs from the start; assets/text_edit.js opens it
-right away and asks for the paragraph through TEXT_EDIT_REQUEST.
+right away and asks for the text through TEXT_EDIT_REQUEST.
 """
 
 from __future__ import annotations
