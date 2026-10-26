@@ -26,6 +26,11 @@ LITERATURE_REVIEW_PATH = "/reserse-gbs-financni-riziko"
 PHOTONIC_HARDWARE_PATH = "/reserse-gbs-financni-riziko/fotonicky-hardware"
 PHOTONICS_LANDSCAPE_PATH = "/fotonika-ve-svete"
 PIQUASSO_PATH = "/fotonika-ve-svete/piquasso"
+PRIMER_BASICS_PATH = "/fotonika/zaklady"
+PRIMER_GAUSSIAN_STATES_PATH = "/fotonika/gaussovske-stavy"
+PRIMER_PHASE_SPACE_PATH = "/fotonika/fazovy-prostor"
+PRIMER_GBS_PATH = "/fotonika/gaussian-boson-sampling"
+PRIMER_APPENDICES_PATH = "/fotonika/dodatky"
 RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
 RANDOM_MATRIX_GBS_PATH = "/vyzkumne-smery/nahodne-matice-a-gbs"
 FAILURE_DIAGNOSTICS_PATH = "/vyzkumne-smery/kdy-gbs-selze"
@@ -54,6 +59,11 @@ PAGE_IDS = (
     ids.PHOTONIC_HARDWARE_PAGE,
     ids.PHOTONICS_LANDSCAPE_PAGE,
     ids.PIQUASSO_PAGE,
+    ids.PRIMER_BASICS_PAGE,
+    ids.PRIMER_GAUSSIAN_STATES_PAGE,
+    ids.PRIMER_PHASE_SPACE_PAGE,
+    ids.PRIMER_GBS_PAGE,
+    ids.PRIMER_APPENDICES_PAGE,
     ids.RANDOM_MATRIX_PAGE,
     ids.RANDOM_MATRIX_GBS_PAGE,
     ids.FAILURE_DIAGNOSTICS_PAGE,
@@ -79,6 +89,11 @@ PAGE_BY_PATH = {
     PHOTONIC_HARDWARE_PATH: ids.PHOTONIC_HARDWARE_PAGE,
     PHOTONICS_LANDSCAPE_PATH: ids.PHOTONICS_LANDSCAPE_PAGE,
     PIQUASSO_PATH: ids.PIQUASSO_PAGE,
+    PRIMER_BASICS_PATH: ids.PRIMER_BASICS_PAGE,
+    PRIMER_GAUSSIAN_STATES_PATH: ids.PRIMER_GAUSSIAN_STATES_PAGE,
+    PRIMER_PHASE_SPACE_PATH: ids.PRIMER_PHASE_SPACE_PAGE,
+    PRIMER_GBS_PATH: ids.PRIMER_GBS_PAGE,
+    PRIMER_APPENDICES_PATH: ids.PRIMER_APPENDICES_PAGE,
     RANDOM_MATRIX_PATH: ids.RANDOM_MATRIX_PAGE,
     RANDOM_MATRIX_GBS_PATH: ids.RANDOM_MATRIX_GBS_PAGE,
     FAILURE_DIAGNOSTICS_PATH: ids.FAILURE_DIAGNOSTICS_PAGE,
@@ -166,6 +181,8 @@ def piquasso_href(anchor: str) -> str:
 
 
 PHOTONICS_TERMS_HREF = photonics_landscape_href("svet-pojmy")
+PHOTONICS_TOPIC_ANCHOR = "tema-fotonika"
+PHOTONICS_TOPIC_HREF = f"{TOPICS_PATH}#{PHOTONICS_TOPIC_ANCHOR}"
 """Chapter on modes, nonlinear crystals and squeezed light; pages that mention them link to it."""
 
 

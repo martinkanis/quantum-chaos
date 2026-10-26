@@ -11,7 +11,17 @@ from ui import ids
 from ui.advantage_content import QISKIT_DOCUMENTATION
 from ui.guide_practice import STRAWBERRY_FIELDS
 from ui.literature_review_content import PIQUASSO
-from ui.navigation import HIDDEN, PHOTONIC_HARDWARE_PATH, PHOTONICS_LANDSCAPE_PATH
+from ui.navigation import (
+    HIDDEN,
+    PHOTONIC_HARDWARE_PATH,
+    PHOTONICS_LANDSCAPE_PATH,
+    PHOTONICS_TOPIC_HREF,
+    PRIMER_APPENDICES_PATH,
+    PRIMER_BASICS_PATH,
+    PRIMER_GAUSSIAN_STATES_PATH,
+    PRIMER_GBS_PATH,
+    PRIMER_PHASE_SPACE_PATH,
+)
 from ui.theory_content import (
     AARONSON_ARKHIPOV,
     ANDERSEN_SHAN_EXPECTATIONS,
@@ -62,6 +72,21 @@ ACADEMY_SECTIONS: Tuple[AcademySection, ...] = (
                 "Looking Glass Universe", "https://www.youtube.com/@LookingGlassUniverse",
                 "YouTube kanál Mithuny Yoganathan: kvantová mechanika a kvantové počítání srozumitelně a do hloubky.",
             ),
+        ),
+    ),
+    AcademySection(
+        "Fotonika: skripta v češtině",
+        tldr=(
+            "Česky přeložená skripta **Zoltána Kolarovszkiho a Zoltána Zimboráse**, autorů simulátoru Piquasso, "
+            "z workshopu *Graph theoretical applications of photonic quantum computing* v IT4Innovations v Ostravě "
+            "(září 2025): od Fockova prostoru přes gaussovské stavy a fázový prostor po Gaussian Boson Sampling "
+            "a hledání hustých podgrafů, s cvičeními na konci každé kapitoly. Celé téma, včetně přehledu firem "
+            f"a simulátoru Piquasso, je v sekci [Témata › Fotonika]({PHOTONICS_TOPIC_HREF}).\n\n"
+            f"- [Kapitola 1: Základy fotonického kvantového počítání]({PRIMER_BASICS_PATH})\n"
+            f"- [Kapitola 2: Gaussovské stavy]({PRIMER_GAUSSIAN_STATES_PATH})\n"
+            f"- [Kapitola 3: Kvantová optika ve fázovém prostoru]({PRIMER_PHASE_SPACE_PATH})\n"
+            f"- [Kapitola 4: Gaussian Boson Sampling]({PRIMER_GBS_PATH})\n"
+            f"- [Dodatky A a B: kvantová mechanika a první kvantování]({PRIMER_APPENDICES_PATH})"
         ),
     ),
     AcademySection(

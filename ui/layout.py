@@ -12,6 +12,7 @@ from ui.lazy_pages import build_rendered_pages_store, page_placeholder
 from ui.main_menu import build_main_menu
 from ui.navigation import PAGE_IDS
 from ui.portfolio_page import build_portfolio_page
+from ui.primer_page import PRIMER_CHAPTERS
 from ui.random_matrix_page import build_random_matrix_page
 from ui.study_progress import build_progress_store, build_study_pager
 from ui.text_edit_panel import build_text_editor
@@ -46,6 +47,7 @@ def build_layout() -> html.Div:
             page_placeholder(ids.PHOTONIC_HARDWARE_PAGE),
             page_placeholder(ids.PHOTONICS_LANDSCAPE_PAGE),
             page_placeholder(ids.PIQUASSO_PAGE),
+            *[page_placeholder(page_id) for page_id in PRIMER_CHAPTERS],
             build_random_matrix_page(),
             page_placeholder(ids.FAILURE_DIAGNOSTICS_PAGE),
             page_placeholder(ids.RANDOM_MATRIX_GBS_PAGE),

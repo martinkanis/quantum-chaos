@@ -207,6 +207,9 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 
 .principle-block + .principle-block { border-top: 1px solid var(--border); margin-top: 8px; }
 .gbs-page mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
+/* MathJax gives a numbered formula a min-width so that its number does not overlap it; the formula's wrapper
+   (a direct child of the Markdown block) scrolls instead of widening the page. */
+.primer-text > span { display: block; max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 .card details > summary { cursor: pointer; font-weight: 600; margin: 12px 0; }
 .card details .secondary-button { margin-top: 12px; }
 .predefined-asset-picker { margin-top: 12px; }

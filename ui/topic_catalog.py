@@ -22,8 +22,14 @@ from ui.navigation import (
     LITERATURE_REVIEW_PATH,
     PHOTONIC_HARDWARE_PATH,
     PHOTONICS_LANDSCAPE_PATH,
+    PHOTONICS_TOPIC_ANCHOR,
     PIQUASSO_PATH,
     PORTFOLIO_PATH,
+    PRIMER_APPENDICES_PATH,
+    PRIMER_BASICS_PATH,
+    PRIMER_GAUSSIAN_STATES_PATH,
+    PRIMER_GBS_PATH,
+    PRIMER_PHASE_SPACE_PATH,
     QPURPOSE_PATH,
     RANDOM_MATRIX_PATH,
     RANDOM_MATRIX_GBS_PATH,
@@ -200,15 +206,48 @@ PIQUASSO = PageEntry(
     parent_page_id=ids.PHOTONICS_LANDSCAPE_PAGE,
 )
 
-PHOTONICS_LANDSCAPE_TOPIC = ResearchTopic(
-    anchor="tema-fotonika-ve-svete",
-    title="Fotonika ve světě",
+PRIMER_BASICS = PageEntry(
+    ids.PRIMER_BASICS_PAGE, "Skripta 1: Základy fotonického kvantového počítání", PRIMER_BASICS_PATH,
+    "Úvod a 1. kapitola skript Kolarovszkiho a Zimboráse v češtině: Fockův prostor, kvantové módy, fotonická "
+    "hradla, interferometry a permanent, měření počtu fotonů, Boson Sampling a ztráty fotonů.",
+)
+PRIMER_GAUSSIAN_STATES = PageEntry(
+    ids.PRIMER_GAUSSIAN_STATES_PAGE, "Skripta 2: Gaussovské stavy", PRIMER_GAUSSIAN_STATES_PATH,
+    "Stlačené a koherentní stavy, lineární hradla a symplektická grupa, kovarianční matice, rozklad na normální "
+    "módy a Blochův–Messiahův rozklad.",
+)
+PRIMER_PHASE_SPACE = PageEntry(
+    ids.PRIMER_PHASE_SPACE_PAGE, "Skripta 3: Kvantová optika ve fázovém prostoru", PRIMER_PHASE_SPACE_PATH,
+    "Weylovy operátory a koherentní stavy, charakteristické funkce, Wignerova funkce, P-reprezentace a Husimiho "
+    "Q-funkce: jazyk, ve kterém se gaussovské stavy popisují nejpřirozeněji.",
+)
+PRIMER_GBS = PageEntry(
+    ids.PRIMER_GBS_PAGE, "Skripta 4: Gaussian Boson Sampling", PRIMER_GBS_PATH,
+    "Pravděpodobnosti detekce fotonů v gaussovských stavech, hafnián a perfektní párování v grafech a hledání "
+    "hustých podgrafů pomocí GBS.",
+)
+PRIMER_APPENDICES = PageEntry(
+    ids.PRIMER_APPENDICES_PAGE, "Skripta A–B: Kvantová mechanika a první kvantování", PRIMER_APPENDICES_PATH,
+    "Dodatky skript: opakování kvantové mechaniky (Hilbertovy prostory, stavy, vývoj, měření, složené systémy, "
+    "harmonický oscilátor) a odvození obsazovacích čísel z prvního kvantování.",
+)
+
+PHOTONICS_TOPIC = ResearchTopic(
+    anchor=PHOTONICS_TOPIC_ANCHOR,
+    title="Fotonika",
     summary=(
-        "Přehled firem, výzkumných skupin a dodavatelů fotonické kvantové techniky: co přesně dělají a prodávají, "
-        "kdo umí Gaussian Boson Sampling, kdo nabízí kvantové výpočty bankám a kdo je pro disertaci konkurence "
-        "a kdo partner."
+        "Fotonické kvantové počítání od základů: česky přeložená skripta Kolarovszkiho a Zimboráse (IT4I, 2025) "
+        "o Fockově prostoru, gaussovských stavech, fázovém prostoru a Gaussian Boson Samplingu, potom přehled firem "
+        "a výzkumných skupin, které fotonický hardware stavějí, a simulátor Piquasso od autorů skript."
     ),
-    sections=(TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE,)), TopicSection("Software", (PIQUASSO,))),
+    sections=(
+        TopicSection(
+            "Skripta: fotonické kvantové počítání a GBS",
+            (PRIMER_BASICS, PRIMER_GAUSSIAN_STATES, PRIMER_PHASE_SPACE, PRIMER_GBS, PRIMER_APPENDICES),
+        ),
+        TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE,)),
+        TopicSection("Software", (PIQUASSO,)),
+    ),
 )
 
 RANDOM_MATRIX = PageEntry(
@@ -267,7 +306,7 @@ CHEAT_SHEETS_TOPIC = ResearchTopic(
 )
 
 BASE_RESEARCH_TOPICS: Tuple[ResearchTopic, ...] = (
-    MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, PHOTONICS_LANDSCAPE_TOPIC, RESEARCH_DIRECTIONS_TOPIC,
+    MONTE_CARLO_TOPIC, LITERATURE_REVIEW_TOPIC, PHOTONICS_TOPIC, RESEARCH_DIRECTIONS_TOPIC,
     RANDOM_MATRIX_TOPIC, OPTIMIZATION_TOPIC, CHEAT_SHEETS_TOPIC,
 )
 """In the order of the story: the method, what the literature says, who builds the hardware, our own research,

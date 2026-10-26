@@ -61,7 +61,11 @@ BASE_LAYERS: Tuple[LayerInfo, ...] = (
     ),
     LayerInfo(
         Layer.PHOTONICS, "Fotonika a GBS", "kvantová optika, na které GBS stojí, a hardware, na kterém běží", "#d9822b",
-        (ids.HAFNIAN_PAGE, ids.PHOTONIC_HARDWARE_PAGE, ids.PHOTONICS_LANDSCAPE_PAGE, ids.PIQUASSO_PAGE),
+        (
+            ids.PRIMER_BASICS_PAGE, ids.PRIMER_GAUSSIAN_STATES_PAGE, ids.PRIMER_PHASE_SPACE_PAGE, ids.PRIMER_GBS_PAGE,
+            ids.PRIMER_APPENDICES_PAGE, ids.HAFNIAN_PAGE, ids.PHOTONIC_HARDWARE_PAGE, ids.PHOTONICS_LANDSCAPE_PAGE,
+            ids.PIQUASSO_PAGE,
+        ),
         ids.NAV_PHOTONICS_MENU,
     ),
     LayerInfo(
@@ -123,6 +127,11 @@ MAP_LABELS = {
     ids.PHOTONIC_HARDWARE_PAGE: "Quandela a hardware v Evropě",
     ids.PHOTONICS_LANDSCAPE_PAGE: "Fotonika ve světě",
     ids.PIQUASSO_PAGE: "Piquasso",
+    ids.PRIMER_BASICS_PAGE: "Skripta 1: základy",
+    ids.PRIMER_GAUSSIAN_STATES_PAGE: "Skripta 2: gaussovské stavy",
+    ids.PRIMER_PHASE_SPACE_PAGE: "Skripta 3: fázový prostor",
+    ids.PRIMER_GBS_PAGE: "Skripta 4: GBS a grafy",
+    ids.PRIMER_APPENDICES_PAGE: "Skripta: dodatky A–B",
     ids.FAILURE_DIAGNOSTICS_PAGE: "Kdy GBS selže",
     ids.RANDOM_MATRIX_GBS_PAGE: "Náhodné matice a GBS",
 }
@@ -179,6 +188,19 @@ BASE_RELATIONS: Tuple[Relation, ...] = (
         "simulátor z kapitoly o softwaru podrobně",
     ),
     Relation(ids.PIQUASSO_PAGE, RelationKind.CHECKS, ids.ADVANTAGE_PAGE, "stejné pravděpodobnosti vzorů jako aplikace"),
+    Relation(ids.PRIMER_BASICS_PAGE, RelationKind.FOLLOWS, ids.PRIMER_GAUSSIAN_STATES_PAGE, "skripta: kapitola 2"),
+    Relation(ids.PRIMER_GAUSSIAN_STATES_PAGE, RelationKind.FOLLOWS, ids.PRIMER_PHASE_SPACE_PAGE, "skripta: kapitola 3"),
+    Relation(ids.PRIMER_PHASE_SPACE_PAGE, RelationKind.FOLLOWS, ids.PRIMER_GBS_PAGE, "skripta: kapitola 4"),
+    Relation(
+        ids.PRIMER_APPENDICES_PAGE, RelationKind.EXPLAINS, ids.PRIMER_BASICS_PAGE,
+        "kvantová mechanika a odkud se berou obsazovací čísla",
+    ),
+    Relation(
+        ids.PRIMER_GAUSSIAN_STATES_PAGE, RelationKind.EXPLAINS, ids.THEORY_PAGE,
+        "gaussovské stavy, stlačení a interferometr, na kterých odhad stojí",
+    ),
+    Relation(ids.PRIMER_GBS_PAGE, RelationKind.EXPANDS, ids.HAFNIAN_PAGE, "hafnián, perfektní párování a grafy"),
+    Relation(ids.PRIMER_BASICS_PAGE, RelationKind.EXPLAINS, ids.PIQUASSO_PAGE, "hradla a měření, která Piquasso simuluje"),
     Relation(
         ids.FAILURE_DIAGNOSTICS_PAGE, RelationKind.FOLLOWS, ids.RANDOM_MATRIX_GBS_PAGE,
         "podrobný rozbor 2. a 3. zdroje chyby",

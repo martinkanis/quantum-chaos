@@ -27,22 +27,22 @@ from ui.photonics_landscape_content import (
 from ui.photonics_landscape_page import build_photonics_landscape_page, players_markdown
 from ui.study_progress import describe_pager
 from ui.theory_content import all_sources
-from ui.topic_catalog import PHOTONICS_LANDSCAPE_TOPIC, RESEARCH_TOPICS, breadcrumb_trail
+from ui.topic_catalog import PHOTONICS_TOPIC, RESEARCH_TOPICS, breadcrumb_trail
 
 
 def player(name_start):
     return next(item for item in PLAYERS if item.name.startswith(name_start))
 
 
-def test_stranka_je_prvnim_krokem_tematu_ve_skupine_fotonika():
+def test_stranka_je_v_tematu_fotonika_hned_po_skriptech():
     link_classes = show_page(PHOTONICS_LANDSCAPE_PATH)[len(PAGE_IDS):len(PAGE_IDS) + len(NAV_LINK_IDS)]
     active = [link_id for link_id, link_class in zip(NAV_LINK_IDS, link_classes) if link_class == ACTIVE_LINK_CLASS]
     _, step_label, _, _, _ = describe_pager(PHOTONICS_LANDSCAPE_PATH, None)
 
     assert PAGE_BY_PATH[PHOTONICS_LANDSCAPE_PATH] == ids.PHOTONICS_LANDSCAPE_PAGE
-    assert PHOTONICS_LANDSCAPE_TOPIC in RESEARCH_TOPICS
+    assert PHOTONICS_TOPIC in RESEARCH_TOPICS
     assert active == [ids.NAV_PHOTONICS_MENU]
-    assert step_label == "Fotonika ve světě · krok 1 / 2"
+    assert step_label == "Fotonika · krok 6 / 7"
     assert [label for label, _ in breadcrumb_trail(ids.PHOTONICS_LANDSCAPE_PAGE)] == [
         "Témata", "Fotonika a GBS", "Fotonika ve světě: konkurence a partneři",
     ]
