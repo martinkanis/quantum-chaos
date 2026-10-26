@@ -14,6 +14,7 @@ from ui.navigation import PAGE_IDS
 from ui.portfolio_page import build_portfolio_page
 from ui.random_matrix_page import build_random_matrix_page
 from ui.study_progress import build_progress_store, build_study_pager
+from ui.text_edit_panel import build_text_editor
 from ui.topics_page import build_topics_page
 
 HIGHLIGHT_ROOTS_ATTRIBUTE = "data-highlight-roots"
@@ -51,5 +52,6 @@ def build_layout() -> html.Div:
             *[page_placeholder(page_id) for page_id in generated_page_ids()],
             build_study_pager(),
             build_assistant(),
+            build_text_editor(),
         ]
     )

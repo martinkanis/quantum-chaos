@@ -85,3 +85,25 @@
   .assistant-dialog { padding: 16px 16px 0; max-height: calc(100vh - 16px); max-height: calc(100dvh - 16px); }
   .assistant-actions .primary-button, .assistant-actions .secondary-button { flex: 1 1 100%; }
 }
+
+/* Paragraph editor (ui/text_edit_panel.py); it borrows the look of the assistant's pop-up. */
+.text-editor .error-message:empty { display: none; }
+.text-edit-area {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: 0.95rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  resize: vertical;
+}
+.text-edit-original summary { cursor: pointer; color: var(--text-muted); font-size: 0.9rem; }
+.text-edit-original pre {
+  margin: 6px 0 0;
+  padding: 10px 12px;
+  white-space: pre-wrap;
+  background: var(--surface-muted);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}

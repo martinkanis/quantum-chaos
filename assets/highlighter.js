@@ -563,12 +563,15 @@
             'aria-label="Odebrat">' + TRASH_ICON + "</button>" +
             "</div>" +
             '<div class="qc-highlighter-colors">' + swatches + "</div>" +
-            // Claude (assets/assistant.js); the row shows only when the assistant is on the page.
+            // Claude (assets/assistant.js) and the paragraph editor (assets/text_edit.js); each button shows only
+            // when its script is on the page, the editor's only over an editable paragraph.
             '<div class="qc-highlighter-row qc-highlighter-assistant" hidden>' +
             '<button type="button" class="qc-highlighter-ask" data-assistant="explain" ' +
             'title="Claude vysvětlí označený text v okně">💡 Dovysvětlit</button>' +
             '<button type="button" class="qc-highlighter-ask" data-assistant="expand" ' +
             'title="Agent napíše o označeném textu novou stránku, kterou pak schválíš">➕ Rozvést na téma</button>' +
+            '<button type="button" class="qc-highlighter-ask" data-text-edit ' +
+            'title="Ručně přepsat odstavec, ve kterém je označený text">✏️ Upravit odstavec</button>' +
             "</div>";
         // Pressing a button must neither move the focus nor clear the selection it is about to mark.
         bar.addEventListener("mousedown", (event) => event.preventDefault());
@@ -594,7 +597,13 @@
             button.setAttribute("aria-pressed", String(Number(button.dataset.color) === current.color));
         });
         toolbar.querySelector("[data-action='remove']").hidden = state.mode !== "edit";
-        toolbar.querySelector(".qc-highlighter-assistant").hidden = !window.qcAssistant;
+        const range = activeRange();
+        toolbar.querySelectorAll("[data-assistant]").forEach((button) => {
+            button.hidden = !window.qcAssistant;
+        });
+        toolbar.querySelector("[data-text-edit]").hidden = !(window.qcTextEdit && window.qcTextEdit.editableAt(range));
+        const row = toolbar.querySelector(".qc-highlighter-assistant");
+        row.hidden = Array.from(row.querySelectorAll("button")).every((button) => button.hidden);
     }
 
     function showToolbar(nextState) {
@@ -671,6 +680,13 @@
             const range = activeRange();
             if (range && window.qcAssistant) {
                 window.qcAssistant.ask(button.dataset.assistant, range.cloneRange());
+            }
+            document.getSelection().removeAllRanges();
+            hideToolbar();
+        } else if (button.dataset.textEdit !== undefined) {
+            const range = activeRange();
+            if (range && window.qcTextEdit) {
+                window.qcTextEdit.open(range.cloneRange());
             }
             document.getSelection().removeAllRanges();
             hideToolbar();

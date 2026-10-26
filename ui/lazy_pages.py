@@ -69,19 +69,30 @@ def build_rendered_pages_store() -> dcc.Store:
     return dcc.Store(id=ids.RENDERED_PAGES_STORE, data=[])
 
 
-def render_visited_page(pathname: str, rendered_page_ids: Optional[List[str]]) -> List:
-    """Content of the visited page if it is lazy and not in the browser yet, and the updated list of sent pages."""
+def built_page_children(page_id: str) -> List:
+    return built_page(page_id).children
+
+
+def render_visited_page(
+    pathname: str,
+    rendered_page_ids: Optional[List[str]],
+    page_children: Callable[[str], List] = built_page_children,
+) -> List:
+    """Content of the visited page if it is lazy and not in the browser yet, and the updated list of sent pages.
+
+    The app passes page_children that apply the reader's text edits (ui/editable_text.py).
+    """
     page_id = PAGE_BY_PATH.get(pathname)
     rendered = list(rendered_page_ids or [])
     if page_id not in PAGE_BUILDERS or page_id in rendered:
         return [no_update] * (len(LAZY_PAGE_IDS) + 1)
-    contents = [built_page(page_id).children if lazy_id == page_id else no_update for lazy_id in LAZY_PAGE_IDS]
+    contents = [page_children(page_id) if lazy_id == page_id else no_update for lazy_id in LAZY_PAGE_IDS]
     return contents + [rendered + [page_id]]
 
 
-def register_lazy_page_callbacks(app: Dash) -> None:
+def register_lazy_page_callbacks(app: Dash, page_children: Callable[[str], List] = built_page_children) -> None:
     app.callback(
         [Output(page_id, "children") for page_id in LAZY_PAGE_IDS] + [Output(ids.RENDERED_PAGES_STORE, "data")],
         Input(ids.URL, "pathname"),
         State(ids.RENDERED_PAGES_STORE, "data"),
-    )(render_visited_page)
+    )(lambda pathname, rendered_page_ids: render_visited_page(pathname, rendered_page_ids, page_children))

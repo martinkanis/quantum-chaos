@@ -24,10 +24,11 @@ def contrast(first: str, second: str) -> float:
 
 
 def test_zvyraznovat_jde_text_na_kazde_strance_aplikace():
-    roots = app.layout.to_plotly_json()["props"][HIGHLIGHT_ROOTS_ATTRIBUTE].split()
+    layout = app.layout()
+    roots = layout.to_plotly_json()["props"][HIGHLIGHT_ROOTS_ATTRIBUTE].split()
 
     assert roots == list(PAGE_IDS)
-    assert set(roots) <= set(app.layout)
+    assert set(roots) <= {component_id for component_id in layout if isinstance(component_id, str)}
     assert f'"{HIGHLIGHT_ROOTS_ATTRIBUTE}"' in SCRIPT
 
 

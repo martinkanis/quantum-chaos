@@ -98,7 +98,7 @@
 }
 
 /* Claude: explain the selection or expand it into a new topic (assets/assistant.js). */
-.qc-highlighter-assistant { border-top: 1px solid var(--border); padding-top: 8px; }
+.qc-highlighter-assistant { flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 8px; }
 .qc-highlighter-assistant[hidden] { display: none; }
 .qc-highlighter-ask {
   flex: 1;

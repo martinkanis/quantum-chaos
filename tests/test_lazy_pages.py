@@ -26,7 +26,7 @@ def test_kazda_odlozena_stranka_ma_v_layoutu_prazdny_skryty_kontejner():
     placeholder = page_placeholder(ids.THEORY_PAGE)
 
     assert set(LAZY_PAGE_IDS) <= set(PAGE_IDS)
-    assert set(LAZY_PAGE_IDS) <= set(app.layout)
+    assert set(LAZY_PAGE_IDS) <= {component_id for component_id in app.layout() if isinstance(component_id, str)}
     assert (placeholder.id, placeholder.style, placeholder.children) == (ids.THEORY_PAGE, HIDDEN, [])
     assert placeholder.className == built_page(ids.THEORY_PAGE).className
 

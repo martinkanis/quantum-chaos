@@ -1,10 +1,13 @@
+import json
 from collections import Counter
 
-from app import app
+from dash import html
+
+from app import app, pages
 from ui import ids
 from ui.callbacks import run_simulation
 from ui.form_parsing import DEFAULT_ASSET_ROWS, asset_names, default_correlation_rows
-from ui.lazy_pages import LAZY_PAGE_IDS, built_page
+from ui.lazy_pages import LAZY_PAGE_IDS
 from ui.navigation import HIDDEN, VISIBLE
 from ui.portfolio_page import build_portfolio_page
 
@@ -20,6 +23,14 @@ def component_ids_used_by(callback):
     dependencies = callback["inputs"] + callback["state"]
     used = {output.component_id for output in outputs_of(callback)} | {dependency["id"] for dependency in dependencies}
     return {component_id for component_id in used if not component_id.startswith("{")}
+
+
+def served_component_ids():
+    """Ids of the layout and of the lazy pages as the app serves them, editable paragraphs included (as JSON)."""
+    lazy_pages = [html.Div(pages.page_children(page_id)) for page_id in LAZY_PAGE_IDS]
+    found = [component_id for component in [pages.layout(), *lazy_pages] for component_id in component]
+    return [json.dumps(component_id, sort_keys=True) if isinstance(component_id, dict) else component_id
+            for component_id in found]
 
 
 def callback_writing(component_id):
@@ -38,7 +49,7 @@ def download_button_style_after_run(initial_value):
 
 
 def test_callbacky_pouzivaji_jen_komponenty_z_vychoziho_layoutu():
-    layout_ids = set(app.layout)
+    layout_ids = {component_id for component_id in app.layout() if isinstance(component_id, str)}
 
     for callback in app.callback_map.values():
         assert component_ids_used_by(callback) - layout_ids == set()
@@ -51,10 +62,7 @@ def test_tlacitko_stazeni_je_skryte_dokud_neni_co_stahnout():
 
 
 def test_id_komponent_jsou_v_celem_layoutu_unikatni():
-    lazy_page_ids = [component_id for page_id in LAZY_PAGE_IDS for component_id in built_page(page_id)]
-    duplicate_ids = [
-        component_id for component_id, count in Counter(list(app.layout) + lazy_page_ids).items() if count > 1
-    ]
+    duplicate_ids = [component_id for component_id, count in Counter(served_component_ids()).items() if count > 1]
 
     assert duplicate_ids == []
 
