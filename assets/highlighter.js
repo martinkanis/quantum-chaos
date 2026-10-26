@@ -1,6 +1,7 @@
 // Text highlighter: select text with the mouse (on a phone or tablet hold it, or swipe a finger sideways across it),
-// then highlight or underline it in one of nine pastel colours; a tap on a mark changes or removes it. The same
-// toolbar asks Claude to explain the selection or to expand it into a new topic (assets/assistant.js).
+// then highlight or underline it in one of nine pastel colours; a tap on a mark changes or removes it, and selected
+// text that is marked can be erased from its marks. The same toolbar asks Claude to explain the selection or to
+// expand it into a new topic (assets/assistant.js).
 // The marks are painted with the CSS Custom Highlight API, so the DOM that Dash (React) renders is never changed,
 // and they are kept in this browser's localStorage, anchored to the page container (ids in data-highlight-roots,
 // set in ui/layout.py) by text offsets and the text around them, so they survive edits elsewhere on the page.
@@ -60,7 +61,8 @@
     let preferences = loadPreferences();
     let liveRanges = new Map();
     let markedFormulas = new Set();
-    let state = {mode: null, pending: null, editing: null};
+    // erasable: the pending selection covers text of a mark, so the toolbar offers to erase it.
+    let state = {mode: null, pending: null, editing: null, erasable: false};
     let rootIds = null;
     let toolbar = null;
     let lastPointerType = "mouse";
@@ -460,26 +462,50 @@
 
     // ---- Changes to the marks --------------------------------------------------------------------------------
 
-    /** Marks of one kind never overlap: the new one takes over the text that older ones had under it. */
-    function insertMark(index, mark) {
+    /** The marks with the text between start and end cut out of those of the page (and of the kind, if given). */
+    function cutOut(index, start, end, kind) {
         const kept = [];
         marks.forEach((other) => {
-            const span = other.root === mark.root && other.kind === mark.kind ? liveSpan(index, other) : null;
-            if (!span || span.end <= mark.start || span.start >= mark.end) {
+            const span = other.root === index.root.id && (!kind || other.kind === kind) ? liveSpan(index, other) : null;
+            if (!span || span.end <= start || span.start >= end) {
                 kept.push(other);
                 return;
             }
-            [[span.start, mark.start], [mark.end, span.end]].forEach(([start, end]) => {
-                const piece = start < end ? trim(index.text, start, end) : null;
+            [[span.start, start], [end, span.end]].forEach(([pieceStart, pieceEnd]) => {
+                const piece = pieceStart < pieceEnd ? trim(index.text, pieceStart, pieceEnd) : null;
                 if (piece) {
                     kept.push(describe(index, piece.start, piece.end, other.kind, other.color, other.created));
                 }
             });
         });
-        kept.push(mark);
-        marks = kept;
+        return kept;
+    }
+
+    /** Marks of one kind never overlap: the new one takes over the text that older ones had under it. */
+    function insertMark(index, mark) {
+        marks = cutOut(index, mark.start, mark.end, mark.kind).concat([mark]);
         saveMarks();
         repaint();
+    }
+
+    /** Whether some mark covers text of the selection (widened to whole words, as a new mark would be). */
+    function isMarked(span) {
+        const words = wholeWords(span.index, span.start, span.end);
+        return marks.some((mark) => {
+            const live = mark.root === span.index.root.id ? liveSpan(span.index, mark) : null;
+            return Boolean(live) && live.start < words.end && live.end > words.start;
+        });
+    }
+
+    /** Erases the selected words from the highlights and underlines; the rest of a longer mark stays. */
+    function eraseMarks(range) {
+        const span = spanOf(range);
+        if (span) {
+            const words = wholeWords(span.index, span.start, span.end);
+            marks = cutOut(span.index, words.start, words.end, null);
+            saveMarks();
+            repaint();
+        }
     }
 
     /**
@@ -559,8 +585,8 @@
             '<span class="qc-highlighter-icon mark" aria-hidden="true">ab</span>Zvýraznit</button>' +
             '<button type="button" class="qc-highlighter-kind" data-kind="underline" title="Podtrhnout barevnou čarou">' +
             '<span class="qc-highlighter-icon underline" aria-hidden="true">ab</span>Podtrhnout</button>' +
-            '<button type="button" class="qc-highlighter-remove" data-action="remove" title="Odebrat" ' +
-            'aria-label="Odebrat">' + TRASH_ICON + "</button>" +
+            '<button type="button" class="qc-highlighter-remove" data-action="remove" ' +
+            'title="Vymazat zvýraznění a podtržení">' + TRASH_ICON + "Vymazat</button>" +
             "</div>" +
             '<div class="qc-highlighter-colors">' + swatches + "</div>" +
             // Claude (assets/assistant.js) and the paragraph editor (assets/text_edit.js); each button shows only
@@ -596,7 +622,7 @@
         toolbar.querySelectorAll("[data-color]").forEach((button) => {
             button.setAttribute("aria-pressed", String(Number(button.dataset.color) === current.color));
         });
-        toolbar.querySelector("[data-action='remove']").hidden = state.mode !== "edit";
+        toolbar.querySelector("[data-action='remove']").hidden = state.mode !== "edit" && !state.erasable;
         const range = activeRange();
         toolbar.querySelectorAll("[data-assistant]").forEach((button) => {
             button.hidden = !window.qcAssistant;
@@ -614,7 +640,7 @@
     }
 
     function hideToolbar() {
-        state = {mode: null, pending: null, editing: null};
+        state = {mode: null, pending: null, editing: null, erasable: false};
         if (toolbar) {
             toolbar.hidden = true;
         }
@@ -711,8 +737,13 @@
                 document.getSelection().removeAllRanges();
                 hideToolbar();
             }
-        } else if (button.dataset.action === "remove" && editing) {
-            removeMark(editing.id);
+        } else if (button.dataset.action === "remove") {
+            if (editing) {
+                removeMark(editing.id);
+            } else if (state.pending) {
+                eraseMarks(state.pending);
+                document.getSelection().removeAllRanges();
+            }
             hideToolbar();
         }
     }
@@ -728,8 +759,9 @@
         clearTimeout(selectionTimer);
         const selection = document.getSelection();
         const range = selection && selection.rangeCount && !selection.isCollapsed ? selection.getRangeAt(0) : null;
-        if (range && !isTyping() && spanOf(range)) {
-            showToolbar({mode: "new", pending: range.cloneRange(), editing: null});
+        const span = range && !isTyping() ? spanOf(range) : null;
+        if (span) {
+            showToolbar({mode: "new", pending: range.cloneRange(), editing: null, erasable: isMarked(span)});
         } else if (state.mode === "new" && Date.now() - toolbarTouchedAt > TOOLBAR_GRACE_MILLISECONDS) {
             hideToolbar();
         }
