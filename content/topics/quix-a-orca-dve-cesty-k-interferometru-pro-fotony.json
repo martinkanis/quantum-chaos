@@ -1,0 +1,76 @@
+{
+  "slug": "quix-a-orca-dve-cesty-k-interferometru-pro-fotony",
+  "title": "QuiX a ORCA: dvě cesty k interferometru pro fotony",
+  "description": "Jak fungují stroje QuiX Quantum (čip z nitridu křemíku) a ORCA Computing (časové okénko ve vlákně), co znamenají jejich parametry a co by bylo potřeba, aby z nich byl GBS.",
+  "in_short": "QuiX Quantum i ORCA Computing staví lineární interferometr pro jednotlivé fotony. Každá ale jinak: QuiX ho „vyleptá“ do čipu jako síť Machových–Zehnderových interferometrů z nitridu křemíku, ORCA ho skládá v čase pomocí optického vlákna a zpožďovacích smyček. Pro naši práci na GBS jsou to hlavně **sousední technologie**. Na jejich parametrech (počet módů, ztráty, věrnost) se dá dobře naučit, jak číst tiskové zprávy fotonických firem a co by se muselo změnit, aby stroj vzorkoval hafniány místo permanentů. Data o QuiX jsou v této stránce doložená zdroji. Popis ORCA je kvůli chybějícím ověřeným zdrojům označený jako neověřený.",
+  "sections": [
+    {
+      "heading": "Společný jmenovatel: interferometr jako unitární matice",
+      "body": "Na stránce *Fotonika ve světě* stačilo vědět, že QuiX i ORCA posílají do interferometru jednotlivé fotony. Teď se podíváme, **co je ten interferometr fyzicky**. V obou případech jde o zařízení, které $N$ vstupních světelných „kanálů“ (módů) smíchá do $N$ výstupních. Pro jeden foton to funguje jako lineární transformace jeho amplitud: foton vstoupí do módu $j$ a s amplitudou $U_{ij}$ se objeví ve výstupu $i$. Dokud se světlo nikde neztrácí, je matice $U$ unitární ($U^\\dagger U = I$), protože se zachovává pravděpodobnost.\n\nAby šlo realizovat **libovolnou** unitární matici $N\\times N$, musí mít zařízení dost nastavitelných knoflíků. Unitární grupa $U(N)$ má $N^2$ reálných parametrů. Standardní konstrukce (vlastní shrnutí učebnicové látky, schémata Recka a Clementsové tady nejsou ověřena zdrojem) skládá $U$ z dvoumódových prvků, totiž Machových–Zehnderových interferometrů (MZI). Každý MZI má dva fázové posuvníky a potřeba jich je\n\n$$\nN_{\\mathrm{MZI}} = \\frac{N(N-1)}{2}.\n$$\n\n**Příklad (můj výpočet):** pro $N = 20$ módů vychází $20\\cdot 19/2 = 190$ MZI, tedy $2\\cdot 190 = 380$ fází. Spolu s 20 fázemi na výstupech je to $400 = 20^2$ parametrů, přesně tolik, kolik má $U(20)$. Čip, který tohle umí, se nazývá **univerzální** a právě takový staví QuiX. ORCA podle dostupných informací volí jinou cestu: menší počet knoflíků opakovaně použitých v čase (viz kapitola o ORCA)."
+    },
+    {
+      "heading": "QuiX Quantum: síť MZI v nitridu křemíku",
+      "body": "QuiX Quantum sídlí v Enschede v Nizozemsku. Její procesory stojí na vlnovodné technologii TriPleX z nitridu křemíku ($\\mathrm{Si_3N_4}$), kterou firma vyzdvihuje kvůli velmi nízkým ztrátám fotonů (Barbieri a kol., 2022, *Towards European Standards for Quantum Technologies*). Intuice: nitrid křemíku je pro světlo „čisté sklo na čipu“. Vede ho těsně, takže se vejde hodně prvků, a přitom ho málo pohlcuje. Fáze v jednotlivých MZI se nastavují ohřevem, takže stejný čip lze přeprogramovat na jinou matici $U$ bez výroby nového.\n\nKlíčový článek je Taballione a kol. (2022 na arXiv, později v časopise *Quantum*), „20-Mode Universal Quantum Photonic Processor“. Popisuje procesor, který realizuje libovolnou unitární transformaci na 20 módech, a uvádí tyto parametry:\n\n- věrnost amplitud $F_{\\mathrm{Haar}} = 97{,}4\\,\\%$ pro náhodné (Haarovy) matice a $F_{\\mathrm{Perm}} = 99{,}5\\,\\%$ pro permutační matice,\n- průměrná optická ztráta 2,9 dB na mód,\n- viditelnost Hongova–Ouova–Mandelova jevu $V_{\\mathrm{HOM}} = 98\\,\\%$.\n\nPřehled Kumar a kol. (2024, *Photonic Quantum Computers*) tento čip uvádí jako tehdy největší univerzální kvantový fotonický procesor. Podle firemního profilu na PostQuantum předcházel 20-módové verzi 12-módový čip z konce roku 2020.\n\nCo ta čísla znamenají? Věrnost pro Haarovy matice je nižší než pro permutace, protože náhodná matice „rozmíchá“ všechno se vším a chyby fází ze všech 190 MZI se sčítají. Permutace jen přehazuje kanály. Viditelnost HOM říká, jak dobře spolu dva fotony na děliči interferují. Hodnota 98 % znamená, že čip jejich nerozlišitelnost téměř nekazí. Novější komerční řada Alquor 2.0 se podle tiskové zprávy (The Quantum Insider, 2026) prodává v konfiguracích s 8, 20 a 32 módy a firma uvádí přes 20 nasazených systémů. Jako výzkumný nástroj tedy QuiX prodává hlavně **samotný programovatelný interferometr**, ke kterému si laboratoř připojí vlastní zdroje a detektory."
+    },
+    {
+      "heading": "Co dělá 2,9 dB ztráty s fotony a se stlačením",
+      "body": "Decibely jsou logaritmická škála. Propustnost $\\eta$ (pravděpodobnost, že foton projde) se ze ztráty $L$ v dB spočítá jako\n\n$$\n\\eta = 10^{-L/10}.\n$$\n\nPro $L = 2{,}9$ dB vychází $\\eta = 10^{-0{,}29} \\approx 0{,}51$. Zhruba každý druhý foton se tedy cestou čipem ztratí. Tohle je můj výpočet z čísla v článku Taballione a kol. Do ztrát navíc nejsou započítané zdroje, vazba do vlákna ani detektory.\n\n**Pro boson sampling s jednotlivými fotony** se ztráty násobí. Pokud chceme, aby prošlo všech $n$ fotonů, je pravděpodobnost přibližně $\\eta^n$. Pro $n = 4$ je to $0{,}51^4 \\approx 0{,}069$, pro $n = 8$ už $0{,}51^8 \\approx 0{,}0048$. Z milionu pokusů s osmi fotony tak zbude zhruba 4 800 „úplných“ událostí. Jde o můj zjednodušený odhad, který předpokládá stejné ztráty ve všech módech.\n\n**Pro GBS** se ztráta projeví jinak, a proto je důležitá i pro nás. Stlačený stav má v jedné kvadratuře rozptyl $V < 1$ (v jednotkách vakua). Ztráta s propustností $\\eta$ ho podle standardního modelu děliče svazku (viz *Skripta 2: Gaussovské stavy*) změní na\n\n$$\nV' = \\eta V + (1-\\eta).\n$$\n\n**Příklad (můj výpočet):** 10 dB stlačení znamená $V = 0{,}1$. Po průchodu čipem s $\\eta \\approx 0{,}513$ dostaneme $V' \\approx 0{,}0513 + 0{,}487 \\approx 0{,}54$, tedy jen asi 2,7 dB. Ztráty tedy u GBS „nezahazují“ celé události, ale rozmazávají kvantové korelace mezi páry fotonů. Proč tím mizí výpočetní výhoda, rozebírá stránka *Háčky Monte Carla na GBS*, takže to tu neopakujeme."
+    },
+    {
+      "heading": "ORCA Computing: interferometr poskládaný v čase",
+      "body": "**Upozornění:** při přípravě této stránky se mi nepodařilo dohledat a ověřit zdroje o ORCA Computing. Následující popis vychází z dovysvětlení, které už máš, a z mé obecné znalosti. Ber ho jako neověřený a konkrétní údaje (názvy produktů, zákazníky, počty módů) si před citací zkontroluj v materiálech firmy nebo v jejích článcích na arXiv.\n\nIntuice časového kódování (time-bin): místo 20 vedle sebe ležících vlnovodů máme **jediné vlákno** a v něm řadu světelných pulzů za sebou, oddělených pevným časovým odstupem $\\tau$. Každé časové okénko představuje jeden mód. Interferenci mezi módy obstarává zpožďovací smyčka dlouhá právě $\\tau$ spolu s rychle přepínatelným děličem svazku. Puls, který vjede do smyčky, se o jedno okénko zpozdí a na děliči se potká s následujícím pulzem. Jedna smyčka tak postupně provede řetěz dvoumódových operací mezi sousedními okénky:\n\n$$\nU_{\\mathrm{smyčka}} = T_{N-1,N}(\\theta_{N-1}) \\cdots T_{2,3}(\\theta_2)\\, T_{1,2}(\\theta_1).\n$$\n\nTady $T_{i,i+1}(\\theta)$ je dělič s nastavitelnou odrazivostí mezi okénky $i$ a $i+1$. Tento zápis je moje zjednodušení principu, ne přesný popis konkrétního produktu.\n\n**Příklad (můj odhad):** jedna smyčka nad $N = 20$ okénky má jen asi $N-1 = 19$ nastavitelných děličů, zatímco univerzální $U(20)$ potřebuje 400 parametrů. Taková „mělká“ síť proto není univerzální a pro hlubší obvody je potřeba víc smyček za sebou. Výhoda je v hardwaru: počet módů lze zvýšit prodloužením sledu pulzů, aniž by se musel vyrábět větší čip. Nevýhodou je, že ztráty ve smyčce a v přepínačích dopadají na každé okénko, které smyčkou projde. Systémy ORCA nesou název PT-Series. Stejně jako QuiX do nich vstupují jednotlivé fotony, takže z hlediska teorie jde o permanenty, ne o hafniány."
+    },
+    {
+      "heading": "Jak z toho udělat GBS a co si odnést pro výběr partnerů",
+      "body": "Obě architektury sdílejí s GBS „prostřední díl“, tedy lineární interferometr. GBS se od nich liší vstupem (stlačené světlo místo jednotlivých fotonů) a typicky i detekcí, kde se počítají fotony v každém módu. Následující úvahy jsou můj odhad, ne doložená fakta. **U QuiX** by šlo o připojení zdrojů stlačeného světla před čip. Protože je čip z nitridu křemíku, nabízí se otázka, zda by se stlačení dalo vyrobit přímo na něm. To by ale chtělo samostatnou rešerši. **U ORCA** je časové kódování se smyčkami architektonicky blízké tomu, jak se staví velké GBS experimenty, ale vstupní zdroj by bylo nutné vyměnit. V obou případech podle předchozí kapitoly rozhoduje o užitečnosti hlavně ztráta, protože stlačení degraduje rychle.\n\nPraktický kontrolní seznam pro čtení tiskových zpráv (vlastní shrnutí, aplikovatelné na kteroukoli firmu ze stránky *Fotonika ve světě*):\n\n1. **Počet módů $N$**, a zda je interferometr univerzální (kolem $N^2$ parametrů), nebo mělký.\n2. **Ztráta v dB**, přepočtená na $\\eta = 10^{-L/10}$, a co do ní je a není započítané.\n3. **Věrnost** pro náhodné matice ($F_{\\mathrm{Haar}}$), ne jen pro permutace.\n4. **Typ zdroje:** jednotlivé fotony (permanent), nebo stlačené světlo (hafnián).\n5. **Detektory:** rozliší počet fotonů, nebo jen „klik/neklik“?\n\n**Příklad aplikace:** u 20-módového čipu QuiX vychází bod 1 univerzálně, bod 2 jako $\\eta \\approx 0{,}51$, bod 3 jako 97,4 % a bod 4 jako jednotlivé fotony. Pro hafniánové Monte Carlo z toho plyne, že jde o kvalitní komponentu, ne o hotový GBS stroj. Strategicky QuiX míří k univerzálnímu počítači: podle profilu PostQuantum získal v roce 2025 investici 15 milionů eur (Series A) a na rok 2026 plánuje univerzální fotonický počítač s přibližně 8 qubity. Je to sekundární zdroj s firemními plány, ne ověřený výsledek."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Taballione, C. a kol. (2022), 20-Mode Universal Quantum Photonic Processor, arXiv:2203.01801 (publikováno v Quantum)",
+      "url": "https://arxiv.org/pdf/2203.01801",
+      "note": "Parametry 20-módového procesoru QuiX: věrnost 97,4 % / 99,5 %, ztráta 2,9 dB na mód, viditelnost HOM 98 %, technologie Si3N4."
+    },
+    {
+      "title": "University of Twente Research Information: záznam článku 20-Mode Universal Quantum Photonic Processor",
+      "url": "https://research.utwente.nl/en/publications/20-mode-universal-quantum-photonic-processor/",
+      "note": "Potvrzení autorů, abstraktu a vazby na Univerzitu Twente."
+    },
+    {
+      "title": "Kumar, A. a kol. (2024), Photonic Quantum Computers, arXiv:2409.08229",
+      "url": "https://arxiv.org/pdf/2409.08229",
+      "note": "Přehled, který řadí 20-módový čip QuiX mezi největší univerzální kvantové fotonické procesory."
+    },
+    {
+      "title": "Barbieri, M. a kol. (2022), Towards European Standards for Quantum Technologies, arXiv:2203.01622",
+      "url": "https://arxiv.org/pdf/2203.01622",
+      "note": "Popis QuiX Quantum (Enschede), technologie vlnovodů TriPleX z nitridu křemíku s nízkými ztrátami."
+    },
+    {
+      "title": "Optica (2022), April 2022 Technology Showcase: QuiX Quantum",
+      "url": "https://www.optica.org/events/industry_events/2022/technology_showcase_2022_april-99a3dd4d8ac022438ab9ae66185f3956/participating_companies/quix_quantum/",
+      "note": "Firemní prezentace: rekonfigurovatelné procesory Si3N4, 20 módů, ztráta 2,9 dB na mód."
+    },
+    {
+      "title": "PostQuantum (2025), QuiX Quantum – profil firmy",
+      "url": "https://postquantum.com/quantum-computing-companies/quix-quantum/",
+      "note": "Historie (12 módů v roce 2020, 20 módů v roce 2022), Series A 15 mil. eur v roce 2025, plán univerzálního počítače s ~8 qubity na rok 2026 (sekundární zdroj)."
+    },
+    {
+      "title": "The Quantum Insider (2026), QuiX Quantum Launches Alquor 2.0 Photonic Quantum Processor Platform",
+      "url": "https://thequantuminsider.com/2026/08/04/quix-quantum-launches-alquor-2-0-photonic-quantum-research/",
+      "note": "Komerční platforma Alquor 2.0 v konfiguracích s 8, 20 a 32 módy, přes 20 nasazených systémů (tisková zpráva)."
+    }
+  ],
+  "placement": {
+    "layer": "fotonika",
+    "topic_anchor": "tema-rozvedena",
+    "parent_page_id": "photonics-landscape-page"
+  },
+  "origin": {
+    "page_id": "photonics-landscape-page",
+    "selection": "QuiX, ORCA,",
+    "created": "2026-10-27",
+    "model": "claude-opus-5-5"
+  }
+}
