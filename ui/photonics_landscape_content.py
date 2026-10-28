@@ -414,6 +414,10 @@ TERMS_TOPIC = TheoryTopic(
 *polarizací*. Fotony jsou obsah přihrádky: v jednom módu může být 0, 1, 2 i víc fotonů a detektor na konci módu je
 počítá.
 
+Kde přirovnání k přihrádce přestává platit, proč je mód harmonický oscilátor a jak po jeho hladinách chodí žebříkové
+operátory, vysvětluje stránka
+[Co je kvantový mód a jak po něm chodí žebříkové operátory](/rozvedena-temata/co-je-kvantovy-mod-a-zebrikove-operatory).
+
 Jako datová struktura: jeden výstřel GBS s $M$ módy je pole celých čísel délky $M$. Mód je index, hodnota je počet
 fotonů. Výstřel `[0, 2, 1, 0]` znamená čtyři módy a tři fotony – dva v druhém módu, jeden ve třetím.
 

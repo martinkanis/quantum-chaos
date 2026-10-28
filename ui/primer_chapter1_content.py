@@ -77,6 +77,10 @@ $$
 \tag{1.2}
 $$
 
+*(Pozn. překl.: Co je mód fyzicky, proč jsou Fockovy stavy hladiny harmonického oscilátoru a co přesně dělají
+žebříkové operátory, polopatě vysvětluje rozvedená stránka
+[Co je kvantový mód a jak po něm chodí žebříkové operátory](/rozvedena-temata/co-je-kvantovy-mod-a-zebrikove-operatory).)*
+
 Fockův stav $|n\rangle$ lze z vakua sestrojit pomocí kreačního operátoru jako
 
 $$

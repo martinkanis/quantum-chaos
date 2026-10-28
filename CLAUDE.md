@@ -50,6 +50,9 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 - `assets/highlighter.js` – zvýrazňování a podtrhávání textu (CSS Custom Highlight API, DOM Dashe nemění), uložené
   v localStorage a ukotvené ke stránkám z `data-highlight-roots` v `ui/layout.py` (= `PAGE_IDS`). Pravidla
   `::highlight()` zpomalují sázení MathJaxu, proto jsou jen pro použité barvy a při změnách DOM se vypínají.
+- `assets/text_links.js` – odkaz v Markdownu na stránku aplikace (`[text](/cesta#kotva)` v kartě `.theory-section`
+  nebo ve „V kostce“) přepne stránku jako `dcc.Link`, bez načtení celé aplikace. Že vede na existující stránku
+  a kotvu, hlídá `tests/test_text_links.py`.
 - Stránky s formuláři jsou trvale v layoutu a jen se skrývají (`show_page`), takže formuláře přežijí přepnutí.
   Čtecí stránky bez formulářů se posílají až při první návštěvě (`ui/lazy_pages.py`, jinak by prohlížeč při každém
   načtení sázel vzorce všech skrytých stránek); novou stránku bez formuláře přidej do `PAGE_BUILDERS`.

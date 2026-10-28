@@ -107,7 +107,9 @@ ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
 
 # Pages are only hidden, so the browser cannot jump to an anchor on its own. Formulas (MathJax)
 # and charts also render after navigation and push the target down, so the target is kept in
-# view until the layout settles, unless the user starts scrolling first.
+# view until the layout settles, unless the user starts scrolling first. A page sent on its first
+# visit can block the browser for many seconds while MathJax sets it, so the settling is counted
+# in checks after the target appears (a blocked browser runs none), not in time since the click.
 SCROLL_TO_ANCHOR_JS = """
 function(hash, pathname) {
     const targetId = hash ? decodeURIComponent(hash.slice(1)) : "";
@@ -115,21 +117,25 @@ function(hash, pathname) {
         window.scrollTo(0, 0);
         return;
     }
-    const settleMilliseconds = 3000;
+    const checkMilliseconds = 100;
+    const settleChecks = 30;
+    const giveUpMilliseconds = 30000;
     const startedAt = Date.now();
+    let checksInView = 0;
     let userTookOver = false;
     ["wheel", "touchstart", "keydown", "mousedown"].forEach((eventType) =>
         window.addEventListener(eventType, () => { userTookOver = true; }, {once: true, passive: true})
     );
     const keepTargetInView = () => {
-        if (userTookOver || Date.now() - startedAt > settleMilliseconds) {
+        if (userTookOver || checksInView >= settleChecks || Date.now() - startedAt > giveUpMilliseconds) {
             return;
         }
         const target = document.getElementById(targetId);
         if (target && target.offsetParent !== null) {
             target.scrollIntoView({block: "start"});
+            checksInView += 1;
         }
-        setTimeout(keepTargetInView, 100);
+        setTimeout(keepTargetInView, checkMilliseconds);
     };
     keepTargetInView();
 }
