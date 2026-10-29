@@ -1,0 +1,1095 @@
+[00:00] Okay, good evening everybody. My name is Christoph Delage and it's really a great pleasure to welcome all of you here for today's Schrödinger lecture.
+[00:12] And it's a lucky coincidence that we will have the Christmas reception right after lecture.
+[00:18] And of course, you are all invited to come to the AZ common room just down along the corridor and spend some time together at the AZ Christmas reception.
+[00:32] So great pleasure that we will have the Schroeder Lecture today of Filip Walther, who came all the way from Portsmagasen No. 5 to Portsmagasen No. 9.
+[00:47] So your travel today is very good for, you know, for the climate.
+[00:52] So kept the CO2 footprint low.
+[00:56] Thank you.
+[00:57] Thank you for that.
+[00:58] I'd like to welcome also Vice Rector Maia, who is here today with us, and the Dean Radu
+[01:05] Bott.
+[01:05] Also, Robin Golso, the Dean of Physics, was planning to come, but he couldn't in the last
+[01:13] minute.
+[01:13] I'd also like to welcome Markus Moore, who is the representative for the Priester Seminar,
+[01:18] who is actually on the building here.
+[01:22] Okay, so welcome everybody to today's lecture.
+[01:26] With the Schrodinger lecture, we usually invite prominent scientists to give a lecture that is of a more general interest in physics or mathematics.
+[01:43] More general interest, perhaps because it's about a problem that is important for society or particularly interesting, fascinating scientifically.
+[01:56] Today, we will learn about a very timely subject, namely about quantum computing.
+[02:03] This is of course also related with the research that led to the Nobel Prize that was just given on Saturday to Alain Aspect and John Clouser and of course our very own Anton Zeilinger.
+[02:22] And I'm sure that you will perhaps also refer to their work in your lecture.
+[02:30] I'm very much looking forward to your lecture. Before I introduce Professor Walther, I would
+[02:37] like to also point out that we will have a Schrodinger lecture about climate change
+[02:47] in a couple of months, namely on March the 8th. Georg Kaser, climatologist and
+[02:53] and glaciologists from the University of Innsbruck
+[02:57] will come here to the Schrödinger Institute
+[03:00] to talk about the climate crisis.
+[03:06] Similar to what we heard earlier today
+[03:08] in the physics colloquium, very important problem.
+[03:10] I think if we are not able to solve this problem,
+[03:13] then everything else that we do as scientists
+[03:17] is actually irrelevant.
+[03:19] This is really a huge problem that we face at the moment.
+[03:23] And we have to do everything we can in order
+[03:26] to mitigate the consequences of climate change.
+[03:32] But back to today's Schrodinger lecture,
+[03:35] which will be given by Professor Philipp
+[03:37] Avalta from the Faculty of Physics
+[03:40] of the University of Vienna.
+[03:43] Philipp started out as a quantum chemist
+[03:46] working with at the Technical University.
+[03:50] But then something went wrong.
+[03:52] I don't know why.
+[03:52] and he became a quantum physicist.
+[03:55] He came to the University of Vienna
+[03:57] and joined the group of Anton Zeilinger,
+[04:00] did a PhD here at the university
+[04:03] before going to do a postdoc
+[04:06] in the group of Michel Luecking at Harvard University.
+[04:10] Then he came back to Vienna,
+[04:12] rose through the ranks from assistant professor
+[04:14] to full professor, I think that was in 2015,
+[04:18] and he has been a full professor at this university.
+[04:22] since he got many prizes.
+[04:27] He got the Star Prize of the FWF.
+[04:32] He recently got the Wilhelm Bessel Award.
+[04:37] He also was recently awarded, together with Piotr Kuschel,
+[04:43] who is also here, he was awarded an ERC Synergy Grant,
+[04:48] in which they will study the interface between quantum mechanics and general relativity.
+[04:56] He's also the speaker of the SFB, of an SFB.
+[05:01] He's the director of Christian Doppler laboratory on photonic quantum computing.
+[05:07] He's the speaker of a Foshungs platform.
+[05:10] He is the speaker of the quantum group at the University of Vienna.
+[05:15] So lots of speaking going on here.
+[05:21] So you see, he's a very
+[05:23] prominent and very accomplished scientist.
+[05:27] And today we are going to hear from him
+[05:31] how to do quantum computing with photons.
+[05:35] And I'm very much looking forward to a lecture and I'll
+[05:40] like to
+[05:41] go to the podium here.
+[05:44] Thanks.
+[05:45] Thank you very much. It's a true honor to be here at the Christmas Schrödinger lecture.
+[06:00] I see from the audience, we have all kinds of experts here reaching from computer science to
+[06:04] informatics to physicists. So I had the challenge to what should I cover today? So I thought, well,
+[06:10] let's make all of them happy, or none of them, by giving basically an overview about
+[06:15] what photonic computers are about, what kind of challenges do we face,
+[06:19] what kind of blueprints do we have to build such big machines in the future.
+[06:23] And then, of course, to jump to the Vienna speciality,
+[06:26] that at the end, I would like to show you what we do here in Vienna,
+[06:29] where the focus is always on finding new twists,
+[06:32] showing what else can be done besides just engineering challenges
+[06:36] to scale up those things.
+[06:38] But speaking of Schrödinger and being at the Schrödinger lecture,
+[06:41] I love to show this slide, which I actually have taken from Marcus Arndt many years ago,
+[06:46] where there's this famous phrase that somebody says, we never experiment with just one electron
+[06:52] atom. In thought experiments, we sometimes assume that we do. This invariably entails ridiculous
+[06:57] consequences. We are not experimenting with single particles anymore than we can raise
+[07:02] Ich zu Saudi in the zoo. So does someone know who said that?
+[07:07] that. Well, if I already raised this point of Schrodinger lecture, then of course, it's
+[07:14] obvious that this could be Schrodinger. So in 51, so 52, just nine years before he died,
+[07:19] so not that long ago, actually, in terms of modern science, he pointed out that he doesn't
+[07:25] think it would be easy or at all possible to believe in single quantum systems and to
+[07:30] explore their features and so on. And actually, it has changed. So nowadays, we do it. Labs
+[07:36] do it on a regular basis and this actually led to the so-called second revolution or
+[07:40] so-called second quantum revolution after the development of this quantum theory on
+[07:45] its own, where now different systems reaching from, this is just a selection, but they're
+[07:49] way more, from ions in a trap, atoms in optical lattices, superconducting circuits and photons
+[07:56] basically provide a platform where you can really play with single quantum.
+[08:00] You can play with them, you can study them and really exploit those for investigating
+[08:05] nature or from modern technologies which is the realm of quantum technology and quantum
+[08:10] information processing which I will cover in the next slides. So just to wrap up a bit,
+[08:18] what are those features that we exploit with quantum systems? Well, there are two things.
+[08:24] The first one is superposition where with photons it's very nice to get those. You take a quantum
+[08:28] particle that cannot be split into less than one particle. It comes here, comes to beam split,
+[08:33] we have the 50% chance to transmit light or reflect.
+[08:36] And since it cannot be broken apart,
+[08:39] the end of a superposition with a photon is delocalized,
+[08:42] being at this point and that point simultaneously,
+[08:45] or more precisely, both amplitudes, both probabilities coexist.
+[08:49] And when you make a measurement,
+[08:51] there's a random answer, it can be found here and there.
+[08:53] But bottom line, you can prepare easily superpositions
+[08:56] by just a beam splitter where the light is either transmitted or reflected.
+[09:00] And we do the same still nowadays to create the suppositions for quantum information encoding
+[09:06] by not always beam splitters, but by modern technologies that's this so-called integrated
+[09:10] photonics, where you basically take optical fibers and you put them in a piece of chip,
+[09:17] fingernail, say, so even size even smaller, where you have modes that guide light, the
+[09:21] photons will come here, and then by getting these kind of modes close together and by
+[09:26] tuning them properly by evanescent light field coupling you can choose the distance so that the
+[09:31] photon afterwards has 50 chance to be here and there so my words now in a movie to save also
+[09:37] my voice a bit is is basically this that the photon comes it then couples here do it to these
+[09:45] two modes and at the end you can really achieve a very nice 50 50 superposition on the chip very
+[09:51] handy for machines that process this kind of encoding of quantum information. Well,
+[09:57] speaking of quantum information, I have to basically introduce the word bit and quantum bit.
+[10:02] Classic bits you're all familiar with is, for example, charges, one of the other states,
+[10:07] or transistors in one of the other states, or 0 and 1. In the quantum language, you have these
+[10:11] quantum bits that have coexistence, superposition of these different states. We have now both values,
+[10:18] loosely speaking, simultaneously available. Well, here you see actually by one shot only,
+[10:23] by one view only, the boost from quantum computers because now one quantum bit carries these two
+[10:30] states inside, intrinsically inside. And then now add more qubits, then the scaling of those bits
+[10:36] scales exponentially. If you take, for example, three quantum bits, then you have these eight
+[10:41] combinatorics of cerium-1s coexisting as probabilities in these three qubits. And that's
+[10:47] actually the quantum boost or the main quantum boost for computers that the values 0 and 1 are
+[10:52] coexisting and therefore you can process them much more efficiently for particular algorithms
+[10:57] by using the supposition principle. Well you can use path degrees of freedom for photons but also
+[11:04] other ones you can also take the internal ones that's polarization the way how the photon
+[11:08] propagates with the with the vector by defining a zero state, horizontally polarized light,
+[11:14] one state, vertically polarized state, they're orthogonal.
+[11:18] You can easily change them by polarizers,
+[11:20] wave plates as shown here, so take light and you play a wave plate.
+[11:23] Very nice system.
+[11:24] Photon's a really nice platform to encode this serum once as you wish
+[11:29] in the single photon state.
+[11:30] You can also map one to the other, so you can make a polarization qubit,
+[11:34] and then by polarizing beam splitter where one polarization goes straight,
+[11:37] the other one is reflected, you can even map it to path encoding.
+[11:40] path encoding so it's a very nice system, they can hop around if you degrees of freedom that's one of the reasons I would like photons that there's such a nice thankful quantum system for applications.
+[11:51] But changing gears, but we couldn't do anything about shooting us entanglement which is actually popular these days, for many reasons, because the lecture was a Nobel Prize last week.
+[12:02] and also basically this kind of Austrian spirit
+[12:05] that we like these quantum features.
+[12:07] So as probably most of you know, quantum entanglement means
+[12:10] that you have two more particle systems
+[12:13] where the information of the whole system is known,
+[12:17] but of the individual system, it's not known.
+[12:19] So basically a supposition of two dyes here,
+[12:22] two dyes which could be the six or one,
+[12:25] you know altogether must be the same,
+[12:27] but you don't know which one.
+[12:28] There's a supposition state.
+[12:29] If you look at one now, you get a random answer,
+[12:31] but the random answer in one state defines immediately, instantaneously,
+[12:35] the outcome of the other side in our system.
+[12:38] And that's something which acted as a resource also for computers.
+[12:42] So how did we get those entangled systems?
+[12:44] And there was a breakthrough method developed in the late 90s, the 95,
+[12:50] which also contributed certainly to the Nobel Prize of Anton Zeilinger,
+[12:54] that developed, I would say, a nice and feasible way to get entangled photon pairs
+[12:59] without the complicated overhead 10, 15, 20 years ago or before,
+[13:04] using cold atoms or atoms in particular arrangements,
+[13:08] and then very little rates of photon pairs being generated.
+[13:11] So a breakthrough from my eyes of technology
+[13:13] was certainly this kind of down-conversion crystal
+[13:15] where a laser basically penetrates this so-called nonlinear crystal
+[13:22] where by having momentum and phase conservation,
+[13:26] sometimes a photon from the laser split into lower energy photons
+[13:29] which are differently polarized.
+[13:31] So you get here basically two photons out of one photon.
+[13:34] And the nice twist here is one photon is H-polarized,
+[13:37] the other one is orthogonal polarized.
+[13:39] And now comes the magic trick.
+[13:41] It will take light from the cross-sections,
+[13:42] let's say here and there,
+[13:43] or if you take this picture here on the right side,
+[13:46] from the green rings, that's horizontally polarized,
+[13:48] that's vertically polarized.
+[13:49] It will take light from the cross-section.
+[13:51] Then you get two photons,
+[13:53] but you don't know where they came from.
+[13:54] So you have generated an entangled state
+[13:56] where you have HV or VH, okay?
+[13:59] as simple as that. Well, it's not that simple. It takes, of course, proper alignment and very kind of very precise fingertips to get it done.
+[14:08] But end of the line is with such a nonlinear crystal, you can generate such an entangled state in a nice way.
+[14:14] And this opened up, of course, many, many developments.
+[14:19] And of course, well deserved, a Nobel Prize for Anton Zeidinger, who developed this source and used it then for many nice investigations covering quantum teleportation, quantum swapping, many pioneering work at that time, which all of them relate on such a source that you have in the laboratory system.
+[14:40] And there's, of course, a Nobel Prize already mentioned by our introduction today from Alan S. Bay.
+[14:46] used atoms back in the days,
+[14:48] John Glauser, atomic systems,
+[14:50] and Anton Zeidinger used this down-conversion crystal
+[14:52] for the entanglement studies in the laboratory.
+[14:56] But back to quantum computing,
+[14:58] so now I try to go back on the track.
+[14:59] So to wrap up the story here,
+[15:02] in my eyes, photons are beautiful for another reason,
+[15:05] namely they're mobile,
+[15:06] they fly around at the speed of light, literally.
+[15:09] And therefore, they're also a nice system for other fields,
+[15:11] which we'll not cover today,
+[15:13] but you can also cover quantum communication aspects
+[15:15] with that. Foundations I just mentioned, metrology, the natural system for measuring something with
+[15:20] light. You can enhance microscopes by using quantum light and now for 20 years it's known
+[15:26] you can also use them for computing by using particular treatments of these systems.
+[15:33] So quantum computer, I guess many of you know of that, so let me summarize a bit what a quantum
+[15:40] computer in my eyes is about. So as mentioned you have an input, that's the magic, that's where the
+[15:44] supposition of serums wants play a role and then you process them and you get an output.
+[15:49] And the processing is done by quantum algorithms. I think even though there's such a long lasting
+[15:57] history about quantum algorithms and investigations, in my eyes they all have something in common.
+[16:03] Quantum algorithms only work nicely and they can exploit this kind of interference phenomena
+[16:08] because you have so much input, such a big input state of all serums and wants, how do you get the
+[16:13] right answer. So you need an algorithm that actually finds or is useful that knocks down
+[16:18] the wrong answers and by interference it gets you quickly to the right answer. So for me in a cartoon
+[16:24] a quantum algorithm is just a processing of all possible input states and then by writing it down
+[16:30] in a quantum mechanical way that you have interference and different probabilities
+[16:35] you apply at the end an algorithm where the wrong ones disappear and if very high probability the
+[16:41] the right one survives.
+[16:43] Therefore, algorithms that have already
+[16:45] this kind of interference intrinsic inside,
+[16:47] like Fourier transformations and so on,
+[16:50] work very nicely.
+[16:51] We'll come to that in a second.
+[16:53] Of course, that's not a quantum computer.
+[16:55] Nowadays, you write it down
+[16:56] in the modern quantum circuit language.
+[16:59] We have the qubits written down as lines.
+[17:01] Here's a serious state.
+[17:02] We make it a supposition by a Hadamard operation.
+[17:05] But you also need something to entangle,
+[17:07] to make qubits connected.
+[17:09] So therefore, we use these two qubit gates
+[17:11] shown as these lines where one and for example, this third qubit are connected, the so-called
+[17:16] seen as a controlled node, controlled phase gates, which can introduce this coupling in
+[17:22] a computer language, introduce entanglement in a computer language.
+[17:26] So for building a universal computer, what do we need?
+[17:29] Actually just single qubit gates and this kind of two qubit gates.
+[17:33] And if you put them together, we can in principle build all kinds of operations that are needed
+[17:37] for a quantum computer to introduce.
+[17:40] So what kind of algorithms do we have?
+[17:43] So the most famous ones are shown here on the right side.
+[17:46] The first one introduced by Peter Schor was indeed an algorithm based on Fourier transformation,
+[17:52] and therefore it works so nicely.
+[17:54] So it was shown that this one has an exponential speedup compared to classical algorithms
+[17:58] for factorizing numbers into the prime factors.
+[18:02] So, for example, like if you see and you have to find the a and b of that.
+[18:07] and for that it was very basically the eye opener these algorithms exist and can be very efficient
+[18:13] another one was grover who was a few years later to show that he can have a search
+[18:17] can be much more better or efficient but not as good as a short algorithm but just for quadratic
+[18:22] speed up you can find an unsorted base of a database um the thing you're looking for
+[18:29] more efficiently by this quadratic speed up and another big zoo or whatever area is dedicated to
+[18:36] to quantum simulation, which actually is the goes back to Feynman, who in 82 wrote, there's
+[18:42] plenty of space at the bottom mentioning that actually quantum systems have this potential
+[18:47] to be used for studying quantum system in the spirit of simulating quantum system, also
+[18:52] shown since Feynman and later on in the modern language by Cephaloid 96, that you can use
+[18:57] quantum algorithms to sometimes efficiently simulate quantum systems, which would otherwise
+[19:05] be hard to calculate. And you, the experts here, if you talk about full CI configuration or density
+[19:10] function theory, it's amazing what nowadays you can do. But of course, you always face an
+[19:14] exponential challenge problem that's very hard to simulate up to arbitrary accuracy, the energy
+[19:21] levels, or everything else of such systems. And with quantum systems, there's the hope you can
+[19:26] simulate those more effectively. I make it short here, and I'm happy that nobody's here. The reason
+[19:32] I've put now its picture here.
+[19:34] So I picked out a few cornerstones in quantum algorithms.
+[19:40] There are way more.
+[19:41] So actually, the right answer would be here.
+[19:43] Go to this link.
+[19:44] There's a zoo of algorithms.
+[19:46] There's current development.
+[19:47] There are not too many, but there's still something,
+[19:49] constant progress in finding one and proving,
+[19:53] it's much harder, that they're really better than classical ones.
+[19:57] And summarizing briefly what's out there,
+[20:01] We have those based on Grover, the search algorithms, which have this quadratic speedup.
+[20:05] But people realized you can apply this to different problems, including, of course, the database search,
+[20:10] but also like this kind of saturation problem, satisfiability problems, where you have to color graphs and so on.
+[20:16] And for some of these instances, they work better.
+[20:20] De Fourier transformations work exceptionally well because of their periodic pattern intrinsically of the mathematical system.
+[20:27] for example here, factorizing numbers,
+[20:31] which is the killer app for the secret agencies
+[20:35] of Shor's algorithm,
+[20:37] because you could instantaneously
+[20:39] crack our current existing encryption methods
+[20:42] that are based on factorizing big numbers
+[20:45] by this RSA code.
+[20:48] Some linear equations, recent developments
+[20:50] can also be solved more efficiently
+[20:52] with this kind of quantum Fourier transformations.
+[20:54] On the other hand, we have quantum Monte Carlo algorithms, which have polynomial speedup
+[21:00] existing.
+[21:01] And then comes a few where it's not clear yet.
+[21:04] So if you could talk to computer scientists, I would probably do a sin now by being not
+[21:08] precise to telling you which of those have been proven to be better, which of those have
+[21:11] to be conjectured, which of those is just active research.
+[21:16] And here the last ones are super active fields that people believe there's a benefit, but
+[21:21] it has to be proven yet if and how much.
+[21:24] This covers also quantum eigen solvers, that's particularly for chemists interesting to find
+[21:28] energy levels of systems and the very big field machine learning or quantum machine
+[21:33] learning.
+[21:34] Those we pursue here in Vienna, where it's not clear yet what's better.
+[21:40] The feeling is there's something better using quantum systems for identifying areas or splitting
+[21:47] areas, categorizing areas in data like quantum support vectors, k-nearest neighbors, and
+[21:54] networks, which will be the end of my talk, giving an outlook on what we do here in Vienna.
+[22:01] Good. Back to the reality. So what's the situation right now with hardware and real computers?
+[22:07] In my eyes, it's actually similar to the situation shown here on the cover page of
+[22:13] The Economist a few years ago. Namely, it's an open race. You see different hardware systems
+[22:18] from superconductors, photons, and ions. It's not clear yet. Okay, for me, honestly, it's totally
+[22:24] not clear yet who got a bit of winner at the end there's amazing progress and you can take a look
+[22:29] at the progress by nice plots that you find nowadays everywhere where you see the benchmarking
+[22:34] qubit numbers but that's not everything but let me start first what you see here so what you see here
+[22:39] is nowadays race so you have number of qubits and here's the year okay so since the late 80s
+[22:46] let's say 2000 we have the capability to entangle two qubits and to do controlled operations since
+[22:53] understand the number of qubits on the logarithmic scale goes dramatically up and that's obviously
+[22:58] also something you see in the newspapers nowadays you read last week or two weeks ago 400 qubits on
+[23:02] IBM and these amazing numbers out there that you can have and you see it because you have here the
+[23:07] companies from from the different fields from Google is basically here this this 72 qubit system
+[23:13] IBM right now with 50 and the jump to thousand uh end of this end of next year there was D wave the
+[23:20] one of the first companies already in the dark red 2007 which was 28 and then 2928 qubits available
+[23:29] at least in the system but when you say how powerful they are well then it's hard to clarify
+[23:35] what you mean with that so for example if you take entanglement you would like to entangle all of
+[23:39] those then it becomes very difficult for those systems and the current record is still 24 qubits
+[23:45] with ions that have been entangled.
+[23:48] If you have bigger systems,
+[23:49] then you have an amazing system,
+[23:51] no doubt about that.
+[23:52] But it's still not the case
+[23:53] that all of those can be easily connected,
+[23:56] that it can entangle all of those
+[23:57] or all of those work as you wish.
+[23:59] So right now, the qubit number is amazing,
+[24:02] but it doesn't reflect the full story
+[24:04] about what computers can do.
+[24:06] So people therefore very often focus on the labs,
+[24:08] research labs here focus on smaller systems,
+[24:11] but trying to improve the controllability of the systems.
+[24:17] Sorry, I forgot to mention my Norbert Schuch at the end.
+[24:19] Thank you for having Norbert Schuch moving.
+[24:21] I put Norbert's face here
+[24:23] because it's an active field of research
+[24:25] that basically people,
+[24:28] like there's a professorship on quantum algorithms
+[24:30] here in Vienna by Norbert Schuch,
+[24:32] but he would be the right person to ask details about that.
+[24:34] I forgot to mention this
+[24:35] because he already moved in the beginning,
+[24:37] but thanks for moving again.
+[24:44] Good.
+[24:45] That was my introduction
+[24:47] to the quantum computer framework itself.
+[24:50] I would like to show you
+[24:52] where we are with photonic systems right now
+[24:54] and what's happening here in Vienna.
+[24:55] So photons,
+[24:57] if you would like to build a photonic,
+[24:58] sorry, I thought I wanted to mention something.
+[25:02] Here's the present.
+[25:04] Here's the future.
+[25:05] some companies make very bold statements
+[25:08] about what they think they can achieve
+[25:10] in the next couple of years
+[25:11] and there's one point here which really
+[25:14] rifts the 1 million qubit
+[25:15] state space
+[25:17] in claim to be
+[25:20] 2026 which is based on
+[25:22] photons okay so even though you see
+[25:24] many systems here based on
+[25:26] superconductors or ions
+[25:27] there are a few photonic systems companies
+[25:29] including one very big one
+[25:31] who aims to have 1 million qubits
+[25:33] photonic qubits in the next couple of years,
+[25:36] at least according to the business plans
+[25:39] and things that are published
+[25:41] basically to show the developments
+[25:45] within the companies.
+[25:48] Good.
+[25:49] Back to what's happening in the lab
+[25:51] and back to how these computers look like for photons.
+[25:54] At the end, there's not much needed.
+[25:56] So what do you need?
+[25:57] We need a photon source to produce single photons.
+[25:59] We need some integrated optics to let them meet and interfere them on a chip.
+[26:05] And we need detectors at the end.
+[26:07] That's a quantum computer for photons.
+[26:09] At least in the cartoon picture.
+[26:12] If you zoom in, well, then there are some challenges that we have to address.
+[26:16] And the biggest challenge is to get good single photons.
+[26:19] So I think nature fights with all its tricks and all its methods that we don't get single photons easily.
+[26:25] So we have photons everywhere from light bulbs, from lasers, but they're the wrong ones.
+[26:29] They have properties that are not good enough for quantum computers.
+[26:31] You want a single photon, nothing else.
+[26:33] And that's a real challenge.
+[26:34] So that's the wish list to be identical.
+[26:37] Each photon, one with respect to the other one.
+[26:40] Photon and the noise contribution.
+[26:42] That means not two, not three, not more photons.
+[26:44] And ideally, when I push a button.
+[26:46] Taking the down conversion source, which was actually good enough for Nobel Prize,
+[26:50] which was important Nobel Prize, is a beautiful system.
+[26:53] But it's hard to scale up for quantum computing applications
+[26:56] because the emission here,
+[26:59] even though it gives you right away entanglement,
+[27:00] is random.
+[27:02] So it's a probabilistic source
+[27:03] where sometimes the laser gives you a photon.
+[27:06] And even moreover, when the photon pair comes,
+[27:08] there's noise intrinsic
+[27:09] because sometimes there are two pairs
+[27:11] or three pairs coming out.
+[27:12] And all this together is not good
+[27:14] for the quality of photons for the computer.
+[27:17] So the trend nowadays to get good single photons
+[27:20] is to take atoms.
+[27:22] But atoms are hard to manipulate.
+[27:24] You have to trap them.
+[27:25] You have to cool them.
+[27:25] So what you do, you make atoms that you like to have.
+[27:28] So you make artificial atoms, which are called quantum dots,
+[27:32] where you take a small semiconductor system,
+[27:35] which behaves like a single atom,
+[27:37] that when the laser comes, you excite,
+[27:39] atoms fall back and give you a single photon out.
+[27:41] Very nice.
+[27:43] So you put a cavity around.
+[27:45] So now it's deterministic in the way that the photon is always generated.
+[27:49] But there's no free lunch.
+[27:51] So now the challenge is how to get the photon out.
+[27:54] Here the photon comes out nicely because it propagates in the direction of the laser.
+[27:57] You can catch it, but not a good photon.
+[28:00] You get a good photon, but hard to catch.
+[28:03] So what do you do as well?
+[28:04] You build cavities around and other methods to catch it in a way that at the end of all those steps,
+[28:09] you get a single fiber, a single mode fiber in there.
+[28:13] So now the losses of such a system are given basically by technology.
+[28:18] How good you can catch the single photon.
+[28:20] Therefore, people say, well, it's much better to work on this technological problem
+[28:24] than to face this natural problem.
+[28:26] You can't make it deterministic.
+[28:30] Well, let's see how to scale up.
+[28:31] If you would like to build a photon as a computer with many qubits,
+[28:35] then each qubit is a photon.
+[28:37] And if you take such a source,
+[28:39] then you're limited to 10 photons in a standard way.
+[28:42] Maybe 40 photons if you do it magically.
+[28:44] Why?
+[28:45] Because each source emits randomly,
+[28:47] and to have two events randomly happening at the same time,
+[28:50] It's not often the case.
+[28:51] Like 1% here, 1% emission probability there,
+[28:55] 1% times 1% is 10 to minus 4.
+[28:57] So it goes down exponentially.
+[28:59] If these sources, where you take one source,
+[29:02] it fires photons all the time,
+[29:04] and then you delay the first,
+[29:05] then it meets the second photon,
+[29:06] and the third photon with such a so-called demultiplexing technique,
+[29:11] you can get easily to 20 photons.
+[29:13] And if you do it smart, with active elements,
+[29:15] easily 100 photons,
+[29:16] at least according to what theoreticians think about
+[29:19] engineering capabilities in the near future.
+[29:22] So big jump in the parameter space.
+[29:24] Now you could say, wait a second,
+[29:25] 100 photons here,
+[29:27] I see a million photons over there
+[29:28] that they promised in the next couple of years.
+[29:30] How can it be?
+[29:31] I want to show that this number is sufficient
+[29:33] for blueprints to have as big as you want
+[29:37] your computer working in the lab.
+[29:39] Just a few slides from now.
+[29:41] Yeah.
+[29:43] I thought you'd use one source.
+[29:44] It's easy.
+[29:45] You would have to use several sources,
+[29:46] but it's still not easy at the moment
+[29:48] to make them the same quality. So, it's still like a little random fabrication, but in the
+[29:53] future we'd like to have several sources synchronized.
+[29:56] Not identical, basically.
+[29:58] Yeah, that's the problem here.
+[29:59] Okay, it was an SPD-C source.
+[30:01] Excuse me?
+[30:02] It was an SPD-C source.
+[30:05] Spontaneous parametric down conversion. That's this source here,
+[30:08] in the beginning, this one here. Spontaneous parametric down conversion. That's the way.
+[30:13] Sorry.
+[30:16] Okay.
+[30:17] There's a picture about what's existing now.
+[30:18] In the future, you would draw many more.
+[30:22] Good. Photons.
+[30:23] Now we have to manipulate those.
+[30:24] How do we do it?
+[30:25] Well, I've shown it before.
+[30:26] There's one little beam splitter where light can couple in modes.
+[30:30] But we can do it much better.
+[30:31] We can tune it.
+[30:32] So how do we tune it?
+[30:33] Well, we take the same system here with light comes together.
+[30:36] We put a phase shifter there and then another beam splitter.
+[30:39] which overall allows the photon to be, at the end here, controlled.
+[30:43] So we can decide whether the photon will be found in this mode,
+[30:46] or photon will be found in that mode, or in any other position.
+[30:48] We can tune our qubit, our one qubit space, or the Bloch sphere,
+[30:52] the Lechner Bloch sphere, with such a device with very high precision,
+[30:56] up to 10 to minus 8.
+[30:57] So it's really something that people believe that is done in terms of technology
+[31:00] to be really in a scalable way with the control of photons.
+[31:06] So, of course, one is not enough.
+[31:07] people would like to have more modes than what we have.
+[31:09] So we have actually one in Vienna coming from MIT.
+[31:12] We have a chip with 26 modes.
+[31:14] It's just five millimeter long, so it's really as big as my fingernail.
+[31:17] Where if many of those systems as before, beam splitter, phase shifter,
+[31:23] done by heating, so you heat up locally to get a little more distance in the mode,
+[31:26] it expands.
+[31:28] And if those systems in there, these little interferometers,
+[31:32] the 88 of those inside, you have the capability to tune
+[31:36] what happens if the photon is in there in a nice and controlled manner.
+[31:40] So this is called a photonic chip,
+[31:42] where we basically process the information of the computer.
+[31:46] It doesn't come to everything, but a lot of stuff.
+[31:49] And I will show in a second how this is working.
+[31:52] So what's the last step? Detectors.
+[31:53] I think that's something which is almost done in terms of technology.
+[31:57] There's an amazing progress in the last couple of years
+[32:00] where, of course, you don't want to lose the photon at the end.
+[32:03] You fight so much to get it, then you process it.
+[32:05] hopefully very small losses, they will be sad to lose at the very last step.
+[32:09] So here people use the best detectors, and these are based on superconducting
+[32:13] material where efficiencies of 95, 95,
+[32:17] 97% can be realized. And typically you take
+[32:21] nanowires, where you have many nanowires here shown as a
+[32:25] plate, photon comes, it makes a hotspot, it means the resistance
+[32:29] is changing, so it's not superconducting anymore, and then you see this change of being
+[32:33] superconducting or not superconducting anymore as a signal.
+[32:36] Why nanowires?
+[32:37] Because it's a thin material that when it heats up,
+[32:40] it gets cold again.
+[32:41] It's rapidly cold again.
+[32:44] And there's the system that nowadays you can buy.
+[32:46] So we have here these nanowires shown in the picture.
+[32:49] That's the real picture with the fiber coming.
+[32:51] So fiber in, here the nanowires,
+[32:53] and you put them here in a fridge
+[32:55] because they're superconducting.
+[32:56] So they want it cold between four Kelvin,
+[32:58] sometimes one Kelvin,
+[32:59] depending on the system that you are willing to buy.
+[33:03] What?
+[33:04] When the photon hits it.
+[33:07] This is the reason why it loses superconductivity.
+[33:10] So in short, you heat up.
+[33:12] OK, not superconducting anymore.
+[33:13] In more detail, you're going to make a hot spot,
+[33:15] and the current gets all the current in there.
+[33:18] And by the second oil effect, the current
+[33:20] has to basically go around this hot spot,
+[33:22] accidentally on the side, and not superconducting
+[33:24] there at these spots anymore.
+[33:26] And this has changed the material
+[33:27] to be not superconducting anymore.
+[33:29] It's changing resistance.
+[33:31] This gives the signal, ah, something happened.
+[33:33] And then after the photon has been absorbed, it gets called again from the environment and says, I'm ready for the next shot.
+[33:41] That's how it goes. So there's a cycle here. Photon comes, signal, then ready to go for the next one.
+[33:52] Good, detectors here.
+[33:55] 3% is that already including the packaging factor?
+[33:58] Yep.
+[33:59] Oh, wow.
+[34:00] So actually, we have more.
+[34:01] It's hand-selected, also a question of money.
+[34:04] But you get those, yeah.
+[34:06] That's basically in and five.
+[34:08] A single, there's a five-way in, single out, yeah.
+[34:10] The package.
+[34:15] Good.
+[34:17] How much time do we have?
+[34:20] How much?
+[34:23] 20 minutes.
+[34:24] Excellent.
+[34:25] So I hope for half an hour, actually.
+[34:27] But OK.
+[34:29] OK.
+[34:30] So, I have two avenues to go, okay, but maybe I can combine those.
+[34:35] So, the next one is to show you how you build a universal computer based on the things you've
+[34:39] just seen.
+[34:40] And I love to show it because it really goes back to Austrian research.
+[34:44] Then I show at the end what else we do with those photonic systems.
+[34:48] So for building a universal computer, which basically scales up nicely and can do all
+[34:52] the things we would like to do, you have a problem with photons.
+[34:55] The problem is when you would like to implement such a circuit, let's say you have single
+[34:59] photons which encode the qubit. You can address them nicely for the one single photon control.
+[35:06] It's easy. We've seen this before. But the hard part are those things here.
+[35:11] To make two photons interacting. Because photons don't interact. So you have to make,
+[35:15] you have to find a smart way to get those to go through a process that they become entangled.
+[35:21] Or that basically you do some other kind of operations between two photons. That one photon
+[35:26] tells the other one how to change. So therefore this is easy and this one is the hard part for
+[35:31] photonic systems. And this one is for example here the so-called controlled NOT gate which is shown
+[35:35] a truth here where that in the first photon is horizontally polarized it doesn't affect the
+[35:39] second one. If it's vertically polarized you see it flips the target photon to become different.
+[35:45] So the controls is the same and this guy is the slave who follows what the first one tells him
+[35:50] to do by its state. If you try to build something like this, like this kind of gate, what can you do?
+[35:57] So what was done 20 years ago is the first demonstrations, well you take two photons,
+[36:02] you build a smart interferometer where you say well the photons come out here at this part and
+[36:07] that part, they have changed as if they would have done this scene of operation. This you can do.
+[36:14] What's the problem? Well it's probabilistic, 11% success rate, and you have to measure the photons
+[36:20] that they have been there.
+[36:21] So you kill them.
+[36:23] So they do the mission, but they're dead.
+[36:27] But as you can do, well, there's smarter solutions.
+[36:29] You make a bigger interferometer.
+[36:31] Photons come in, control target.
+[36:33] You take extra photons, so-called ancillars,
+[36:36] which altogether interfere that when you measure these two,
+[36:40] this output here is not affected,
+[36:42] and they go through this kind of operation.
+[36:47] So you basically have these kind of hero guys
+[36:49] that you measure and be sacrificed
+[36:51] to make the others going through this operation.
+[36:54] Amazing.
+[36:56] Well, it's still not perfect
+[36:57] because the chance is 25% to measure photons here,
+[37:01] which of course is not the best gate.
+[37:02] You want to have always it working,
+[37:04] not always randomly.
+[37:06] Luckily, if you increase the numbers of ancillars,
+[37:09] you can drive it to one.
+[37:11] I've done this, many groups,
+[37:12] including us has shown this in the lab,
+[37:13] even if it's chips,
+[37:15] these kind of circuits work.
+[37:16] But if you would like to scale up for universal gates
+[37:18] that always work.
+[37:20] Then you'll be at the pioneering work
+[37:21] of these guys,
+[37:23] Nille van Milburn,
+[37:23] 20 years ago,
+[37:24] who have shown this can be done,
+[37:26] but you need in the order of 100,
+[37:27] 2,000, 10,000 qubits,
+[37:29] extra qubits per gate.
+[37:32] Well, in principle, scalable.
+[37:33] It's not exponentially scalable,
+[37:35] but it's still crazy.
+[37:37] Remember, it's hard to get single photons.
+[37:39] So this is the catch-22.
+[37:42] Well, there's amazing progress
+[37:44] since the last 20 years,
+[37:45] and somebody has been dramatically put down,
+[37:47] But at the end, the scheme where you have photons always sacrifice the slaves, that these here make the gates, has been turned out to be not the best architecture.
+[37:57] The best architecture is actually something based on a totally different scheme.
+[38:03] They use a highly entangled resource state, a cluster state, for computing.
+[38:07] And if you go in this paradigm of quantum computing, then it'd be way more efficient.
+[38:11] So what's this measurement-based class of quantum computing, which has been developed
+[38:16] by Rausendorf and Briegel?
+[38:18] Briegel is the Innsbruck professor of quantum theory, therefore I like to mention it as
+[38:22] an Austrian contribution to scalar quantum computers.
+[38:26] Brief jump for the mathematicians, what's quantum computing, what the measurement-based
+[38:31] scheme is about.
+[38:32] So the paper goes back to 2001, where they've actually, if you read the abstract, that's
+[38:36] basically my story here.
+[38:37] So they've developed a quantum computing scheme that consists entirely of one-qubit measurements.
+[38:42] So you just need to measure the entangled state where each measurement actually changes
+[38:48] the neighborhood state.
+[38:49] And this allows to make a computation.
+[38:51] But to read it, let's read together.
+[38:53] So that consists entirely of one-qubit measurements on a particular class of entangled states,
+[38:58] the cluster states.
+[38:59] The measurements are used to imprint a quantum logic circuit on the state, thereby destroying
+[39:05] its entanglement at the same time.
+[39:07] So in other words, of course, when you measure it, you can't go back.
+[39:11] I did not mention before, in a circuit picture, you can go always back and forth.
+[39:14] There's linear operations.
+[39:16] You go one way, go the other way.
+[39:18] Here, it's not possible.
+[39:19] When you measure, the system is dead.
+[39:21] But it's fine, because you want to just get the result.
+[39:23] You don't need to go back.
+[39:25] So what are these states, actually?
+[39:27] These states are, well, that's how you draw it.
+[39:29] It's a qubit, and it's entangled to the neighbors.
+[39:32] For the mathematicians here, what you do is you take the supposition states of qubits,
+[39:36] and you apply between each neighbor a so-called entangling operation or an ising operation
+[39:42] that introduces this entangling bond.
+[39:44] It's the hard thing to do.
+[39:46] But let's assume this is done.
+[39:48] Then if a cluster state, and now in a cartoony picture, I apologize for being very superficial
+[39:52] here, you remove qubits you don't want.
+[39:56] You just leave those here with the lines.
+[40:00] And the measurement per qubit here effectively perform the computation because the measurement
+[40:04] here affects the neighbor measurement here affects the neighbor and whoops you see this line here
+[40:09] this qubit affects the qubits down there so this this is similar to a entangling bond so to make
+[40:16] it short the measurements here allow to blend all kind of computations on a given cluster state in
+[40:21] the mokotuni picture if it's drawn like this you make measurements here effectively make a one
+[40:26] qubit and you rotate it stepwise measurement by measurement if it's 2d then you have basic
+[40:31] measurements here effectively do the same as a circuit with these kind of input states followed
+[40:36] by entanglement from this bond and so on but just just just to show that this is really a powerful
+[40:43] framework back to architecture of computers well how does the computer look like give me qubits
+[40:50] entangle them make measurements there are certain rules how the measurements have to look like
+[40:55] And then each measurement here changes the state here according to which measurement it did.
+[41:02] So the measurement basis rotates this qubit even by this angle here that defines the basis.
+[41:10] That's basically the summary.
+[41:12] So why do a body with that?
+[41:14] Well, let me go back to what we need to do.
+[41:16] We want to build a universally big quantum computer.
+[41:19] So this is done by building a cluster state.
+[41:22] Then simply make measurements.
+[41:23] that basically is the algorithm, and then read out.
+[41:27] So the challenge is to get the cluster state.
+[41:30] And why is it not good for photons?
+[41:31] Well, how would you do it?
+[41:33] Well, you take photons,
+[41:34] and you have to make this entangling bond.
+[41:36] And as shown before, you can take photons here,
+[41:38] send them in the beam splitter, look at the output port,
+[41:41] and then you would select those where they went out here,
+[41:44] and then give it a bond.
+[41:47] But of course, you need extra longer photons here,
+[41:50] longer photons there,
+[41:50] because you lose two by the measurement.
+[41:52] So you have three photons here, three photons there, and I make the measurement here.
+[41:56] Then this guy's gone, this guy's gone. You have six, so three and three are six.
+[42:00] Two are gone. That means these four are left. They give me the cluster. Yoo-hoo! It was grown.
+[42:05] What's the problem now? Well, it's just 50%. That's not a good scaling, 50%.
+[42:11] The breakthrough came to say, well, if you adapt this kind of beam splitters,
+[42:14] you have some extra beam splitters and four extra photons, then it's excessively 75%.
+[42:19] percent or I give you two entangled pairs and build it somewhat differently against any five percent
+[42:25] success rate. That means in three or four cases I grow. This is interesting. Well graph theory.
+[42:35] You want a big cluster state that might be ugly but connected that you can go through all the
+[42:39] qubits till the end. And it was shown that if I give you clusters with five qubits and I succeed
+[42:45] 50% of the timing in connecting them, then on average, according to graph theory, you will
+[42:51] always find a bond that goes from the very beginning till the very end of your measure.
+[42:55] Maybe not the straight line, maybe it has to go up here and there, but you know where the fusion
+[42:59] failed. So when you know which one is the good connection, then you make your measurements
+[43:03] according to this line. And according to percolation theory, like percolation is kind of
+[43:08] of Turchsidan from Coffey.
+[43:10] The collation theory always find a way to go to the end.
+[43:14] 50%.
+[43:14] You have to do 50%.
+[43:16] But you need these five qubits in the beginning.
+[43:18] Can you do better?
+[43:20] Yes, you can.
+[43:21] If you go down to three qubits,
+[43:22] the smallest system in your hands,
+[43:24] and it was shown that if you achieve
+[43:26] even the 75% for diffusion here,
+[43:29] this describes about how much success rate you need
+[43:32] to basically make a graph.
+[43:35] If you have 75% success rate,
+[43:36] You just need three qubits in your hands to fuse them by basic optics.
+[43:42] I tell you this because for all the architects out there,
+[43:46] ions, superconductors, it's very different.
+[43:50] These big systems face the challenge in how to make it bigger and bigger
+[43:53] from the skating.
+[43:54] If you have five, how to go to the next big system, okay?
+[43:57] How to connect those and so on.
+[43:59] Photons are the opposite.
+[44:00] So these architectures rely on the challenge to get these free photons
+[44:03] on demand with high quality.
+[44:05] And therefore the blueprint is really the hardest thing is the first part.
+[44:09] Give me a good free photon source.
+[44:11] I like to raise the challenge.
+[44:13] If somebody finds a way to solve the big problem, it's not easy at all.
+[44:18] But if you find, if you just have these free photons in your hand,
+[44:21] you can make the next steps by basic optics,
+[44:25] where you monitor which detector fired to grow it up to arbitrary size.
+[44:29] So then you have this fusion gates,
+[44:31] then just passive optics and measurement-based computation.
+[44:35] And exactly that's a picture of the blueprint companies have in mind.
+[44:39] The hardest part is this free photon generation.
+[44:41] So it's called Grimberger and Zeilinger states from historical reasons.
+[44:45] And then comes the probabilistic fusions.
+[44:48] And you know which graphs are working.
+[44:50] And at the end, you have computers that follow that and you make measurements.
+[44:54] And indeed, one of the biggest quantum computing companies is following this direction.
+[45:00] That's Psi Quantum from a former professor from Bristol, Jeremy O'Brien, who is now in California.
+[45:05] Actually, this number is not right anymore.
+[45:06] It's almost a billion what they raised so far for doing exactly that.
+[45:11] Yeah, it's the it's currently the hardware architecture for photons.
+[45:16] But well, being a scientist, you can say, well, that's good enough.
+[45:20] You still want to look at different things.
+[45:22] People like to look at fusion gates, this kind of connecting atoms
+[45:26] and connecting photons with other means.
+[45:28] There's this big field of beautiful science with atoms,
+[45:31] so-called cavity counter-electrodynamics.
+[45:34] So you have atoms being the mediator that photons can couple to each other.
+[45:37] Many groups do it with Caltech and Max Planck.
+[45:41] People work on getting these GHC states right away
+[45:44] from a magic quantum thought that spits out free photons in a beautiful design.
+[45:49] People work on that.
+[45:51] We follow directions here, so more on the research aspect to look at the
+[45:54] nonlinear properties of graphene to make photons interact as an interesting route
+[46:00] for looking at these kind of photonic operations.
+[46:04] So that was actually my chapter of to hopefully entertain you and show you how you build a
+[46:09] universal quantum computer for photons.
+[46:11] The last minutes that I have from the chair is about twists, what actually we like to
+[46:15] do in terms of applications, what photons are good for.
+[46:19] How much time do you give me?
+[46:21] Well, you shouldn't say this to me.
+[46:24] Okay.
+[46:25] Okay, I picked out a few, okay, to hopefully show that it's such a beautiful science that
+[46:31] engineering is one important aspect, but it's more fun to show what else can be done with photonic qubits.
+[46:36] So one thing that I think was for me in particular amazing is that quantum computers allow for security.
+[46:44] So we always talk about speed ups, but personally, I think it's not the main application.
+[46:48] I think the fact that quantum computers allow to protect data, processed data, is way more relevant facing our
+[46:56] Internet and these cloud services of computing than just the speed up.
+[47:01] But that's my personal opinion, of course, about importance.
+[47:04] So the question if quantum computers can be,
+[47:07] sorry, if computers can process encrypted data
+[47:10] goes back to the year 78 when I was born.
+[47:15] Rivas is one of the guys of the RSA code
+[47:17] that was now used for this public encryption,
+[47:20] where one of these pioneers even asked,
+[47:22] can we, by any means,
+[47:24] build a computer where the data is encrypted
+[47:27] so nobody knows what's happening and process it?
+[47:29] There was no answer to that.
+[47:31] So it took 30 years to find a solution, mainly because giving useful answers of encrypted
+[47:37] information is not straightforward.
+[47:39] And we're not talking about a classical solution, which is called homomorphic encryption with
+[47:44] huge overheads.
+[47:45] We'll jump right to the quantum solution, which is a blind, so-called blind quantum
+[47:51] computer, which can be realized.
+[47:52] And blind means it's a feature that it doesn't know the input, doesn't know the processing
+[47:57] or software, and doesn't know the output.
+[47:58] So it gives you all the power, but remains totally ignorant about what you're doing.
+[48:03] Actually an amazing cloud service.
+[48:05] You could basically hide all your data, hide all your whatever secret calculations.
+[48:12] This could be done with a quantum computer.
+[48:15] So in a nutshell, it combines the aspects of quantum cryptography, where you use the
+[48:20] fact that quantum states must be measured to learn something about those.
+[48:24] These measurements change the state.
+[48:25] If you take this aspect into quantum computing, you get this blind quantum computer.
+[48:32] I said measurement, it rings a bell, measurement-based quantum computing.
+[48:36] Of course, it goes hand in hand with this kind of architecture.
+[48:39] And it allows to build a quantum server where you can delegate your computation with basically very little resources in your hand.
+[48:47] So how this is done is just one slide.
+[48:50] And if you have questions, I'm happy to talk more
+[48:53] at a later stage.
+[48:55] It's exactly the same as the measurement-based scheme
+[48:58] if one little change.
+[49:00] So now you might remember we started
+[49:01] with these qubits which are not entangled in the cluster
+[49:04] state picture before.
+[49:06] But now we changed the start at each qubit
+[49:09] as a certain phase between the different states.
+[49:11] So for those who are not familiar with quantum system,
+[49:14] it just means you prepare them differently.
+[49:15] They're all particular different from each other.
+[49:20] As a client, you repair those with different phases, and that's it.
+[49:24] But you know for each qubit the phase.
+[49:26] Let's say 0 plus 1, 0 minus 1, and so on.
+[49:29] Eight different settings are sufficient.
+[49:31] The center to the computer has the power to entangle them.
+[49:33] You know, he's the amazing device with percolation theory,
+[49:37] and the entanglement stand gives you all the power there.
+[49:40] And I tell the computer, please make measurements,
+[49:42] because you know the software.
+[49:44] And the computer, even though he makes this entangled state,
+[49:47] cannot learn what you calculate,
+[49:49] because to understand what happens to the qubits when you make the measurements,
+[49:53] you need two parameters.
+[49:54] One is the measurement setting.
+[49:59] Okay, this is something the computer knows.
+[50:00] He knows the basis.
+[50:02] I measured HV basis.
+[50:03] I measured sigma X basis.
+[50:05] He does not know the pre-existing phase of the qubit.
+[50:09] He needs to know also this phase, which only you know.
+[50:13] And by having this kind of information not at his or her hand of the computer,
+[50:19] he doesn't know what's going on.
+[50:21] As simple as that.
+[50:23] That's the core idea of this blind quantum computing.
+[50:27] And 10 years ago, you could take photons and show that this is really a nice,
+[50:32] amazing application, which can be really realistically studied and done
+[50:38] with little photonic quantum computers.
+[50:40] If you have five minutes, I would like to show something else.
+[50:44] So that's security.
+[50:45] And I can talk forever because we still continue this direction in our labs, as I personally
+[50:49] think security is a main field for computers.
+[50:55] The other thing that we like to look at is, can we change architectures?
+[50:59] Because photons are so nice and so flexible, that we like to investigate different concepts.
+[51:04] And this is something that comes from the theory developments from Charles of Bruckner,
+[51:08] We looked at, well, mechanics allows to superimpose everything, including time, causal orders, not only states.
+[51:17] That basically allowed us to look at different software architectures.
+[51:22] But step by step.
+[51:23] So what's the idea?
+[51:24] I hope now after this almost 45 minutes of talking, you believe where you can superimpose states, zero and one, or electron being at the same time spin up, spin down, or here light being left or right polarized.
+[51:36] You can prepare those kind of states.
+[51:38] But quantum mechanics allows you by mathematics to superimpose everything.
+[51:42] And therefore, Kipfer, including Charles of Pugden, looked at
+[51:47] suppositions that are really superimposing causal relations A before B or B before A.
+[51:54] This is of course interesting in many aspects from foundations up to
+[51:59] time and general relativity. This we will not cover here.
+[52:02] But from a pragmatic side, you can see this as superimposing orders of computer gates.
+[52:07] first comes this operation and then this or vice versa.
+[52:12] This something can do with photons very nicely.
+[52:15] So why is it interesting?
+[52:16] Well, if you think about the circuit,
+[52:18] then textbook would tell you the speed up comes
+[52:20] from superimposing the serum once here, that's right.
+[52:23] But it can also have a boost sometimes
+[52:25] in a superimposed the software,
+[52:27] this architecture by having U1 and U2
+[52:31] or the other one simultaneously coexisting.
+[52:33] And that's sometimes a nice twist to have in your hands.
+[52:37] So in a cartoon way, how does the computer look like?
+[52:41] Well, you have one qubit telling,
+[52:44] please target go this order through the computer.
+[52:46] If I'm state one, that's the state zero.
+[52:49] It'll be state one,
+[52:50] and please go the other order through.
+[52:52] It'll be prepared supposition, zero plus one.
+[52:54] Then if the coexistence of both consecutive steps in here.
+[53:02] And why would this be interesting for this little case?
+[53:05] Well, a one-shot only here,
+[53:07] you could show that you can distinguish if they commute or anti-commute.
+[53:13] A task that no classical or no quantum computer could do by asking only once.
+[53:18] Because you have to look at first this kind of setting and that kind of setting you compare.
+[53:23] A one-shot only, this is not possible by even a standard quantum computer.
+[53:27] That was a nice twist here.
+[53:29] And here, for this particular example, it was shown that one photon going for once could do it.
+[53:35] So back how this is going to look like in a lab, well like this still proof of principle
+[53:40] that you have here this down conversion source looks a little different but it means two photons
+[53:44] come out one is a trigger knowing the second photon is there from this down conversion process
+[53:49] and then we arrange a setup where it comes to beam split and if it goes this way first it comes first
+[53:54] for u2 operation and then here this one is the u1 operation and going out or if it goes straight
+[54:01] first. First is U1 operation, then going all this way through this U2 and coming out here.
+[54:07] At the end you see the beam splitter. You have to close the paths because at the end
+[54:12] nature is not allowed, or you are not allowed to know which one happened first because you
+[54:16] want to have a quantum interference of both orders here in the system. Therefore you close at the end
+[54:22] with this beam splitter again. So now comes the mathematics test. So there's no lecture
+[54:26] on mathematics challenge for you. So we can test commuting or not commuting.
+[54:30] Here's the answer in experiment.
+[54:33] So output here means commuting, output there non-commuting.
+[54:36] So we had here the settings for these two different operations.
+[54:38] We choose, for example, two times power dx operations.
+[54:42] Does it commute?
+[54:43] Two power dx.
+[54:44] Yes, no?
+[54:45] Of course, no?
+[54:46] You see here, green answer, right?
+[54:48] If you take the x and y, blue answer, do not commute.
+[54:56] So at least the setup tells you what you learn in textbook 101 in quantum physics.
+[55:00] operations commute or not commute. That was done with one shot only. Of course, it goes about
+[55:03] different difficult situations. A very high success rate. Good. I make it short to show at the end
+[55:11] where I could talk maybe about other things to show about normorphic computing. I would like to
+[55:16] show the last thing here because it's so often in the press about supremacy of benchmarking classical
+[55:22] computers. So what is that? Supremacy means that people would like to perform a proof, an experiment
+[55:30] where the result of the quantum computer goes beyond what a classical machine can do.
+[55:35] As you get to show that there's no fundamental limit why a quantum computer cannot be the classical device.
+[55:42] Let me show experiments with that.
+[55:46] This is not in contradiction to the first slide half an hour before, if the qubit's there,
+[55:52] because for those examples you don't need really entanglement in your hands.
+[55:56] You need something that is complex in processing, but not necessarily have an entangled state that you can manipulate.
+[56:05] And why photons and what's all this about?
+[56:08] So photons actually were one of the first systems to be considered for showing the supremacy,
+[56:13] because there was a very nice and rather feasible method to do so.
+[56:18] And I apologize for this mathematics here, but it just got you through,
+[56:21] and it's basically basic optics, what you see on the slides.
+[56:25] So the particular feature of photons is when you have photons that come to a beam splitter,
+[56:32] so that's a photon here, photon and a beam splitter, and the beam splitter is given by
+[56:35] a so-called beam splitter matrix written down here. Then it goes straight, it's like this.
+[56:40] If it's reflected, it gets an eye phase shift, which you might have learned from the optics
+[56:44] courses from the surface. But the point is now when they interfere, then both terms,
+[56:50] the terms transmitted and reflected cancel. Because both photons transmitted and both
+[56:56] photons reflected, this gives you ii, i squared minus one, gives you zero and they're bunch.
+[57:02] It makes sense because photons are bosons. I mean they have to bunch if they're quantum
+[57:05] systems. So they jump in the same mode and go out happily there. There's nothing matching about that.
+[57:11] Now, being mathematicians, you would say, wait a second, that's a matrix. If you look at the
+[57:16] coincidences here which disappear. So what you do, you calculate this term plus that term.
+[57:23] That's the permanent because you write AD plus CB. And it was then people realized that the
+[57:30] permanent is a very hard piece to calculate. Different to a determinant, it's rather
+[57:34] straightforward because they're analytical methods. The permanent belongs to a complexity class
+[57:40] called sharp P, which means it's like a salesman problem. Even harder than this,
+[57:44] it's like to ask how many of those solutions do you have?
+[57:48] So extremely hard to calculate.
+[57:50] And photons do it for free.
+[57:52] I mean, send them on a beam splitter
+[57:53] and they make the permanent calculation by their nature.
+[57:56] And that was the eye opener to say, wait a second,
+[57:59] let's perform a computation,
+[58:00] but based on this interference of photons on beam splitters.
+[58:04] So now you take many beam splitters,
+[58:06] phase shifters, photons come in,
+[58:07] and there's history about developments back in the days
+[58:10] about such networks for different reasons.
+[58:12] But in the modern language, they use this to build a network with many beam splitters
+[58:16] and of course not always balanced situation, it should be like an ugly unitary operation,
+[58:23] a big one here, based on many beam splitters.
+[58:25] When photons come in, you basically look at what comes out, then you have to do always
+[58:32] calculations with the permanents to predict the answer.
+[58:35] They've shown that even when you make random shots, so sampling runs, even this is hard
+[58:41] to calculate. And it was shown that if you have 70 photons in roughly 200 modes, you have to do many
+[58:47] calculations which go beyond the best classical computation, the best classical machines. It really
+[58:52] reaches quickly the limit. The spirit of that is actually like this. You know what this is?
+[59:01] SSC, supersonic thrust. It was the supersonic car, an SSC supersonic car.
+[59:06] I forgot. It was the first car that broke the sound barrier on ground.
+[59:11] It was very simple, it was stupid, couldn't do anything else, not turn left, not turn right,
+[59:15] not even has brakes, but it was fast, okay? So it could show there's no fundamental limit not
+[59:20] to break the sound barrier on ground. This boson sampling, as this computation is called,
+[59:26] or the supremacy, is the same purpose. Not the smartest computation. So people try
+[59:30] I try still now, until now, to find applications for such scenarios.
+[59:36] And there are some on the radar.
+[59:38] But in principle, the spirit was, let's be fast.
+[59:40] It might not be useful computation, but we show there's no fundamental limit
+[59:44] by this that cannot be done.
+[59:46] Okay.
+[59:46] That's the spirit, same as this car.
+[59:49] And 70 photons is not that crazy.
+[59:52] Good.
+[59:53] In my words, as a cartoonist, I would like to build a device like this
+[59:56] and send photons in there to propagate and then to bunch and give you an outcome that you can't predict because it's hard to calculate.
+[60:11] So, as the idea came out from, as I go back, 2010, from Aronson, MIT that time, and Akipov, 2010, all experimental groups jumped on that.
+[60:23] Let's be the first when showing this.
+[60:25] Well, we had not 70 photons, so we went to the first non-trivial case.
+[60:29] There was three or four photons.
+[60:30] And indeed, that was then what the groups did from Italy to Oxford to Australia, including
+[60:38] ours, to jump on smaller systems like this.
+[60:41] The three, four photons, and we have seen this little behavior, it works correctly.
+[60:45] It was the hope that somebody would scale up in the next couple of years to be the first
+[60:49] to show supremacy.
+[60:51] We're not the first.
+[60:52] The first one was what you might have seen in newspaper 2019, Google, with this supremacy
+[61:02] test in the same spirit, it was a random circuit.
+[61:04] I will not mention the details here, but the same spirit, not the use for computation,
+[61:08] but same aspects here for the superconductor systems.
+[61:10] And they basically were the first 2019.
+[61:13] But photon guys did not give up.
+[61:16] So there was China then coming in.
+[61:17] It's always China who basically quickly develops amazing technology, who showed that one year
+[61:22] later they outperformed this result by the boson sampling story they adjusted a bit they used
+[61:28] different photons and and details but the end is the same that you have here into the meter
+[61:34] with many photons coming in they interfere in a way that they can't predict and led to result
+[61:40] it was basically so complex that no classic computer can can calculate they want of course
+[61:47] to benchmark themselves if they've worked from google before and look at the complexity at the
+[61:52] state space, at the parameter space,
+[61:55] then Google achieved this
+[61:56] 10 to the power of 16, but now
+[61:58] these people say, well, in a few hours
+[61:59] we can calculate those things.
+[62:02] 2019, it was thought it needs 100,000 years,
+[62:04] but of course there's always progress
+[62:05] in classic computers, and people are challenged.
+[62:08] Can we find for this particular
+[62:09] computation maybe a smart algorithm?
+[62:12] But if the photons they achieved
+[62:14] now 10 to 30, 14 orders
+[62:16] of magnitude, 14
+[62:18] orders of magnitude, more
+[62:20] complex result in terms of state space.
+[62:21] and even more results last year in bigger state space.
+[62:25] So right now, supremacy seems to be done,
+[62:28] that there are computer computations achieved
+[62:31] that really cannot be solved by classical machines
+[62:34] in reasonable time.
+[62:35] That means like in a million of years,
+[62:37] something like this.
+[62:38] So this kind of fear is out of people's head
+[62:41] that there should be no problem
+[62:42] or limitation for computer scaling up.
+[62:45] I stop here because I will not body you off
+[62:47] with the latest results from machine learning.
+[62:49] I will just stop here and jump out to the end.
+[62:56] Sorry, I was too slow in the beginning.
+[62:59] Let's actually take a message.
+[63:01] I think it's a bright future, not because of just the hype and the engineering aspect,
+[63:06] but a bright future that's still not clear yet what can be done.
+[63:08] There's so many aspects, so many possibilities.
+[63:11] And I just showed a few with the security and the boson sampling,
+[63:16] in the superimposed gates.
+[63:17] I did not mention the machine learning tasks
+[63:19] that we have now on the radar
+[63:20] and mimicking the neural networks in the brain.
+[63:24] There's so many things still unclear
+[63:26] and the potential is just to open the box
+[63:28] for what can be done.
+[63:29] It's still exciting times
+[63:31] with quantum computing and applications in that field.
+[63:34] Thank you.
+[63:35] And last slide, I want to thank, of course,
+[63:37] I'm confused,
+[63:38] to the people who stand to actually do the work.
+[63:41] I'm just showing off the feathers of them.
+[63:43] I see some people are here.
+[63:43] These are the real experts and the heroes that are in the lab and making those things
+[63:49] happening and really push technology and science forward.
+[63:53] Now I say thank you for being here.
+[64:13] Thank you.

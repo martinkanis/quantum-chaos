@@ -1,0 +1,4380 @@
+1
+00:00:00,000 --> 00:00:12,960
+Okay, good evening everybody. My name is Christoph Delage and it's really a great pleasure to welcome all of you here for today's Schrödinger lecture.
+
+2
+00:00:12,960 --> 00:00:18,780
+And it's a lucky coincidence that we will have the Christmas reception right after lecture.
+
+3
+00:00:18,920 --> 00:00:32,960
+And of course, you are all invited to come to the AZ common room just down along the corridor and spend some time together at the AZ Christmas reception.
+
+4
+00:00:32,960 --> 00:00:46,800
+So great pleasure that we will have the Schroeder Lecture today of Filip Walther, who came all the way from Portsmagasen No. 5 to Portsmagasen No. 9.
+
+5
+00:00:47,400 --> 00:00:52,580
+So your travel today is very good for, you know, for the climate.
+
+6
+00:00:52,940 --> 00:00:56,580
+So kept the CO2 footprint low.
+
+7
+00:00:56,700 --> 00:00:57,080
+Thank you.
+
+8
+00:00:57,380 --> 00:00:58,000
+Thank you for that.
+
+9
+00:00:58,000 --> 00:01:05,120
+I'd like to welcome also Vice Rector Maia, who is here today with us, and the Dean Radu
+
+10
+00:01:05,120 --> 00:01:05,440
+Bott.
+
+11
+00:01:05,980 --> 00:01:13,360
+Also, Robin Golso, the Dean of Physics, was planning to come, but he couldn't in the last
+
+12
+00:01:13,360 --> 00:01:13,520
+minute.
+
+13
+00:01:13,600 --> 00:01:18,800
+I'd also like to welcome Markus Moore, who is the representative for the Priester Seminar,
+
+14
+00:01:18,980 --> 00:01:21,900
+who is actually on the building here.
+
+15
+00:01:22,840 --> 00:01:26,760
+Okay, so welcome everybody to today's lecture.
+
+16
+00:01:26,760 --> 00:01:43,660
+With the Schrodinger lecture, we usually invite prominent scientists to give a lecture that is of a more general interest in physics or mathematics.
+
+17
+00:01:43,660 --> 00:01:56,180
+More general interest, perhaps because it's about a problem that is important for society or particularly interesting, fascinating scientifically.
+
+18
+00:01:56,720 --> 00:02:03,620
+Today, we will learn about a very timely subject, namely about quantum computing.
+
+19
+00:02:03,620 --> 00:02:22,760
+This is of course also related with the research that led to the Nobel Prize that was just given on Saturday to Alain Aspect and John Clouser and of course our very own Anton Zeilinger.
+
+20
+00:02:22,760 --> 00:02:30,600
+And I'm sure that you will perhaps also refer to their work in your lecture.
+
+21
+00:02:30,600 --> 00:02:37,880
+I'm very much looking forward to your lecture. Before I introduce Professor Walther, I would
+
+22
+00:02:37,880 --> 00:02:47,480
+like to also point out that we will have a Schrodinger lecture about climate change
+
+23
+00:02:47,480 --> 00:02:53,960
+in a couple of months, namely on March the 8th. Georg Kaser, climatologist and
+
+24
+00:02:53,960 --> 00:02:57,580
+and glaciologists from the University of Innsbruck
+
+25
+00:02:57,580 --> 00:03:00,280
+will come here to the Schrödinger Institute
+
+26
+00:03:00,280 --> 00:03:04,040
+to talk about the climate crisis.
+
+27
+00:03:06,400 --> 00:03:08,260
+Similar to what we heard earlier today
+
+28
+00:03:08,260 --> 00:03:10,920
+in the physics colloquium, very important problem.
+
+29
+00:03:10,920 --> 00:03:13,900
+I think if we are not able to solve this problem,
+
+30
+00:03:13,900 --> 00:03:17,160
+then everything else that we do as scientists
+
+31
+00:03:17,160 --> 00:03:19,400
+is actually irrelevant.
+
+32
+00:03:19,400 --> 00:03:23,200
+This is really a huge problem that we face at the moment.
+
+33
+00:03:23,200 --> 00:03:26,380
+And we have to do everything we can in order
+
+34
+00:03:26,380 --> 00:03:32,520
+to mitigate the consequences of climate change.
+
+35
+00:03:32,520 --> 00:03:35,140
+But back to today's Schrodinger lecture,
+
+36
+00:03:35,140 --> 00:03:37,560
+which will be given by Professor Philipp
+
+37
+00:03:37,560 --> 00:03:40,180
+Avalta from the Faculty of Physics
+
+38
+00:03:40,180 --> 00:03:43,120
+of the University of Vienna.
+
+39
+00:03:43,120 --> 00:03:46,540
+Philipp started out as a quantum chemist
+
+40
+00:03:46,540 --> 00:03:50,320
+working with at the Technical University.
+
+41
+00:03:50,320 --> 00:03:52,120
+But then something went wrong.
+
+42
+00:03:52,120 --> 00:03:52,880
+I don't know why.
+
+43
+00:03:52,880 --> 00:03:55,020
+and he became a quantum physicist.
+
+44
+00:03:55,020 --> 00:03:57,720
+He came to the University of Vienna
+
+45
+00:03:57,720 --> 00:04:00,220
+and joined the group of Anton Zeilinger,
+
+46
+00:04:00,220 --> 00:04:03,260
+did a PhD here at the university
+
+47
+00:04:03,260 --> 00:04:06,040
+before going to do a postdoc
+
+48
+00:04:06,040 --> 00:04:10,440
+in the group of Michel Luecking at Harvard University.
+
+49
+00:04:10,440 --> 00:04:12,380
+Then he came back to Vienna,
+
+50
+00:04:12,380 --> 00:04:14,760
+rose through the ranks from assistant professor
+
+51
+00:04:14,760 --> 00:04:18,080
+to full professor, I think that was in 2015,
+
+52
+00:04:18,080 --> 00:04:22,820
+and he has been a full professor at this university.
+
+53
+00:04:22,820 --> 00:04:27,300
+since he got many prizes.
+
+54
+00:04:27,300 --> 00:04:32,820
+He got the Star Prize of the FWF.
+
+55
+00:04:32,820 --> 00:04:37,020
+He recently got the Wilhelm Bessel Award.
+
+56
+00:04:37,020 --> 00:04:43,060
+He also was recently awarded, together with Piotr Kuschel,
+
+57
+00:04:43,060 --> 00:04:48,980
+who is also here, he was awarded an ERC Synergy Grant,
+
+58
+00:04:48,980 --> 00:04:55,680
+in which they will study the interface between quantum mechanics and general relativity.
+
+59
+00:04:56,780 --> 00:05:00,480
+He's also the speaker of the SFB, of an SFB.
+
+60
+00:05:01,580 --> 00:05:07,480
+He's the director of Christian Doppler laboratory on photonic quantum computing.
+
+61
+00:05:07,780 --> 00:05:10,680
+He's the speaker of a Foshungs platform.
+
+62
+00:05:10,680 --> 00:05:15,780
+He is the speaker of the quantum group at the University of Vienna.
+
+63
+00:05:15,780 --> 00:05:19,140
+So lots of speaking going on here.
+
+64
+00:05:21,300 --> 00:05:23,860
+So you see, he's a very
+
+65
+00:05:23,860 --> 00:05:26,780
+prominent and very accomplished scientist.
+
+66
+00:05:27,220 --> 00:05:30,700
+And today we are going to hear from him
+
+67
+00:05:31,580 --> 00:05:35,500
+how to do quantum computing with photons.
+
+68
+00:05:35,780 --> 00:05:38,740
+And I'm very much looking forward to a lecture and I'll
+
+69
+00:05:40,220 --> 00:05:41,340
+like to
+
+70
+00:05:41,780 --> 00:05:43,580
+go to the podium here.
+
+71
+00:05:44,220 --> 00:05:44,820
+Thanks.
+
+72
+00:05:45,780 --> 00:05:58,940
+Thank you very much. It's a true honor to be here at the Christmas Schrödinger lecture.
+
+73
+00:06:00,120 --> 00:06:04,980
+I see from the audience, we have all kinds of experts here reaching from computer science to
+
+74
+00:06:04,980 --> 00:06:10,800
+informatics to physicists. So I had the challenge to what should I cover today? So I thought, well,
+
+75
+00:06:10,800 --> 00:06:15,420
+let's make all of them happy, or none of them, by giving basically an overview about
+
+76
+00:06:15,420 --> 00:06:19,520
+what photonic computers are about, what kind of challenges do we face,
+
+77
+00:06:19,620 --> 00:06:22,940
+what kind of blueprints do we have to build such big machines in the future.
+
+78
+00:06:23,380 --> 00:06:26,140
+And then, of course, to jump to the Vienna speciality,
+
+79
+00:06:26,720 --> 00:06:29,080
+that at the end, I would like to show you what we do here in Vienna,
+
+80
+00:06:29,080 --> 00:06:32,360
+where the focus is always on finding new twists,
+
+81
+00:06:32,520 --> 00:06:36,040
+showing what else can be done besides just engineering challenges
+
+82
+00:06:36,040 --> 00:06:37,460
+to scale up those things.
+
+83
+00:06:38,460 --> 00:06:41,020
+But speaking of Schrödinger and being at the Schrödinger lecture,
+
+84
+00:06:41,020 --> 00:06:46,220
+I love to show this slide, which I actually have taken from Marcus Arndt many years ago,
+
+85
+00:06:46,860 --> 00:06:52,300
+where there's this famous phrase that somebody says, we never experiment with just one electron
+
+86
+00:06:52,300 --> 00:06:57,740
+atom. In thought experiments, we sometimes assume that we do. This invariably entails ridiculous
+
+87
+00:06:57,740 --> 00:07:02,620
+consequences. We are not experimenting with single particles anymore than we can raise
+
+88
+00:07:02,620 --> 00:07:07,180
+Ich zu Saudi in the zoo. So does someone know who said that?
+
+89
+00:07:07,180 --> 00:07:14,080
+that. Well, if I already raised this point of Schrodinger lecture, then of course, it's
+
+90
+00:07:14,080 --> 00:07:19,440
+obvious that this could be Schrodinger. So in 51, so 52, just nine years before he died,
+
+91
+00:07:19,520 --> 00:07:25,660
+so not that long ago, actually, in terms of modern science, he pointed out that he doesn't
+
+92
+00:07:25,660 --> 00:07:30,320
+think it would be easy or at all possible to believe in single quantum systems and to
+
+93
+00:07:30,320 --> 00:07:36,840
+explore their features and so on. And actually, it has changed. So nowadays, we do it. Labs
+
+94
+00:07:36,840 --> 00:07:40,920
+do it on a regular basis and this actually led to the so-called second revolution or
+
+95
+00:07:40,920 --> 00:07:45,520
+so-called second quantum revolution after the development of this quantum theory on
+
+96
+00:07:45,520 --> 00:07:49,700
+its own, where now different systems reaching from, this is just a selection, but they're
+
+97
+00:07:49,700 --> 00:07:56,560
+way more, from ions in a trap, atoms in optical lattices, superconducting circuits and photons
+
+98
+00:07:56,560 --> 00:08:00,620
+basically provide a platform where you can really play with single quantum.
+
+99
+00:08:00,620 --> 00:08:05,140
+You can play with them, you can study them and really exploit those for investigating
+
+100
+00:08:05,140 --> 00:08:10,820
+nature or from modern technologies which is the realm of quantum technology and quantum
+
+101
+00:08:10,820 --> 00:08:17,700
+information processing which I will cover in the next slides. So just to wrap up a bit,
+
+102
+00:08:18,340 --> 00:08:24,180
+what are those features that we exploit with quantum systems? Well, there are two things.
+
+103
+00:08:24,180 --> 00:08:28,660
+The first one is superposition where with photons it's very nice to get those. You take a quantum
+
+104
+00:08:28,660 --> 00:08:33,620
+particle that cannot be split into less than one particle. It comes here, comes to beam split,
+
+105
+00:08:33,620 --> 00:08:36,980
+we have the 50% chance to transmit light or reflect.
+
+106
+00:08:36,980 --> 00:08:39,300
+And since it cannot be broken apart,
+
+107
+00:08:39,300 --> 00:08:42,020
+the end of a superposition with a photon is delocalized,
+
+108
+00:08:42,020 --> 00:08:45,540
+being at this point and that point simultaneously,
+
+109
+00:08:45,540 --> 00:08:49,940
+or more precisely, both amplitudes, both probabilities coexist.
+
+110
+00:08:49,940 --> 00:08:51,300
+And when you make a measurement,
+
+111
+00:08:51,300 --> 00:08:53,620
+there's a random answer, it can be found here and there.
+
+112
+00:08:53,620 --> 00:08:56,660
+But bottom line, you can prepare easily superpositions
+
+113
+00:08:56,660 --> 00:09:00,500
+by just a beam splitter where the light is either transmitted or reflected.
+
+114
+00:09:00,500 --> 00:09:06,060
+And we do the same still nowadays to create the suppositions for quantum information encoding
+
+115
+00:09:06,060 --> 00:09:10,660
+by not always beam splitters, but by modern technologies that's this so-called integrated
+
+116
+00:09:10,660 --> 00:09:16,700
+photonics, where you basically take optical fibers and you put them in a piece of chip,
+
+117
+00:09:17,100 --> 00:09:21,960
+fingernail, say, so even size even smaller, where you have modes that guide light, the
+
+118
+00:09:21,960 --> 00:09:26,700
+photons will come here, and then by getting these kind of modes close together and by
+
+119
+00:09:26,700 --> 00:09:31,180
+tuning them properly by evanescent light field coupling you can choose the distance so that the
+
+120
+00:09:31,180 --> 00:09:37,660
+photon afterwards has 50 chance to be here and there so my words now in a movie to save also
+
+121
+00:09:37,660 --> 00:09:45,580
+my voice a bit is is basically this that the photon comes it then couples here do it to these
+
+122
+00:09:45,580 --> 00:09:51,260
+two modes and at the end you can really achieve a very nice 50 50 superposition on the chip very
+
+123
+00:09:51,260 --> 00:09:57,260
+handy for machines that process this kind of encoding of quantum information. Well,
+
+124
+00:09:57,980 --> 00:10:02,940
+speaking of quantum information, I have to basically introduce the word bit and quantum bit.
+
+125
+00:10:02,940 --> 00:10:07,260
+Classic bits you're all familiar with is, for example, charges, one of the other states,
+
+126
+00:10:07,260 --> 00:10:11,500
+or transistors in one of the other states, or 0 and 1. In the quantum language, you have these
+
+127
+00:10:11,500 --> 00:10:18,540
+quantum bits that have coexistence, superposition of these different states. We have now both values,
+
+128
+00:10:18,540 --> 00:10:23,340
+loosely speaking, simultaneously available. Well, here you see actually by one shot only,
+
+129
+00:10:23,340 --> 00:10:30,060
+by one view only, the boost from quantum computers because now one quantum bit carries these two
+
+130
+00:10:30,060 --> 00:10:36,540
+states inside, intrinsically inside. And then now add more qubits, then the scaling of those bits
+
+131
+00:10:36,540 --> 00:10:41,340
+scales exponentially. If you take, for example, three quantum bits, then you have these eight
+
+132
+00:10:41,340 --> 00:10:47,740
+combinatorics of cerium-1s coexisting as probabilities in these three qubits. And that's
+
+133
+00:10:47,740 --> 00:10:52,620
+actually the quantum boost or the main quantum boost for computers that the values 0 and 1 are
+
+134
+00:10:52,620 --> 00:10:57,980
+coexisting and therefore you can process them much more efficiently for particular algorithms
+
+135
+00:10:57,980 --> 00:11:04,460
+by using the supposition principle. Well you can use path degrees of freedom for photons but also
+
+136
+00:11:04,460 --> 00:11:08,860
+other ones you can also take the internal ones that's polarization the way how the photon
+
+137
+00:11:08,860 --> 00:11:14,140
+propagates with the with the vector by defining a zero state, horizontally polarized light,
+
+138
+00:11:14,140 --> 00:11:18,140
+one state, vertically polarized state, they're orthogonal.
+
+139
+00:11:18,140 --> 00:11:20,140
+You can easily change them by polarizers,
+
+140
+00:11:20,140 --> 00:11:23,140
+wave plates as shown here, so take light and you play a wave plate.
+
+141
+00:11:23,140 --> 00:11:24,140
+Very nice system.
+
+142
+00:11:24,140 --> 00:11:29,140
+Photon's a really nice platform to encode this serum once as you wish
+
+143
+00:11:29,140 --> 00:11:30,140
+in the single photon state.
+
+144
+00:11:30,140 --> 00:11:34,140
+You can also map one to the other, so you can make a polarization qubit,
+
+145
+00:11:34,140 --> 00:11:37,140
+and then by polarizing beam splitter where one polarization goes straight,
+
+146
+00:11:37,140 --> 00:11:40,140
+the other one is reflected, you can even map it to path encoding.
+
+147
+00:11:40,140 --> 00:11:50,340
+path encoding so it's a very nice system, they can hop around if you degrees of freedom that's one of the reasons I would like photons that there's such a nice thankful quantum system for applications.
+
+148
+00:11:51,920 --> 00:12:02,220
+But changing gears, but we couldn't do anything about shooting us entanglement which is actually popular these days, for many reasons, because the lecture was a Nobel Prize last week.
+
+149
+00:12:02,220 --> 00:12:05,580
+and also basically this kind of Austrian spirit
+
+150
+00:12:05,580 --> 00:12:06,940
+that we like these quantum features.
+
+151
+00:12:07,600 --> 00:12:10,240
+So as probably most of you know, quantum entanglement means
+
+152
+00:12:10,240 --> 00:12:13,400
+that you have two more particle systems
+
+153
+00:12:13,400 --> 00:12:17,460
+where the information of the whole system is known,
+
+154
+00:12:17,940 --> 00:12:19,800
+but of the individual system, it's not known.
+
+155
+00:12:19,800 --> 00:12:22,780
+So basically a supposition of two dyes here,
+
+156
+00:12:22,900 --> 00:12:24,900
+two dyes which could be the six or one,
+
+157
+00:12:25,500 --> 00:12:26,980
+you know altogether must be the same,
+
+158
+00:12:27,520 --> 00:12:28,320
+but you don't know which one.
+
+159
+00:12:28,400 --> 00:12:29,360
+There's a supposition state.
+
+160
+00:12:29,560 --> 00:12:31,660
+If you look at one now, you get a random answer,
+
+161
+00:12:31,660 --> 00:12:35,520
+but the random answer in one state defines immediately, instantaneously,
+
+162
+00:12:35,660 --> 00:12:38,140
+the outcome of the other side in our system.
+
+163
+00:12:38,760 --> 00:12:42,560
+And that's something which acted as a resource also for computers.
+
+164
+00:12:42,900 --> 00:12:44,720
+So how did we get those entangled systems?
+
+165
+00:12:44,840 --> 00:12:49,500
+And there was a breakthrough method developed in the late 90s, the 95,
+
+166
+00:12:50,340 --> 00:12:53,660
+which also contributed certainly to the Nobel Prize of Anton Zeilinger,
+
+167
+00:12:54,180 --> 00:12:59,820
+that developed, I would say, a nice and feasible way to get entangled photon pairs
+
+168
+00:12:59,820 --> 00:13:04,480
+without the complicated overhead 10, 15, 20 years ago or before,
+
+169
+00:13:04,920 --> 00:13:07,900
+using cold atoms or atoms in particular arrangements,
+
+170
+00:13:08,180 --> 00:13:11,480
+and then very little rates of photon pairs being generated.
+
+171
+00:13:11,900 --> 00:13:13,860
+So a breakthrough from my eyes of technology
+
+172
+00:13:13,860 --> 00:13:15,960
+was certainly this kind of down-conversion crystal
+
+173
+00:13:15,960 --> 00:13:22,040
+where a laser basically penetrates this so-called nonlinear crystal
+
+174
+00:13:22,040 --> 00:13:25,800
+where by having momentum and phase conservation,
+
+175
+00:13:26,340 --> 00:13:29,500
+sometimes a photon from the laser split into lower energy photons
+
+176
+00:13:29,500 --> 00:13:31,020
+which are differently polarized.
+
+177
+00:13:31,780 --> 00:13:34,200
+So you get here basically two photons out of one photon.
+
+178
+00:13:34,760 --> 00:13:37,580
+And the nice twist here is one photon is H-polarized,
+
+179
+00:13:37,660 --> 00:13:38,940
+the other one is orthogonal polarized.
+
+180
+00:13:39,340 --> 00:13:40,440
+And now comes the magic trick.
+
+181
+00:13:41,020 --> 00:13:42,460
+It will take light from the cross-sections,
+
+182
+00:13:42,580 --> 00:13:43,780
+let's say here and there,
+
+183
+00:13:43,780 --> 00:13:46,200
+or if you take this picture here on the right side,
+
+184
+00:13:46,360 --> 00:13:48,680
+from the green rings, that's horizontally polarized,
+
+185
+00:13:48,900 --> 00:13:49,720
+that's vertically polarized.
+
+186
+00:13:49,860 --> 00:13:51,140
+It will take light from the cross-section.
+
+187
+00:13:51,680 --> 00:13:52,600
+Then you get two photons,
+
+188
+00:13:53,100 --> 00:13:54,580
+but you don't know where they came from.
+
+189
+00:13:54,980 --> 00:13:56,840
+So you have generated an entangled state
+
+190
+00:13:56,840 --> 00:13:59,360
+where you have HV or VH, okay?
+
+191
+00:13:59,500 --> 00:14:07,900
+as simple as that. Well, it's not that simple. It takes, of course, proper alignment and very kind of very precise fingertips to get it done.
+
+192
+00:14:08,640 --> 00:14:14,600
+But end of the line is with such a nonlinear crystal, you can generate such an entangled state in a nice way.
+
+193
+00:14:14,600 --> 00:14:19,180
+And this opened up, of course, many, many developments.
+
+194
+00:14:19,180 --> 00:14:38,240
+And of course, well deserved, a Nobel Prize for Anton Zeidinger, who developed this source and used it then for many nice investigations covering quantum teleportation, quantum swapping, many pioneering work at that time, which all of them relate on such a source that you have in the laboratory system.
+
+195
+00:14:40,000 --> 00:14:46,000
+And there's, of course, a Nobel Prize already mentioned by our introduction today from Alan S. Bay.
+
+196
+00:14:46,000 --> 00:14:47,800
+used atoms back in the days,
+
+197
+00:14:48,260 --> 00:14:49,780
+John Glauser, atomic systems,
+
+198
+00:14:50,300 --> 00:14:52,260
+and Anton Zeidinger used this down-conversion crystal
+
+199
+00:14:52,260 --> 00:14:55,260
+for the entanglement studies in the laboratory.
+
+200
+00:14:56,200 --> 00:14:57,920
+But back to quantum computing,
+
+201
+00:14:58,060 --> 00:14:59,660
+so now I try to go back on the track.
+
+202
+00:14:59,880 --> 00:15:02,280
+So to wrap up the story here,
+
+203
+00:15:02,360 --> 00:15:05,280
+in my eyes, photons are beautiful for another reason,
+
+204
+00:15:05,340 --> 00:15:06,060
+namely they're mobile,
+
+205
+00:15:06,240 --> 00:15:08,500
+they fly around at the speed of light, literally.
+
+206
+00:15:09,300 --> 00:15:11,820
+And therefore, they're also a nice system for other fields,
+
+207
+00:15:11,900 --> 00:15:13,160
+which we'll not cover today,
+
+208
+00:15:13,460 --> 00:15:15,940
+but you can also cover quantum communication aspects
+
+209
+00:15:15,940 --> 00:15:20,980
+with that. Foundations I just mentioned, metrology, the natural system for measuring something with
+
+210
+00:15:20,980 --> 00:15:26,980
+light. You can enhance microscopes by using quantum light and now for 20 years it's known
+
+211
+00:15:26,980 --> 00:15:32,580
+you can also use them for computing by using particular treatments of these systems.
+
+212
+00:15:33,700 --> 00:15:40,020
+So quantum computer, I guess many of you know of that, so let me summarize a bit what a quantum
+
+213
+00:15:40,020 --> 00:15:44,820
+computer in my eyes is about. So as mentioned you have an input, that's the magic, that's where the
+
+214
+00:15:44,820 --> 00:15:49,860
+supposition of serums wants play a role and then you process them and you get an output.
+
+215
+00:15:49,860 --> 00:15:57,860
+And the processing is done by quantum algorithms. I think even though there's such a long lasting
+
+216
+00:15:57,860 --> 00:16:02,660
+history about quantum algorithms and investigations, in my eyes they all have something in common.
+
+217
+00:16:03,300 --> 00:16:08,420
+Quantum algorithms only work nicely and they can exploit this kind of interference phenomena
+
+218
+00:16:08,420 --> 00:16:13,140
+because you have so much input, such a big input state of all serums and wants, how do you get the
+
+219
+00:16:13,140 --> 00:16:18,420
+right answer. So you need an algorithm that actually finds or is useful that knocks down
+
+220
+00:16:18,420 --> 00:16:24,420
+the wrong answers and by interference it gets you quickly to the right answer. So for me in a cartoon
+
+221
+00:16:24,420 --> 00:16:30,420
+a quantum algorithm is just a processing of all possible input states and then by writing it down
+
+222
+00:16:30,420 --> 00:16:35,060
+in a quantum mechanical way that you have interference and different probabilities
+
+223
+00:16:35,060 --> 00:16:41,620
+you apply at the end an algorithm where the wrong ones disappear and if very high probability the
+
+224
+00:16:41,620 --> 00:16:42,500
+the right one survives.
+
+225
+00:16:43,680 --> 00:16:45,320
+Therefore, algorithms that have already
+
+226
+00:16:45,320 --> 00:16:47,760
+this kind of interference intrinsic inside,
+
+227
+00:16:47,920 --> 00:16:49,780
+like Fourier transformations and so on,
+
+228
+00:16:50,060 --> 00:16:50,760
+work very nicely.
+
+229
+00:16:51,020 --> 00:16:52,240
+We'll come to that in a second.
+
+230
+00:16:53,920 --> 00:16:55,660
+Of course, that's not a quantum computer.
+
+231
+00:16:55,780 --> 00:16:56,780
+Nowadays, you write it down
+
+232
+00:16:56,780 --> 00:16:58,840
+in the modern quantum circuit language.
+
+233
+00:16:59,260 --> 00:17:01,040
+We have the qubits written down as lines.
+
+234
+00:17:01,620 --> 00:17:02,840
+Here's a serious state.
+
+235
+00:17:02,940 --> 00:17:05,080
+We make it a supposition by a Hadamard operation.
+
+236
+00:17:05,640 --> 00:17:07,200
+But you also need something to entangle,
+
+237
+00:17:07,580 --> 00:17:09,220
+to make qubits connected.
+
+238
+00:17:09,800 --> 00:17:11,580
+So therefore, we use these two qubit gates
+
+239
+00:17:11,580 --> 00:17:16,540
+shown as these lines where one and for example, this third qubit are connected, the so-called
+
+240
+00:17:16,540 --> 00:17:22,720
+seen as a controlled node, controlled phase gates, which can introduce this coupling in
+
+241
+00:17:22,720 --> 00:17:26,340
+a computer language, introduce entanglement in a computer language.
+
+242
+00:17:26,960 --> 00:17:29,260
+So for building a universal computer, what do we need?
+
+243
+00:17:29,680 --> 00:17:33,200
+Actually just single qubit gates and this kind of two qubit gates.
+
+244
+00:17:33,200 --> 00:17:37,400
+And if you put them together, we can in principle build all kinds of operations that are needed
+
+245
+00:17:37,400 --> 00:17:40,900
+for a quantum computer to introduce.
+
+246
+00:17:40,900 --> 00:17:42,960
+So what kind of algorithms do we have?
+
+247
+00:17:43,100 --> 00:17:45,540
+So the most famous ones are shown here on the right side.
+
+248
+00:17:46,000 --> 00:17:52,160
+The first one introduced by Peter Schor was indeed an algorithm based on Fourier transformation,
+
+249
+00:17:52,900 --> 00:17:54,040
+and therefore it works so nicely.
+
+250
+00:17:54,340 --> 00:17:58,720
+So it was shown that this one has an exponential speedup compared to classical algorithms
+
+251
+00:17:58,720 --> 00:18:02,240
+for factorizing numbers into the prime factors.
+
+252
+00:18:02,440 --> 00:18:07,460
+So, for example, like if you see and you have to find the a and b of that.
+
+253
+00:18:07,460 --> 00:18:13,380
+and for that it was very basically the eye opener these algorithms exist and can be very efficient
+
+254
+00:18:13,380 --> 00:18:16,900
+another one was grover who was a few years later to show that he can have a search
+
+255
+00:18:17,540 --> 00:18:22,420
+can be much more better or efficient but not as good as a short algorithm but just for quadratic
+
+256
+00:18:22,420 --> 00:18:28,900
+speed up you can find an unsorted base of a database um the thing you're looking for
+
+257
+00:18:29,700 --> 00:18:36,180
+more efficiently by this quadratic speed up and another big zoo or whatever area is dedicated to
+
+258
+00:18:36,180 --> 00:18:42,420
+to quantum simulation, which actually is the goes back to Feynman, who in 82 wrote, there's
+
+259
+00:18:42,420 --> 00:18:47,320
+plenty of space at the bottom mentioning that actually quantum systems have this potential
+
+260
+00:18:47,320 --> 00:18:52,500
+to be used for studying quantum system in the spirit of simulating quantum system, also
+
+261
+00:18:52,500 --> 00:18:57,720
+shown since Feynman and later on in the modern language by Cephaloid 96, that you can use
+
+262
+00:18:57,720 --> 00:19:05,680
+quantum algorithms to sometimes efficiently simulate quantum systems, which would otherwise
+
+263
+00:19:05,680 --> 00:19:10,160
+be hard to calculate. And you, the experts here, if you talk about full CI configuration or density
+
+264
+00:19:10,160 --> 00:19:14,080
+function theory, it's amazing what nowadays you can do. But of course, you always face an
+
+265
+00:19:14,080 --> 00:19:21,520
+exponential challenge problem that's very hard to simulate up to arbitrary accuracy, the energy
+
+266
+00:19:21,520 --> 00:19:26,080
+levels, or everything else of such systems. And with quantum systems, there's the hope you can
+
+267
+00:19:26,080 --> 00:19:32,240
+simulate those more effectively. I make it short here, and I'm happy that nobody's here. The reason
+
+268
+00:19:32,240 --> 00:19:34,080
+I've put now its picture here.
+
+269
+00:19:34,520 --> 00:19:40,000
+So I picked out a few cornerstones in quantum algorithms.
+
+270
+00:19:40,580 --> 00:19:41,140
+There are way more.
+
+271
+00:19:41,220 --> 00:19:42,940
+So actually, the right answer would be here.
+
+272
+00:19:43,760 --> 00:19:44,600
+Go to this link.
+
+273
+00:19:44,720 --> 00:19:45,800
+There's a zoo of algorithms.
+
+274
+00:19:46,020 --> 00:19:46,840
+There's current development.
+
+275
+00:19:47,200 --> 00:19:49,320
+There are not too many, but there's still something,
+
+276
+00:19:49,600 --> 00:19:53,060
+constant progress in finding one and proving,
+
+277
+00:19:53,160 --> 00:19:56,480
+it's much harder, that they're really better than classical ones.
+
+278
+00:19:57,360 --> 00:20:01,040
+And summarizing briefly what's out there,
+
+279
+00:20:01,040 --> 00:20:04,940
+We have those based on Grover, the search algorithms, which have this quadratic speedup.
+
+280
+00:20:05,120 --> 00:20:10,600
+But people realized you can apply this to different problems, including, of course, the database search,
+
+281
+00:20:10,680 --> 00:20:16,740
+but also like this kind of saturation problem, satisfiability problems, where you have to color graphs and so on.
+
+282
+00:20:16,800 --> 00:20:19,100
+And for some of these instances, they work better.
+
+283
+00:20:20,160 --> 00:20:27,180
+De Fourier transformations work exceptionally well because of their periodic pattern intrinsically of the mathematical system.
+
+284
+00:20:27,180 --> 00:20:31,680
+for example here, factorizing numbers,
+
+285
+00:20:31,880 --> 00:20:35,380
+which is the killer app for the secret agencies
+
+286
+00:20:35,380 --> 00:20:37,080
+of Shor's algorithm,
+
+287
+00:20:37,220 --> 00:20:39,540
+because you could instantaneously
+
+288
+00:20:39,540 --> 00:20:42,720
+crack our current existing encryption methods
+
+289
+00:20:42,720 --> 00:20:45,140
+that are based on factorizing big numbers
+
+290
+00:20:45,140 --> 00:20:47,620
+by this RSA code.
+
+291
+00:20:48,120 --> 00:20:50,360
+Some linear equations, recent developments
+
+292
+00:20:50,360 --> 00:20:52,220
+can also be solved more efficiently
+
+293
+00:20:52,220 --> 00:20:54,780
+with this kind of quantum Fourier transformations.
+
+294
+00:20:54,780 --> 00:21:00,600
+On the other hand, we have quantum Monte Carlo algorithms, which have polynomial speedup
+
+295
+00:21:00,600 --> 00:21:01,960
+existing.
+
+296
+00:21:01,960 --> 00:21:04,300
+And then comes a few where it's not clear yet.
+
+297
+00:21:04,300 --> 00:21:08,120
+So if you could talk to computer scientists, I would probably do a sin now by being not
+
+298
+00:21:08,120 --> 00:21:11,960
+precise to telling you which of those have been proven to be better, which of those have
+
+299
+00:21:11,960 --> 00:21:16,860
+to be conjectured, which of those is just active research.
+
+300
+00:21:16,860 --> 00:21:21,160
+And here the last ones are super active fields that people believe there's a benefit, but
+
+301
+00:21:21,160 --> 00:21:24,460
+it has to be proven yet if and how much.
+
+302
+00:21:24,460 --> 00:21:28,400
+This covers also quantum eigen solvers, that's particularly for chemists interesting to find
+
+303
+00:21:28,400 --> 00:21:33,440
+energy levels of systems and the very big field machine learning or quantum machine
+
+304
+00:21:33,440 --> 00:21:34,440
+learning.
+
+305
+00:21:34,440 --> 00:21:40,200
+Those we pursue here in Vienna, where it's not clear yet what's better.
+
+306
+00:21:40,200 --> 00:21:47,340
+The feeling is there's something better using quantum systems for identifying areas or splitting
+
+307
+00:21:47,340 --> 00:21:54,440
+areas, categorizing areas in data like quantum support vectors, k-nearest neighbors, and
+
+308
+00:21:54,460 --> 00:22:00,580
+networks, which will be the end of my talk, giving an outlook on what we do here in Vienna.
+
+309
+00:22:01,960 --> 00:22:07,420
+Good. Back to the reality. So what's the situation right now with hardware and real computers?
+
+310
+00:22:07,960 --> 00:22:13,680
+In my eyes, it's actually similar to the situation shown here on the cover page of
+
+311
+00:22:13,680 --> 00:22:18,660
+The Economist a few years ago. Namely, it's an open race. You see different hardware systems
+
+312
+00:22:18,660 --> 00:22:24,180
+from superconductors, photons, and ions. It's not clear yet. Okay, for me, honestly, it's totally
+
+313
+00:22:24,180 --> 00:22:29,860
+not clear yet who got a bit of winner at the end there's amazing progress and you can take a look
+
+314
+00:22:29,860 --> 00:22:34,920
+at the progress by nice plots that you find nowadays everywhere where you see the benchmarking
+
+315
+00:22:34,920 --> 00:22:39,840
+qubit numbers but that's not everything but let me start first what you see here so what you see here
+
+316
+00:22:39,840 --> 00:22:46,940
+is nowadays race so you have number of qubits and here's the year okay so since the late 80s
+
+317
+00:22:46,940 --> 00:22:53,140
+let's say 2000 we have the capability to entangle two qubits and to do controlled operations since
+
+318
+00:22:53,140 --> 00:22:58,060
+understand the number of qubits on the logarithmic scale goes dramatically up and that's obviously
+
+319
+00:22:58,060 --> 00:23:02,680
+also something you see in the newspapers nowadays you read last week or two weeks ago 400 qubits on
+
+320
+00:23:02,680 --> 00:23:07,660
+IBM and these amazing numbers out there that you can have and you see it because you have here the
+
+321
+00:23:07,660 --> 00:23:13,420
+companies from from the different fields from Google is basically here this this 72 qubit system
+
+322
+00:23:13,420 --> 00:23:20,320
+IBM right now with 50 and the jump to thousand uh end of this end of next year there was D wave the
+
+323
+00:23:20,320 --> 00:23:29,040
+one of the first companies already in the dark red 2007 which was 28 and then 2928 qubits available
+
+324
+00:23:29,040 --> 00:23:35,440
+at least in the system but when you say how powerful they are well then it's hard to clarify
+
+325
+00:23:35,440 --> 00:23:39,600
+what you mean with that so for example if you take entanglement you would like to entangle all of
+
+326
+00:23:39,600 --> 00:23:45,600
+those then it becomes very difficult for those systems and the current record is still 24 qubits
+
+327
+00:23:45,600 --> 00:23:47,080
+with ions that have been entangled.
+
+328
+00:23:48,140 --> 00:23:49,160
+If you have bigger systems,
+
+329
+00:23:49,340 --> 00:23:51,300
+then you have an amazing system,
+
+330
+00:23:51,480 --> 00:23:52,460
+no doubt about that.
+
+331
+00:23:52,880 --> 00:23:53,860
+But it's still not the case
+
+332
+00:23:53,860 --> 00:23:55,820
+that all of those can be easily connected,
+
+333
+00:23:56,020 --> 00:23:57,300
+that it can entangle all of those
+
+334
+00:23:57,300 --> 00:23:59,200
+or all of those work as you wish.
+
+335
+00:23:59,680 --> 00:24:02,320
+So right now, the qubit number is amazing,
+
+336
+00:24:02,560 --> 00:24:04,160
+but it doesn't reflect the full story
+
+337
+00:24:04,160 --> 00:24:05,960
+about what computers can do.
+
+338
+00:24:06,480 --> 00:24:08,700
+So people therefore very often focus on the labs,
+
+339
+00:24:08,900 --> 00:24:11,300
+research labs here focus on smaller systems,
+
+340
+00:24:11,300 --> 00:24:15,700
+but trying to improve the controllability of the systems.
+
+341
+00:24:17,600 --> 00:24:19,440
+Sorry, I forgot to mention my Norbert Schuch at the end.
+
+342
+00:24:19,640 --> 00:24:21,520
+Thank you for having Norbert Schuch moving.
+
+343
+00:24:21,860 --> 00:24:23,680
+I put Norbert's face here
+
+344
+00:24:23,680 --> 00:24:25,620
+because it's an active field of research
+
+345
+00:24:25,620 --> 00:24:26,980
+that basically people,
+
+346
+00:24:28,380 --> 00:24:30,680
+like there's a professorship on quantum algorithms
+
+347
+00:24:30,680 --> 00:24:31,980
+here in Vienna by Norbert Schuch,
+
+348
+00:24:32,400 --> 00:24:34,600
+but he would be the right person to ask details about that.
+
+349
+00:24:34,740 --> 00:24:35,580
+I forgot to mention this
+
+350
+00:24:35,580 --> 00:24:37,580
+because he already moved in the beginning,
+
+351
+00:24:37,580 --> 00:24:41,660
+but thanks for moving again.
+
+352
+00:24:44,180 --> 00:24:44,720
+Good.
+
+353
+00:24:45,340 --> 00:24:47,980
+That was my introduction
+
+354
+00:24:47,980 --> 00:24:50,260
+to the quantum computer framework itself.
+
+355
+00:24:50,640 --> 00:24:52,460
+I would like to show you
+
+356
+00:24:52,460 --> 00:24:54,460
+where we are with photonic systems right now
+
+357
+00:24:54,460 --> 00:24:55,640
+and what's happening here in Vienna.
+
+358
+00:24:55,860 --> 00:24:56,460
+So photons,
+
+359
+00:24:57,220 --> 00:24:58,680
+if you would like to build a photonic,
+
+360
+00:24:58,780 --> 00:25:00,980
+sorry, I thought I wanted to mention something.
+
+361
+00:25:02,780 --> 00:25:04,400
+Here's the present.
+
+362
+00:25:04,880 --> 00:25:05,660
+Here's the future.
+
+363
+00:25:05,660 --> 00:25:08,660
+some companies make very bold statements
+
+364
+00:25:08,660 --> 00:25:10,580
+about what they think they can achieve
+
+365
+00:25:10,580 --> 00:25:11,620
+in the next couple of years
+
+366
+00:25:11,620 --> 00:25:14,180
+and there's one point here which really
+
+367
+00:25:14,180 --> 00:25:15,520
+rifts the 1 million qubit
+
+368
+00:25:15,520 --> 00:25:17,480
+state space
+
+369
+00:25:17,480 --> 00:25:20,280
+in claim to be
+
+370
+00:25:20,280 --> 00:25:22,480
+2026 which is based on
+
+371
+00:25:22,480 --> 00:25:24,300
+photons okay so even though you see
+
+372
+00:25:24,300 --> 00:25:26,000
+many systems here based on
+
+373
+00:25:26,000 --> 00:25:27,460
+superconductors or ions
+
+374
+00:25:27,460 --> 00:25:29,880
+there are a few photonic systems companies
+
+375
+00:25:29,880 --> 00:25:31,340
+including one very big one
+
+376
+00:25:31,340 --> 00:25:33,800
+who aims to have 1 million qubits
+
+377
+00:25:33,800 --> 00:25:36,420
+photonic qubits in the next couple of years,
+
+378
+00:25:36,660 --> 00:25:39,640
+at least according to the business plans
+
+379
+00:25:39,640 --> 00:25:41,480
+and things that are published
+
+380
+00:25:41,480 --> 00:25:45,580
+basically to show the developments
+
+381
+00:25:45,580 --> 00:25:46,960
+within the companies.
+
+382
+00:25:48,280 --> 00:25:48,480
+Good.
+
+383
+00:25:49,360 --> 00:25:51,060
+Back to what's happening in the lab
+
+384
+00:25:51,060 --> 00:25:54,480
+and back to how these computers look like for photons.
+
+385
+00:25:54,800 --> 00:25:56,400
+At the end, there's not much needed.
+
+386
+00:25:56,580 --> 00:25:57,100
+So what do you need?
+
+387
+00:25:57,140 --> 00:25:59,760
+We need a photon source to produce single photons.
+
+388
+00:25:59,760 --> 00:26:05,040
+We need some integrated optics to let them meet and interfere them on a chip.
+
+389
+00:26:05,400 --> 00:26:06,820
+And we need detectors at the end.
+
+390
+00:26:07,140 --> 00:26:08,920
+That's a quantum computer for photons.
+
+391
+00:26:09,680 --> 00:26:11,580
+At least in the cartoon picture.
+
+392
+00:26:12,320 --> 00:26:15,680
+If you zoom in, well, then there are some challenges that we have to address.
+
+393
+00:26:16,080 --> 00:26:19,260
+And the biggest challenge is to get good single photons.
+
+394
+00:26:19,620 --> 00:26:25,040
+So I think nature fights with all its tricks and all its methods that we don't get single photons easily.
+
+395
+00:26:25,200 --> 00:26:29,040
+So we have photons everywhere from light bulbs, from lasers, but they're the wrong ones.
+
+396
+00:26:29,040 --> 00:26:31,540
+They have properties that are not good enough for quantum computers.
+
+397
+00:26:31,940 --> 00:26:33,340
+You want a single photon, nothing else.
+
+398
+00:26:33,380 --> 00:26:34,280
+And that's a real challenge.
+
+399
+00:26:34,860 --> 00:26:37,180
+So that's the wish list to be identical.
+
+400
+00:26:37,500 --> 00:26:39,780
+Each photon, one with respect to the other one.
+
+401
+00:26:40,320 --> 00:26:41,860
+Photon and the noise contribution.
+
+402
+00:26:42,040 --> 00:26:43,940
+That means not two, not three, not more photons.
+
+403
+00:26:44,460 --> 00:26:45,700
+And ideally, when I push a button.
+
+404
+00:26:46,640 --> 00:26:49,800
+Taking the down conversion source, which was actually good enough for Nobel Prize,
+
+405
+00:26:50,120 --> 00:26:53,160
+which was important Nobel Prize, is a beautiful system.
+
+406
+00:26:53,580 --> 00:26:56,820
+But it's hard to scale up for quantum computing applications
+
+407
+00:26:56,820 --> 00:26:58,880
+because the emission here,
+
+408
+00:26:59,400 --> 00:27:00,760
+even though it gives you right away entanglement,
+
+409
+00:27:00,980 --> 00:27:01,520
+is random.
+
+410
+00:27:02,180 --> 00:27:03,440
+So it's a probabilistic source
+
+411
+00:27:03,440 --> 00:27:05,640
+where sometimes the laser gives you a photon.
+
+412
+00:27:06,060 --> 00:27:07,840
+And even moreover, when the photon pair comes,
+
+413
+00:27:08,400 --> 00:27:09,600
+there's noise intrinsic
+
+414
+00:27:09,600 --> 00:27:11,160
+because sometimes there are two pairs
+
+415
+00:27:11,160 --> 00:27:12,340
+or three pairs coming out.
+
+416
+00:27:12,900 --> 00:27:14,460
+And all this together is not good
+
+417
+00:27:14,460 --> 00:27:16,900
+for the quality of photons for the computer.
+
+418
+00:27:17,880 --> 00:27:20,980
+So the trend nowadays to get good single photons
+
+419
+00:27:20,980 --> 00:27:22,200
+is to take atoms.
+
+420
+00:27:22,440 --> 00:27:24,220
+But atoms are hard to manipulate.
+
+421
+00:27:24,440 --> 00:27:25,200
+You have to trap them.
+
+422
+00:27:25,260 --> 00:27:25,960
+You have to cool them.
+
+423
+00:27:25,960 --> 00:27:28,520
+So what you do, you make atoms that you like to have.
+
+424
+00:27:28,880 --> 00:27:32,280
+So you make artificial atoms, which are called quantum dots,
+
+425
+00:27:32,280 --> 00:27:35,260
+where you take a small semiconductor system,
+
+426
+00:27:35,580 --> 00:27:37,100
+which behaves like a single atom,
+
+427
+00:27:37,660 --> 00:27:39,260
+that when the laser comes, you excite,
+
+428
+00:27:39,540 --> 00:27:41,620
+atoms fall back and give you a single photon out.
+
+429
+00:27:41,820 --> 00:27:42,500
+Very nice.
+
+430
+00:27:43,260 --> 00:27:44,700
+So you put a cavity around.
+
+431
+00:27:45,080 --> 00:27:48,360
+So now it's deterministic in the way that the photon is always generated.
+
+432
+00:27:49,520 --> 00:27:50,780
+But there's no free lunch.
+
+433
+00:27:51,700 --> 00:27:54,000
+So now the challenge is how to get the photon out.
+
+434
+00:27:54,000 --> 00:27:57,340
+Here the photon comes out nicely because it propagates in the direction of the laser.
+
+435
+00:27:57,620 --> 00:27:59,980
+You can catch it, but not a good photon.
+
+436
+00:28:00,520 --> 00:28:02,580
+You get a good photon, but hard to catch.
+
+437
+00:28:03,220 --> 00:28:04,260
+So what do you do as well?
+
+438
+00:28:04,360 --> 00:28:09,500
+You build cavities around and other methods to catch it in a way that at the end of all those steps,
+
+439
+00:28:09,580 --> 00:28:11,820
+you get a single fiber, a single mode fiber in there.
+
+440
+00:28:13,020 --> 00:28:17,940
+So now the losses of such a system are given basically by technology.
+
+441
+00:28:18,300 --> 00:28:20,340
+How good you can catch the single photon.
+
+442
+00:28:20,340 --> 00:28:24,040
+Therefore, people say, well, it's much better to work on this technological problem
+
+443
+00:28:24,040 --> 00:28:26,360
+than to face this natural problem.
+
+444
+00:28:26,800 --> 00:28:28,020
+You can't make it deterministic.
+
+445
+00:28:30,140 --> 00:28:31,860
+Well, let's see how to scale up.
+
+446
+00:28:31,980 --> 00:28:34,780
+If you would like to build a photon as a computer with many qubits,
+
+447
+00:28:35,000 --> 00:28:36,060
+then each qubit is a photon.
+
+448
+00:28:37,080 --> 00:28:38,580
+And if you take such a source,
+
+449
+00:28:39,260 --> 00:28:42,180
+then you're limited to 10 photons in a standard way.
+
+450
+00:28:42,300 --> 00:28:44,100
+Maybe 40 photons if you do it magically.
+
+451
+00:28:44,440 --> 00:28:44,840
+Why?
+
+452
+00:28:45,380 --> 00:28:47,180
+Because each source emits randomly,
+
+453
+00:28:47,180 --> 00:28:49,920
+and to have two events randomly happening at the same time,
+
+454
+00:28:50,340 --> 00:28:51,440
+It's not often the case.
+
+455
+00:28:51,520 --> 00:28:54,620
+Like 1% here, 1% emission probability there,
+
+456
+00:28:55,060 --> 00:28:57,080
+1% times 1% is 10 to minus 4.
+
+457
+00:28:57,140 --> 00:28:58,780
+So it goes down exponentially.
+
+458
+00:28:59,980 --> 00:29:02,080
+If these sources, where you take one source,
+
+459
+00:29:02,140 --> 00:29:03,440
+it fires photons all the time,
+
+460
+00:29:04,060 --> 00:29:05,640
+and then you delay the first,
+
+461
+00:29:05,740 --> 00:29:06,860
+then it meets the second photon,
+
+462
+00:29:06,940 --> 00:29:10,740
+and the third photon with such a so-called demultiplexing technique,
+
+463
+00:29:11,060 --> 00:29:13,000
+you can get easily to 20 photons.
+
+464
+00:29:13,000 --> 00:29:15,180
+And if you do it smart, with active elements,
+
+465
+00:29:15,860 --> 00:29:16,840
+easily 100 photons,
+
+466
+00:29:16,940 --> 00:29:19,700
+at least according to what theoreticians think about
+
+467
+00:29:19,700 --> 00:29:21,900
+engineering capabilities in the near future.
+
+468
+00:29:22,000 --> 00:29:24,080
+So big jump in the parameter space.
+
+469
+00:29:24,520 --> 00:29:25,520
+Now you could say, wait a second,
+
+470
+00:29:25,860 --> 00:29:26,820
+100 photons here,
+
+471
+00:29:27,320 --> 00:29:28,600
+I see a million photons over there
+
+472
+00:29:28,600 --> 00:29:30,300
+that they promised in the next couple of years.
+
+473
+00:29:30,560 --> 00:29:31,240
+How can it be?
+
+474
+00:29:31,920 --> 00:29:33,820
+I want to show that this number is sufficient
+
+475
+00:29:33,820 --> 00:29:37,220
+for blueprints to have as big as you want
+
+476
+00:29:37,220 --> 00:29:39,020
+your computer working in the lab.
+
+477
+00:29:39,680 --> 00:29:41,040
+Just a few slides from now.
+
+478
+00:29:41,040 --> 00:29:41,360
+Yeah.
+
+479
+00:29:43,280 --> 00:29:44,760
+I thought you'd use one source.
+
+480
+00:29:44,880 --> 00:29:45,180
+It's easy.
+
+481
+00:29:45,280 --> 00:29:46,460
+You would have to use several sources,
+
+482
+00:29:46,980 --> 00:29:48,340
+but it's still not easy at the moment
+
+483
+00:29:48,340 --> 00:29:53,460
+to make them the same quality. So, it's still like a little random fabrication, but in the
+
+484
+00:29:53,460 --> 00:29:56,420
+future we'd like to have several sources synchronized.
+
+485
+00:29:56,420 --> 00:29:58,020
+Not identical, basically.
+
+486
+00:29:58,020 --> 00:29:59,300
+Yeah, that's the problem here.
+
+487
+00:29:59,300 --> 00:30:01,860
+Okay, it was an SPD-C source.
+
+488
+00:30:01,860 --> 00:30:02,580
+Excuse me?
+
+489
+00:30:02,580 --> 00:30:05,060
+It was an SPD-C source.
+
+490
+00:30:05,060 --> 00:30:08,420
+Spontaneous parametric down conversion. That's this source here,
+
+491
+00:30:08,420 --> 00:30:13,300
+in the beginning, this one here. Spontaneous parametric down conversion. That's the way.
+
+492
+00:30:13,300 --> 00:30:13,800
+Sorry.
+
+493
+00:30:16,200 --> 00:30:16,700
+Okay.
+
+494
+00:30:17,100 --> 00:30:18,700
+There's a picture about what's existing now.
+
+495
+00:30:18,700 --> 00:30:20,100
+In the future, you would draw many more.
+
+496
+00:30:22,400 --> 00:30:23,500
+Good. Photons.
+
+497
+00:30:23,700 --> 00:30:24,900
+Now we have to manipulate those.
+
+498
+00:30:24,900 --> 00:30:25,700
+How do we do it?
+
+499
+00:30:25,700 --> 00:30:26,600
+Well, I've shown it before.
+
+500
+00:30:26,800 --> 00:30:29,900
+There's one little beam splitter where light can couple in modes.
+
+501
+00:30:30,200 --> 00:30:31,100
+But we can do it much better.
+
+502
+00:30:31,100 --> 00:30:32,100
+We can tune it.
+
+503
+00:30:32,200 --> 00:30:33,200
+So how do we tune it?
+
+504
+00:30:33,200 --> 00:30:36,400
+Well, we take the same system here with light comes together.
+
+505
+00:30:36,500 --> 00:30:39,200
+We put a phase shifter there and then another beam splitter.
+
+506
+00:30:39,200 --> 00:30:43,880
+which overall allows the photon to be, at the end here, controlled.
+
+507
+00:30:43,880 --> 00:30:46,640
+So we can decide whether the photon will be found in this mode,
+
+508
+00:30:46,640 --> 00:30:48,920
+or photon will be found in that mode, or in any other position.
+
+509
+00:30:48,920 --> 00:30:52,360
+We can tune our qubit, our one qubit space, or the Bloch sphere,
+
+510
+00:30:52,360 --> 00:30:56,000
+the Lechner Bloch sphere, with such a device with very high precision,
+
+511
+00:30:56,000 --> 00:30:57,120
+up to 10 to minus 8.
+
+512
+00:30:57,120 --> 00:31:00,840
+So it's really something that people believe that is done in terms of technology
+
+513
+00:31:00,840 --> 00:31:04,440
+to be really in a scalable way with the control of photons.
+
+514
+00:31:06,040 --> 00:31:07,840
+So, of course, one is not enough.
+
+515
+00:31:07,840 --> 00:31:09,760
+people would like to have more modes than what we have.
+
+516
+00:31:09,760 --> 00:31:12,080
+So we have actually one in Vienna coming from MIT.
+
+517
+00:31:12,520 --> 00:31:14,280
+We have a chip with 26 modes.
+
+518
+00:31:14,280 --> 00:31:17,280
+It's just five millimeter long, so it's really as big as my fingernail.
+
+519
+00:31:17,800 --> 00:31:23,080
+Where if many of those systems as before, beam splitter, phase shifter,
+
+520
+00:31:23,200 --> 00:31:26,560
+done by heating, so you heat up locally to get a little more distance in the mode,
+
+521
+00:31:26,560 --> 00:31:27,200
+it expands.
+
+522
+00:31:28,400 --> 00:31:31,760
+And if those systems in there, these little interferometers,
+
+523
+00:31:32,720 --> 00:31:36,440
+the 88 of those inside, you have the capability to tune
+
+524
+00:31:36,440 --> 00:31:40,280
+what happens if the photon is in there in a nice and controlled manner.
+
+525
+00:31:40,380 --> 00:31:41,920
+So this is called a photonic chip,
+
+526
+00:31:42,520 --> 00:31:45,260
+where we basically process the information of the computer.
+
+527
+00:31:46,560 --> 00:31:49,660
+It doesn't come to everything, but a lot of stuff.
+
+528
+00:31:49,740 --> 00:31:51,900
+And I will show in a second how this is working.
+
+529
+00:31:52,360 --> 00:31:53,700
+So what's the last step? Detectors.
+
+530
+00:31:53,800 --> 00:31:57,460
+I think that's something which is almost done in terms of technology.
+
+531
+00:31:57,660 --> 00:32:00,440
+There's an amazing progress in the last couple of years
+
+532
+00:32:00,440 --> 00:32:03,120
+where, of course, you don't want to lose the photon at the end.
+
+533
+00:32:03,220 --> 00:32:05,240
+You fight so much to get it, then you process it.
+
+534
+00:32:05,240 --> 00:32:09,400
+hopefully very small losses, they will be sad to lose at the very last step.
+
+535
+00:32:09,820 --> 00:32:13,440
+So here people use the best detectors, and these are based on superconducting
+
+536
+00:32:13,440 --> 00:32:17,000
+material where efficiencies of 95, 95,
+
+537
+00:32:17,200 --> 00:32:21,380
+97% can be realized. And typically you take
+
+538
+00:32:21,380 --> 00:32:25,460
+nanowires, where you have many nanowires here shown as a
+
+539
+00:32:25,460 --> 00:32:29,160
+plate, photon comes, it makes a hotspot, it means the resistance
+
+540
+00:32:29,160 --> 00:32:33,280
+is changing, so it's not superconducting anymore, and then you see this change of being
+
+541
+00:32:33,280 --> 00:32:36,920
+superconducting or not superconducting anymore as a signal.
+
+542
+00:32:36,920 --> 00:32:37,780
+Why nanowires?
+
+543
+00:32:37,780 --> 00:32:40,000
+Because it's a thin material that when it heats up,
+
+544
+00:32:40,000 --> 00:32:41,580
+it gets cold again.
+
+545
+00:32:41,580 --> 00:32:44,120
+It's rapidly cold again.
+
+546
+00:32:44,120 --> 00:32:46,540
+And there's the system that nowadays you can buy.
+
+547
+00:32:46,540 --> 00:32:49,540
+So we have here these nanowires shown in the picture.
+
+548
+00:32:49,540 --> 00:32:51,460
+That's the real picture with the fiber coming.
+
+549
+00:32:51,460 --> 00:32:53,380
+So fiber in, here the nanowires,
+
+550
+00:32:53,380 --> 00:32:55,320
+and you put them here in a fridge
+
+551
+00:32:55,320 --> 00:32:56,420
+because they're superconducting.
+
+552
+00:32:56,420 --> 00:32:58,840
+So they want it cold between four Kelvin,
+
+553
+00:32:58,840 --> 00:32:59,800
+sometimes one Kelvin,
+
+554
+00:32:59,800 --> 00:33:02,940
+depending on the system that you are willing to buy.
+
+555
+00:33:03,280 --> 00:33:04,840
+What?
+
+556
+00:33:04,840 --> 00:33:07,460
+When the photon hits it.
+
+557
+00:33:07,460 --> 00:33:10,400
+This is the reason why it loses superconductivity.
+
+558
+00:33:10,400 --> 00:33:12,040
+So in short, you heat up.
+
+559
+00:33:12,040 --> 00:33:13,240
+OK, not superconducting anymore.
+
+560
+00:33:13,240 --> 00:33:15,820
+In more detail, you're going to make a hot spot,
+
+561
+00:33:15,820 --> 00:33:18,280
+and the current gets all the current in there.
+
+562
+00:33:18,280 --> 00:33:20,160
+And by the second oil effect, the current
+
+563
+00:33:20,160 --> 00:33:22,280
+has to basically go around this hot spot,
+
+564
+00:33:22,280 --> 00:33:24,400
+accidentally on the side, and not superconducting
+
+565
+00:33:24,400 --> 00:33:26,040
+there at these spots anymore.
+
+566
+00:33:26,040 --> 00:33:27,460
+And this has changed the material
+
+567
+00:33:27,460 --> 00:33:29,240
+to be not superconducting anymore.
+
+568
+00:33:29,240 --> 00:33:31,120
+It's changing resistance.
+
+569
+00:33:31,120 --> 00:33:33,100
+This gives the signal, ah, something happened.
+
+570
+00:33:33,280 --> 00:33:41,280
+And then after the photon has been absorbed, it gets called again from the environment and says, I'm ready for the next shot.
+
+571
+00:33:41,280 --> 00:33:52,280
+That's how it goes. So there's a cycle here. Photon comes, signal, then ready to go for the next one.
+
+572
+00:33:52,280 --> 00:33:55,280
+Good, detectors here.
+
+573
+00:33:55,280 --> 00:33:58,280
+3% is that already including the packaging factor?
+
+574
+00:33:58,280 --> 00:33:59,280
+Yep.
+
+575
+00:33:59,280 --> 00:34:00,280
+Oh, wow.
+
+576
+00:34:00,280 --> 00:34:01,500
+So actually, we have more.
+
+577
+00:34:01,640 --> 00:34:03,760
+It's hand-selected, also a question of money.
+
+578
+00:34:04,420 --> 00:34:05,400
+But you get those, yeah.
+
+579
+00:34:06,120 --> 00:34:07,960
+That's basically in and five.
+
+580
+00:34:08,080 --> 00:34:09,940
+A single, there's a five-way in, single out, yeah.
+
+581
+00:34:10,300 --> 00:34:10,600
+The package.
+
+582
+00:34:15,140 --> 00:34:15,540
+Good.
+
+583
+00:34:17,040 --> 00:34:18,000
+How much time do we have?
+
+584
+00:34:20,540 --> 00:34:21,600
+How much?
+
+585
+00:34:23,340 --> 00:34:23,900
+20 minutes.
+
+586
+00:34:24,140 --> 00:34:24,540
+Excellent.
+
+587
+00:34:25,280 --> 00:34:27,460
+So I hope for half an hour, actually.
+
+588
+00:34:27,460 --> 00:34:27,860
+But OK.
+
+589
+00:34:29,040 --> 00:34:29,320
+OK.
+
+590
+00:34:30,280 --> 00:34:35,280
+So, I have two avenues to go, okay, but maybe I can combine those.
+
+591
+00:34:35,280 --> 00:34:39,820
+So, the next one is to show you how you build a universal computer based on the things you've
+
+592
+00:34:39,820 --> 00:34:40,820
+just seen.
+
+593
+00:34:40,820 --> 00:34:44,040
+And I love to show it because it really goes back to Austrian research.
+
+594
+00:34:44,040 --> 00:34:48,260
+Then I show at the end what else we do with those photonic systems.
+
+595
+00:34:48,260 --> 00:34:52,620
+So for building a universal computer, which basically scales up nicely and can do all
+
+596
+00:34:52,620 --> 00:34:55,840
+the things we would like to do, you have a problem with photons.
+
+597
+00:34:55,840 --> 00:34:59,920
+The problem is when you would like to implement such a circuit, let's say you have single
+
+598
+00:34:59,920 --> 00:35:06,000
+photons which encode the qubit. You can address them nicely for the one single photon control.
+
+599
+00:35:06,000 --> 00:35:10,400
+It's easy. We've seen this before. But the hard part are those things here.
+
+600
+00:35:11,680 --> 00:35:15,280
+To make two photons interacting. Because photons don't interact. So you have to make,
+
+601
+00:35:15,280 --> 00:35:21,680
+you have to find a smart way to get those to go through a process that they become entangled.
+
+602
+00:35:21,680 --> 00:35:26,000
+Or that basically you do some other kind of operations between two photons. That one photon
+
+603
+00:35:26,000 --> 00:35:31,360
+tells the other one how to change. So therefore this is easy and this one is the hard part for
+
+604
+00:35:31,360 --> 00:35:35,600
+photonic systems. And this one is for example here the so-called controlled NOT gate which is shown
+
+605
+00:35:35,600 --> 00:35:39,440
+a truth here where that in the first photon is horizontally polarized it doesn't affect the
+
+606
+00:35:39,440 --> 00:35:45,040
+second one. If it's vertically polarized you see it flips the target photon to become different.
+
+607
+00:35:45,040 --> 00:35:50,480
+So the controls is the same and this guy is the slave who follows what the first one tells him
+
+608
+00:35:50,480 --> 00:35:57,920
+to do by its state. If you try to build something like this, like this kind of gate, what can you do?
+
+609
+00:35:57,920 --> 00:36:02,640
+So what was done 20 years ago is the first demonstrations, well you take two photons,
+
+610
+00:36:02,640 --> 00:36:07,120
+you build a smart interferometer where you say well the photons come out here at this part and
+
+611
+00:36:07,120 --> 00:36:14,400
+that part, they have changed as if they would have done this scene of operation. This you can do.
+
+612
+00:36:14,400 --> 00:36:20,160
+What's the problem? Well it's probabilistic, 11% success rate, and you have to measure the photons
+
+613
+00:36:20,160 --> 00:36:21,200
+that they have been there.
+
+614
+00:36:21,300 --> 00:36:22,400
+So you kill them.
+
+615
+00:36:23,020 --> 00:36:24,400
+So they do the mission, but they're dead.
+
+616
+00:36:27,000 --> 00:36:29,320
+But as you can do, well, there's smarter solutions.
+
+617
+00:36:29,420 --> 00:36:31,160
+You make a bigger interferometer.
+
+618
+00:36:31,820 --> 00:36:33,240
+Photons come in, control target.
+
+619
+00:36:33,360 --> 00:36:35,560
+You take extra photons, so-called ancillars,
+
+620
+00:36:36,360 --> 00:36:39,660
+which altogether interfere that when you measure these two,
+
+621
+00:36:40,840 --> 00:36:42,420
+this output here is not affected,
+
+622
+00:36:42,420 --> 00:36:46,080
+and they go through this kind of operation.
+
+623
+00:36:47,300 --> 00:36:49,380
+So you basically have these kind of hero guys
+
+624
+00:36:49,380 --> 00:36:51,740
+that you measure and be sacrificed
+
+625
+00:36:51,740 --> 00:36:53,960
+to make the others going through this operation.
+
+626
+00:36:54,760 --> 00:36:55,140
+Amazing.
+
+627
+00:36:56,140 --> 00:36:57,500
+Well, it's still not perfect
+
+628
+00:36:57,500 --> 00:37:00,740
+because the chance is 25% to measure photons here,
+
+629
+00:37:01,260 --> 00:37:02,660
+which of course is not the best gate.
+
+630
+00:37:02,720 --> 00:37:04,020
+You want to have always it working,
+
+631
+00:37:04,120 --> 00:37:04,980
+not always randomly.
+
+632
+00:37:06,000 --> 00:37:08,680
+Luckily, if you increase the numbers of ancillars,
+
+633
+00:37:09,040 --> 00:37:10,080
+you can drive it to one.
+
+634
+00:37:11,220 --> 00:37:12,440
+I've done this, many groups,
+
+635
+00:37:12,520 --> 00:37:13,800
+including us has shown this in the lab,
+
+636
+00:37:13,800 --> 00:37:14,580
+even if it's chips,
+
+637
+00:37:15,040 --> 00:37:16,100
+these kind of circuits work.
+
+638
+00:37:16,540 --> 00:37:18,680
+But if you would like to scale up for universal gates
+
+639
+00:37:18,680 --> 00:37:19,720
+that always work.
+
+640
+00:37:20,220 --> 00:37:21,500
+Then you'll be at the pioneering work
+
+641
+00:37:21,500 --> 00:37:22,800
+of these guys,
+
+642
+00:37:23,000 --> 00:37:23,700
+Nille van Milburn,
+
+643
+00:37:23,780 --> 00:37:24,520
+20 years ago,
+
+644
+00:37:24,620 --> 00:37:25,700
+who have shown this can be done,
+
+645
+00:37:26,140 --> 00:37:27,320
+but you need in the order of 100,
+
+646
+00:37:27,480 --> 00:37:29,300
+2,000, 10,000 qubits,
+
+647
+00:37:29,460 --> 00:37:31,520
+extra qubits per gate.
+
+648
+00:37:32,380 --> 00:37:33,620
+Well, in principle, scalable.
+
+649
+00:37:33,800 --> 00:37:34,800
+It's not exponentially scalable,
+
+650
+00:37:35,720 --> 00:37:36,740
+but it's still crazy.
+
+651
+00:37:37,740 --> 00:37:39,460
+Remember, it's hard to get single photons.
+
+652
+00:37:39,780 --> 00:37:41,540
+So this is the catch-22.
+
+653
+00:37:42,420 --> 00:37:44,100
+Well, there's amazing progress
+
+654
+00:37:44,100 --> 00:37:45,420
+since the last 20 years,
+
+655
+00:37:45,420 --> 00:37:47,540
+and somebody has been dramatically put down,
+
+656
+00:37:47,540 --> 00:37:56,860
+But at the end, the scheme where you have photons always sacrifice the slaves, that these here make the gates, has been turned out to be not the best architecture.
+
+657
+00:37:57,840 --> 00:38:02,520
+The best architecture is actually something based on a totally different scheme.
+
+658
+00:38:03,220 --> 00:38:07,060
+They use a highly entangled resource state, a cluster state, for computing.
+
+659
+00:38:07,620 --> 00:38:11,540
+And if you go in this paradigm of quantum computing, then it'd be way more efficient.
+
+660
+00:38:11,540 --> 00:38:16,540
+So what's this measurement-based class of quantum computing, which has been developed
+
+661
+00:38:16,540 --> 00:38:18,040
+by Rausendorf and Briegel?
+
+662
+00:38:18,040 --> 00:38:22,400
+Briegel is the Innsbruck professor of quantum theory, therefore I like to mention it as
+
+663
+00:38:22,400 --> 00:38:26,380
+an Austrian contribution to scalar quantum computers.
+
+664
+00:38:26,380 --> 00:38:31,300
+Brief jump for the mathematicians, what's quantum computing, what the measurement-based
+
+665
+00:38:31,300 --> 00:38:32,420
+scheme is about.
+
+666
+00:38:32,420 --> 00:38:36,280
+So the paper goes back to 2001, where they've actually, if you read the abstract, that's
+
+667
+00:38:36,280 --> 00:38:37,940
+basically my story here.
+
+668
+00:38:37,940 --> 00:38:42,760
+So they've developed a quantum computing scheme that consists entirely of one-qubit measurements.
+
+669
+00:38:42,760 --> 00:38:48,380
+So you just need to measure the entangled state where each measurement actually changes
+
+670
+00:38:48,380 --> 00:38:49,780
+the neighborhood state.
+
+671
+00:38:49,780 --> 00:38:51,520
+And this allows to make a computation.
+
+672
+00:38:51,520 --> 00:38:53,640
+But to read it, let's read together.
+
+673
+00:38:53,640 --> 00:38:58,100
+So that consists entirely of one-qubit measurements on a particular class of entangled states,
+
+674
+00:38:58,100 --> 00:38:59,480
+the cluster states.
+
+675
+00:38:59,480 --> 00:39:05,920
+The measurements are used to imprint a quantum logic circuit on the state, thereby destroying
+
+676
+00:39:05,920 --> 00:39:07,480
+its entanglement at the same time.
+
+677
+00:39:07,480 --> 00:39:10,200
+So in other words, of course, when you measure it, you can't go back.
+
+678
+00:39:11,060 --> 00:39:14,180
+I did not mention before, in a circuit picture, you can go always back and forth.
+
+679
+00:39:14,840 --> 00:39:16,620
+There's linear operations.
+
+680
+00:39:16,780 --> 00:39:18,380
+You go one way, go the other way.
+
+681
+00:39:18,660 --> 00:39:19,660
+Here, it's not possible.
+
+682
+00:39:19,940 --> 00:39:21,180
+When you measure, the system is dead.
+
+683
+00:39:21,240 --> 00:39:23,460
+But it's fine, because you want to just get the result.
+
+684
+00:39:23,540 --> 00:39:24,340
+You don't need to go back.
+
+685
+00:39:25,880 --> 00:39:27,220
+So what are these states, actually?
+
+686
+00:39:27,320 --> 00:39:29,700
+These states are, well, that's how you draw it.
+
+687
+00:39:29,700 --> 00:39:31,620
+It's a qubit, and it's entangled to the neighbors.
+
+688
+00:39:32,300 --> 00:39:36,640
+For the mathematicians here, what you do is you take the supposition states of qubits,
+
+689
+00:39:36,640 --> 00:39:42,280
+and you apply between each neighbor a so-called entangling operation or an ising operation
+
+690
+00:39:42,280 --> 00:39:44,380
+that introduces this entangling bond.
+
+691
+00:39:44,840 --> 00:39:45,920
+It's the hard thing to do.
+
+692
+00:39:46,180 --> 00:39:47,400
+But let's assume this is done.
+
+693
+00:39:48,080 --> 00:39:52,700
+Then if a cluster state, and now in a cartoony picture, I apologize for being very superficial
+
+694
+00:39:52,700 --> 00:39:56,280
+here, you remove qubits you don't want.
+
+695
+00:39:56,480 --> 00:39:58,940
+You just leave those here with the lines.
+
+696
+00:40:00,000 --> 00:40:04,780
+And the measurement per qubit here effectively perform the computation because the measurement
+
+697
+00:40:04,780 --> 00:40:09,820
+here affects the neighbor measurement here affects the neighbor and whoops you see this line here
+
+698
+00:40:09,820 --> 00:40:16,300
+this qubit affects the qubits down there so this this is similar to a entangling bond so to make
+
+699
+00:40:16,300 --> 00:40:21,420
+it short the measurements here allow to blend all kind of computations on a given cluster state in
+
+700
+00:40:21,420 --> 00:40:26,220
+the mokotuni picture if it's drawn like this you make measurements here effectively make a one
+
+701
+00:40:26,220 --> 00:40:31,660
+qubit and you rotate it stepwise measurement by measurement if it's 2d then you have basic
+
+702
+00:40:31,660 --> 00:40:36,940
+measurements here effectively do the same as a circuit with these kind of input states followed
+
+703
+00:40:36,940 --> 00:40:43,020
+by entanglement from this bond and so on but just just just to show that this is really a powerful
+
+704
+00:40:43,020 --> 00:40:50,220
+framework back to architecture of computers well how does the computer look like give me qubits
+
+705
+00:40:50,860 --> 00:40:55,740
+entangle them make measurements there are certain rules how the measurements have to look like
+
+706
+00:40:55,740 --> 00:41:02,420
+And then each measurement here changes the state here according to which measurement it did.
+
+707
+00:41:02,540 --> 00:41:10,040
+So the measurement basis rotates this qubit even by this angle here that defines the basis.
+
+708
+00:41:10,720 --> 00:41:11,880
+That's basically the summary.
+
+709
+00:41:12,640 --> 00:41:14,340
+So why do a body with that?
+
+710
+00:41:14,460 --> 00:41:16,720
+Well, let me go back to what we need to do.
+
+711
+00:41:16,780 --> 00:41:18,520
+We want to build a universally big quantum computer.
+
+712
+00:41:19,080 --> 00:41:21,900
+So this is done by building a cluster state.
+
+713
+00:41:22,100 --> 00:41:23,700
+Then simply make measurements.
+
+714
+00:41:23,700 --> 00:41:27,140
+that basically is the algorithm, and then read out.
+
+715
+00:41:27,660 --> 00:41:29,460
+So the challenge is to get the cluster state.
+
+716
+00:41:30,260 --> 00:41:31,540
+And why is it not good for photons?
+
+717
+00:41:31,800 --> 00:41:33,640
+Well, how would you do it?
+
+718
+00:41:33,700 --> 00:41:34,640
+Well, you take photons,
+
+719
+00:41:34,740 --> 00:41:36,200
+and you have to make this entangling bond.
+
+720
+00:41:36,520 --> 00:41:38,400
+And as shown before, you can take photons here,
+
+721
+00:41:38,880 --> 00:41:41,320
+send them in the beam splitter, look at the output port,
+
+722
+00:41:41,360 --> 00:41:44,220
+and then you would select those where they went out here,
+
+723
+00:41:44,480 --> 00:41:45,580
+and then give it a bond.
+
+724
+00:41:47,460 --> 00:41:50,240
+But of course, you need extra longer photons here,
+
+725
+00:41:50,240 --> 00:41:50,960
+longer photons there,
+
+726
+00:41:50,980 --> 00:41:52,620
+because you lose two by the measurement.
+
+727
+00:41:52,620 --> 00:41:56,620
+So you have three photons here, three photons there, and I make the measurement here.
+
+728
+00:41:56,620 --> 00:42:00,140
+Then this guy's gone, this guy's gone. You have six, so three and three are six.
+
+729
+00:42:00,140 --> 00:42:04,620
+Two are gone. That means these four are left. They give me the cluster. Yoo-hoo! It was grown.
+
+730
+00:42:05,420 --> 00:42:09,660
+What's the problem now? Well, it's just 50%. That's not a good scaling, 50%.
+
+731
+00:42:11,100 --> 00:42:14,620
+The breakthrough came to say, well, if you adapt this kind of beam splitters,
+
+732
+00:42:14,620 --> 00:42:19,820
+you have some extra beam splitters and four extra photons, then it's excessively 75%.
+
+733
+00:42:19,820 --> 00:42:25,420
+percent or I give you two entangled pairs and build it somewhat differently against any five percent
+
+734
+00:42:25,420 --> 00:42:34,140
+success rate. That means in three or four cases I grow. This is interesting. Well graph theory.
+
+735
+00:42:35,100 --> 00:42:39,580
+You want a big cluster state that might be ugly but connected that you can go through all the
+
+736
+00:42:39,580 --> 00:42:45,020
+qubits till the end. And it was shown that if I give you clusters with five qubits and I succeed
+
+737
+00:42:45,020 --> 00:42:51,660
+50% of the timing in connecting them, then on average, according to graph theory, you will
+
+738
+00:42:51,660 --> 00:42:55,900
+always find a bond that goes from the very beginning till the very end of your measure.
+
+739
+00:42:55,900 --> 00:42:59,740
+Maybe not the straight line, maybe it has to go up here and there, but you know where the fusion
+
+740
+00:42:59,740 --> 00:43:03,580
+failed. So when you know which one is the good connection, then you make your measurements
+
+741
+00:43:03,580 --> 00:43:08,700
+according to this line. And according to percolation theory, like percolation is kind of
+
+742
+00:43:08,700 --> 00:43:10,040
+of Turchsidan from Coffey.
+
+743
+00:43:10,520 --> 00:43:12,840
+The collation theory always find a way to go to the end.
+
+744
+00:43:14,500 --> 00:43:14,980
+50%.
+
+745
+00:43:14,980 --> 00:43:16,220
+You have to do 50%.
+
+746
+00:43:16,220 --> 00:43:18,400
+But you need these five qubits in the beginning.
+
+747
+00:43:18,880 --> 00:43:19,500
+Can you do better?
+
+748
+00:43:20,220 --> 00:43:20,840
+Yes, you can.
+
+749
+00:43:21,400 --> 00:43:22,740
+If you go down to three qubits,
+
+750
+00:43:22,860 --> 00:43:24,140
+the smallest system in your hands,
+
+751
+00:43:24,840 --> 00:43:26,060
+and it was shown that if you achieve
+
+752
+00:43:26,060 --> 00:43:28,260
+even the 75% for diffusion here,
+
+753
+00:43:29,100 --> 00:43:32,980
+this describes about how much success rate you need
+
+754
+00:43:32,980 --> 00:43:34,780
+to basically make a graph.
+
+755
+00:43:35,120 --> 00:43:36,980
+If you have 75% success rate,
+
+756
+00:43:36,980 --> 00:43:41,460
+You just need three qubits in your hands to fuse them by basic optics.
+
+757
+00:43:42,880 --> 00:43:46,540
+I tell you this because for all the architects out there,
+
+758
+00:43:46,800 --> 00:43:49,480
+ions, superconductors, it's very different.
+
+759
+00:43:50,040 --> 00:43:53,420
+These big systems face the challenge in how to make it bigger and bigger
+
+760
+00:43:53,420 --> 00:43:54,820
+from the skating.
+
+761
+00:43:54,940 --> 00:43:57,180
+If you have five, how to go to the next big system, okay?
+
+762
+00:43:57,180 --> 00:43:58,520
+How to connect those and so on.
+
+763
+00:43:59,280 --> 00:44:00,080
+Photons are the opposite.
+
+764
+00:44:00,840 --> 00:44:03,720
+So these architectures rely on the challenge to get these free photons
+
+765
+00:44:03,720 --> 00:44:05,520
+on demand with high quality.
+
+766
+00:44:05,520 --> 00:44:09,460
+And therefore the blueprint is really the hardest thing is the first part.
+
+767
+00:44:09,600 --> 00:44:11,600
+Give me a good free photon source.
+
+768
+00:44:11,880 --> 00:44:13,340
+I like to raise the challenge.
+
+769
+00:44:13,600 --> 00:44:18,400
+If somebody finds a way to solve the big problem, it's not easy at all.
+
+770
+00:44:18,680 --> 00:44:21,320
+But if you find, if you just have these free photons in your hand,
+
+771
+00:44:21,860 --> 00:44:24,660
+you can make the next steps by basic optics,
+
+772
+00:44:25,160 --> 00:44:29,080
+where you monitor which detector fired to grow it up to arbitrary size.
+
+773
+00:44:29,540 --> 00:44:31,280
+So then you have this fusion gates,
+
+774
+00:44:31,420 --> 00:44:35,340
+then just passive optics and measurement-based computation.
+
+775
+00:44:35,520 --> 00:44:38,880
+And exactly that's a picture of the blueprint companies have in mind.
+
+776
+00:44:39,140 --> 00:44:41,240
+The hardest part is this free photon generation.
+
+777
+00:44:41,860 --> 00:44:44,980
+So it's called Grimberger and Zeilinger states from historical reasons.
+
+778
+00:44:45,480 --> 00:44:48,180
+And then comes the probabilistic fusions.
+
+779
+00:44:48,340 --> 00:44:50,100
+And you know which graphs are working.
+
+780
+00:44:50,600 --> 00:44:53,640
+And at the end, you have computers that follow that and you make measurements.
+
+781
+00:44:54,260 --> 00:44:59,840
+And indeed, one of the biggest quantum computing companies is following this direction.
+
+782
+00:45:00,280 --> 00:45:05,040
+That's Psi Quantum from a former professor from Bristol, Jeremy O'Brien, who is now in California.
+
+783
+00:45:05,520 --> 00:45:06,760
+Actually, this number is not right anymore.
+
+784
+00:45:06,760 --> 00:45:10,560
+It's almost a billion what they raised so far for doing exactly that.
+
+785
+00:45:11,240 --> 00:45:15,280
+Yeah, it's the it's currently the hardware architecture for photons.
+
+786
+00:45:16,960 --> 00:45:20,360
+But well, being a scientist, you can say, well, that's good enough.
+
+787
+00:45:20,360 --> 00:45:22,120
+You still want to look at different things.
+
+788
+00:45:22,120 --> 00:45:25,920
+People like to look at fusion gates, this kind of connecting atoms
+
+789
+00:45:26,200 --> 00:45:28,160
+and connecting photons with other means.
+
+790
+00:45:28,160 --> 00:45:31,880
+There's this big field of beautiful science with atoms,
+
+791
+00:45:31,880 --> 00:45:34,000
+so-called cavity counter-electrodynamics.
+
+792
+00:45:34,000 --> 00:45:37,480
+So you have atoms being the mediator that photons can couple to each other.
+
+793
+00:45:37,680 --> 00:45:40,440
+Many groups do it with Caltech and Max Planck.
+
+794
+00:45:41,120 --> 00:45:44,400
+People work on getting these GHC states right away
+
+795
+00:45:44,720 --> 00:45:49,480
+from a magic quantum thought that spits out free photons in a beautiful design.
+
+796
+00:45:49,720 --> 00:45:51,000
+People work on that.
+
+797
+00:45:51,000 --> 00:45:54,360
+We follow directions here, so more on the research aspect to look at the
+
+798
+00:45:54,920 --> 00:46:00,240
+nonlinear properties of graphene to make photons interact as an interesting route
+
+799
+00:46:00,680 --> 00:46:03,080
+for looking at these kind of photonic operations.
+
+800
+00:46:04,000 --> 00:46:09,320
+So that was actually my chapter of to hopefully entertain you and show you how you build a
+
+801
+00:46:09,320 --> 00:46:11,880
+universal quantum computer for photons.
+
+802
+00:46:11,880 --> 00:46:15,960
+The last minutes that I have from the chair is about twists, what actually we like to
+
+803
+00:46:15,960 --> 00:46:19,060
+do in terms of applications, what photons are good for.
+
+804
+00:46:19,060 --> 00:46:21,760
+How much time do you give me?
+
+805
+00:46:21,760 --> 00:46:24,240
+Well, you shouldn't say this to me.
+
+806
+00:46:24,240 --> 00:46:25,240
+Okay.
+
+807
+00:46:25,240 --> 00:46:31,060
+Okay, I picked out a few, okay, to hopefully show that it's such a beautiful science that
+
+808
+00:46:31,060 --> 00:46:35,680
+engineering is one important aspect, but it's more fun to show what else can be done with photonic qubits.
+
+809
+00:46:36,100 --> 00:46:43,820
+So one thing that I think was for me in particular amazing is that quantum computers allow for security.
+
+810
+00:46:44,060 --> 00:46:48,180
+So we always talk about speed ups, but personally, I think it's not the main application.
+
+811
+00:46:48,340 --> 00:46:56,140
+I think the fact that quantum computers allow to protect data, processed data, is way more relevant facing our
+
+812
+00:46:56,140 --> 00:47:00,220
+Internet and these cloud services of computing than just the speed up.
+
+813
+00:47:01,060 --> 00:47:03,860
+But that's my personal opinion, of course, about importance.
+
+814
+00:47:04,580 --> 00:47:06,920
+So the question if quantum computers can be,
+
+815
+00:47:07,800 --> 00:47:10,220
+sorry, if computers can process encrypted data
+
+816
+00:47:10,220 --> 00:47:14,460
+goes back to the year 78 when I was born.
+
+817
+00:47:15,160 --> 00:47:17,700
+Rivas is one of the guys of the RSA code
+
+818
+00:47:17,700 --> 00:47:19,740
+that was now used for this public encryption,
+
+819
+00:47:20,580 --> 00:47:22,600
+where one of these pioneers even asked,
+
+820
+00:47:22,880 --> 00:47:24,540
+can we, by any means,
+
+821
+00:47:24,980 --> 00:47:27,140
+build a computer where the data is encrypted
+
+822
+00:47:27,140 --> 00:47:29,760
+so nobody knows what's happening and process it?
+
+823
+00:47:29,760 --> 00:47:31,600
+There was no answer to that.
+
+824
+00:47:31,600 --> 00:47:37,480
+So it took 30 years to find a solution, mainly because giving useful answers of encrypted
+
+825
+00:47:37,480 --> 00:47:39,380
+information is not straightforward.
+
+826
+00:47:39,380 --> 00:47:44,800
+And we're not talking about a classical solution, which is called homomorphic encryption with
+
+827
+00:47:44,800 --> 00:47:45,800
+huge overheads.
+
+828
+00:47:45,800 --> 00:47:51,000
+We'll jump right to the quantum solution, which is a blind, so-called blind quantum
+
+829
+00:47:51,000 --> 00:47:52,940
+computer, which can be realized.
+
+830
+00:47:52,940 --> 00:47:57,360
+And blind means it's a feature that it doesn't know the input, doesn't know the processing
+
+831
+00:47:57,360 --> 00:47:58,360
+or software, and doesn't know the output.
+
+832
+00:47:58,360 --> 00:48:03,720
+So it gives you all the power, but remains totally ignorant about what you're doing.
+
+833
+00:48:03,720 --> 00:48:05,480
+Actually an amazing cloud service.
+
+834
+00:48:05,480 --> 00:48:12,600
+You could basically hide all your data, hide all your whatever secret calculations.
+
+835
+00:48:12,600 --> 00:48:14,200
+This could be done with a quantum computer.
+
+836
+00:48:15,080 --> 00:48:20,120
+So in a nutshell, it combines the aspects of quantum cryptography, where you use the
+
+837
+00:48:20,120 --> 00:48:23,720
+fact that quantum states must be measured to learn something about those.
+
+838
+00:48:24,440 --> 00:48:25,880
+These measurements change the state.
+
+839
+00:48:25,880 --> 00:48:32,880
+If you take this aspect into quantum computing, you get this blind quantum computer.
+
+840
+00:48:32,880 --> 00:48:36,880
+I said measurement, it rings a bell, measurement-based quantum computing.
+
+841
+00:48:36,880 --> 00:48:39,880
+Of course, it goes hand in hand with this kind of architecture.
+
+842
+00:48:39,880 --> 00:48:47,880
+And it allows to build a quantum server where you can delegate your computation with basically very little resources in your hand.
+
+843
+00:48:47,880 --> 00:48:50,880
+So how this is done is just one slide.
+
+844
+00:48:50,880 --> 00:48:53,620
+And if you have questions, I'm happy to talk more
+
+845
+00:48:53,620 --> 00:48:55,760
+at a later stage.
+
+846
+00:48:55,760 --> 00:48:58,060
+It's exactly the same as the measurement-based scheme
+
+847
+00:48:58,060 --> 00:49:00,260
+if one little change.
+
+848
+00:49:00,260 --> 00:49:01,860
+So now you might remember we started
+
+849
+00:49:01,860 --> 00:49:04,600
+with these qubits which are not entangled in the cluster
+
+850
+00:49:04,600 --> 00:49:06,240
+state picture before.
+
+851
+00:49:06,240 --> 00:49:09,020
+But now we changed the start at each qubit
+
+852
+00:49:09,020 --> 00:49:11,380
+as a certain phase between the different states.
+
+853
+00:49:11,380 --> 00:49:14,000
+So for those who are not familiar with quantum system,
+
+854
+00:49:14,000 --> 00:49:15,760
+it just means you prepare them differently.
+
+855
+00:49:15,760 --> 00:49:19,980
+They're all particular different from each other.
+
+856
+00:49:20,880 --> 00:49:23,920
+As a client, you repair those with different phases, and that's it.
+
+857
+00:49:24,320 --> 00:49:25,760
+But you know for each qubit the phase.
+
+858
+00:49:26,180 --> 00:49:28,960
+Let's say 0 plus 1, 0 minus 1, and so on.
+
+859
+00:49:29,140 --> 00:49:30,420
+Eight different settings are sufficient.
+
+860
+00:49:31,440 --> 00:49:33,740
+The center to the computer has the power to entangle them.
+
+861
+00:49:33,960 --> 00:49:37,040
+You know, he's the amazing device with percolation theory,
+
+862
+00:49:37,180 --> 00:49:39,540
+and the entanglement stand gives you all the power there.
+
+863
+00:49:40,700 --> 00:49:42,340
+And I tell the computer, please make measurements,
+
+864
+00:49:42,680 --> 00:49:43,640
+because you know the software.
+
+865
+00:49:44,820 --> 00:49:47,180
+And the computer, even though he makes this entangled state,
+
+866
+00:49:47,180 --> 00:49:49,120
+cannot learn what you calculate,
+
+867
+00:49:49,120 --> 00:49:52,940
+because to understand what happens to the qubits when you make the measurements,
+
+868
+00:49:53,320 --> 00:49:54,640
+you need two parameters.
+
+869
+00:49:54,920 --> 00:49:58,660
+One is the measurement setting.
+
+870
+00:49:59,260 --> 00:50:00,760
+Okay, this is something the computer knows.
+
+871
+00:50:00,980 --> 00:50:01,760
+He knows the basis.
+
+872
+00:50:02,100 --> 00:50:03,340
+I measured HV basis.
+
+873
+00:50:03,580 --> 00:50:04,880
+I measured sigma X basis.
+
+874
+00:50:05,700 --> 00:50:09,500
+He does not know the pre-existing phase of the qubit.
+
+875
+00:50:09,500 --> 00:50:13,400
+He needs to know also this phase, which only you know.
+
+876
+00:50:13,400 --> 00:50:19,800
+And by having this kind of information not at his or her hand of the computer,
+
+877
+00:50:19,800 --> 00:50:21,520
+he doesn't know what's going on.
+
+878
+00:50:21,520 --> 00:50:23,640
+As simple as that.
+
+879
+00:50:23,640 --> 00:50:27,280
+That's the core idea of this blind quantum computing.
+
+880
+00:50:27,280 --> 00:50:32,840
+And 10 years ago, you could take photons and show that this is really a nice,
+
+881
+00:50:32,840 --> 00:50:38,080
+amazing application, which can be really realistically studied and done
+
+882
+00:50:38,080 --> 00:50:40,640
+with little photonic quantum computers.
+
+883
+00:50:40,640 --> 00:50:44,520
+If you have five minutes, I would like to show something else.
+
+884
+00:50:44,520 --> 00:50:45,520
+So that's security.
+
+885
+00:50:45,520 --> 00:50:49,760
+And I can talk forever because we still continue this direction in our labs, as I personally
+
+886
+00:50:49,760 --> 00:50:55,140
+think security is a main field for computers.
+
+887
+00:50:55,140 --> 00:50:59,600
+The other thing that we like to look at is, can we change architectures?
+
+888
+00:50:59,600 --> 00:51:04,400
+Because photons are so nice and so flexible, that we like to investigate different concepts.
+
+889
+00:51:04,400 --> 00:51:08,800
+And this is something that comes from the theory developments from Charles of Bruckner,
+
+890
+00:51:08,800 --> 00:51:17,480
+We looked at, well, mechanics allows to superimpose everything, including time, causal orders, not only states.
+
+891
+00:51:17,860 --> 00:51:22,060
+That basically allowed us to look at different software architectures.
+
+892
+00:51:22,460 --> 00:51:23,120
+But step by step.
+
+893
+00:51:23,980 --> 00:51:24,640
+So what's the idea?
+
+894
+00:51:24,640 --> 00:51:36,440
+I hope now after this almost 45 minutes of talking, you believe where you can superimpose states, zero and one, or electron being at the same time spin up, spin down, or here light being left or right polarized.
+
+895
+00:51:36,580 --> 00:51:38,300
+You can prepare those kind of states.
+
+896
+00:51:38,800 --> 00:51:42,080
+But quantum mechanics allows you by mathematics to superimpose everything.
+
+897
+00:51:42,720 --> 00:51:46,560
+And therefore, Kipfer, including Charles of Pugden, looked at
+
+898
+00:51:47,440 --> 00:51:54,080
+suppositions that are really superimposing causal relations A before B or B before A.
+
+899
+00:51:54,960 --> 00:51:58,320
+This is of course interesting in many aspects from foundations up to
+
+900
+00:51:59,200 --> 00:52:02,000
+time and general relativity. This we will not cover here.
+
+901
+00:52:02,640 --> 00:52:07,520
+But from a pragmatic side, you can see this as superimposing orders of computer gates.
+
+902
+00:52:07,520 --> 00:52:12,280
+first comes this operation and then this or vice versa.
+
+903
+00:52:12,280 --> 00:52:15,140
+This something can do with photons very nicely.
+
+904
+00:52:15,140 --> 00:52:16,060
+So why is it interesting?
+
+905
+00:52:16,060 --> 00:52:18,060
+Well, if you think about the circuit,
+
+906
+00:52:18,060 --> 00:52:20,060
+then textbook would tell you the speed up comes
+
+907
+00:52:20,060 --> 00:52:23,740
+from superimposing the serum once here, that's right.
+
+908
+00:52:23,740 --> 00:52:25,780
+But it can also have a boost sometimes
+
+909
+00:52:25,780 --> 00:52:27,660
+in a superimposed the software,
+
+910
+00:52:27,660 --> 00:52:31,140
+this architecture by having U1 and U2
+
+911
+00:52:31,140 --> 00:52:33,800
+or the other one simultaneously coexisting.
+
+912
+00:52:33,800 --> 00:52:36,860
+And that's sometimes a nice twist to have in your hands.
+
+913
+00:52:37,520 --> 00:52:41,000
+So in a cartoon way, how does the computer look like?
+
+914
+00:52:41,100 --> 00:52:43,860
+Well, you have one qubit telling,
+
+915
+00:52:44,520 --> 00:52:46,720
+please target go this order through the computer.
+
+916
+00:52:46,980 --> 00:52:48,740
+If I'm state one, that's the state zero.
+
+917
+00:52:49,340 --> 00:52:50,160
+It'll be state one,
+
+918
+00:52:50,220 --> 00:52:51,860
+and please go the other order through.
+
+919
+00:52:52,400 --> 00:52:54,940
+It'll be prepared supposition, zero plus one.
+
+920
+00:52:54,940 --> 00:53:00,740
+Then if the coexistence of both consecutive steps in here.
+
+921
+00:53:02,160 --> 00:53:05,340
+And why would this be interesting for this little case?
+
+922
+00:53:05,520 --> 00:53:07,440
+Well, a one-shot only here,
+
+923
+00:53:07,520 --> 00:53:12,820
+you could show that you can distinguish if they commute or anti-commute.
+
+924
+00:53:13,300 --> 00:53:18,400
+A task that no classical or no quantum computer could do by asking only once.
+
+925
+00:53:18,460 --> 00:53:22,540
+Because you have to look at first this kind of setting and that kind of setting you compare.
+
+926
+00:53:23,760 --> 00:53:27,660
+A one-shot only, this is not possible by even a standard quantum computer.
+
+927
+00:53:27,900 --> 00:53:28,940
+That was a nice twist here.
+
+928
+00:53:29,800 --> 00:53:35,800
+And here, for this particular example, it was shown that one photon going for once could do it.
+
+929
+00:53:35,800 --> 00:53:40,760
+So back how this is going to look like in a lab, well like this still proof of principle
+
+930
+00:53:40,760 --> 00:53:44,760
+that you have here this down conversion source looks a little different but it means two photons
+
+931
+00:53:44,760 --> 00:53:49,640
+come out one is a trigger knowing the second photon is there from this down conversion process
+
+932
+00:53:49,640 --> 00:53:54,600
+and then we arrange a setup where it comes to beam split and if it goes this way first it comes first
+
+933
+00:53:54,600 --> 00:54:01,960
+for u2 operation and then here this one is the u1 operation and going out or if it goes straight
+
+934
+00:54:01,960 --> 00:54:07,800
+first. First is U1 operation, then going all this way through this U2 and coming out here.
+
+935
+00:54:07,800 --> 00:54:12,440
+At the end you see the beam splitter. You have to close the paths because at the end
+
+936
+00:54:12,440 --> 00:54:16,440
+nature is not allowed, or you are not allowed to know which one happened first because you
+
+937
+00:54:16,440 --> 00:54:22,280
+want to have a quantum interference of both orders here in the system. Therefore you close at the end
+
+938
+00:54:22,280 --> 00:54:26,200
+with this beam splitter again. So now comes the mathematics test. So there's no lecture
+
+939
+00:54:26,200 --> 00:54:30,280
+on mathematics challenge for you. So we can test commuting or not commuting.
+
+940
+00:54:30,280 --> 00:54:33,240
+Here's the answer in experiment.
+
+941
+00:54:33,240 --> 00:54:36,580
+So output here means commuting, output there non-commuting.
+
+942
+00:54:36,580 --> 00:54:38,960
+So we had here the settings for these two different operations.
+
+943
+00:54:38,960 --> 00:54:42,740
+We choose, for example, two times power dx operations.
+
+944
+00:54:42,740 --> 00:54:43,740
+Does it commute?
+
+945
+00:54:43,740 --> 00:54:44,740
+Two power dx.
+
+946
+00:54:44,740 --> 00:54:45,740
+Yes, no?
+
+947
+00:54:45,740 --> 00:54:46,740
+Of course, no?
+
+948
+00:54:46,740 --> 00:54:48,740
+You see here, green answer, right?
+
+949
+00:54:48,740 --> 00:54:56,040
+If you take the x and y, blue answer, do not commute.
+
+950
+00:54:56,040 --> 00:55:00,260
+So at least the setup tells you what you learn in textbook 101 in quantum physics.
+
+951
+00:55:00,280 --> 00:55:03,880
+operations commute or not commute. That was done with one shot only. Of course, it goes about
+
+952
+00:55:03,880 --> 00:55:11,160
+different difficult situations. A very high success rate. Good. I make it short to show at the end
+
+953
+00:55:11,720 --> 00:55:16,680
+where I could talk maybe about other things to show about normorphic computing. I would like to
+
+954
+00:55:16,680 --> 00:55:22,600
+show the last thing here because it's so often in the press about supremacy of benchmarking classical
+
+955
+00:55:22,600 --> 00:55:29,880
+computers. So what is that? Supremacy means that people would like to perform a proof, an experiment
+
+956
+00:55:30,280 --> 00:55:35,080
+where the result of the quantum computer goes beyond what a classical machine can do.
+
+957
+00:55:35,080 --> 00:55:42,680
+As you get to show that there's no fundamental limit why a quantum computer cannot be the classical device.
+
+958
+00:55:42,680 --> 00:55:46,280
+Let me show experiments with that.
+
+959
+00:55:46,280 --> 00:55:52,480
+This is not in contradiction to the first slide half an hour before, if the qubit's there,
+
+960
+00:55:52,480 --> 00:55:56,880
+because for those examples you don't need really entanglement in your hands.
+
+961
+00:55:56,880 --> 00:56:02,280
+You need something that is complex in processing, but not necessarily have an entangled state that you can manipulate.
+
+962
+00:56:05,100 --> 00:56:08,020
+And why photons and what's all this about?
+
+963
+00:56:08,140 --> 00:56:13,080
+So photons actually were one of the first systems to be considered for showing the supremacy,
+
+964
+00:56:13,500 --> 00:56:17,520
+because there was a very nice and rather feasible method to do so.
+
+965
+00:56:18,500 --> 00:56:21,220
+And I apologize for this mathematics here, but it just got you through,
+
+966
+00:56:21,320 --> 00:56:25,360
+and it's basically basic optics, what you see on the slides.
+
+967
+00:56:25,360 --> 00:56:32,240
+So the particular feature of photons is when you have photons that come to a beam splitter,
+
+968
+00:56:32,240 --> 00:56:35,280
+so that's a photon here, photon and a beam splitter, and the beam splitter is given by
+
+969
+00:56:35,280 --> 00:56:40,960
+a so-called beam splitter matrix written down here. Then it goes straight, it's like this.
+
+970
+00:56:40,960 --> 00:56:44,800
+If it's reflected, it gets an eye phase shift, which you might have learned from the optics
+
+971
+00:56:44,800 --> 00:56:50,800
+courses from the surface. But the point is now when they interfere, then both terms,
+
+972
+00:56:50,800 --> 00:56:56,800
+the terms transmitted and reflected cancel. Because both photons transmitted and both
+
+973
+00:56:56,800 --> 00:57:02,000
+photons reflected, this gives you ii, i squared minus one, gives you zero and they're bunch.
+
+974
+00:57:02,000 --> 00:57:05,600
+It makes sense because photons are bosons. I mean they have to bunch if they're quantum
+
+975
+00:57:05,600 --> 00:57:10,640
+systems. So they jump in the same mode and go out happily there. There's nothing matching about that.
+
+976
+00:57:11,600 --> 00:57:16,560
+Now, being mathematicians, you would say, wait a second, that's a matrix. If you look at the
+
+977
+00:57:16,560 --> 00:57:23,440
+coincidences here which disappear. So what you do, you calculate this term plus that term.
+
+978
+00:57:23,440 --> 00:57:30,880
+That's the permanent because you write AD plus CB. And it was then people realized that the
+
+979
+00:57:30,880 --> 00:57:34,880
+permanent is a very hard piece to calculate. Different to a determinant, it's rather
+
+980
+00:57:34,880 --> 00:57:40,880
+straightforward because they're analytical methods. The permanent belongs to a complexity class
+
+981
+00:57:40,880 --> 00:57:44,800
+called sharp P, which means it's like a salesman problem. Even harder than this,
+
+982
+00:57:44,800 --> 00:57:48,160
+it's like to ask how many of those solutions do you have?
+
+983
+00:57:48,220 --> 00:57:49,800
+So extremely hard to calculate.
+
+984
+00:57:50,500 --> 00:57:51,560
+And photons do it for free.
+
+985
+00:57:52,000 --> 00:57:53,120
+I mean, send them on a beam splitter
+
+986
+00:57:53,120 --> 00:57:55,700
+and they make the permanent calculation by their nature.
+
+987
+00:57:56,400 --> 00:57:58,380
+And that was the eye opener to say, wait a second,
+
+988
+00:57:59,000 --> 00:58:00,100
+let's perform a computation,
+
+989
+00:58:00,360 --> 00:58:03,920
+but based on this interference of photons on beam splitters.
+
+990
+00:58:04,360 --> 00:58:05,800
+So now you take many beam splitters,
+
+991
+00:58:06,340 --> 00:58:07,660
+phase shifters, photons come in,
+
+992
+00:58:07,660 --> 00:58:10,500
+and there's history about developments back in the days
+
+993
+00:58:10,500 --> 00:58:12,520
+about such networks for different reasons.
+
+994
+00:58:12,520 --> 00:58:16,980
+But in the modern language, they use this to build a network with many beam splitters
+
+995
+00:58:16,980 --> 00:58:23,400
+and of course not always balanced situation, it should be like an ugly unitary operation,
+
+996
+00:58:23,400 --> 00:58:25,520
+a big one here, based on many beam splitters.
+
+997
+00:58:25,520 --> 00:58:32,540
+When photons come in, you basically look at what comes out, then you have to do always
+
+998
+00:58:32,540 --> 00:58:35,760
+calculations with the permanents to predict the answer.
+
+999
+00:58:35,760 --> 00:58:41,160
+They've shown that even when you make random shots, so sampling runs, even this is hard
+
+1000
+00:58:41,160 --> 00:58:47,400
+to calculate. And it was shown that if you have 70 photons in roughly 200 modes, you have to do many
+
+1001
+00:58:47,400 --> 00:58:52,760
+calculations which go beyond the best classical computation, the best classical machines. It really
+
+1002
+00:58:52,760 --> 00:58:59,080
+reaches quickly the limit. The spirit of that is actually like this. You know what this is?
+
+1003
+00:59:01,240 --> 00:59:06,280
+SSC, supersonic thrust. It was the supersonic car, an SSC supersonic car.
+
+1004
+00:59:06,280 --> 00:59:11,800
+I forgot. It was the first car that broke the sound barrier on ground.
+
+1005
+00:59:11,800 --> 00:59:15,880
+It was very simple, it was stupid, couldn't do anything else, not turn left, not turn right,
+
+1006
+00:59:15,880 --> 00:59:20,760
+not even has brakes, but it was fast, okay? So it could show there's no fundamental limit not
+
+1007
+00:59:20,760 --> 00:59:26,680
+to break the sound barrier on ground. This boson sampling, as this computation is called,
+
+1008
+00:59:26,680 --> 00:59:30,600
+or the supremacy, is the same purpose. Not the smartest computation. So people try
+
+1009
+00:59:30,600 --> 00:59:36,040
+I try still now, until now, to find applications for such scenarios.
+
+1010
+00:59:36,200 --> 00:59:37,560
+And there are some on the radar.
+
+1011
+00:59:38,160 --> 00:59:40,160
+But in principle, the spirit was, let's be fast.
+
+1012
+00:59:40,340 --> 00:59:44,020
+It might not be useful computation, but we show there's no fundamental limit
+
+1013
+00:59:44,020 --> 00:59:45,040
+by this that cannot be done.
+
+1014
+00:59:46,240 --> 00:59:46,260
+Okay.
+
+1015
+00:59:46,920 --> 00:59:48,440
+That's the spirit, same as this car.
+
+1016
+00:59:49,460 --> 00:59:51,280
+And 70 photons is not that crazy.
+
+1017
+00:59:52,880 --> 00:59:53,120
+Good.
+
+1018
+00:59:53,440 --> 00:59:56,480
+In my words, as a cartoonist, I would like to build a device like this
+
+1019
+00:59:56,480 --> 01:00:05,880
+and send photons in there to propagate and then to bunch and give you an outcome that you can't predict because it's hard to calculate.
+
+1020
+01:00:11,880 --> 01:00:22,720
+So, as the idea came out from, as I go back, 2010, from Aronson, MIT that time, and Akipov, 2010, all experimental groups jumped on that.
+
+1021
+01:00:23,700 --> 01:00:25,340
+Let's be the first when showing this.
+
+1022
+01:00:25,340 --> 01:00:29,340
+Well, we had not 70 photons, so we went to the first non-trivial case.
+
+1023
+01:00:29,340 --> 01:00:30,700
+There was three or four photons.
+
+1024
+01:00:30,700 --> 01:00:38,060
+And indeed, that was then what the groups did from Italy to Oxford to Australia, including
+
+1025
+01:00:38,060 --> 01:00:41,340
+ours, to jump on smaller systems like this.
+
+1026
+01:00:41,340 --> 01:00:45,340
+The three, four photons, and we have seen this little behavior, it works correctly.
+
+1027
+01:00:45,340 --> 01:00:49,340
+It was the hope that somebody would scale up in the next couple of years to be the first
+
+1028
+01:00:49,340 --> 01:00:50,380
+to show supremacy.
+
+1029
+01:00:51,900 --> 01:00:52,780
+We're not the first.
+
+1030
+01:00:52,780 --> 01:01:02,000
+The first one was what you might have seen in newspaper 2019, Google, with this supremacy
+
+1031
+01:01:02,000 --> 01:01:04,280
+test in the same spirit, it was a random circuit.
+
+1032
+01:01:04,280 --> 01:01:08,140
+I will not mention the details here, but the same spirit, not the use for computation,
+
+1033
+01:01:08,140 --> 01:01:10,840
+but same aspects here for the superconductor systems.
+
+1034
+01:01:10,840 --> 01:01:13,780
+And they basically were the first 2019.
+
+1035
+01:01:13,780 --> 01:01:16,160
+But photon guys did not give up.
+
+1036
+01:01:16,160 --> 01:01:17,620
+So there was China then coming in.
+
+1037
+01:01:17,620 --> 01:01:22,620
+It's always China who basically quickly develops amazing technology, who showed that one year
+
+1038
+01:01:22,620 --> 01:01:28,860
+later they outperformed this result by the boson sampling story they adjusted a bit they used
+
+1039
+01:01:28,860 --> 01:01:34,060
+different photons and and details but the end is the same that you have here into the meter
+
+1040
+01:01:34,060 --> 01:01:40,220
+with many photons coming in they interfere in a way that they can't predict and led to result
+
+1041
+01:01:40,220 --> 01:01:47,300
+it was basically so complex that no classic computer can can calculate they want of course
+
+1042
+01:01:47,300 --> 01:01:52,200
+to benchmark themselves if they've worked from google before and look at the complexity at the
+
+1043
+01:01:52,200 --> 01:01:54,500
+state space, at the parameter space,
+
+1044
+01:01:55,120 --> 01:01:56,260
+then Google achieved this
+
+1045
+01:01:56,260 --> 01:01:58,160
+10 to the power of 16, but now
+
+1046
+01:01:58,160 --> 01:01:59,840
+these people say, well, in a few hours
+
+1047
+01:01:59,840 --> 01:02:01,640
+we can calculate those things.
+
+1048
+01:02:02,040 --> 01:02:04,200
+2019, it was thought it needs 100,000 years,
+
+1049
+01:02:04,320 --> 01:02:05,620
+but of course there's always progress
+
+1050
+01:02:05,620 --> 01:02:08,320
+in classic computers, and people are challenged.
+
+1051
+01:02:08,660 --> 01:02:09,920
+Can we find for this particular
+
+1052
+01:02:09,920 --> 01:02:11,980
+computation maybe a smart algorithm?
+
+1053
+01:02:12,820 --> 01:02:14,260
+But if the photons they achieved
+
+1054
+01:02:14,260 --> 01:02:16,240
+now 10 to 30, 14 orders
+
+1055
+01:02:16,240 --> 01:02:18,080
+of magnitude, 14
+
+1056
+01:02:18,080 --> 01:02:20,100
+orders of magnitude, more
+
+1057
+01:02:20,100 --> 01:02:21,820
+complex result in terms of state space.
+
+1058
+01:02:21,820 --> 01:02:25,680
+and even more results last year in bigger state space.
+
+1059
+01:02:25,800 --> 01:02:28,240
+So right now, supremacy seems to be done,
+
+1060
+01:02:28,940 --> 01:02:31,080
+that there are computer computations achieved
+
+1061
+01:02:31,080 --> 01:02:34,180
+that really cannot be solved by classical machines
+
+1062
+01:02:34,180 --> 01:02:35,460
+in reasonable time.
+
+1063
+01:02:35,540 --> 01:02:36,960
+That means like in a million of years,
+
+1064
+01:02:37,160 --> 01:02:37,800
+something like this.
+
+1065
+01:02:38,340 --> 01:02:41,180
+So this kind of fear is out of people's head
+
+1066
+01:02:41,180 --> 01:02:42,300
+that there should be no problem
+
+1067
+01:02:42,300 --> 01:02:44,460
+or limitation for computer scaling up.
+
+1068
+01:02:45,600 --> 01:02:47,800
+I stop here because I will not body you off
+
+1069
+01:02:47,800 --> 01:02:49,740
+with the latest results from machine learning.
+
+1070
+01:02:49,740 --> 01:02:56,520
+I will just stop here and jump out to the end.
+
+1071
+01:02:56,760 --> 01:02:58,200
+Sorry, I was too slow in the beginning.
+
+1072
+01:02:59,480 --> 01:03:00,780
+Let's actually take a message.
+
+1073
+01:03:01,580 --> 01:03:05,720
+I think it's a bright future, not because of just the hype and the engineering aspect,
+
+1074
+01:03:06,280 --> 01:03:08,840
+but a bright future that's still not clear yet what can be done.
+
+1075
+01:03:08,920 --> 01:03:11,000
+There's so many aspects, so many possibilities.
+
+1076
+01:03:11,300 --> 01:03:16,120
+And I just showed a few with the security and the boson sampling,
+
+1077
+01:03:16,120 --> 01:03:17,620
+in the superimposed gates.
+
+1078
+01:03:17,680 --> 01:03:19,240
+I did not mention the machine learning tasks
+
+1079
+01:03:19,240 --> 01:03:20,300
+that we have now on the radar
+
+1080
+01:03:20,300 --> 01:03:24,060
+and mimicking the neural networks in the brain.
+
+1081
+01:03:24,560 --> 01:03:26,300
+There's so many things still unclear
+
+1082
+01:03:26,300 --> 01:03:28,400
+and the potential is just to open the box
+
+1083
+01:03:28,400 --> 01:03:29,180
+for what can be done.
+
+1084
+01:03:29,940 --> 01:03:31,180
+It's still exciting times
+
+1085
+01:03:31,180 --> 01:03:33,620
+with quantum computing and applications in that field.
+
+1086
+01:03:34,480 --> 01:03:34,580
+Thank you.
+
+1087
+01:03:35,260 --> 01:03:37,240
+And last slide, I want to thank, of course,
+
+1088
+01:03:37,660 --> 01:03:38,300
+I'm confused,
+
+1089
+01:03:38,400 --> 01:03:41,120
+to the people who stand to actually do the work.
+
+1090
+01:03:41,200 --> 01:03:42,940
+I'm just showing off the feathers of them.
+
+1091
+01:03:43,020 --> 01:03:43,900
+I see some people are here.
+
+1092
+01:03:43,900 --> 01:03:49,500
+These are the real experts and the heroes that are in the lab and making those things
+
+1093
+01:03:49,500 --> 01:03:53,900
+happening and really push technology and science forward.
+
+1094
+01:03:53,900 --> 01:03:58,720
+Now I say thank you for being here.
+
+1095
+01:04:13,900 --> 01:04:43,880
+Thank you.
+
