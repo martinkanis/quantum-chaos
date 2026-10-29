@@ -406,3 +406,10 @@ details.nav-link > summary:hover { color: var(--text); }
 .legend-line { display: inline-block; width: 22px; height: 3px; border-radius: 2px; }
 .legend-line.own { background: repeating-linear-gradient(90deg, var(--text) 0 5px, transparent 5px 9px); }
 .legend-diamond { display: inline-block; width: 10px; height: 10px; background: var(--text-muted); transform: rotate(45deg); }
+
+/* Lecture notes: the slides of each chapter, two or three in a row on wide screens, one on a phone. */
+.slide-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin: 8px 0 16px; }
+.lecture-slide { margin: 0; }
+.lecture-slide img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-muted); }
+.lecture-slide figcaption { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; line-height: 1.4; }
+.theory-section blockquote { margin: 12px 0; padding: 8px 16px; border-left: 4px solid var(--border); color: var(--text-muted); max-width: 75ch; }

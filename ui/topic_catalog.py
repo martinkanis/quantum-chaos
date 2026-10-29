@@ -36,6 +36,7 @@ from ui.navigation import (
     THEORY_PATH,
     TOPICS_PATH,
     VQE_PAPER_PATH,
+    WALTHER_LECTURE_PATH,
 )
 
 TOPICS_TITLE = "Témata"
@@ -232,13 +233,20 @@ PRIMER_APPENDICES = PageEntry(
     "harmonický oscilátor) a odvození obsazovacích čísel z prvního kvantování.",
 )
 
+WALTHER_LECTURE = PageEntry(
+    ids.WALTHER_LECTURE_PAGE, "Přednáška: Walther o fotonickém kvantovém počítání (2022)", WALTHER_LECTURE_PATH,
+    "Zápisky ze Schrödingerovy přednášky Philipa Walthera (Vídeň 2022) se všemi slajdy: zdroje fotonů, čipy "
+    "a detektory, hradla KLM, klastrové stavy a fúze, slepé počítání, superpozice pořadí hradel a boson sampling.",
+)
+
 PHOTONICS_TOPIC = ResearchTopic(
     anchor=PHOTONICS_TOPIC_ANCHOR,
     title="Fotonika",
     summary=(
         "Fotonické kvantové počítání od základů: česky přeložená skripta Kolarovszkiho a Zimboráse (IT4I, 2025) "
         "o Fockově prostoru, gaussovských stavech, fázovém prostoru a Gaussian Boson Samplingu, potom přehled firem "
-        "a výzkumných skupin, které fotonický hardware stavějí, a simulátor Piquasso od autorů skript."
+        "a výzkumných skupin, které fotonický hardware stavějí, simulátor Piquasso od autorů skript a zápisky "
+        "z přednášky Philipa Walthera."
     ),
     sections=(
         TopicSection(
@@ -247,6 +255,7 @@ PHOTONICS_TOPIC = ResearchTopic(
         ),
         TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE,)),
         TopicSection("Software", (PIQUASSO,)),
+        TopicSection("Přednášky", (WALTHER_LECTURE,)),
     ),
 )
 

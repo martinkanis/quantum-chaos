@@ -109,8 +109,9 @@ def test_skripta_jsou_prvnich_pet_kroku_tematu_fotonika_a_vede_na_ne_akademie():
     _, step_label, _, _, _ = describe_pager(PRIMER_BASICS_PATH, None)
     academy = next(section for section in ACADEMY_SECTIONS if section.title.startswith("Fotonika"))
 
-    assert path[:5] == list(PRIMER_CHAPTERS) and path[5:] == [ids.PHOTONICS_LANDSCAPE_PAGE, ids.PIQUASSO_PAGE]
-    assert step_label == "Fotonika · krok 1 / 7"
+    assert path[:5] == list(PRIMER_CHAPTERS)
+    assert path[5:] == [ids.PHOTONICS_LANDSCAPE_PAGE, ids.PIQUASSO_PAGE, ids.WALTHER_LECTURE_PAGE]
+    assert step_label == "Fotonika · krok 1 / 8"
     assert PAGE_BY_PATH[PRIMER_GBS_PATH] == ids.PRIMER_GBS_PAGE
     assert all(path_ in academy.tldr for path_, page_id in PAGE_BY_PATH.items() if page_id in PRIMER_CHAPTERS)
     assert PRIMER_APPENDICES_PATH in academy.tldr

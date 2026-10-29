@@ -5,8 +5,8 @@ s odkazy na materiály. Téma „Monte Carlo a modifikované Monte Carlo“ má 
 2. stránku Monte Carlo na GBS (s podstránkami Háčky a Teorie) a 3. stránku Výhoda GBS (laboratoř, pět úloh, export
 do Qiskitu, průvodce). Téma „Kvantová optimalizace portfolia“ má rozbory článků (zatím VQE na IBM Fez,
 arXiv:2512.22001; čísla z článku jsou data v `ui/vqe_paper_content.py`). Téma „Fotonika“ má český překlad
-skript Kolarovszki–Zimborás o fotonickém kvantovém počítání a GBS (pět stránek `/fotonika/...`), přehled firem
-a stránku o simulátoru Piquasso. Novou stránku zařaď do tématu
+skript Kolarovszki–Zimborás o fotonickém kvantovém počítání a GBS (pět stránek `/fotonika/...`), přehled firem,
+stránku o simulátoru Piquasso a zápisky z přednášky Philipa Walthera (2022) se slajdy. Novou stránku zařaď do tématu
 v `ui/topic_catalog.py`; odtud se kreslí Témata i drobečková navigace. Horní lišta má témata, stránky tématu Monte Carlo
 jsou v řádku pod ní (`navigation.py`).
 Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, s odkazy na literaturu.
@@ -42,6 +42,9 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 - `ui/primer_*_content.py` – překlad skript (jedna kapitola = jeden modul s `CHAPTER`, sekce v Markdownu
   s MathJaxem, čísla rovnic `\tag{…}` a citace `[n]` jako v originálu; literatura v `ui/primer_content.py`).
   Stránky staví `ui/primer_page.py`, formát hlídá `tests/test_primer_pages.py`. Originální PDF v repu není.
+- `ui/walther_lecture_*.py` – zápisky z přednášky: kapitoly s časem ve videu a slajdy (`SLIDES`, snímky ze záznamu
+  v `content/lectures/<přednáška>/slajdy/`). Slajdy patří autorům, proto je posílá `web/lecture_slides.py` jen
+  přihlášeným (`/assets/` je veřejné). Přepis a všechny snímky jsou ve větvi `podklady-video`.
 - `gbs/` – doména GBS: hafnián, sampler, gaussovské momenty (Steinova rekurze), ladění stlačení, odhad GBS-P,
   export do Qiskitu (šablona `qiskit_script_template.txt`).
 - `ui/` – Dash vrstva: `*_page.py` layout, `*_callbacks.py` callbacky, `*_content.py` texty, `ids.py` všechna id,

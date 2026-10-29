@@ -32,6 +32,7 @@ from ui.qpurpose_page import build_qpurpose_page
 from ui.random_matrix_gbs_page import build_random_matrix_gbs_page
 from ui.theory_page import build_theory_page
 from ui.vqe_paper_page import build_vqe_paper_page
+from ui.walther_lecture_page import build_walther_lecture_page
 
 PAGE_BUILDERS: Dict[str, Callable[[], html.Div]] = {
     ids.ACADEMY_PAGE: build_academy_page,
@@ -47,6 +48,7 @@ PAGE_BUILDERS: Dict[str, Callable[[], html.Div]] = {
     ids.PHOTONICS_LANDSCAPE_PAGE: build_photonics_landscape_page,
     ids.PIQUASSO_PAGE: build_piquasso_page,
     **{page_id: partial(build_primer_page, page_id) for page_id in PRIMER_CHAPTERS},
+    ids.WALTHER_LECTURE_PAGE: build_walther_lecture_page,
     ids.FAILURE_DIAGNOSTICS_PAGE: build_failure_diagnostics_page,
     ids.RANDOM_MATRIX_GBS_PAGE: build_random_matrix_gbs_page,
     ids.INTEGRALS_CHEAT_SHEET_PAGE: build_integrals_cheat_sheet_page,

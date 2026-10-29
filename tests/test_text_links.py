@@ -6,6 +6,7 @@ from ui.lazy_pages import LAZY_PAGE_IDS, built_page
 from ui.navigation import PAGE_BY_PATH
 from ui.photonics_landscape_content import TOPICS as PHOTONICS_TOPICS
 from ui.primer_page import PRIMER_CHAPTERS
+from ui.walther_lecture_content import TOPICS as WALTHER_TOPICS
 
 APP_LINK = re.compile(r"\]\((/[^)\s#]*)(?:#([^)\s]+))?\)")
 """A Markdown link to a page of the app, „[text](/cesta#kotva)“; assets/text_links.js opens it inside the app."""
@@ -26,7 +27,7 @@ def reading_texts():
     for chapter in PRIMER_CHAPTERS.values():
         yield chapter.intro
         yield from (section.body for section in chapter.sections)
-    for topic in PHOTONICS_TOPICS:
+    for topic in (*PHOTONICS_TOPICS, *WALTHER_TOPICS):
         yield topic.in_short
         yield topic.explanation
 

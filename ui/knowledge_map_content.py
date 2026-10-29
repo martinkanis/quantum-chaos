@@ -64,7 +64,7 @@ BASE_LAYERS: Tuple[LayerInfo, ...] = (
         (
             ids.PRIMER_BASICS_PAGE, ids.PRIMER_GAUSSIAN_STATES_PAGE, ids.PRIMER_PHASE_SPACE_PAGE, ids.PRIMER_GBS_PAGE,
             ids.PRIMER_APPENDICES_PAGE, ids.HAFNIAN_PAGE, ids.PHOTONIC_HARDWARE_PAGE, ids.PHOTONICS_LANDSCAPE_PAGE,
-            ids.PIQUASSO_PAGE,
+            ids.PIQUASSO_PAGE, ids.WALTHER_LECTURE_PAGE,
         ),
         ids.NAV_PHOTONICS_MENU,
     ),
@@ -132,6 +132,7 @@ MAP_LABELS = {
     ids.PRIMER_PHASE_SPACE_PAGE: "Skripta 3: fázový prostor",
     ids.PRIMER_GBS_PAGE: "Skripta 4: GBS a grafy",
     ids.PRIMER_APPENDICES_PAGE: "Skripta: dodatky A–B",
+    ids.WALTHER_LECTURE_PAGE: "Přednáška Walther 2022",
     ids.FAILURE_DIAGNOSTICS_PAGE: "Kdy GBS selže",
     ids.RANDOM_MATRIX_GBS_PAGE: "Náhodné matice a GBS",
 }
@@ -201,6 +202,14 @@ BASE_RELATIONS: Tuple[Relation, ...] = (
     ),
     Relation(ids.PRIMER_GBS_PAGE, RelationKind.EXPANDS, ids.HAFNIAN_PAGE, "hafnián, perfektní párování a grafy"),
     Relation(ids.PRIMER_BASICS_PAGE, RelationKind.EXPLAINS, ids.PIQUASSO_PAGE, "hradla a měření, která Piquasso simuluje"),
+    Relation(
+        ids.WALTHER_LECTURE_PAGE, RelationKind.EXPANDS, ids.PRIMER_BASICS_PAGE,
+        "hradla, boson sampling a ztráty očima experimentátora",
+    ),
+    Relation(
+        ids.WALTHER_LECTURE_PAGE, RelationKind.EXPLAINS, ids.PHOTONICS_LANDSCAPE_PAGE,
+        "proč PsiQuantum staví na fúzích a co je kvantová výhoda",
+    ),
     Relation(
         ids.FAILURE_DIAGNOSTICS_PAGE, RelationKind.FOLLOWS, ids.RANDOM_MATRIX_GBS_PAGE,
         "podrobný rozbor 2. a 3. zdroje chyby",

@@ -21,6 +21,7 @@ from ui.random_matrix_callbacks import register_random_matrix_callbacks
 from ui.study_progress import register_study_progress_callbacks
 from ui.text_edit_callbacks import register_text_edit_callbacks
 from web.compression import install_compression
+from web.lecture_slides import install_lecture_slides
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -43,6 +44,7 @@ register_text_edit_callbacks(app, pages)
 server = app.server
 install_login(server, settings_from_environment())
 install_compression(server)
+install_lecture_slides(server)
 
 
 @server.route(HEALTH_PATH)
