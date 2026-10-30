@@ -56,6 +56,12 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 - `assets/text_links.js` – odkaz v Markdownu na stránku aplikace (`[text](/cesta#kotva)` v kartě `.theory-section`
   nebo ve „V kostce“) přepne stránku jako `dcc.Link`, bez načtení celé aplikace. Že vede na existující stránku
   a kotvu, hlídá `tests/test_text_links.py`.
+- Čtení offline: `assets/offline.js` registruje service worker (`web/service_worker.js`, posílá ho `web/offline.py`
+  na `/sw.js`). Ten ukládá aplikaci, slajdy i odpovědi callbacků (stránky Dash skládá z nich) a offline je vrací;
+  chybějící odpověď je 204 = beze změny. Po každém nasazení nebo po 12 h stáhne předem všechny stránky podle
+  `/offline-manifest.json` (cesty, callbacky závislé jen na cestě, odložený kód Dashe, slajdy). Klíč odpovědi
+  u callbacků podle cesty ignoruje store (`*-store`). Odhlášení uložené stránky smaže. Nový zdroj, který se
+  načítá mimo `/_dash-component-suites/`, `/assets/` a `/prednasky/`, přidej do workeru nebo do manifestu.
 - Stránky s formuláři jsou trvale v layoutu a jen se skrývají (`show_page`), takže formuláře přežijí přepnutí.
   Čtecí stránky bez formulářů se posílají až při první návštěvě (`ui/lazy_pages.py`, jinak by prohlížeč při každém
   načtení sázel vzorce všech skrytých stránek); novou stránku bez formuláře přidej do `PAGE_BUILDERS`.

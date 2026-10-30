@@ -413,3 +413,10 @@ details.nav-link > summary:hover { color: var(--text); }
 .lecture-slide img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-muted); }
 .lecture-slide figcaption { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; line-height: 1.4; }
 .theory-section blockquote { margin: 12px 0; padding: 8px 16px; border-left: 4px solid var(--border); color: var(--text-muted); max-width: 75ch; }
+
+/* Offline reading (assets/offline.js): a small badge at the bottom, above the content. */
+.offline-status { position: fixed; left: 16px; bottom: 16px; z-index: 1000; max-width: calc(100% - 32px); box-sizing: border-box; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; line-height: 1.4; background: var(--text); color: #fff; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18); }
+.offline-status[hidden] { display: none; }
+.offline-status[data-kind="offline"] { background: #8a4b00; }
+.offline-status[data-kind="ready"] { background: #2e7d4f; }
+.offline-status[data-kind="warning"] { background: #8a4b00; }

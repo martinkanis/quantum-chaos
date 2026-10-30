@@ -22,6 +22,7 @@ from ui.study_progress import register_study_progress_callbacks
 from ui.text_edit_callbacks import register_text_edit_callbacks
 from web.compression import install_compression
 from web.lecture_slides import install_lecture_slides
+from web.offline import install_offline
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -45,6 +46,7 @@ server = app.server
 install_login(server, settings_from_environment())
 install_compression(server)
 install_lecture_slides(server)
+install_offline(app)
 
 
 @server.route(HEALTH_PATH)
