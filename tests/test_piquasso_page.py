@@ -65,7 +65,7 @@ def test_stranka_je_sedmym_krokem_tematu_fotonika_pred_prednaskou():
 
     assert PAGE_BY_PATH[PIQUASSO_PATH] == ids.PIQUASSO_PAGE
     assert active == [ids.NAV_PHOTONICS_MENU]
-    assert step_label == "Fotonika · krok 7 / 8"
+    assert step_label == "Fotonika · krok 7 / 9"
     assert links[0].children.href == PHOTONICS_LANDSCAPE_PATH
     assert [label for label, _ in breadcrumb_trail(ids.PIQUASSO_PAGE)] == [
         "Témata", "Fotonika a GBS", "Fotonika ve světě: konkurence a partneři",

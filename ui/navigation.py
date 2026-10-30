@@ -32,6 +32,7 @@ PRIMER_PHASE_SPACE_PATH = "/fotonika/fazovy-prostor"
 PRIMER_GBS_PATH = "/fotonika/gaussian-boson-sampling"
 PRIMER_APPENDICES_PATH = "/fotonika/dodatky"
 WALTHER_LECTURE_PATH = "/fotonika/prednaska-walther-2022"
+GHZ_STATES_PATH = "/fotonika/prednaska-walther-2022/ghz-stavy"
 RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
 RANDOM_MATRIX_GBS_PATH = "/vyzkumne-smery/nahodne-matice-a-gbs"
 FAILURE_DIAGNOSTICS_PATH = "/vyzkumne-smery/kdy-gbs-selze"
@@ -66,6 +67,7 @@ PAGE_IDS = (
     ids.PRIMER_GBS_PAGE,
     ids.PRIMER_APPENDICES_PAGE,
     ids.WALTHER_LECTURE_PAGE,
+    ids.GHZ_STATES_PAGE,
     ids.RANDOM_MATRIX_PAGE,
     ids.RANDOM_MATRIX_GBS_PAGE,
     ids.FAILURE_DIAGNOSTICS_PAGE,
@@ -97,6 +99,7 @@ PAGE_BY_PATH = {
     PRIMER_GBS_PATH: ids.PRIMER_GBS_PAGE,
     PRIMER_APPENDICES_PATH: ids.PRIMER_APPENDICES_PAGE,
     WALTHER_LECTURE_PATH: ids.WALTHER_LECTURE_PAGE,
+    GHZ_STATES_PATH: ids.GHZ_STATES_PAGE,
     RANDOM_MATRIX_PATH: ids.RANDOM_MATRIX_PAGE,
     RANDOM_MATRIX_GBS_PATH: ids.RANDOM_MATRIX_GBS_PAGE,
     FAILURE_DIAGNOSTICS_PATH: ids.FAILURE_DIAGNOSTICS_PAGE,
@@ -191,6 +194,10 @@ def piquasso_href(anchor: str) -> str:
 
 def walther_lecture_href(anchor: str) -> str:
     return f"{WALTHER_LECTURE_PATH}#{anchor}"
+
+
+def ghz_states_href(anchor: str) -> str:
+    return f"{GHZ_STATES_PATH}#{anchor}"
 
 
 PHOTONICS_TERMS_HREF = photonics_landscape_href("svet-pojmy")

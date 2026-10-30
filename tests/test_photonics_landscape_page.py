@@ -42,7 +42,7 @@ def test_stranka_je_v_tematu_fotonika_hned_po_skriptech():
     assert PAGE_BY_PATH[PHOTONICS_LANDSCAPE_PATH] == ids.PHOTONICS_LANDSCAPE_PAGE
     assert PHOTONICS_TOPIC in RESEARCH_TOPICS
     assert active == [ids.NAV_PHOTONICS_MENU]
-    assert step_label == "Fotonika · krok 6 / 8"
+    assert step_label == "Fotonika · krok 6 / 9"
     assert [label for label, _ in breadcrumb_trail(ids.PHOTONICS_LANDSCAPE_PAGE)] == [
         "Témata", "Fotonika a GBS", "Fotonika ve světě: konkurence a partneři",
     ]

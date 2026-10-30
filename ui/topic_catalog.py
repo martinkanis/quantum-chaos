@@ -37,6 +37,7 @@ from ui.navigation import (
     TOPICS_PATH,
     VQE_PAPER_PATH,
     WALTHER_LECTURE_PATH,
+    GHZ_STATES_PATH,
 )
 
 TOPICS_TITLE = "Témata"
@@ -239,6 +240,13 @@ WALTHER_LECTURE = PageEntry(
     "a detektory, hradla KLM, klastrové stavy a fúze, slepé počítání, superpozice pořadí hradel a boson sampling.",
 )
 
+GHZ_STATES = PageEntry(
+    ids.GHZ_STATES_PAGE, "GHZ stavy: od Greenbergera, Horna a Zeilingera k fotonickému počítači", GHZ_STATES_PATH,
+    "Co je třífotonový GHZ stav, Bellova věta bez nerovností, první GHZ z fotonů ve Vídni (1999), proč plán "
+    "fotonického počítače potřebuje právě tři fotony a kde se dnes ohlašované a deterministické GHZ stavy berou.",
+    parent_page_id=ids.WALTHER_LECTURE_PAGE,
+)
+
 PHOTONICS_TOPIC = ResearchTopic(
     anchor=PHOTONICS_TOPIC_ANCHOR,
     title="Fotonika",
@@ -255,7 +263,7 @@ PHOTONICS_TOPIC = ResearchTopic(
         ),
         TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE,)),
         TopicSection("Software", (PIQUASSO,)),
-        TopicSection("Přednášky", (WALTHER_LECTURE,)),
+        TopicSection("Přednášky", (WALTHER_LECTURE, GHZ_STATES)),
     ),
 )
 

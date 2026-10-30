@@ -19,6 +19,7 @@ from ui.caveats_page import build_caveats_page
 from ui.failure_diagnostics_page import build_failure_diagnostics_page
 from ui.generated_page import build_generated_page
 from ui.generated_topics import GENERATED_TOPICS, generated_page_id
+from ui.ghz_states_page import build_ghz_states_page
 from ui.guide_page import build_guide_page
 from ui.hafnian_page import build_hafnian_page
 from ui.integrals_cheat_sheet_page import build_integrals_cheat_sheet_page
@@ -49,6 +50,7 @@ PAGE_BUILDERS: Dict[str, Callable[[], html.Div]] = {
     ids.PIQUASSO_PAGE: build_piquasso_page,
     **{page_id: partial(build_primer_page, page_id) for page_id in PRIMER_CHAPTERS},
     ids.WALTHER_LECTURE_PAGE: build_walther_lecture_page,
+    ids.GHZ_STATES_PAGE: build_ghz_states_page,
     ids.FAILURE_DIAGNOSTICS_PAGE: build_failure_diagnostics_page,
     ids.RANDOM_MATRIX_GBS_PAGE: build_random_matrix_gbs_page,
     ids.INTEGRALS_CHEAT_SHEET_PAGE: build_integrals_cheat_sheet_page,

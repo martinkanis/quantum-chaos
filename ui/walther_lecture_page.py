@@ -59,12 +59,12 @@ def _chapter_slides(topic: TheoryTopic) -> List:
         ]),
         html.Details(open=True, className="lecture-slides", children=[
             html.Summary(f"Slajdy z této části ({len(slides)})"),
-            html.Div(className="slide-gallery", children=[_slide(slide) for slide in slides]),
+            html.Div(className="slide-gallery", children=[slide_figure(slide) for slide in slides]),
         ]),
     ]
 
 
-def _slide(slide: LectureSlide) -> html.Figure:
+def slide_figure(slide: LectureSlide) -> html.Figure:
     url = slide_url(LECTURE, slide.file_name)
     return html.Figure(className="lecture-slide", children=[
         html.A(html.Img(src=url, alt=slide.caption), href=url, target="_blank", rel="noopener"),

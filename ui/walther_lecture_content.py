@@ -744,6 +744,9 @@ firma získala „skoro miliardu“ (stav 2022).
 - **provázané stavy přímo z pevných látek** – kvantová tečka, která sama vyzařuje řetězec provázaných fotonů,
 - **nelinearity grafenu** – vídeňský návrh hradla $\sqrt{\mathrm{SWAP}}$ s grafenovými plazmony.
 
+Proč jsou potřeba zrovna třífotonové GHZ stavy, jak na ně přišli Greenberger, Horne a Zeilinger a jak je
+vídeňská skupina poprvé vyrobila, rozvádí stránka [GHZ stavy](/fotonika/prednaska-walther-2022/ghz-stavy).
+
 *Vlastní poznámka:* dnešní podoba plánu PsiQuantum se jmenuje fúzní kvantové počítání (FBQC, Bartolucci a kol.,
 2023). Jak firma pokročila do roku 2026, je ve [Fotonice ve světě](/fotonika-ve-svete#svet-jednotlive-fotony).
 """,
