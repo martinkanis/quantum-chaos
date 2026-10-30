@@ -26,6 +26,7 @@ LITERATURE_REVIEW_PATH = "/reserse-gbs-financni-riziko"
 PHOTONIC_HARDWARE_PATH = "/reserse-gbs-financni-riziko/fotonicky-hardware"
 PHOTONICS_LANDSCAPE_PATH = "/fotonika-ve-svete"
 PIQUASSO_PATH = "/fotonika-ve-svete/piquasso"
+PSIQUANTUM_PATH = "/fotonika-ve-svete/psiquantum"
 PRIMER_BASICS_PATH = "/fotonika/zaklady"
 PRIMER_GAUSSIAN_STATES_PATH = "/fotonika/gaussovske-stavy"
 PRIMER_PHASE_SPACE_PATH = "/fotonika/fazovy-prostor"
@@ -61,6 +62,7 @@ PAGE_IDS = (
     ids.PHOTONIC_HARDWARE_PAGE,
     ids.PHOTONICS_LANDSCAPE_PAGE,
     ids.PIQUASSO_PAGE,
+    ids.PSIQUANTUM_PAGE,
     ids.PRIMER_BASICS_PAGE,
     ids.PRIMER_GAUSSIAN_STATES_PAGE,
     ids.PRIMER_PHASE_SPACE_PAGE,
@@ -93,6 +95,7 @@ PAGE_BY_PATH = {
     PHOTONIC_HARDWARE_PATH: ids.PHOTONIC_HARDWARE_PAGE,
     PHOTONICS_LANDSCAPE_PATH: ids.PHOTONICS_LANDSCAPE_PAGE,
     PIQUASSO_PATH: ids.PIQUASSO_PAGE,
+    PSIQUANTUM_PATH: ids.PSIQUANTUM_PAGE,
     PRIMER_BASICS_PATH: ids.PRIMER_BASICS_PAGE,
     PRIMER_GAUSSIAN_STATES_PATH: ids.PRIMER_GAUSSIAN_STATES_PAGE,
     PRIMER_PHASE_SPACE_PATH: ids.PRIMER_PHASE_SPACE_PAGE,
@@ -190,6 +193,10 @@ def photonics_landscape_href(anchor: str) -> str:
 
 def piquasso_href(anchor: str) -> str:
     return f"{PIQUASSO_PATH}#{anchor}"
+
+
+def psiquantum_href(anchor: str) -> str:
+    return f"{PSIQUANTUM_PATH}#{anchor}"
 
 
 def walther_lecture_href(anchor: str) -> str:

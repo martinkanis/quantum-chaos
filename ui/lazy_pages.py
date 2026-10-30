@@ -29,6 +29,7 @@ from ui.photonic_hardware_page import build_photonic_hardware_page
 from ui.photonics_landscape_page import build_photonics_landscape_page
 from ui.piquasso_page import build_piquasso_page
 from ui.primer_page import PRIMER_CHAPTERS, build_primer_page
+from ui.psiquantum_page import build_psiquantum_page
 from ui.qpurpose_page import build_qpurpose_page
 from ui.random_matrix_gbs_page import build_random_matrix_gbs_page
 from ui.theory_page import build_theory_page
@@ -48,6 +49,7 @@ PAGE_BUILDERS: Dict[str, Callable[[], html.Div]] = {
     ids.PHOTONIC_HARDWARE_PAGE: build_photonic_hardware_page,
     ids.PHOTONICS_LANDSCAPE_PAGE: build_photonics_landscape_page,
     ids.PIQUASSO_PAGE: build_piquasso_page,
+    ids.PSIQUANTUM_PAGE: build_psiquantum_page,
     **{page_id: partial(build_primer_page, page_id) for page_id in PRIMER_CHAPTERS},
     ids.WALTHER_LECTURE_PAGE: build_walther_lecture_page,
     ids.GHZ_STATES_PAGE: build_ghz_states_page,

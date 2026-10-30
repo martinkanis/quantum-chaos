@@ -614,8 +614,9 @@ klastrovým stavům a opravě chyb, ne ke GBS.
 
 **PsiQuantum a ORCA.** Jejich zdroje fotonových párů (čtyřvlnné směšování, sestupná konverze) jsou fyzikálně slabé
 dvoumódové stlačení, ze kterého ohlašováním vznikají jednotlivé fotony. PsiQuantum GBS nepublikoval a hardware
-nezpřístupňuje. U ORCA PT-2 se zdroje rozcházejí – nezávislý benchmark mluví o fotonově odčítaných stlačených
-stavech, ORCA o jednotlivých fotonech; před případným využitím je třeba se zeptat přímo ORCA.
+nezpřístupňuje; jeho cestu od Rudolphova plánu podrobně popisuje stránka
+[PsiQuantum](/fotonika-ve-svete/psiquantum). U ORCA PT-2 se zdroje rozcházejí – nezávislý benchmark mluví
+o fotonově odčítaných stlačených stavech, ORCA o jednotlivých fotonech; před případným využitím je třeba se zeptat přímo ORCA.
 """,
     further_reading=(
         Reading(NTT_SQUEEZING),

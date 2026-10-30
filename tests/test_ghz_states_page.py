@@ -50,7 +50,7 @@ def test_stranka_je_podstrankou_prednasky_a_poslednim_krokem_fotoniky():
     _, step_label, _, _, _ = describe_pager(GHZ_STATES_PATH, None)
 
     assert PAGE_BY_PATH[GHZ_STATES_PATH] == ids.GHZ_STATES_PAGE
-    assert step_label == "Fotonika · krok 9 / 9"
+    assert step_label == "Fotonika · krok 10 / 10"
     assert [label for label, _ in breadcrumb_trail(ids.GHZ_STATES_PAGE)][-2].startswith("Přednáška")
 
 

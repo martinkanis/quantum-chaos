@@ -342,7 +342,8 @@ počítání. Jedinou aktivní vrstvou je zdroj GHZ stavů – a právě ten je 
 Rudolphův článek nepředpokládá zázračný zdroj, ale *téměř* deterministický, poskládaný z mnoha pravděpodobnostních
 – ohlašované jednotlivé fotony z křemíkových vlnovodů se multiplexují, z nich se pravděpodobnostně skládají malé
 provázané stavy a ty se multiplexují znovu (podobně jako výpočet s 1/32 v další kapitole). Na Rudolphův plán navazuje
-fúzní kvantové počítání (FBQC, Bartolucci a kol., 2023), architektura firmy PsiQuantum, kde se z malých
+fúzní kvantové počítání (FBQC, Bartolucci a kol., 2023), architektura firmy
+[PsiQuantum](/fotonika-ve-svete/psiquantum), kde se z malých
 „zdrojových stavů“ a fúzí rovnou staví kód opravující chyby.
 """,
     further_reading=(

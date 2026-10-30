@@ -6,7 +6,8 @@ s odkazy na materiály. Téma „Monte Carlo a modifikované Monte Carlo“ má 
 do Qiskitu, průvodce). Téma „Kvantová optimalizace portfolia“ má rozbory článků (zatím VQE na IBM Fez,
 arXiv:2512.22001; čísla z článku jsou data v `ui/vqe_paper_content.py`). Téma „Fotonika“ má český překlad
 skript Kolarovszki–Zimborás o fotonickém kvantovém počítání a GBS (pět stránek `/fotonika/...`), přehled firem,
-stránku o simulátoru Piquasso a zápisky z přednášky Philipa Walthera (2022) se slajdy. Novou stránku zařaď do tématu
+stránku o simulátoru Piquasso a o firmě PsiQuantum a zápisky z přednášky Philipa Walthera (2022) se slajdy
+a podstránkou o třífotonových GHZ stavech. Novou stránku zařaď do tématu
 v `ui/topic_catalog.py`; odtud se kreslí Témata i drobečková navigace. Horní lišta má témata, stránky tématu Monte Carlo
 jsou v řádku pod ní (`navigation.py`).
 Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, s odkazy na literaturu.

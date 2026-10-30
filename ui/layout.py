@@ -47,6 +47,7 @@ def build_layout() -> html.Div:
             page_placeholder(ids.PHOTONIC_HARDWARE_PAGE),
             page_placeholder(ids.PHOTONICS_LANDSCAPE_PAGE),
             page_placeholder(ids.PIQUASSO_PAGE),
+            page_placeholder(ids.PSIQUANTUM_PAGE),
             *[page_placeholder(page_id) for page_id in PRIMER_CHAPTERS],
             page_placeholder(ids.WALTHER_LECTURE_PAGE),
             page_placeholder(ids.GHZ_STATES_PAGE),

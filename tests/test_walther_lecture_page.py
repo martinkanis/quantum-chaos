@@ -60,14 +60,14 @@ def slide_client():
     return server.test_client()
 
 
-def test_prednaska_je_osmym_krokem_tematu_fotonika_a_v_menu_fotoniky():
+def test_prednaska_je_devatym_krokem_tematu_fotonika_a_v_menu_fotoniky():
     link_classes = show_page(WALTHER_LECTURE_PATH)[len(PAGE_IDS):len(PAGE_IDS) + len(NAV_LINK_IDS)]
     active = [link_id for link_id, link_class in zip(NAV_LINK_IDS, link_classes) if link_class == ACTIVE_LINK_CLASS]
 
     _, step_label, _, _, _ = describe_pager(WALTHER_LECTURE_PATH, None)
 
     assert PAGE_BY_PATH[WALTHER_LECTURE_PATH] == ids.WALTHER_LECTURE_PAGE
-    assert step_label == "Fotonika · krok 8 / 9"
+    assert step_label == "Fotonika · krok 9 / 10"
     assert active == [ids.NAV_PHOTONICS_MENU]
     assert ids.WALTHER_LECTURE_PAGE in [page.page_id for page in PHOTONICS_TOPIC.pages]
     assert breadcrumb_trail(ids.WALTHER_LECTURE_PAGE)[-1][0].startswith("Přednáška")

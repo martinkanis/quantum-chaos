@@ -24,6 +24,7 @@ from ui.navigation import (
     PHOTONICS_LANDSCAPE_PATH,
     PHOTONICS_TOPIC_ANCHOR,
     PIQUASSO_PATH,
+    PSIQUANTUM_PATH,
     PORTFOLIO_PATH,
     PRIMER_APPENDICES_PATH,
     PRIMER_BASICS_PATH,
@@ -208,6 +209,13 @@ PIQUASSO = PageEntry(
     parent_page_id=ids.PHOTONICS_LANDSCAPE_PAGE,
 )
 
+PSIQUANTUM = PageEntry(
+    ids.PSIQUANTUM_PAGE, "PsiQuantum: cesta od Rudolphova plánu k milionu qubitů", PSIQUANTUM_PATH,
+    "Zakladatelé, jak se plán z roku 2017 změnil ve fúzní kvantové počítání, čipy Omega z GlobalFoundries, peníze "
+    "a vládní zakázky, stavby v Brisbane a Chicagu s posouvanými termíny, kritika a videa a články k samostudiu.",
+    parent_page_id=ids.PHOTONICS_LANDSCAPE_PAGE,
+)
+
 PRIMER_BASICS = PageEntry(
     ids.PRIMER_BASICS_PAGE, "Skripta 1: Základy fotonického kvantového počítání", PRIMER_BASICS_PATH,
     "Úvod a 1. kapitola skript Kolarovszkiho a Zimboráse v češtině: Fockův prostor, kvantové módy, fotonická "
@@ -261,7 +269,7 @@ PHOTONICS_TOPIC = ResearchTopic(
             "Skripta: fotonické kvantové počítání a GBS",
             (PRIMER_BASICS, PRIMER_GAUSSIAN_STATES, PRIMER_PHASE_SPACE, PRIMER_GBS, PRIMER_APPENDICES),
         ),
-        TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE,)),
+        TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE, PSIQUANTUM)),
         TopicSection("Software", (PIQUASSO,)),
         TopicSection("Přednášky", (WALTHER_LECTURE, GHZ_STATES)),
     ),

@@ -748,7 +748,7 @@ Proč jsou potřeba zrovna třífotonové GHZ stavy, jak na ně přišli Greenbe
 vídeňská skupina poprvé vyrobila, rozvádí stránka [GHZ stavy](/fotonika/prednaska-walther-2022/ghz-stavy).
 
 *Vlastní poznámka:* dnešní podoba plánu PsiQuantum se jmenuje fúzní kvantové počítání (FBQC, Bartolucci a kol.,
-2023). Jak firma pokročila do roku 2026, je ve [Fotonice ve světě](/fotonika-ve-svete#svet-jednotlive-fotony).
+2023). Jak se firmě daří do roku 2026, popisuje stránka [PsiQuantum](/fotonika-ve-svete/psiquantum).
 """,
     further_reading=(
         Reading(PANT_PERCOLATION, "perkolace s 5qubitovými hvězdami"),
