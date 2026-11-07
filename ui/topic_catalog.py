@@ -267,7 +267,8 @@ GHZ_STATES = PageEntry(
 CHIP_SIMULATOR = PageEntry(
     ids.CHIP_SIMULATOR_PAGE, "Simulátor fotonického čipu", CHIP_SIMULATOR_PATH,
     "Čtyři světlovody, šest Machových–Zehnderových interferometrů a laser: naprogramuj čip Clementsovým rozkladem, "
-    "sleduj, kudy teče světlo, a na čipu s výrobními chybami fáze dolaď.",
+    "sleduj, kudy teče světlo, a na čipu s výrobními chybami fáze dolaď. Pak čipem až o 16 světlovodech pošli "
+    "jednotlivé fotony a porovnej boson sampling jako modifikované Monte Carlo s klasickým.",
 )
 
 PHOTONICS_TOPIC = ResearchTopic(

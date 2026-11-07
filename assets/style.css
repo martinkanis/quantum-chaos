@@ -472,3 +472,4 @@ details.nav-link > summary:hover { color: var(--text); }
 }
 .chip-phase-card { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-muted); }
 .chip-phase-card .field { margin: 8px 0 4px; }
+.chip-shots { font-variant-numeric: tabular-nums; margin: 4px 0; }

@@ -89,7 +89,7 @@ def test_rozklad_odmitne_matici_ktera_neni_unitarni():
 def test_svetlo_se_v_siti_neztraci_a_detektory_vidi_sloupec_mapy_prenosu():
     chip = build_setup(ChipTarget.RANDOM, split_spread=0.08, seed=2).chip
     phases = MeshPhases(tuple(np.linspace(0.3, 2.9, 6)), tuple(np.linspace(1.0, 5.0, 6)))
-    flow = light_flow(chip, phases, input_mode=2)
+    flow = light_flow(chip, phases, input_modes=(2,))
 
     assert all(sum(column) == pytest.approx(1.0) for column in flow.columns)
     assert all(sum(mzi.entering) == pytest.approx(sum(mzi.leaving)) for mzi in flow.mzis)
@@ -166,8 +166,10 @@ def test_kriz_s_nepresnymi_delici_propousti_cos2_souctu_uhlu():
 def test_neplatny_cip_faze_nebo_vstup_maji_ceskou_hlasku():
     chip = ideal_chip(4)
 
-    with pytest.raises(ChipError, match="vstupu 1 až 4"):
-        light_flow(chip, zero_phases(4), input_mode=4)
+    with pytest.raises(ChipError, match="vstupů 1 až 4"):
+        light_flow(chip, zero_phases(4), input_modes=(4,))
+    with pytest.raises(ChipError, match="jen jednou"):
+        light_flow(chip, zero_phases(4), input_modes=(1, 1))
     with pytest.raises(ChipError, match="6 interferometrů"):
         transfer_matrix(chip, zero_phases(3))
     with pytest.raises(ChipError, match="obě fáze"):

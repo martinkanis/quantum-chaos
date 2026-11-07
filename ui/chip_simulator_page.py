@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import List, Tuple
+from typing import Any, List, Tuple
 
 import numpy as np
 from dash import dcc, html
 
+from gbs.chip_boson_sampling import PhotonKind
 from gbs.chip_charts import empty_chip_figure
 from gbs.photonic_chip import MODE_COUNT, mesh_slots
 from ui import ids
@@ -24,6 +25,22 @@ from ui.chip_simulator_content import (
     TARGET_LABELS,
     TITLE,
     TOPICS,
+)
+from ui.chip_sampling_content import (
+    DEFAULT_MODE_COUNT,
+    DEFAULT_PHOTONS,
+    DEFAULT_SHOTS,
+    MODE_COUNT_OPTIONS,
+    PHOTON_KIND_LABELS,
+    PHOTON_OPTIONS,
+    SAMPLING_ANCHOR,
+    SAMPLING_CHIP_OPTIONS,
+    SAMPLING_INTRO,
+    SAMPLING_SEED_HINT,
+    SAMPLING_SEEDS,
+    SAMPLING_TARGET_LABELS,
+    SAMPLING_TITLE,
+    SHOT_OPTIONS,
 )
 from ui.components import labelled
 from ui.navigation import HIDDEN, chip_simulator_href
@@ -60,6 +77,7 @@ def build_chip_simulator_page() -> html.Div:
             html.Div(className="in-short", children=[html.Strong("V kostce: "), dcc.Markdown(IN_SHORT, mathjax=True)]),
             table_of_contents(TOPICS, chip_simulator_href, SOURCES_ANCHOR),
             _lab_section(),
+            _sampling_section(),
             *[topic_section(number, topic) for number, topic in enumerate(TOPICS, start=1)],
             sources_section(TOPICS, SOURCES_ANCHOR),
         ],
@@ -87,6 +105,67 @@ def _lab_section() -> html.Section:
             html.Div(id=ids.CHIP_READOUT),
             _phase_sliders(),
         ],
+    )
+
+
+def _sampling_section() -> html.Section:
+    return html.Section(
+        id=SAMPLING_ANCHOR,
+        className="card",
+        children=[
+            html.H2(SAMPLING_TITLE),
+            dcc.Markdown(SAMPLING_INTRO, mathjax=True),
+            _sampling_controls(),
+            html.Button("Spustit boson sampling", id=ids.CHIP_SAMPLING_RUN_BUTTON, className="primary-button"),
+            html.Div(id=ids.CHIP_SAMPLING_ERROR_MESSAGE, className="error-message"),
+            dcc.Loading(html.Div(id=ids.CHIP_SAMPLING_RESULTS), type="circle"),
+        ],
+    )
+
+
+def _sampling_controls() -> html.Div:
+    return html.Div(
+        className="control-grid",
+        children=[
+            labelled("Světlovody", _dropdown(
+                ids.CHIP_SAMPLING_MODES_DROPDOWN, [(str(count), count) for count in MODE_COUNT_OPTIONS], DEFAULT_MODE_COUNT,
+            )),
+            html.Div(className="field", children=[
+                html.Label("Fotony na vstupu"),
+                _dropdown(ids.CHIP_SAMPLING_PHOTONS_DROPDOWN, [(str(count), count) for count in PHOTON_OPTIONS],
+                          DEFAULT_PHOTONS),
+                html.P(id=ids.CHIP_SAMPLING_PATTERN_COUNT, className="hint small"),
+            ]),
+            labelled("Interferometr", _dropdown(
+                ids.CHIP_SAMPLING_TARGET_DROPDOWN,
+                [(label, target.value) for target, label in SAMPLING_TARGET_LABELS.items()],
+                next(iter(SAMPLING_TARGET_LABELS)).value,
+            )),
+            labelled("Čip", _dropdown(ids.CHIP_SAMPLING_FABRICATION_DROPDOWN, list(SAMPLING_CHIP_OPTIONS),
+                                      SAMPLING_CHIP_OPTIONS[0][1])),
+            labelled("Druh fotonů", dcc.RadioItems(
+                id=ids.CHIP_SAMPLING_KIND_RADIO,
+                options=[{"label": label, "value": kind.value} for kind, label in PHOTON_KIND_LABELS.items()],
+                value=PhotonKind.INDISTINGUISHABLE.value, className="radio-list",
+            )),
+            labelled("Počet výstřelů", _dropdown(
+                ids.CHIP_SAMPLING_SHOTS_DROPDOWN, [(f"{shots:,}".replace(",", " "), shots) for shots in SHOT_OPTIONS],
+                DEFAULT_SHOTS,
+            )),
+            html.Div(className="field", children=[
+                html.Label("Seed"),
+                _dropdown(ids.CHIP_SAMPLING_SEED_DROPDOWN, [(str(seed), seed) for seed in SAMPLING_SEEDS],
+                          SAMPLING_SEEDS[0]),
+                html.P(SAMPLING_SEED_HINT, className="hint small"),
+            ]),
+        ],
+    )
+
+
+def _dropdown(component_id: str, options: List[Tuple[str, Any]], value: Any) -> dcc.Dropdown:
+    return dcc.Dropdown(
+        id=component_id, options=[{"label": label, "value": option} for label, option in options], value=value,
+        clearable=False, searchable=False,
     )
 
 

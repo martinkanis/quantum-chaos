@@ -162,5 +162,5 @@ def read_out(setup: ChipSetup, phases: MeshPhases, input_mode: int) -> ChipReado
     return ChipReadout(
         chip_transmission=transmission(transfer_matrix(setup.chip, phases)),
         target_transmission=transmission(setup.target),
-        flow=light_flow(setup.chip, phases, input_mode),
+        flow=light_flow(setup.chip, phases, (input_mode,)),
     )

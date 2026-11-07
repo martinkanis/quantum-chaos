@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Dict, Tuple
 
 from gbs.chip_programming import ChipTarget
+from ui.chip_sampling_content import SAMPLING_TOPIC
 from ui.theory_content import AARONSON_ARKHIPOV, CLEMENTS, RECK, Reading, Source, TheoryTopic
 
 SOURCES_ANCHOR = "cip-zdroje"
@@ -14,7 +15,8 @@ TITLE = "Simulátor fotonického čipu"
 LEAD = (
     "Programovatelný fotonický čip se čtyřmi světlovody, šesti Machovými–Zehnderovými interferometry a laserem. "
     "Vyber, co má čip se světlem udělat, nech simulátor spočítat fáze a sleduj, kudy světlo teče. Na čipu "
-    "s výrobními chybami uvidíš, proč se skutečné čipy musí kalibrovat."
+    "s výrobními chybami uvidíš, proč se skutečné čipy musí kalibrovat. Ve druhé laboratoři pošleš jednotlivé "
+    "fotony čipem až se 16 světlovody a z jejich výstřelů odhadneš modifikovaným Monte Carlem součet permanentů."
 )
 IN_SHORT = r"""
 Lineární optický čip je unitární matice $U$: ze světla, které vstoupí do vstupu $j$, dorazí na výstup $i$ podíl
@@ -322,4 +324,4 @@ z nepřesných součástek složit obvod, který dělá přesně, co má, ukazuj
     ),
 )
 
-TOPICS: Tuple[TheoryTopic, ...] = (MZI, MESH, PROGRAMMING, PHOTONS, FABRICATION)
+TOPICS: Tuple[TheoryTopic, ...] = (MZI, MESH, PROGRAMMING, PHOTONS, FABRICATION, SAMPLING_TOPIC)

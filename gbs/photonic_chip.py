@@ -164,7 +164,7 @@ class MziLight:
 
 @dataclass(frozen=True)
 class LightFlow:
-    input_mode: int
+    input_modes: Tuple[int, ...]
     columns: Tuple[Tuple[float, ...], ...]
     """Intensity on each waveguide in front of each column of MZIs; the last entry is what the detectors get."""
     mzis: Tuple[MziLight, ...]
@@ -175,13 +175,15 @@ class LightFlow:
         return self.columns[-1]
 
 
-def light_flow(chip: Chip, phases: MeshPhases, input_mode: int) -> LightFlow:
-    """Where the light of a laser shone into one input goes, column by column."""
+def light_flow(chip: Chip, phases: MeshPhases, input_modes: Sequence[int]) -> LightFlow:
+    """Where the light shone into the inputs goes, column by column; the intensities of the inputs add up.
+
+    For one photon in each input the sum is the mean number of photons on a waveguide, whether the photons
+    interfere or not: the interference shows only in which photons arrive together.
+    """
     _check_phases(chip, phases)
-    if not 0 <= input_mode < chip.mode_count:
-        raise ChipError(f"Laser může svítit jen do vstupu 1 až {chip.mode_count}.")
-    amplitudes = np.zeros(chip.mode_count, dtype=complex)
-    amplitudes[input_mode] = 1.0
+    _check_inputs(chip, input_modes)
+    amplitudes = np.eye(chip.mode_count, dtype=complex)[:, list(input_modes)]
     columns = [_intensities(amplitudes)]
     mzis: List[MziLight] = []
     for column in range(chip.mode_count):
@@ -194,7 +196,14 @@ def light_flow(chip: Chip, phases: MeshPhases, input_mode: int) -> LightFlow:
             mzis.append(MziLight(_intensities(entering), _intensities(inside), _intensities(leaving)))
             amplitudes[pair] = leaving
         columns.append(_intensities(amplitudes))
-    return LightFlow(input_mode, tuple(columns), tuple(mzis))
+    return LightFlow(tuple(input_modes), tuple(columns), tuple(mzis))
+
+
+def _check_inputs(chip: Chip, input_modes: Sequence[int]) -> None:
+    if not input_modes or not all(0 <= mode < chip.mode_count for mode in input_modes):
+        raise ChipError(f"Světlo může vstupovat jen do vstupů 1 až {chip.mode_count}.")
+    if len(set(input_modes)) != len(input_modes):
+        raise ChipError("Každý vstup může být vybraný jen jednou.")
 
 
 def _indices_in_column(slots: Sequence[MziSlot], column: int) -> List[int]:
@@ -202,7 +211,8 @@ def _indices_in_column(slots: Sequence[MziSlot], column: int) -> List[int]:
 
 
 def _intensities(amplitudes: np.ndarray) -> Tuple[float, ...]:
-    return tuple(float(value) for value in np.abs(amplitudes) ** 2)
+    """Summed over the inputs, one per column of `amplitudes`."""
+    return tuple(float(value) for value in (np.abs(amplitudes) ** 2).sum(axis=1))
 
 
 def _check_phases(chip: Chip, phases: MeshPhases) -> None:

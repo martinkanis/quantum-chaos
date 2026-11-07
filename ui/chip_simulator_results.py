@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Sequence
+
 import numpy as np
 from dash import html
 
@@ -16,28 +18,28 @@ DARK_CELL_SHARE = 0.55
 
 
 def build_chip_readout(readout: ChipReadout) -> html.Div:
-    input_mode = readout.flow.input_mode
+    input_modes = readout.flow.input_modes
     return html.Div(children=[
         html.Div(className="chip-readout-row", children=[
             html.Div(className="chip-metrics", children=[
                 metric_tile("Shoda s cílem", czech_percent(readout.match), MATCH_HINT),
                 metric_tile("Největší odchylka", _percentage_points(readout.largest_deviation), DEVIATION_HINT),
             ]),
-            _transfer_table("Cíl |V_ij|²", readout.target_transmission, input_mode),
-            _transfer_table("Čip |U_ij|²", readout.chip_transmission, input_mode),
+            _transfer_table("Cíl |V_ij|²", readout.target_transmission, input_modes),
+            _transfer_table("Čip |U_ij|²", readout.chip_transmission, input_modes),
         ]),
         html.P(MATRIX_HINT, className="hint small"),
     ])
 
 
-def _transfer_table(title: str, shares: np.ndarray, input_mode: int) -> html.Table:
+def _transfer_table(title: str, shares: np.ndarray, input_modes: Sequence[int]) -> html.Table:
     mode_count = shares.shape[0]
     header = html.Tr([html.Th("výstup \\ vstup")] + [
-        html.Th(str(column + 1), className=_laser_class(column, input_mode)) for column in range(mode_count)
+        html.Th(str(column + 1), className=_laser_class(column, input_modes)) for column in range(mode_count)
     ])
     rows = [
         html.Tr([html.Th(str(row + 1))] + [
-            _cell(float(shares[row, column]), _laser_class(column, input_mode)) for column in range(mode_count)
+            _cell(float(shares[row, column]), _laser_class(column, input_modes)) for column in range(mode_count)
         ])
         for row in range(mode_count)
     ]
@@ -55,8 +57,8 @@ def _cell(share: float, class_name: str) -> html.Td:
     )
 
 
-def _laser_class(column: int, input_mode: int) -> str:
-    return "laser-column" if column == input_mode else ""
+def _laser_class(column: int, input_modes: Sequence[int]) -> str:
+    return "laser-column" if column in input_modes else ""
 
 
 def _percentage_points(share: float) -> str:

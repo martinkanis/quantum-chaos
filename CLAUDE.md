@@ -6,7 +6,8 @@ s odkazy na materiály. Téma „Monte Carlo a modifikované Monte Carlo“ má 
 do Qiskitu, průvodce). Téma „Kvantová optimalizace portfolia“ má rozbory článků (zatím VQE na IBM Fez,
 arXiv:2512.22001; čísla z článku jsou data v `ui/vqe_paper_content.py`). Téma „Fotonika“ má český překlad
 skript Kolarovszki–Zimborás o fotonickém kvantovém počítání a GBS (pět stránek `/fotonika/...`), simulátor
-programovatelného čipu ze sítě MZI (Clementsův rozklad, výrobní chyby a kalibrace), přehled firem,
+programovatelného čipu ze sítě MZI (Clementsův rozklad, výrobní chyby a kalibrace; boson sampling až na
+16 světlovodech jako modifikované Monte Carlo proti klasickému), přehled firem,
 stránku o simulátoru Piquasso, oddíl o firmě PsiQuantum (přehled a zápisky z videa Bena Milese s prezentací
 ke stažení) a zápisky z přednášky Philipa Walthera (2022) se slajdy
 a podstránkou o třífotonových GHZ stavech. Novou stránku zařaď do tématu
@@ -52,7 +53,8 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
   sdílejí snímky a odkazy do videa přes `slide_figure`. Přepisy a všechny snímky jsou ve větvi `podklady-video`.
 - `gbs/` – doména GBS: hafnián, sampler, gaussovské momenty (Steinova rekurze), ladění stlačení, odhad GBS-P,
   export do Qiskitu (šablona `qiskit_script_template.txt`), fotonický čip ze sítě MZI (`photonic_chip.py`,
-  `clements.py`, `chip_programming.py`, kreslení `chip_charts.py`).
+  `clements.py`, `chip_programming.py`, kreslení `chip_charts.py`; boson sampling na čipu `chip_boson_sampling.py`
+  s vektorizovanými permanenty, grafy `chip_sampling_charts.py`).
 - `ui/` – Dash vrstva: `*_page.py` layout, `*_callbacks.py` callbacky, `*_content.py` texty, `ids.py` všechna id,
   `navigation.py` cesty a přepínání stránek.
 - Business logika patří do `gbs/` a `montecarlo/`; UI jen parsuje formulář a vykresluje výsledek.

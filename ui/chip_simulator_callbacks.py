@@ -109,31 +109,35 @@ def parse_setup(setup_form: Dict[str, Any]) -> ChipSetup:
         target = ChipTarget(setup_form["target"])
     except ValueError as error:
         raise ChipError("Vyber cíl ze seznamu.") from error
-    split_spread = _number(setup_form["split_spread"], "Vyber čip ze seznamu.")
-    seed = _number(setup_form["seed"], "Vyber seed ze seznamu.")
-    if not seed.is_integer():
-        raise ChipError("Seed musí být celé číslo.")
-    return build_setup(target, split_spread, int(seed))
+    split_spread = form_number(setup_form["split_spread"], "Vyber čip ze seznamu.")
+    seed = form_whole_number(setup_form["seed"], "Seed musí být celé číslo.")
+    return build_setup(target, split_spread, seed)
 
 
 def parse_phases(internal: Sequence[Any], external: Sequence[Any]) -> MeshPhases:
     message = "Každá fáze musí být číslo v radiánech; nastav posuvník znovu."
     return MeshPhases(
-        tuple(_number(value, message) for value in internal), tuple(_number(value, message) for value in external),
+        tuple(form_number(value, message) for value in internal),
+        tuple(form_number(value, message) for value in external),
     )
 
 
 def parse_laser_input(value: Any) -> int:
-    mode = _number(value, f"Vyber vstup 1 až {MODE_COUNT}, do kterého svítí laser.")
-    if not mode.is_integer():
-        raise ChipError(f"Vyber vstup 1 až {MODE_COUNT}, do kterého svítí laser.")
-    return int(mode)
+    return form_whole_number(value, f"Vyber vstup 1 až {MODE_COUNT}, do kterého svítí laser.")
 
 
-def _number(value: Any, message: str) -> float:
+def form_number(value: Any, message: str) -> float:
+    """A number from a form control; anything else raises ChipError with the message for the reader."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise ChipError(message)
     return float(value)
+
+
+def form_whole_number(value: Any, message: str) -> int:
+    number = form_number(value, message)
+    if not number.is_integer():
+        raise ChipError(message)
+    return int(number)
 
 
 def _rounded(phases: Sequence[float]) -> list:
