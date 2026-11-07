@@ -100,6 +100,36 @@ ACADEMY_SECTIONS: Tuple[AcademySection, ...] = (
         ),
     ),
     AcademySection(
+        "Nástroje ke studiu: Shortform",
+        tldr=(
+            "**Co to je.** Shortform je placená aplikace (web, iPhone, Android) se shrnutími a průvodci "
+            "k populárně-naučným knihám a s rozšířením do prohlížeče Chrome, které pomocí AI shrne webovou stránku "
+            "nebo video na YouTube.\n\n"
+            "**Co dělá.** Ke knize nabízí jednostránkové shrnutí, přehled na zhruba 15 minut čtení a podrobného "
+            "průvodce po kapitolách s komentářem a srovnáním s jinými knihami; k tomu audio, zvýrazňování "
+            "a poznámky. Rozšíření do prohlížeče shrne otevřenou stránku nebo video a nabídne i jiné pohledy "
+            "na téma. (Podle popisu samotného Shortformu; cenu a délku zkušební doby ověř na jejich webu.)\n\n"
+            "**Proč se hodí.** Na rychlou orientaci: než se pustíš do hodinové přednášky nebo dlouhého článku, "
+            "zjistíš za pár minut, o čem je a jestli stojí za to. U populárně-naučných knih o kvantové fyzice "
+            "pomůže rozhodnout, kterou číst celou.\n\n"
+            "**Na co si dát pozor.** Shrnutí od AI není zdroj: u fyziky se snadno ztratí podmínky a čísla nebo "
+            "se objeví chyba – podobně jako automatické titulky YouTube, které se u Waltherovy přednášky ukázaly "
+            "jako nepoužitelné. Pro studium je dobré shrnutí jen jako mapa a podrobnosti si ověřit v originále "
+            "(odkazy na původní články jsou u každé stránky této aplikace)."
+        ),
+        links=(
+            AcademyLink(
+                "Shortform", "https://www.shortform.com",
+                "Web služby: knihovna průvodců ke knihám, aplikace a rozšíření do prohlížeče.",
+            ),
+            AcademyLink(
+                "Co je Shortform", "https://www.shortform.com/blog/hub/product/what-is-shortform/",
+                "Popis funkcí od samotného Shortformu: průvodci ke knihám, shrnutí podcastů, AI shrnutí webu "
+                "a videí.",
+            ),
+        ),
+    ),
+    AcademySection(
         "Monte Carlo",
         sources=(DRIMAL_MONTE_CARLO, DVORAKOVA_MONTE_CARLO, GLASSERMAN),
     ),

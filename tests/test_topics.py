@@ -132,3 +132,11 @@ def test_quantum_academy_ma_quandelu_s_perceval_a_odkazem_na_rozbor():
     assert {"https://perceval.quandela.net/docs/", "https://github.com/Quandela/Perceval"} <= urls
     assert "https://access.eurohpc-ju.europa.eu/calls/61" in urls
     assert f"]({PHOTONIC_HARDWARE_PATH})" in quandela.tldr
+
+
+def test_quantum_academy_vysvetluje_shortform_i_s_upozornenim_na_ai_shrnuti():
+    shortform = next(section for section in ACADEMY_SECTIONS if "Shortform" in section.title)
+
+    assert "https://www.shortform.com" in {link.url for link in shortform.links}
+    assert all(heading in shortform.tldr for heading in ("**Co to je.**", "**Co dělá.**", "**Proč se hodí.**"))
+    assert "**Na co si dát pozor.**" in shortform.tldr
