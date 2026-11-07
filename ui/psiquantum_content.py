@@ -392,7 +392,7 @@ OMEGA_TOPIC = TheoryTopic(
         "Čipy se vyrábějí v běžné továrně GlobalFoundries. Sada Omega (Nature 2025) má zdroje, přepínače "
         "z titaničitanu "
         "barnatého, vlnovody z nitridu křemíku a supravodivé detektory; věrnosti přes 99 %, ale jen pro fotony, které "
-        "se neztratily. Chlazení na asi 4 K v „kryokabinetech“."
+        "se neztratily. Chlazení na 2 K (cíl 4 K) v kryostatech."
     ),
     explanation=r"""
 **GlobalFoundries (od roku 2021).** PsiQuantum má vlastní nástroje ve dvou 300mm továrnách GlobalFoundries: fotonické
@@ -421,9 +421,11 @@ se dá škálovat jako polovodičový průmysl.
 jsou pro fotonický počítač největší problém, v nich nejsou (článek to u propojení výslovně píše). Firma tvrdí, že
 ztráty snížila „z asi 50 % na asi 1 %“ – to je opět její údaj.
 
-**Chlazení.** Na rozdíl od supravodivých qubitů (milikelviny) stačí fotonickým čipům a detektorům kolem **4 K**
-(kapalné helium). Čipy sedí v „kryokabinetech“ velikosti serverové skříně, propojených vlákny; pro užitečný stroj
-jich má být kolem stovky (MIT Technology Review). Pro australský stroj dodává Linde velký heliový kryosystém.
+**Chlazení.** Na rozdíl od supravodivých qubitů (kolem 20 mK) stačí fotonickým čipům a detektorům **2 K** (kapalné
+helium); cílem pro masové nasazení jsou 4 K (podle videa z laboratoří, viz
+[zápisky z videa](/fotonika-ve-svete/psiquantum/video-svetlo#psiv-matematika)). Čipy sedí v kryostatech propojených
+vlákny; pro užitečný stroj jich má být kolem stovky (MIT Technology Review). Pro australský stroj dodává Linde velký
+heliový kryosystém.
 
 **Co ukázané není.** Veřejně zatím nebyl ukázán integrovaný generátor zdrojových stavů, síť fúzí ani logický qubit
 (stav říjen 2026). MIT Technology Review v červenci 2026 shrnul: „tenhle počítač, jak je popsaný, neexistuje“ –

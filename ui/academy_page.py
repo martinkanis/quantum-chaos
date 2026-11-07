@@ -115,7 +115,9 @@ ACADEMY_SECTIONS: Tuple[AcademySection, ...] = (
             "**Na co si dát pozor.** Shrnutí od AI není zdroj: u fyziky se snadno ztratí podmínky a čísla nebo "
             "se objeví chyba – podobně jako automatické titulky YouTube, které se u Waltherovy přednášky ukázaly "
             "jako nepoužitelné. Pro studium je dobré shrnutí jen jako mapa a podrobnosti si ověřit v originále "
-            "(odkazy na původní články jsou u každé stránky této aplikace)."
+            "(odkazy na původní články jsou u každé stránky této aplikace).\n\n"
+            "Shortform sponzoroval video Bena Milese o PsiQuantum, ze kterého jsou "
+            "[zápisky v aplikaci](/fotonika-ve-svete/psiquantum/video-svetlo)."
         ),
         links=(
             AcademyLink(

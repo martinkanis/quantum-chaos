@@ -18,6 +18,7 @@ from ui.walther_lecture_content import (
     SOURCES_ANCHOR,
     TITLE,
     TOPICS,
+    VIDEO_URL,
     LectureSlide,
     chapter_end,
     chapter_slides,
@@ -54,7 +55,7 @@ def _chapter_slides(topic: TheoryTopic) -> List:
         html.H3("Slajdy a video"),
         html.P(className="hint", children=[
             "Tahle část je ve videu od ",
-            _video_link(start),
+            video_link(start),
             f" do {timestamp(end)}. Kliknutím na slajd se otevře v plné velikosti.",
         ]),
         html.Details(open=True, className="lecture-slides", children=[
@@ -64,16 +65,17 @@ def _chapter_slides(topic: TheoryTopic) -> List:
     ]
 
 
-def slide_figure(slide: LectureSlide) -> html.Figure:
-    url = slide_url(LECTURE, slide.file_name)
+def slide_figure(slide: LectureSlide, lecture: str = LECTURE, video_url: str = VIDEO_URL) -> html.Figure:
+    """A frame of a recorded lecture or video; the image opens full size, the time opens the video there."""
+    url = slide_url(lecture, slide.file_name)
     return html.Figure(className="lecture-slide", children=[
         html.A(html.Img(src=url, alt=slide.caption), href=url, target="_blank", rel="noopener"),
-        html.Figcaption([slide.caption, " · ", _video_link(slide.seconds)]),
+        html.Figcaption([slide.caption, " · ", video_link(slide.seconds, video_url)]),
     ])
 
 
-def _video_link(seconds: int) -> html.A:
-    return html.A(timestamp(seconds), href=video_at(seconds), target="_blank", rel="noopener")
+def video_link(seconds: int, video_url: str = VIDEO_URL) -> html.A:
+    return html.A(timestamp(seconds), href=video_at(seconds, video_url), target="_blank", rel="noopener")
 
 
 def _back_link() -> dcc.Link:

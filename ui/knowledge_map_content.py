@@ -64,7 +64,7 @@ BASE_LAYERS: Tuple[LayerInfo, ...] = (
         (
             ids.PRIMER_BASICS_PAGE, ids.PRIMER_GAUSSIAN_STATES_PAGE, ids.PRIMER_PHASE_SPACE_PAGE, ids.PRIMER_GBS_PAGE,
             ids.PRIMER_APPENDICES_PAGE, ids.HAFNIAN_PAGE, ids.PHOTONIC_HARDWARE_PAGE, ids.PHOTONICS_LANDSCAPE_PAGE,
-            ids.PIQUASSO_PAGE, ids.PSIQUANTUM_PAGE, ids.WALTHER_LECTURE_PAGE, ids.GHZ_STATES_PAGE,
+            ids.PIQUASSO_PAGE, ids.PSIQUANTUM_PAGE, ids.PSIQUANTUM_VIDEO_PAGE, ids.WALTHER_LECTURE_PAGE, ids.GHZ_STATES_PAGE,
         ),
         ids.NAV_PHOTONICS_MENU,
     ),
@@ -128,6 +128,7 @@ MAP_LABELS = {
     ids.PHOTONICS_LANDSCAPE_PAGE: "Fotonika ve světě",
     ids.PIQUASSO_PAGE: "Piquasso",
     ids.PSIQUANTUM_PAGE: "PsiQuantum",
+    ids.PSIQUANTUM_VIDEO_PAGE: "Video o PsiQuantum",
     ids.PRIMER_BASICS_PAGE: "Skripta 1: základy",
     ids.PRIMER_GAUSSIAN_STATES_PAGE: "Skripta 2: gaussovské stavy",
     ids.PRIMER_PHASE_SPACE_PAGE: "Skripta 3: fázový prostor",
@@ -218,6 +219,9 @@ BASE_RELATIONS: Tuple[Relation, ...] = (
     ),
     Relation(
         ids.PSIQUANTUM_PAGE, RelationKind.EXPANDS, ids.PHOTONICS_LANDSCAPE_PAGE, "jedna firma a její plán podrobně",
+    ),
+    Relation(
+        ids.PSIQUANTUM_VIDEO_PAGE, RelationKind.EXPANDS, ids.PSIQUANTUM_PAGE, "součástky zblízka: zdroje, BTO, převod na čas",
     ),
     Relation(
         ids.GHZ_STATES_PAGE, RelationKind.EXPLAINS, ids.PSIQUANTUM_PAGE, "proč plán stojí na třífotonových GHZ",

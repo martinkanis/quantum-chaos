@@ -1214,8 +1214,8 @@ def chapter_slides(anchor: str) -> Tuple[LectureSlide, ...]:
     return tuple(slide for slide in SLIDES if start <= slide.seconds < end)
 
 
-def video_at(seconds: int) -> str:
-    return f"{VIDEO_URL}?t={seconds}"
+def video_at(seconds: int, video_url: str = VIDEO_URL) -> str:
+    return f"{video_url}?t={seconds}"
 
 
 def timestamp(seconds: int) -> str:

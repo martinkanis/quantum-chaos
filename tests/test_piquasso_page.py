@@ -14,7 +14,7 @@ from ui.navigation import (
     PAGE_BY_PATH,
     PAGE_IDS,
     PIQUASSO_PATH,
-    PSIQUANTUM_PATH,
+    PSIQUANTUM_VIDEO_PATH,
     piquasso_href,
     show_page,
 )
@@ -58,15 +58,15 @@ def text_of(topic) -> str:
     return " ".join((topic.in_short + " " + topic.explanation).split())
 
 
-def test_stranka_je_osmym_krokem_tematu_fotonika_za_psiquantem():
+def test_stranka_je_devatym_krokem_tematu_fotonika_za_videem_o_psiquantu():
     link_classes = show_page(PIQUASSO_PATH)[len(PAGE_IDS):len(PAGE_IDS) + len(NAV_LINK_IDS)]
     active = [link_id for link_id, link_class in zip(NAV_LINK_IDS, link_classes) if link_class == ACTIVE_LINK_CLASS]
     _, step_label, links, _, _ = describe_pager(PIQUASSO_PATH, None)
 
     assert PAGE_BY_PATH[PIQUASSO_PATH] == ids.PIQUASSO_PAGE
     assert active == [ids.NAV_PHOTONICS_MENU]
-    assert step_label == "Fotonika · krok 8 / 10"
-    assert links[0].children.href == PSIQUANTUM_PATH
+    assert step_label == "Fotonika · krok 9 / 11"
+    assert links[0].children.href == PSIQUANTUM_VIDEO_PATH
     assert [label for label, _ in breadcrumb_trail(ids.PIQUASSO_PAGE)] == [
         "Témata", "Fotonika a GBS", "Fotonika ve světě: konkurence a partneři",
         "Piquasso: simulátor fotonického kvantového počítače",

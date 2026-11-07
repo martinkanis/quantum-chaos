@@ -25,6 +25,7 @@ from ui.navigation import (
     PHOTONICS_TOPIC_ANCHOR,
     PIQUASSO_PATH,
     PSIQUANTUM_PATH,
+    PSIQUANTUM_VIDEO_PATH,
     PORTFOLIO_PATH,
     PRIMER_APPENDICES_PATH,
     PRIMER_BASICS_PATH,
@@ -216,6 +217,13 @@ PSIQUANTUM = PageEntry(
     parent_page_id=ids.PHOTONICS_LANDSCAPE_PAGE,
 )
 
+PSIQUANTUM_VIDEO = PageEntry(
+    ids.PSIQUANTUM_VIDEO_PAGE, "Video: The Genius of Computing with Light (Ben Miles, 2026)", PSIQUANTUM_VIDEO_PATH,
+    "Zápisky z videa z laboratoří PsiQuantum se snímky a prezentací ke stažení: ohlašované zdroje fotonů, supravodivé "
+    "detektory, přepínače z titaničitanu barnatého, kryostaty na 2 K a převod qubitu z prostoru do času.",
+    parent_page_id=ids.PSIQUANTUM_PAGE,
+)
+
 PRIMER_BASICS = PageEntry(
     ids.PRIMER_BASICS_PAGE, "Skripta 1: Základy fotonického kvantového počítání", PRIMER_BASICS_PATH,
     "Úvod a 1. kapitola skript Kolarovszkiho a Zimboráse v češtině: Fockův prostor, kvantové módy, fotonická "
@@ -269,7 +277,8 @@ PHOTONICS_TOPIC = ResearchTopic(
             "Skripta: fotonické kvantové počítání a GBS",
             (PRIMER_BASICS, PRIMER_GAUSSIAN_STATES, PRIMER_PHASE_SPACE, PRIMER_GBS, PRIMER_APPENDICES),
         ),
-        TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE, PSIQUANTUM)),
+        TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE,)),
+        TopicSection("PsiQuantum: fotonický počítač zblízka", (PSIQUANTUM, PSIQUANTUM_VIDEO)),
         TopicSection("Software", (PIQUASSO,)),
         TopicSection("Přednášky", (WALTHER_LECTURE, GHZ_STATES)),
     ),

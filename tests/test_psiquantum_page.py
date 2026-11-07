@@ -30,7 +30,7 @@ def test_stranka_je_podstrankou_fotoniky_ve_svete_hned_za_prehledem():
     _, step_label, links, _, _ = describe_pager(PSIQUANTUM_PATH, None)
 
     assert PAGE_BY_PATH[PSIQUANTUM_PATH] == ids.PSIQUANTUM_PAGE
-    assert step_label == "Fotonika · krok 7 / 10"
+    assert step_label == "Fotonika · krok 7 / 11"
     assert links[0].children.href == PHOTONICS_LANDSCAPE_PATH
     assert [label for label, _ in breadcrumb_trail(ids.PSIQUANTUM_PAGE)][-2] == (
         "Fotonika ve světě: konkurence a partneři"
