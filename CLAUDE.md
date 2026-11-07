@@ -7,7 +7,7 @@ do Qiskitu, průvodce). Téma „Kvantová optimalizace portfolia“ má rozbory
 arXiv:2512.22001; čísla z článku jsou data v `ui/vqe_paper_content.py`). Téma „Fotonika“ má český překlad
 skript Kolarovszki–Zimborás o fotonickém kvantovém počítání a GBS (pět stránek `/fotonika/...`), simulátor
 programovatelného čipu ze sítě MZI (Clementsův rozklad, výrobní chyby a kalibrace; boson sampling až na
-16 světlovodech jako modifikované Monte Carlo proti klasickému), přehled firem,
+64 světlovodech jako modifikované Monte Carlo proti klasickému), přehled firem,
 stránku o simulátoru Piquasso, oddíl o firmě PsiQuantum (přehled a zápisky z videa Bena Milese s prezentací
 ke stažení) a zápisky z přednášky Philipa Walthera (2022) se slajdy
 a podstránkou o třífotonových GHZ stavech. Novou stránku zařaď do tématu

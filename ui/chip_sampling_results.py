@@ -58,7 +58,7 @@ def build_sampling_results(study: SamplingStudy) -> html.Div:
 def _metric_tiles(study: SamplingStudy) -> List[html.Div]:
     samples = len(study.shot_indices)
     return [
-        metric_tile("Výstupních vzorů", czech_count(len(study.target.patterns)),
+        metric_tile("Výstupních vzorů", czech_count(len(study.target.occupied_outputs)),
                     f"{study.photons} fotonů v {study.chip.mode_count} světlovodech."),
         metric_tile("Přesné μ", czech_decimal(study.target.bunching), EXACT_HINT),
         metric_tile(f"Boson sampling, {czech_count(samples)} výstřelů",
@@ -77,8 +77,7 @@ def _metric_tiles(study: SamplingStudy) -> List[html.Div]:
 def _first_shot_labels(study: SamplingStudy) -> List[str]:
     labels = []
     for index in study.shot_indices[:FIRST_SHOTS_SHOWN]:
-        pattern = study.sampler.patterns[index]
-        outputs = np.repeat(np.arange(1, len(pattern) + 1), pattern)
+        outputs = study.sampler.occupied_outputs[index].astype(int) + 1
         labels.append(f"výstupy {', '.join(str(output) for output in outputs)} → Z = {study.sampler.multiplicities[index]:.0f}")
     return labels
 

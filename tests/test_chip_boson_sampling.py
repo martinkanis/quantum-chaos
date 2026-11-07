@@ -1,4 +1,5 @@
 import time
+import tracemalloc
 from itertools import combinations_with_replacement
 from math import factorial
 
@@ -9,18 +10,27 @@ from gbs.boson_sampling import output_patterns, permanent, random_unitary, trans
 from gbs.chip_boson_sampling import (
     MAX_PATTERNS,
     PhotonKind,
+    all_pattern_permanents,
     complete_homogeneous,
     gaussian_estimator_values,
+    occupied_outputs,
     pattern_count,
     pattern_distribution,
     run_sampling_study,
 )
 from gbs.chip_programming import ChipTarget, target_unitary
-from gbs.photonic_chip import ChipError
+from gbs.photonic_chip import ChipError, mzi_count
 from ui import ids
 from ui.chip_sampling_callbacks import describe_pattern_count, parse_sampling_form
-from ui.chip_sampling_content import SAMPLING_ANCHOR, SAMPLING_INTRO, SAMPLING_TOPIC
-from ui.chip_sampling_results import build_sampling_results, czech_decimal
+from ui.chip_sampling_content import (
+    EXACT_HINT,
+    MODE_COUNT_OPTIONS,
+    PHOTON_OPTIONS,
+    SAMPLING_ANCHOR,
+    SAMPLING_INTRO,
+    SAMPLING_TOPIC,
+)
+from ui.chip_sampling_results import build_sampling_results, czech_count, czech_decimal
 from ui.chip_simulator_content import TOPICS
 from ui.chip_simulator_page import build_chip_simulator_page
 from tests.test_chip_simulator_page import component_ids, texts_in
@@ -36,12 +46,17 @@ def text_of(topic) -> str:
     return " ".join((topic.in_short + " " + topic.explanation).split())
 
 
+def photon_counts(occupied: np.ndarray, modes: int) -> np.ndarray:
+    return np.array([np.bincount(outputs, minlength=modes) for outputs in occupied])
+
+
 def test_permanenty_vsech_vzoru_naraz_odpovidaji_ryserovi_po_jednom():
     unitary = random_unitary(5, np.random.default_rng(1))
     distribution = pattern_distribution(unitary, 3, PhotonKind.INDISTINGUISHABLE)
-    one_by_one = np.array([abs(permanent(transition_matrix(unitary, pattern, 3))) ** 2 for pattern in distribution.patterns])
+    patterns = photon_counts(distribution.occupied_outputs, 5)
+    one_by_one = np.array([abs(permanent(transition_matrix(unitary, pattern, 3))) ** 2 for pattern in patterns])
 
-    assert np.array_equal(distribution.patterns, output_patterns(5, 3))
+    assert np.array_equal(patterns, output_patterns(5, 3))
     assert np.allclose(distribution.probabilities * distribution.multiplicities, one_by_one)
     assert distribution.probabilities.sum() == pytest.approx(1.0)
 
@@ -50,7 +65,8 @@ def test_rozlisitelne_fotony_maji_permanent_z_absolutnich_hodnot_a_take_soucet_j
     unitary = random_unitary(5, np.random.default_rng(2))
     distribution = pattern_distribution(unitary, 3, PhotonKind.DISTINGUISHABLE)
     one_by_one = np.array([
-        permanent(np.abs(transition_matrix(unitary, pattern, 3)) ** 2).real for pattern in distribution.patterns
+        permanent(np.abs(transition_matrix(unitary, pattern, 3)) ** 2).real
+        for pattern in photon_counts(distribution.occupied_outputs, 5)
     ])
 
     assert np.allclose(distribution.probabilities * distribution.multiplicities, one_by_one)
@@ -62,9 +78,19 @@ def test_vsechny_fotony_v_jednom_vystupu_jsou_u_bosonu_n_faktorialkrat_castejsi(
     unitary = random_unitary(6, np.random.default_rng(photons))
     bosons = pattern_distribution(unitary, photons, PhotonKind.INDISTINGUISHABLE)
     particles = pattern_distribution(unitary, photons, PhotonKind.DISTINGUISHABLE)
-    all_together = bosons.patterns.max(axis=1) == photons
+    all_together = bosons.occupied_outputs[:, 0] == bosons.occupied_outputs[:, -1]
 
     assert np.allclose(bosons.probabilities[all_together], factorial(photons) * particles.probabilities[all_together])
+
+
+@pytest.mark.parametrize("modes, photons", [(3, 1), (4, 4), (7, 5)])
+def test_glynnuv_vzorec_po_prefixech_sedi_s_ryserem_i_pro_jeden_foton_a_plny_cip(modes, photons):
+    unitary = random_unitary(modes, np.random.default_rng(modes + photons))
+    occupied = occupied_outputs(modes, photons)
+    one_by_one = [permanent(unitary[np.ix_(outputs, range(photons))]) for outputs in occupied]
+
+    assert np.array_equal(occupied, list(combinations_with_replacement(range(modes), photons)))
+    assert np.allclose(all_pattern_permanents(unitary[:, :photons]), one_by_one)
 
 
 def test_fourier_se_dvema_fotony_ma_mu_jedna_a_pul_a_rozlisitelne_ctvrt():
@@ -125,19 +151,37 @@ def test_rozlisitelne_fotony_v_prikladech_simulatoru_mu_snizi(target):
 
 
 def test_pocty_vzoru_v_navodu_sedi_a_vetsi_ulohu_simulator_odmitne():
-    assert pattern_count(16, 6) == 54_264 and pattern_count(16, 7) == 170_544 <= MAX_PATTERNS
-    assert "54 264 možných výstupních vzorů, se 7 fotony 170 544" in " ".join(SAMPLING_INTRO.split())
-    with pytest.raises(ChipError, match="490 314 výstupních vzorů"):
-        pattern_distribution(random_unitary(16, np.random.default_rng(0)), 8, PhotonKind.INDISTINGUISHABLE)
+    intro = " ".join(SAMPLING_INTRO.split())
+
+    assert pattern_count(16, 6) == 54_264 and pattern_count(16, 8) == 490_314
+    assert mzi_count(64) == 2_016 and pattern_count(64, 4) == 766_480 <= MAX_PATTERNS == 1_000_000
+    assert "54 264 možných výstupních vzorů, s 8 fotony 490 314" in intro
+    assert "64 světlovody má 2 016 interferometrů a se 4 fotony 766 480 vzorů" in intro
+    assert f"nejvýš {czech_count(MAX_PATTERNS)} vzorů" in intro and f"nejvýš {czech_count(MAX_PATTERNS)};" in EXACT_HINT
+    with pytest.raises(ChipError, match="2 035 800 výstupních vzorů, simulátor jich přesně spočítá nejvýš 1 000 000\\."):
+        pattern_distribution(random_unitary(24, np.random.default_rng(0)), 7, PhotonKind.INDISTINGUISHABLE)
 
 
-def test_nejvetsi_uloha_dobehne_hluboko_pod_limitem_callbacku():
+def largest_allowed_tasks():
+    allowed = [
+        (modes, photons) for modes in MODE_COUNT_OPTIONS for photons in PHOTON_OPTIONS
+        if photons <= modes and pattern_count(modes, photons) <= MAX_PATTERNS
+    ]
+    return [max(allowed), max(allowed, key=lambda task: (task[1], pattern_count(*task)))]
+
+
+@pytest.mark.parametrize("modes, photons", largest_allowed_tasks())
+def test_nejvetsi_ulohy_dobehnou_do_peti_sekund_a_vejdou_se_do_pameti(modes, photons):
+    tracemalloc.start()
     started = time.perf_counter()
-    study = run_sampling_study(ChipTarget.RANDOM, 0.08, 1, 16, 7, PhotonKind.INDISTINGUISHABLE, 100_000)
+    study = run_sampling_study(ChipTarget.RANDOM, 0.08, 1, modes, photons, PhotonKind.INDISTINGUISHABLE, 100_000)
     build_sampling_results(study)
+    elapsed = time.perf_counter() - started
+    peak_mib = tracemalloc.get_traced_memory()[1] / 2**20
+    tracemalloc.stop()
 
-    assert time.perf_counter() - started < 10
-    assert len(study.target.patterns) == 170_544
+    assert elapsed < 5 and peak_mib < 150
+    assert len(study.target.occupied_outputs) == pattern_count(modes, photons)
 
 
 def test_laborator_ma_vlastni_sekci_a_kapitolu_ve_vykladu():
@@ -150,7 +194,7 @@ def test_laborator_ma_vlastni_sekci_a_kapitolu_ve_vykladu():
 def test_formular_hlida_vstupy_a_ukaze_pocet_vzoru():
     assert parse_sampling_form(SAMPLING_FORM).photons == 3
     assert describe_pattern_count(16, 6) == "54 264 možných výstupních vzorů."
-    assert "víc než 200 000" in describe_pattern_count(16, 8)
+    assert describe_pattern_count(24, 7) == "2 035 800 výstupních vzorů, víc než 1 000 000, které simulátor spočítá."
     with pytest.raises(ChipError, match="druh fotonů"):
         parse_sampling_form({**SAMPLING_FORM, "kind": None})
     with pytest.raises(ChipError, match="výstřelů"):

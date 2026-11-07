@@ -16,7 +16,7 @@ LEAD = (
     "Programovatelný fotonický čip se čtyřmi světlovody, šesti Machovými–Zehnderovými interferometry a laserem. "
     "Vyber, co má čip se světlem udělat, nech simulátor spočítat fáze a sleduj, kudy světlo teče. Na čipu "
     "s výrobními chybami uvidíš, proč se skutečné čipy musí kalibrovat. Ve druhé laboratoři pošleš jednotlivé "
-    "fotony čipem až se 16 světlovody a z jejich výstřelů odhadneš modifikovaným Monte Carlem součet permanentů."
+    "fotony čipem až se 64 světlovody a z jejich výstřelů odhadneš modifikovaným Monte Carlem součet permanentů."
 )
 IN_SHORT = r"""
 Lineární optický čip je unitární matice $U$: ze světla, které vstoupí do vstupu $j$, dorazí na výstup $i$ podíl
