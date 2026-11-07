@@ -24,6 +24,7 @@ from ui.topic_catalog import PHOTONICS_TOPIC, breadcrumb_trail
 from ui.walther_lecture_content import (
     BLIND_TOPIC,
     BOSON_SAMPLING_TOPIC,
+    ENTANGLEMENT_TOPIC,
     CHAPTER_TIMES,
     GATES_TOPIC,
     HARDWARE_TOPIC,
@@ -217,3 +218,41 @@ def test_server_slepeho_pocitani_vidi_uhel_mereni_rovnomerne_rozlozeny():
     for secret in angles:
         assert seen_by_server(secret) == {k: 2 for k in range(8)}
     assert r"\delta_j = \phi_j + \theta_j + r_j\pi" in text_of(BLIND_TOPIC)
+
+
+PLANCK = 6.62607015e-34
+BOLTZMANN = 1.380649e-23
+LIGHT_SPEED = 299_792_458
+FIBRE_INDEX = 1.468
+FIBRE_LOSS_DB_PER_KM = 0.2
+
+
+def thermal_photons(frequency, temperature):
+    return 1 / np.expm1(PLANCK * frequency / (BOLTZMANN * temperature))
+
+
+def czech_power(value, digits=1):
+    mantissa, exponent = f"{value:.{digits}e}".split("e")
+    return mantissa.replace(".", "{,}") + r" \cdot 10^{" + str(int(exponent)) + "}"
+
+
+def test_tepelne_fotony_v_doplnku_o_dekoherenci_sedi_s_vypoctem():
+    entanglement = text_of(ENTANGLEMENT_TOPIC)
+    telecom = thermal_photons(LIGHT_SPEED / 1550e-9, 300)
+
+    assert r"\bar n \approx " + czech_power(telecom) in entanglement
+    assert round(thermal_photons(5e9, 300), -1) == 1250 and "asi 1 250 tepelných fotonů" in entanglement
+    assert r"\bar n \approx " + czech_power(thermal_photons(5e9, 0.010)) in entanglement
+    assert f"{PLANCK * LIGHT_SPEED / 1550e-9 / 1.602176634e-19:.1f}" == "0.8"
+
+
+def test_ztraty_ve_vlakne_v_doplnku_sedi_s_vypoctem():
+    entanglement = text_of(ENTANGLEMENT_TOPIC)
+    metres_per_microsecond = LIGHT_SPEED / FIBRE_INDEX * 1e-6
+    loss_per_microsecond = 1 - 10 ** (-FIBRE_LOSS_DB_PER_KM * metres_per_microsecond / 1000 / 10)
+
+    assert round(metres_per_microsecond) == 204 and "asi 204 m vlákna" in entanglement
+    assert f"{100 * loss_per_microsecond:.2f}" == "0.94" and "asi 0,94 %" in entanglement
+    assert f"{100 * 10 ** (-FIBRE_LOSS_DB_PER_KM / 10):.1f}" == "95.5" and "asi 95,5 %" in entanglement
+    assert round(LIGHT_SPEED * 1e-9 * 100) == 30 and "30 cm za 1 ns" in entanglement
+    assert loss_per_microsecond / 0.027 == pytest.approx(1 / 3, abs=0.03) and "třetinu" in entanglement

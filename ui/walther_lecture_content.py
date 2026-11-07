@@ -44,6 +44,11 @@ KEY_FINDINGS = (
         "walther-hardware",
     ),
     KeyFinding(
+        "**Fotony skoro nedekoherují:** s okolím téměř neinteragují a jejich energie je proti teplu obrovská, takže "
+        "fungují i za pokojové teploty. Jejich hlavní chybou je ztráta – foton zmizí. Doplněk k přednášce.",
+        "walther-provazani",
+    ),
+    KeyFinding(
         "**Fotony spolu neinteragují,** takže dvouqubitové hradlo jde jen pravděpodobnostně a s měřením. Schéma KLM "
         "je sice škálovatelné, ale potřebuje $10^3$ až $10^5$ pomocných fotonů na qubit.",
         "walther-hradla",
@@ -109,6 +114,14 @@ KWIAT_1995 = Source(
     "Kwiat, P. G., Mattle, K., Weinfurter, H., Zeilinger, A., Sergienko, A. V., Shih, Y.: *New high-intensity "
     "source of polarization-entangled photon pairs*. Physical Review Letters 75, 4337 (1995), "
     "[doi:10.1103/PhysRevLett.75.4337](https://doi.org/10.1103/PhysRevLett.75.4337)"
+)
+ZUREK_2003 = Source(
+    "Zurek, W. H.: *Decoherence, einselection, and the quantum origins of the classical*. Reviews of Modern Physics "
+    "75, 715 (2003), [doi:10.1103/RevModPhys.75.715](https://doi.org/10.1103/RevModPhys.75.715)"
+)
+KOK_2007 = Source(
+    "Kok, P. a kol.: *Linear optical quantum computing with photonic qubits*. Reviews of Modern Physics 79, 135 "
+    "(2007), [doi:10.1103/RevModPhys.79.135](https://doi.org/10.1103/RevModPhys.79.135)"
 )
 NOBEL_2022 = Source(
     "Nobelova cena za fyziku 2022 (Aspect, Clauser, Zeilinger): "
@@ -374,7 +387,8 @@ ENTANGLEMENT_TOPIC = TheoryTopic(
     title="Provázání a zdroj, za který byla Nobelova cena",
     in_short=(
         "U provázaných částic je informace jen v celku, jednotlivá částice dává náhodné výsledky. Provázané páry "
-        "fotonů dává sestupná parametrická konverze v nelineárním krystalu (Kwiat, Zeilinger a kol., 1995)."
+        "fotonů dává sestupná parametrická konverze v nelineárním krystalu (Kwiat, Zeilinger a kol., 1995). "
+        "V doplňku: na jaké výpočty se fotony hodí a proč skoro nedekoherují – jejich hlavní chybou je ztráta."
     ),
     explanation=r"""
 **Provázání.** Walther ho vysvětluje na dvou kostkách: víme, že obě padnou stejně, ale ne jak. Podíváme-li se na
@@ -407,10 +421,117 @@ krystalový zdroj. Na něm stojí teleportace, „entanglement swapping“ a řa
 základy kvantové mechaniky, metrologii (měření se světlem, kvantově vylepšené mikroskopy) a – asi posledních 20 let –
 také na počítání. Kde se z provázaných párů stávají jednotlivé fotony pro počítač, vysvětluje kapitola
 o [zdrojích fotonů ve Fotonice ve světě](/fotonika-ve-svete#svet-jednotlive-fotony).
+
+### Doplněk: na jaké výpočty se fotony hodí
+
+*Tahle a následující podkapitola nejsou z přednášky; jsou to naše doplňky k tomu, proč Walther fotony chválí.*
+
+Fotony nejsou univerzálně „lepší qubity“. Hodí se na úlohy, které využívají toho, co dělají přirozeně – letí,
+interferují a dají se snadno změřit – a hůř na úlohy, které potřebují, aby spolu silně a opakovaně interagovaly.
+
+**Na co se hodí:**
+
+- **Vzorkování z interference.** Fotony jsou bosony: amplituda, s jakou se $n$ fotonů rozdělí do výstupů
+  interferometru, je permanent matice (u stlačeného světla hafnián). Interferometr tak „spočítá“ funkci, kterou
+  klasický počítač počítá exponenciálně dlouho, a nepotřebuje k tomu jediné dvouqubitové hradlo. Proto první
+  fotonické kvantové výhody (boson sampling, Jiuzhang, Borealis – [kapitola o boson
+  samplingu](/fotonika/prednaska-walther-2022#walther-boson-sampling))
+  a proto Gaussian Boson Sampling pro grafy, vibrační spektra molekul nebo
+  [modifikované Monte Carlo v této aplikaci](/gbs).
+- **Lineární algebra „za letu“.** Průchod světla interferometrem je násobení unitární maticí, hotové za dobu letu
+  přes čip, tedy za nanosekundy. Gaussovské operace (stlačení, děliče, fázové posuny) jsou v optice levné.
+- **Komunikace a rozprostřené počítání.** Foton je jediný qubit, který umí cestovat. Hodí se na propojení modulů
+  kvantového počítače, kvantový internet a [slepé počítání v cloudu](/fotonika/prednaska-walther-2022#walther-slepe);
+  PsiQuantum nechává fotony
+  „čekat“ ve vláknech a jeden generátor tak obslouží mnoho míst kódu
+  ([PsiQuantum](/fotonika-ve-svete/psiquantum#psiq-plan)).
+- **Měřením řízené počítání.** Foton se změří jednou a zmizí – a [jednosměrný
+  počítač](/fotonika/prednaska-walther-2022#walther-klastry) přesně
+  s tím počítá: výpočet jsou jen měření jednotlivých fotonů.
+
+**Na co se hodí hůř:**
+
+- **Hluboké obvody s mnoha dvouqubitovými hradly** (třeba dnešní variační algoritmy jako VQE). Deterministické
+  dvouqubitové hradlo fotony nemají ([kapitola o hradlech](/fotonika/prednaska-walther-2022#walther-hradla)), každé
+  provázání se „kupuje“
+  pravděpodobnostně měřením a pomocnými fotony.
+- **Výpočty, které potřebují paměť.** Foton nejde zastavit; „paměť“ je jen zpožďovací smyčka nebo vlákno, ve kterém
+  se foton může ztratit (viz další podkapitola).
+- **Cokoli, co potřebuje jistý zdroj.** Spontánní zdroje jsou náhodné a musí se multiplexovat, deterministické
+  jsou zatím malé.
+
+*Shrnutí jako náš odhad:* dnes jsou fotony nejsilnější v úlohách vzorkování a v gaussovských výpočtech, do budoucna
+v modulárních počítačích s opravou chyb, kde se jejich pohyblivost stává výhodou; na dnešní „šumné“ obvody s mnoha
+hradly se hodí méně než supravodiče nebo ionty.
+
+### Doplněk: koherence a dekoherence – proč fotony skoro nedekoherují
+
+**Co je koherence.** Qubit v superpozici $\alpha|0\rangle + \beta|1\rangle$ má pevný vztah fází mezi oběma částmi.
+V matici hustoty
+
+$$
+\rho = \begin{pmatrix} |\alpha|^2 & \alpha\beta^* \\ \alpha^*\beta & |\beta|^2 \end{pmatrix}
+$$
+
+to jsou mimodiagonální prvky – **koherence**. Bez nich by nebyla interference, a bez interference by žádný kvantový
+algoritmus nefungoval ([kapitola o algoritmech](/fotonika/prednaska-walther-2022#walther-algoritmy)). **Dekoherence**
+je proces, kterým okolí
+(chvění mřížky, rozptýlená pole, tepelné fotony, sousední atomy) „zjistí“, v jakém stavu qubit je; mimodiagonální
+prvky pak s časem mizí, typicky jako $\alpha\beta^* e^{-t/T_2}$. Čas $T_1$ měří, jak rychle qubit ztrácí energii,
+$T_2$, jak rychle ztrácí fázi. Superpozice se tím mění na obyčejnou klasickou směs „buď 0, nebo 1“.
+
+**Proč fotony skoro nedekoherují – tři důvody:**
+
+1. **S okolím téměř neinteragují.** Foton nemá náboj a v průhledném materiálu (sklo, nitrid křemíku, vzduch)
+   prochází, aniž by okolí jeho polarizaci nebo dráhu „změřilo“. Proto fotony mohou nést kvantovou informaci
+   desítky kilometrů vláknem nebo vzduchem.
+2. **Jejich energie je obrovská proti teplu.** Kolik tepelných fotonů je v daném módu, udává Boseho–Einsteinovo
+   rozdělení
+   $$
+   \bar n = \frac{1}{e^{h\nu / k_B T} - 1} .
+   $$
+   *Vlastní výpočet:* pro telekomunikační foton s vlnovou délkou 1 550 nm (energie asi 0,8 eV) při pokojové teplotě
+   300 K vychází $\bar n \approx 3{,}7 \cdot 10^{-14}$ – tepelný šum prakticky neexistuje. Pro supravodivý qubit
+   s frekvencí 5 GHz by při 300 K bylo v módu asi 1 250 tepelných fotonů; proto se supravodivé qubity chladí na
+   asi 10 mK, kde $\bar n \approx 3{,}8 \cdot 10^{-11}$. Fotonické qubity tedy fungují za pokojové teploty a chladí
+   se jen detektory (a některé zdroje) na 1–4 K.
+3. **Nemusí dlouho žít.** Foton přeletí čip za nanosekundy (ve vakuu urazí 30 cm za 1 ns). Neměří se, jak dlouho
+   vydrží „stát“, ale jestli dorazí.
+
+Walther to na slajdu o integrované fotonice (30:39) shrnuje: *vysoká stabilita, malé chyby (kontrast až
+$1 : 10^{-8}$), statický šum – žádný šum z okolí.* Chyby čipu jsou dané výrobou a dají se změřit a vykompenzovat,
+nepřicházejí náhodně z prostředí.
+
+**Ale: ztráta je fotonická „dekoherence“.** Hlavní chyba fotonů není změna fáze, ale to, že foton **zmizí** –
+pohltí se, rozptýlí, nenaváže se do vlákna nebo ho detektor nezachytí. U dvoukolejného kódování (foton v jedné
+ze dvou drah) se to aspoň pozná: když nepřijde žádný foton, víme, že došlo k chybě a kde (*vymazání*, erasure).
+Kódy opravující chyby snesou vymazání mnohem lépe než chybu, o které nevíme – fúzní architektura PsiQuantum snese
+asi 2,7 % ztrát na foton ([PsiQuantum](/fotonika-ve-svete/psiquantum#psiq-plan)). *Vlastní výpočet:* běžné
+telekomunikační vlákno ztrácí kolem 0,2 dB na kilometr, takže 1 km propustí asi 95,5 % fotonů. Foton, který má
+„počkat“ 1 µs, musí proletět asi 204 m vlákna a ztratí se s pravděpodobností asi 0,94 % – sama mikrosekunda čekání
+tedy spotřebuje třetinu celého rozpočtu na ztráty. Proto je fotonická „paměť“ tak drahá.
+
+**Další skryté zdroje dekoherence fotonů:**
+
+- **Rozlišitelnost.** Liší-li se dva fotony spektrem nebo časem příchodu, nesou informaci „který je který“
+  a jejich interference (Hongův–Ouův–Mandelův jev) slábne – přesně jako u dekoherence. Proto se tolik měří
+  nerozlišitelnost zdrojů (u čipů Omega 99,5 %).
+- **Fázový drift** ve vláknových interferometrech (teplota, otřesy); na čipu je výrazně menší a dá se kalibrovat.
+- **Drift polarizace** v dlouhých vláknech; proto se pro přenos často kóduje do času příchodu (time-bin) místo
+  polarizace.
+
+**Dvě strany jedné mince.** Fotony skoro nedekoherují *právě proto*, že s ničím neinteragují – a ze stejného
+důvodu se jim těžko staví dvouqubitová hradla. Supravodivé qubity jsou opak: silně interagují, mají rychlá hradla,
+ale musí se chránit před okolím v kryostatu za milikelviny. Fotonický kvantový počítač dává smysl proto, že
+koherenci dostává „zadarmo“ a interakci si „kupuje“ měřením – fúzemi a pomocnými fotony – a jeho hlavní bitva je
+se ztrátami, ne s dekoherencí.
 """,
     further_reading=(
         Reading(KWIAT_1995, "zdroj provázaných párů z průsečíku kuželů"),
         Reading(NOBEL_2022),
+        Reading(ZUREK_2003, "dekoherence podrobně, přehled"),
+        Reading(KOK_2007, "lineárně optické počítání s fotonovými qubity, přehled"),
+        Reading(O_BRIEN_2007, "proč fotony: nízký šum a snadná manipulace"),
     ),
 )
 
@@ -459,7 +580,8 @@ physics with computers* z roku 1982 (v literatuře níže). Aktuální přehled 
 Quantum Algorithm Zoo; s otázkou, co je dokázané a co jen domněnka, posílá Walther na teoretika Norberta Schucha.
 
 *Vlastní poznámka:* kvadratické zrychlení Monte Carla je to, o co jde
-v [rešerši k finančnímu riziku](/reserse-gbs-financni-riziko); fotonický GBS se o zrychlení Monte Carla pokouší jinou cestou.
+v [rešerši k finančnímu riziku](/reserse-gbs-financni-riziko); fotonický GBS se o zrychlení Monte Carla pokouší jinou
+cestou.
 """,
     further_reading=(
         Reading(SHOR_1994),
