@@ -2,7 +2,8 @@
 // like dcc.Link instead of reloading the whole app: dcc.Markdown renders them as plain <a>. The hash then scrolls
 // to its section through the URL callback in ui/navigation.py. Dash serves every file in assets/ automatically.
 (function () {
-    const TEXT_LINK_SELECTOR = ".theory-section a[href^='/'], .in-short a[href^='/']";
+    // Links with a target (slides and the presentation under /prednasky/, opened in a new tab) are not pages.
+    const TEXT_LINK_SELECTOR = ".theory-section a[href^='/']:not([target]), .in-short a[href^='/']:not([target])";
 
     // dcc.Link handles its own clicks first (React listens below document) and marks them defaultPrevented.
     document.addEventListener("click", (event) => {

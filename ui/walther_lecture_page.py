@@ -65,11 +65,16 @@ def _chapter_slides(topic: TheoryTopic) -> List:
     ]
 
 
+SLIDE_LINK_CLASS = "lecture-slide-link"
+
+
 def slide_figure(slide: LectureSlide, lecture: str = LECTURE, video_url: str = VIDEO_URL) -> html.Figure:
-    """A frame of a recorded lecture or video; the image opens full size, the time opens the video there."""
+    """A frame of a recorded lecture or video; a click opens it in the slide viewer (assets/lightbox.js), the time
+    opens the video there. The link to the image itself serves a middle click and browsers without JavaScript."""
     url = slide_url(lecture, slide.file_name)
     return html.Figure(className="lecture-slide", children=[
-        html.A(html.Img(src=url, alt=slide.caption), href=url, target="_blank", rel="noopener"),
+        html.A(html.Img(src=url, alt=slide.caption), href=url, target="_blank", rel="noopener",
+               className=SLIDE_LINK_CLASS),
         html.Figcaption([slide.caption, " · ", video_link(slide.seconds, video_url)]),
     ])
 

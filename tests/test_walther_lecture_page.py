@@ -1,6 +1,7 @@
 import cmath
 from itertools import product
 from math import comb, log10, pi, sqrt
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -39,7 +40,7 @@ from ui.walther_lecture_content import (
     chapter_slides,
     timestamp,
 )
-from ui.walther_lecture_page import build_walther_lecture_page
+from ui.walther_lecture_page import SLIDE_LINK_CLASS, build_walther_lecture_page, slide_figure
 from web.lecture_slides import LECTURES_DIRECTORY, SLIDES_FOLDER, install_lecture_slides, slide_path, slide_url
 
 PAULI = {
@@ -96,6 +97,15 @@ def test_kazdy_slajd_ma_soubor_a_kazdy_soubor_je_na_strance():
     assert shown == list(SLIDES)
     assert all(0 <= slide.seconds < VIDEO_SECONDS for slide in SLIDES)
     assert len({slide.caption for slide in SLIDES}) == len(SLIDES)
+
+
+def test_slajd_otevre_prohlizec_a_odkaz_na_obrazek_neprevezme_navigace_aplikace():
+    link = slide_figure(SLIDES[0]).children[0]
+    assets = Path(__file__).resolve().parent.parent / "assets"
+
+    assert link.className == SLIDE_LINK_CLASS and link.target == "_blank"
+    assert f"a.{SLIDE_LINK_CLASS}" in (assets / "lightbox.js").read_text()
+    assert ":not([target])" in (assets / "text_links.js").read_text()
 
 
 def test_casy_se_pisou_jako_na_youtube():
