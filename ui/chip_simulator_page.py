@@ -8,10 +8,12 @@ import numpy as np
 from dash import dcc, html
 
 from gbs.chip_boson_sampling import PhotonKind
-from gbs.chip_charts import empty_chip_figure
+from gbs.chip_charts import LightSource, empty_chip_figure
 from gbs.photonic_chip import MODE_COUNT, mesh_slots
 from ui import ids
+from ui.chip_animation import light_animation_controls
 from ui.chip_simulator_content import (
+    ANIMATION_HINT,
     CHIP_OPTIONS,
     CHIP_SEEDS,
     DEFAULT_TARGET,
@@ -19,6 +21,9 @@ from ui.chip_simulator_content import (
     LAB_ANCHOR,
     LAB_INTRO,
     LEAD,
+    MAX_LAB_MODE_COUNT,
+    MIN_LAB_MODE_COUNT,
+    MODE_COUNT_HINT,
     PHASES_HINT,
     SEED_HINT,
     SOURCES_ANCHOR,
@@ -54,16 +59,26 @@ DEFAULT_LASER_INPUT = 0
 """Index of the waveguide the laser shines into; the page counts waveguides from 1."""
 
 
-def internal_phase_slider_ids() -> Tuple[str, ...]:
-    return tuple(f"{ids.CHIP_INTERNAL_PHASE_SLIDER_PREFIX}{number}" for number in _mzi_numbers())
+def phase_slider_id(kind: str, mzi: Any) -> dict:
+    """kind is ids.CHIP_INTERNAL_PHASE (θ) or ids.CHIP_EXTERNAL_PHASE (φ); mzi is its index, or ALL in callbacks."""
+    return {"type": ids.CHIP_PHASE_SLIDER, "kind": kind, "mzi": mzi}
 
 
-def external_phase_slider_ids() -> Tuple[str, ...]:
-    return tuple(f"{ids.CHIP_EXTERNAL_PHASE_SLIDER_PREFIX}{number}" for number in _mzi_numbers())
+def laser_options(mode_count: int) -> List[dict]:
+    return [{"label": str(mode + 1), "value": mode} for mode in range(mode_count)]
 
 
-def _mzi_numbers() -> range:
-    return range(1, len(mesh_slots(MODE_COUNT)) + 1)
+def phase_cards(mode_count: int) -> List[html.Div]:
+    """One card per MZI with its θ and φ, all at zero, in the order of the mesh."""
+    cards: List[html.Div] = []
+    for index, slot in enumerate(mesh_slots(mode_count)):
+        number = index + 1
+        cards.append(html.Div(className="chip-phase-card", children=[
+            html.Strong(f"MZI {number} · světlovody {slot.upper_mode + 1} a {slot.lower_mode + 1}"),
+            labelled(f"θ{number} – dělení světla", _phase_slider(ids.CHIP_INTERNAL_PHASE, index)),
+            labelled(f"φ{number} – fáze horního vstupu", _phase_slider(ids.CHIP_EXTERNAL_PHASE, index)),
+        ]))
+    return cards
 
 
 def build_chip_simulator_page() -> html.Div:
@@ -98,10 +113,12 @@ def _lab_section() -> html.Section:
                 html.Button("Vynulovat fáze", id=ids.CHIP_RESET_BUTTON, className="secondary-button"),
             ]),
             html.Div(id=ids.CHIP_ERROR_MESSAGE, className="error-message"),
+            light_animation_controls(ids.CHIP_FIGURE, LightSource.LASER),
             html.Div(className="chip-figure", children=dcc.Graph(
                 id=ids.CHIP_FIGURE, figure=empty_chip_figure(), style={"minWidth": CHIP_FIGURE_MIN_WIDTH},
                 config={"displayModeBar": False, "responsive": True},
             )),
+            html.P(ANIMATION_HINT, className="hint small"),
             html.Div(id=ids.CHIP_READOUT),
             _phase_sliders(),
         ],
@@ -173,6 +190,14 @@ def _controls() -> html.Div:
     return html.Div(
         className="control-grid",
         children=[
+            html.Div(className="field", children=[
+                html.Label("Počet světlovodů"),
+                dcc.Input(
+                    id=ids.CHIP_MODE_COUNT_INPUT, type="number", min=MIN_LAB_MODE_COUNT, max=MAX_LAB_MODE_COUNT, step=1,
+                    value=MODE_COUNT, debounce=True, className="chip-mode-count",
+                ),
+                html.P(MODE_COUNT_HINT, className="hint small"),
+            ]),
             labelled("Cíl: co má čip se světlem udělat", dcc.Dropdown(
                 id=ids.CHIP_TARGET_DROPDOWN,
                 options=[{"label": label, "value": target.value} for target, label in TARGET_LABELS.items()],
@@ -193,32 +218,22 @@ def _controls() -> html.Div:
             ]),
             labelled("Laser svítí do vstupu", dcc.RadioItems(
                 id=ids.CHIP_LASER_RADIO,
-                options=[{"label": str(mode + 1), "value": mode} for mode in range(MODE_COUNT)],
-                value=DEFAULT_LASER_INPUT, inline=True, className="chip-laser-radio",
+                options=laser_options(MODE_COUNT), value=DEFAULT_LASER_INPUT, inline=True, className="chip-laser-radio",
             )),
         ],
     )
 
 
 def _phase_sliders() -> html.Details:
-    cards: List[html.Div] = []
-    for slot, internal_id, external_id in zip(
-        mesh_slots(MODE_COUNT), internal_phase_slider_ids(), external_phase_slider_ids()
-    ):
-        number = len(cards) + 1
-        cards.append(html.Div(className="chip-phase-card", children=[
-            html.Strong(f"MZI {number} · světlovody {slot.upper_mode + 1} a {slot.lower_mode + 1}"),
-            labelled(f"θ{number} – dělení světla", _phase_slider(internal_id)),
-            labelled(f"φ{number} – fáze horního vstupu", _phase_slider(external_id)),
-        ]))
     return html.Details(open=True, className="chip-phases", children=[
         html.Summary("Fáze ručně"),
         html.P(PHASES_HINT, className="hint small"),
-        html.Div(className="chip-phase-grid", children=cards),
+        html.Div(id=ids.CHIP_PHASE_GRID, className="chip-phase-grid", children=phase_cards(MODE_COUNT)),
     ])
 
 
-def _phase_slider(component_id: str) -> dcc.Slider:
+def _phase_slider(kind: str, mzi: int) -> dcc.Slider:
     return dcc.Slider(
-        id=component_id, min=0, max=2 * np.pi, step=PHASE_STEP, value=0, marks=PHASE_MARKS, updatemode="mouseup",
+        id=phase_slider_id(kind, mzi), min=0, max=2 * np.pi, step=PHASE_STEP, value=0, marks=PHASE_MARKS,
+        updatemode="mouseup",
     )

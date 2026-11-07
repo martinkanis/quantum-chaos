@@ -83,6 +83,11 @@ SHOT_VALUES_HINT = (
     "Jak často má výstřel hodnotu Z = S!: 1 znamená, že žádné dva fotony nedorazily do stejného detektoru, 2 jednu "
     "dvojici, 6 trojici. Rozlišitelné fotony se shlukují méně, a proto mají menší μ."
 )
+PHOTON_ANIMATION_HINT = (
+    "Fotony vstoupí do prvních světlovodů a čipem projdou zpomaleně. Foton se na děliči nerozdělí na kousky: jas "
+    "světlovodu a velikost tečky ukazují průměrný počet fotonů, tedy jak pravděpodobně by tam foton detektor našel. "
+    "Kam fotony opravdu dorazí, rozhodne až detekce na konci, jeden výstřel."
+)
 FIRST_SHOTS_HINT = "Prvních pár výstřelů: výstupy, na kterých detektory zaznamenaly fotony (opakované číslo = víc fotonů)."
 
 CLIFFORD_2018 = Source(

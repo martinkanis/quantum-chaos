@@ -451,6 +451,14 @@ details.nav-link > summary:hover { color: var(--text); }
 .gbs-page .chip-buttons .primary-button { margin-top: 0; }
 .chip-laser-radio label { margin-right: 16px; cursor: pointer; }
 
+.chip-animation { display: flex; flex-direction: column; gap: 6px; margin: 4px 0 10px; }
+.chip-animation-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.gbs-page .chip-animation .chip-animation-play { margin-top: 0; min-width: 9.5em; }
+.chip-animation-field { display: flex; align-items: center; gap: 8px; flex: 1 1 280px; max-width: 520px; font-weight: 600; }
+.chip-animation-range { flex: 1; min-width: 120px; accent-color: #0b8fb3; }
+.chip-animation-scale { font-weight: 400; font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; }
+.chip-animation-readout { font-size: 0.85rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
 .chip-figure { border: 1px solid #25324a; border-radius: 10px; overflow-x: auto; margin-bottom: 14px; background: #0b1220; }
 .chip-readout-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
 .chip-metrics { display: flex; flex-direction: column; gap: 10px; min-width: 170px; }

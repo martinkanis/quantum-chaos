@@ -1,17 +1,19 @@
-"""Callbacks of the chip simulator: buttons set the phase sliders, every control redraws the chip and its readout."""
+"""Callbacks of the chip simulator: the number of waveguides rebuilds the phase sliders, buttons set them, every
+control redraws the chip and its readout."""
 
 from __future__ import annotations
 
 import logging
 from typing import Any, Dict, Optional, Sequence
 
-from dash import Dash, Input, Output, State, ctx, no_update
+from dash import ALL, Dash, Input, Output, State, ctx, no_update
 
 from gbs.chip_charts import chip_figure
 from gbs.chip_programming import ChipSetup, ChipTarget, build_setup, calibrated_phases, design_phases, read_out
-from gbs.photonic_chip import MODE_COUNT, ChipError, MeshPhases, zero_phases
+from gbs.photonic_chip import ChipError, MeshPhases, mzi_count, zero_phases
 from ui import ids
-from ui.chip_simulator_page import external_phase_slider_ids, internal_phase_slider_ids
+from ui.chip_simulator_content import MAX_LAB_MODE_COUNT, MIN_LAB_MODE_COUNT
+from ui.chip_simulator_page import DEFAULT_LASER_INPUT, laser_options, phase_cards, phase_slider_id
 from ui.chip_simulator_results import build_chip_readout
 from ui.navigation import CHIP_SIMULATOR_PATH
 
@@ -19,13 +21,27 @@ logger = logging.getLogger(__name__)
 
 PHASE_DECIMALS = 4
 """Sliders show the phases rounded; on the ideal chip the rounding costs less than 0,01 % of the match."""
+INTERNAL_SLIDERS = phase_slider_id(ids.CHIP_INTERNAL_PHASE, ALL)
+EXTERNAL_SLIDERS = phase_slider_id(ids.CHIP_EXTERNAL_PHASE, ALL)
+MODE_COUNT_MESSAGE = f"Počet světlovodů musí být celé číslo od {MIN_LAB_MODE_COUNT} do {MAX_LAB_MODE_COUNT}."
+LASER_INPUT_MESSAGE = "Vyber vstup, do kterého svítí laser."
 
 
 def register_chip_simulator_callbacks(app: Dash) -> None:
     app.callback(
         output=dict(
-            internal=[Output(slider_id, "value") for slider_id in internal_phase_slider_ids()],
-            external=[Output(slider_id, "value") for slider_id in external_phase_slider_ids()],
+            phase_cards=Output(ids.CHIP_PHASE_GRID, "children"),
+            laser_options=Output(ids.CHIP_LASER_RADIO, "options"),
+            laser=Output(ids.CHIP_LASER_RADIO, "value"),
+        ),
+        inputs=dict(mode_count=Input(ids.CHIP_MODE_COUNT_INPUT, "value")),
+        state=dict(current_laser=State(ids.CHIP_LASER_RADIO, "value")),
+        prevent_initial_call=True,
+    )(resize_chip)
+    app.callback(
+        output=dict(
+            internal=Output(INTERNAL_SLIDERS, "value"),
+            external=Output(EXTERNAL_SLIDERS, "value"),
             error=Output(ids.CHIP_ERROR_MESSAGE, "children", allow_duplicate=True),
         ),
         inputs=dict(
@@ -33,7 +49,7 @@ def register_chip_simulator_callbacks(app: Dash) -> None:
             _calibrate_clicks=Input(ids.CHIP_CALIBRATE_BUTTON, "n_clicks"),
             _reset_clicks=Input(ids.CHIP_RESET_BUTTON, "n_clicks"),
         ),
-        state=dict(setup_form=_setup_form(State)),
+        state=dict(setup_form=_setup_form(State), current_internal=State(INTERNAL_SLIDERS, "value")),
         prevent_initial_call=True,
     )(program_chip)
     app.callback(
@@ -46,8 +62,8 @@ def register_chip_simulator_callbacks(app: Dash) -> None:
             pathname=Input(ids.URL, "pathname"),
             setup_form=_setup_form(Input),
             laser=Input(ids.CHIP_LASER_RADIO, "value"),
-            internal=[Input(slider_id, "value") for slider_id in internal_phase_slider_ids()],
-            external=[Input(slider_id, "value") for slider_id in external_phase_slider_ids()],
+            internal=Input(INTERNAL_SLIDERS, "value"),
+            external=Input(EXTERNAL_SLIDERS, "value"),
         ),
         state=dict(current_readout=State(ids.CHIP_READOUT, "children")),
     )(show_chip)
@@ -55,29 +71,49 @@ def register_chip_simulator_callbacks(app: Dash) -> None:
 
 def _setup_form(dependency: type) -> Dict[str, Any]:
     return dict(
+        mode_count=dependency(ids.CHIP_MODE_COUNT_INPUT, "value"),
         target=dependency(ids.CHIP_TARGET_DROPDOWN, "value"),
         split_spread=dependency(ids.CHIP_FABRICATION_DROPDOWN, "value"),
         seed=dependency(ids.CHIP_SEED_DROPDOWN, "value"),
     )
 
 
+def resize_chip(mode_count: Any, current_laser: Any) -> dict:
+    """Sliders at zero and laser inputs for the new number of waveguides; the laser stays where the chip still has
+    a waveguide."""
+    try:
+        count = parse_mode_count(mode_count)
+    except ChipError:
+        # show_chip reads the same input and shows the message; the old sliders stay until the number is valid.
+        return dict(phase_cards=no_update, laser_options=no_update, laser=no_update)
+    laser = current_laser if _is_waveguide_of(current_laser, count) else DEFAULT_LASER_INPUT
+    return dict(phase_cards=phase_cards(count), laser_options=laser_options(count), laser=laser)
+
+
+def _is_waveguide_of(value: Any, mode_count: int) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and 0 <= value < mode_count
+
+
 def program_chip(
     _program_clicks: Optional[int], _calibrate_clicks: Optional[int], _reset_clicks: Optional[int],
-    setup_form: Dict[str, Any],
+    setup_form: Dict[str, Any], current_internal: Sequence[Any],
 ) -> dict:
-    slider_count = len(internal_phase_slider_ids())
+    unchanged = dict(internal=[no_update] * len(current_internal), external=[no_update] * len(current_internal))
     try:
         phases = phases_for_button(ctx.triggered_id, parse_setup(setup_form))
     except ChipError as error:
-        return dict(internal=[no_update] * slider_count, external=[no_update] * slider_count, error=str(error))
+        return dict(unchanged, error=str(error))
+    if len(phases.internal) != len(current_internal):
+        # The sliders still belong to the previous number of waveguides; resize_chip is replacing them.
+        return dict(unchanged, error=no_update)
     return dict(internal=_rounded(phases.internal), external=_rounded(phases.external), error="")
 
 
 def phases_for_button(button_id: Optional[str], setup: ChipSetup) -> MeshPhases:
     if button_id == ids.CHIP_RESET_BUTTON:
-        return zero_phases(MODE_COUNT)
+        return zero_phases(setup.chip.mode_count)
     if button_id == ids.CHIP_CALIBRATE_BUTTON:
-        logger.info("Calibrating chip phases on a fabricated chip")
+        logger.info("Calibrating chip phases on a fabricated chip with %d waveguides", setup.chip.mode_count)
         return calibrated_phases(setup)
     return design_phases(setup)
 
@@ -86,18 +122,27 @@ def show_chip(
     pathname: str, setup_form: Dict[str, Any], laser: Any, internal: Sequence[Any], external: Sequence[Any],
     current_readout: Any,
 ) -> dict:
+    unchanged = dict(figure=no_update, readout=no_update, error=no_update)
     if not should_draw_chip(ctx.triggered_id, pathname, current_readout):
-        return dict(figure=no_update, readout=no_update, error=no_update)
+        return unchanged
     try:
         setup = parse_setup(setup_form)
+        laser_input = parse_laser_input(laser)
         phases = parse_phases(internal, external)
-        readout = read_out(setup, phases, parse_laser_input(laser))
     except ChipError as error:
-        return dict(figure=no_update, readout=no_update, error=str(error))
+        return dict(unchanged, error=str(error))
+    mode_count = setup.chip.mode_count
+    if laser_input >= mode_count:
+        # The chip just lost the waveguide the laser shines into; resize_chip moves the laser to input 1.
+        return unchanged
+    if len(phases.internal) != mzi_count(mode_count):
+        # Sliders of the previous chip; resize_chip replaces them with sliders at zero, so the new chip starts there.
+        phases = zero_phases(mode_count)
+    readout = read_out(setup, phases, laser_input)
     return dict(figure=chip_figure(setup.chip, phases, readout.flow), readout=build_chip_readout(readout), error="")
 
 
-def should_draw_chip(triggered_id: Optional[str], pathname: str, current_readout: Any) -> bool:
+def should_draw_chip(triggered_id: Any, pathname: str, current_readout: Any) -> bool:
     """Redraws on every change of a control, and the first time the page is shown."""
     if triggered_id is not None and triggered_id != ids.URL:
         return True
@@ -109,9 +154,17 @@ def parse_setup(setup_form: Dict[str, Any]) -> ChipSetup:
         target = ChipTarget(setup_form["target"])
     except ValueError as error:
         raise ChipError("Vyber cíl ze seznamu.") from error
+    mode_count = parse_mode_count(setup_form["mode_count"])
     split_spread = form_number(setup_form["split_spread"], "Vyber čip ze seznamu.")
     seed = form_whole_number(setup_form["seed"], "Seed musí být celé číslo.")
-    return build_setup(target, split_spread, seed)
+    return build_setup(target, split_spread, seed, mode_count)
+
+
+def parse_mode_count(value: Any) -> int:
+    count = form_whole_number(value, MODE_COUNT_MESSAGE)
+    if not MIN_LAB_MODE_COUNT <= count <= MAX_LAB_MODE_COUNT:
+        raise ChipError(MODE_COUNT_MESSAGE)
+    return count
 
 
 def parse_phases(internal: Sequence[Any], external: Sequence[Any]) -> MeshPhases:
@@ -123,7 +176,10 @@ def parse_phases(internal: Sequence[Any], external: Sequence[Any]) -> MeshPhases
 
 
 def parse_laser_input(value: Any) -> int:
-    return form_whole_number(value, f"Vyber vstup 1 až {MODE_COUNT}, do kterého svítí laser.")
+    laser_input = form_whole_number(value, LASER_INPUT_MESSAGE)
+    if laser_input < 0:
+        raise ChipError(LASER_INPUT_MESSAGE)
+    return laser_input
 
 
 def form_number(value: Any, message: str) -> float:

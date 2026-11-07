@@ -13,8 +13,8 @@ LAB_ANCHOR = "cip-laborator"
 
 TITLE = "Simulátor fotonického čipu"
 LEAD = (
-    "Programovatelný fotonický čip se čtyřmi světlovody, šesti Machovými–Zehnderovými interferometry a laserem. "
-    "Vyber, co má čip se světlem udělat, nech simulátor spočítat fáze a sleduj, kudy světlo teče. Na čipu "
+    "Programovatelný fotonický čip se dvěma až osmi světlovody, sítí Machových–Zehnderových interferometrů "
+    "a laserem. Vyber, co má čip se světlem udělat, nech simulátor spočítat fáze a sleduj, kudy světlo teče. Na čipu "
     "s výrobními chybami uvidíš, proč se skutečné čipy musí kalibrovat. Ve druhé laboratoři pošleš jednotlivé "
     "fotony čipem až se 16 světlovody a z jejich výstřelů odhadneš modifikovaným Monte Carlem součet permanentů."
 )
@@ -28,21 +28,23 @@ na každém kusu zvlášť.
 """
 
 LAB_INTRO = r"""
-Čip má 4 světlovody (vstupy vlevo, detektory vpravo) a 6 MZI ve čtyřech sloupcích. Každý MZI má dva fázové
-posouvače: $\varphi$ (oranžový, na horním vstupu) a $\theta$ (fialový, mezi oběma děliči). Laser svítí do zvoleného
-vstupu. Čím víc světla světlovodem teče, tím jasněji září, a čísla vpravo ukazují, kolik ho dopadne na každý
-detektor. Po najetí myší na MZI se ukáže, kolik světla posílá do sousedního světlovodu.
+Čip má na začátku 4 světlovody (vstupy vlevo, detektory vpravo) a 6 MZI ve čtyřech sloupcích. Počet světlovodů
+jde změnit od 2 do 8: čip s $N$ světlovody má $N(N-1)/2$ MZI v $N$ sloupcích, s osmi tedy 28. Každý MZI má dva
+fázové posouvače: $\varphi$ (oranžový, na horním vstupu) a $\theta$ (fialový, mezi oběma děliči). Laser svítí
+do zvoleného vstupu. Čím víc světla světlovodem teče, tím jasněji září, a čísla vpravo ukazují, kolik ho dopadne
+na každý detektor. Po najetí myší se představí každá část čipu: vstup, světlovod, posouvač, dělič, MZI i detektor.
 
 1. Vyber **cíl**, tedy matici, kterou má čip provést: *průchod* (každý vstup na svůj výstup), *obrácení pořadí*
-   (vstup 1 na výstup 4, 2 na 3, …), *dva děliče 50:50* (na světlovodech 1–2 a 3–4), *rovnoměrně rozdělit*
-   (Fourierova matice) nebo *náhodnou unitární matici* podle seedu. Tabulka *Cíl* ukazuje $|V_{ij}|^2$: kolik
-   světla ze vstupu (sloupec) má dojít na výstup (řádek).
-2. Na začátku jsou všechny fáze nulové a čip obrací pořadí světlovodů (vstup 1 jde na výstup 4). S cílem
-   *rovnoměrně rozdělit* je proto shoda jen 25 %.
+   (vstup 1 na poslední výstup, 2 na předposlední, …), *děliče 50:50 po dvojicích* (na světlovodech 1–2, 3–4, …),
+   *rovnoměrně rozdělit* (Fourierova matice) nebo *náhodnou unitární matici* podle seedu. Tabulka *Cíl* ukazuje
+   $|V_{ij}|^2$: kolik světla ze vstupu (sloupec) má dojít na výstup (řádek).
+2. Na začátku jsou všechny fáze nulové a čip se 4 světlovody obrací jejich pořadí (vstup 1 jde na výstup 4).
+   S cílem *rovnoměrně rozdělit* je proto shoda jen 25 %. Změna počtu světlovodů fáze znovu vynuluje.
 3. **Naprogramovat podle návrhu** spočítá fáze Clementsovým rozkladem cíle. Na ideálním čipu je shoda 100 %.
 4. Přepni na **vyrobený čip** a zkus totéž: návrhové fáze už nestačí. **Doladit na tomto čipu** je upraví podle
    chyb děličů tohoto kusu.
 5. Fáze jde měnit i ručně posuvníky pod čipem a sledovat, jak se světlo přelévá.
+6. **Pustit světlo** pošle světlo čipem zpomaleně. Průchod jde kdykoli zastavit a posuvníkem *Okamžik* posouvat.
 
 Simulátor vznikl podle [Virtual Chip Simulator](https://sim.q-memory.tech/) firmy Q-Memory; tady je navíc výpočet
 a pod čipem výklad, proč to funguje.
@@ -51,11 +53,15 @@ a pod čipem výklad, proč to funguje.
 TARGET_LABELS: Dict[ChipTarget, str] = {
     ChipTarget.PASS_THROUGH: "Průchod",
     ChipTarget.REVERSE: "Obrácení pořadí",
-    ChipTarget.TWO_SPLITTERS: "Dva děliče 50:50",
+    ChipTarget.TWO_SPLITTERS: "Děliče 50:50 po dvojicích",
     ChipTarget.SPREAD_EVENLY: "Rovnoměrně rozdělit",
     ChipTarget.RANDOM: "Náhodná unitární matice",
 }
 DEFAULT_TARGET = ChipTarget.SPREAD_EVENLY
+MIN_LAB_MODE_COUNT = 2
+MAX_LAB_MODE_COUNT = 8
+"""Above eight waveguides the 56 phase sliders stop being something to tune by hand."""
+MODE_COUNT_HINT = "2 až 8. Fáze se při změně vynulují."
 
 CHIP_OPTIONS: Tuple[Tuple[str, float], ...] = (
     ("Ideální (děliče 50:50)", 0.0),
@@ -69,8 +75,15 @@ PHASES_HINT = (
     "θ určuje, jak MZI dělí světlo (0 = vše do sousedního světlovodu, π/2 = půl na půl, π = rovně), φ posouvá fázi "
     "horního vstupu. Obě jsou v radiánech."
 )
+ANIMATION_HINT = (
+    "Svítící tečky jsou čelo světla: čím víc světla světlovodem teče, tím jsou větší a jasnější. Za čelem zůstává "
+    "světlovod rozsvícený, jako když laser svítí dál. Skutečné světlo letí ve vlnovodu zhruba dvakrát až čtyřikrát "
+    "pomaleji než ve vakuu, takže sloupec MZI dlouhý kolem milimetru proletí asi za 10 ps a celý čip se 4 světlovody "
+    "zhruba za 40 ps (náš řádový odhad). Průchod kratší než jeden snímek obrazovky (asi 17 ms) proto vypadá "
+    "jako okamžitý."
+)
 MATCH_HINT = (
-    "Podíl světla, které dopadne tam, kam podle cíle má, průměrovaný přes všechny čtyři vstupy (1 minus totální "
+    "Podíl světla, které dopadne tam, kam podle cíle má, průměrovaný přes všechny vstupy (1 minus totální "
     "variační vzdálenost)."
 )
 DEVIATION_HINT = "Největší rozdíl jednoho prvku mapy přenosu |U_ij|² od cíle, v procentních bodech."

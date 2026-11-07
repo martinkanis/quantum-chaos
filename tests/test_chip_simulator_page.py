@@ -1,4 +1,5 @@
 import itertools
+import json
 
 import numpy as np
 import pytest
@@ -11,9 +12,11 @@ from gbs.photonic_chip import transmission, zero_phases
 from ui import ids
 from ui.chip_simulator_callbacks import (
     parse_laser_input,
+    parse_mode_count,
     parse_phases,
     parse_setup,
     phases_for_button,
+    resize_chip,
     should_draw_chip,
     PHASE_DECIMALS,
 )
@@ -29,7 +32,7 @@ from ui.chip_simulator_content import (
     TARGET_LABELS,
     TOPICS,
 )
-from ui.chip_simulator_page import build_chip_simulator_page, external_phase_slider_ids, internal_phase_slider_ids
+from ui.chip_simulator_page import build_chip_simulator_page, phase_cards, phase_slider_id
 from ui.chip_simulator_results import build_chip_readout
 from ui.navigation import CHIP_SIMULATOR_PATH, PRIMER_APPENDICES_PATH
 from ui.study_progress import describe_pager
@@ -37,7 +40,7 @@ from ui.theory_content import all_sources
 from ui.topic_catalog import breadcrumb_trail
 from tests.test_topics import active_links, visible_pages
 
-SETUP_FORM = {"target": ChipTarget.SPREAD_EVENLY.value, "split_spread": 0.0, "seed": 1}
+SETUP_FORM = {"mode_count": 4, "target": ChipTarget.SPREAD_EVENLY.value, "split_spread": 0.0, "seed": 1}
 HADAMARD = np.array([[1, 1, 1, 1], [1, -1, 1, -1], [1, 1, -1, -1], [1, -1, -1, 1]]) / 2
 
 
@@ -46,8 +49,10 @@ def text_of(topic) -> str:
 
 
 def component_ids(component):
-    if getattr(component, "id", None):
-        yield component.id
+    """Ids as text, so that pattern-matching ids (dicts) can be compared and collected in sets too."""
+    component_id = getattr(component, "id", None)
+    if component_id:
+        yield json.dumps(component_id, sort_keys=True) if isinstance(component_id, dict) else component_id
     children = getattr(component, "children", None)
     for child in children if isinstance(children, (list, tuple)) else [children]:
         if child is not None and not isinstance(child, str):
@@ -94,9 +99,41 @@ def test_stranka_ma_laborator_kapitoly_s_unikatnimi_kotvami_a_zdroje_bez_opakova
 def test_kazdy_mzi_ma_posuvnik_theta_i_phi_a_kazdy_cil_popisek():
     page_ids = set(component_ids(build_chip_simulator_page()))
 
-    assert len(internal_phase_slider_ids()) == len(external_phase_slider_ids()) == mzi_count(4) == 6
-    assert set(internal_phase_slider_ids()) | set(external_phase_slider_ids()) <= page_ids
+    slider_ids = {
+        json.dumps(phase_slider_id(kind, index), sort_keys=True)
+        for kind in (ids.CHIP_INTERNAL_PHASE, ids.CHIP_EXTERNAL_PHASE) for index in range(mzi_count(4))
+    }
+
+    assert len(slider_ids) == 2 * 6 and slider_ids <= page_ids
+    assert ids.CHIP_MODE_COUNT_INPUT in page_ids
     assert set(TARGET_LABELS) == set(ChipTarget)
+
+
+@pytest.mark.parametrize("mode_count, laser", [(2, 0), (5, 3), (8, 3)])
+def test_zmena_poctu_svetlovodu_postavi_posuvniky_a_vstupy_noveho_cipu(mode_count, laser):
+    resized = resize_chip(mode_count, current_laser=3)
+    slider_ids = [
+        component_id for card in resized["phase_cards"] for component_id in component_ids(card)
+        if ids.CHIP_PHASE_SLIDER in component_id
+    ]
+
+    assert len(resized["phase_cards"]) == mzi_count(mode_count)
+    assert len(slider_ids) == 2 * mzi_count(mode_count)
+    assert [option["value"] for option in resized["laser_options"]] == list(range(mode_count))
+    assert resized["laser"] == laser
+
+
+def test_cip_s_osmi_svetlovody_jde_naprogramovat_doladit_i_vynulovat():
+    form = {**SETUP_FORM, "mode_count": 8, "target": ChipTarget.RANDOM.value}
+    ideal = parse_setup(form)
+    fabricated = parse_setup({**form, "split_spread": 0.08})
+    designed = phases_for_button(ids.CHIP_PROGRAM_BUTTON, fabricated)
+    calibrated = phases_for_button(ids.CHIP_CALIBRATE_BUTTON, fabricated)
+
+    assert read_out(ideal, phases_for_button(ids.CHIP_PROGRAM_BUTTON, ideal), 0).match == pytest.approx(1.0)
+    assert read_out(fabricated, calibrated, 0).match > read_out(fabricated, designed, 0).match
+    assert phases_for_button(ids.CHIP_RESET_BUTTON, fabricated) == zero_phases(8)
+    assert len(phase_cards(8)) == mzi_count(8)
 
 
 def test_tlacitka_nastavi_navrh_doladeni_a_nulove_faze():
@@ -121,7 +158,7 @@ def test_zaokrouhlene_faze_na_posuvnicich_drzi_shodu_na_idealnim_cipu():
 
 
 def test_cip_se_kresli_pri_zmene_ovladace_a_poprve_na_sve_strance():
-    assert should_draw_chip(internal_phase_slider_ids()[0], "/", current_readout=["už nakresleno"])
+    assert should_draw_chip(phase_slider_id(ids.CHIP_INTERNAL_PHASE, 0), "/", current_readout=["už nakresleno"])
     assert should_draw_chip(None, CHIP_SIMULATOR_PATH, current_readout=None)
     assert not should_draw_chip(None, "/", current_readout=None)
     assert not should_draw_chip(ids.URL, CHIP_SIMULATOR_PATH, current_readout=["už nakresleno"])
@@ -136,8 +173,11 @@ def test_neplatne_vstupy_formulare_maji_ceskou_hlasku():
         parse_setup({**SETUP_FORM, "seed": 1.5})
     with pytest.raises(ChipError, match="radiánech"):
         parse_phases([0.0] * 5 + [None], [0.0] * 6)
-    with pytest.raises(ChipError, match="vstup 1 až 4"):
+    with pytest.raises(ChipError, match="vstup"):
         parse_laser_input(None)
+    for invalid in (1, 9, 4.5, None):
+        with pytest.raises(ChipError, match="od 2 do 8"):
+            parse_mode_count(invalid)
 
 
 def test_schema_cipu_ukazuje_laser_vstup_a_svetlo_na_detektorech():
@@ -158,6 +198,7 @@ def test_cisla_v_navodu_odpovidaji_vypoctu():
     assert np.allclose(zero[:, 0], [0, 0, 0, 1])
     assert pattern_match(zero, np.full((4, 4), 0.25)) == pytest.approx(0.25)
     assert "vstup 1 jde na výstup 4" in " ".join(LAB_INTRO.split())
+    assert mzi_count(8) == 28 and "s osmi tedy 28" in " ".join(LAB_INTRO.split())
     assert "je proto shoda jen 25 %" in " ".join(LAB_INTRO.split())
     assert "Shoda 25 % u nulových fází" in text_of(PROGRAMMING)
 

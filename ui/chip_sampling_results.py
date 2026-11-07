@@ -11,6 +11,8 @@ from gbs.chip_charts import LightSource, chip_figure, figure_height
 from gbs.chip_boson_sampling import SamplingStudy
 from gbs.chip_sampling_charts import convergence_chart, shot_value_chart
 from gbs.photonic_chip import light_flow
+from ui import ids
+from ui.chip_animation import light_animation_controls
 from ui.chip_sampling_content import (
     BOSON_HINT,
     BOSON_SHOTS_HINT,
@@ -20,6 +22,7 @@ from ui.chip_sampling_content import (
     GAUSSIAN_HINT,
     GAUSSIAN_SHOTS_HINT,
     LIMIT_HINT,
+    PHOTON_ANIMATION_HINT,
     SHOT_VALUES_HINT,
     TARGET_RELATIVE_ERROR,
 )
@@ -34,7 +37,9 @@ FIGURE_WIDTH_PER_MODE = 70
 def build_sampling_results(study: SamplingStudy) -> html.Div:
     return html.Div(className="results", children=[
         html.Div(className="metric-grid", children=_metric_tiles(study)),
+        light_animation_controls(ids.CHIP_SAMPLING_FIGURE, LightSource.PHOTONS),
         html.Div(className="chip-figure", children=dcc.Graph(
+            id=ids.CHIP_SAMPLING_FIGURE,
             figure=chip_figure(
                 study.chip, study.phases, light_flow(study.chip, study.phases, range(study.photons)),
                 LightSource.PHOTONS,
@@ -43,6 +48,7 @@ def build_sampling_results(study: SamplingStudy) -> html.Div:
                    "height": f"{figure_height(study.chip.mode_count)}px"},
             config={"displayModeBar": False, "responsive": True},
         )),
+        html.P(PHOTON_ANIMATION_HINT, className="hint small"),
         html.H3("Jak se odhady blíží k μ"),
         dcc.Graph(figure=convergence_chart(study), config={"displayModeBar": False}),
         html.P(CONVERGENCE_HINT, className="hint small"),

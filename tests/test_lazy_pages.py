@@ -7,10 +7,11 @@ from ui.navigation import GBS_PATH, HIDDEN, PAGE_IDS, THEORY_PATH
 
 
 def callback_component_ids():
+    """Pattern-matching outputs as text, like the pattern-matching inputs."""
     found = set()
     for callback in app.callback_map.values():
         outputs = callback["output"] if isinstance(callback["output"], list) else [callback["output"]]
-        found |= {output.component_id for output in outputs}
+        found |= {output.component_id_str() for output in outputs}
         found |= {dependency["id"] for dependency in callback["inputs"] + callback["state"]}
     return found
 

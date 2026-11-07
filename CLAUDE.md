@@ -64,6 +64,10 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 - `assets/text_links.js` – odkaz v Markdownu na stránku aplikace (`[text](/cesta#kotva)` v kartě `.theory-section`
   nebo ve „V kostce“) přepne stránku jako `dcc.Link`, bez načtení celé aplikace. Že vede na existující stránku
   a kotvu, hlídá `tests/test_text_links.py`.
+- `assets/chip_animation.js` – průchod světla čipem: do prázdného `.chip-animation` (`ui/chip_animation.py`) postaví
+  ovládání (pustit/zastavit, okamžik, délka průchodu) a v grafu odkrývá tvary světla ořezem a vede pulzy po drahách
+  z `layout.meta.lightAnimation` (`gbs/chip_charts.py`). Tvary hledá podle `path[data-index]` v DOM Plotly; když se
+  změní pořadí tvarů v `chip_figure`, musí sedět indexy v meta.
 - Čtení offline: `assets/offline.js` registruje service worker (`web/service_worker.js`, posílá ho `web/offline.py`
   na `/sw.js`). Ten ukládá aplikaci, slajdy i odpovědi callbacků (stránky Dash skládá z nich) a offline je vrací;
   chybějící odpověď je 204 = beze změny. Po každém nasazení nebo po 12 h stáhne předem všechny stránky podle

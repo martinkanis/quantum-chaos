@@ -48,6 +48,16 @@ def mzi_count(mode_count: int) -> int:
     return mode_count * (mode_count - 1) // 2
 
 
+ESTIMATED_COLUMN_TRANSIT_SECONDS = 1e-11
+"""Our order-of-magnitude estimate: a column of MZIs is about a millimetre long and light in a waveguide is two to
+four times slower than in vacuum, so it crosses one column in about 10 ps."""
+
+
+def estimated_transit_seconds(mode_count: int) -> float:
+    """How long real light takes through the mesh, which has as many columns as waveguides (our estimate)."""
+    return mode_count * ESTIMATED_COLUMN_TRANSIT_SECONDS
+
+
 @dataclass(frozen=True)
 class MeshPhases:
     internal: Tuple[float, ...]
