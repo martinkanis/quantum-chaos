@@ -35,12 +35,14 @@ from ui.chip_sampling_content import (
     DEFAULT_MODE_COUNT,
     DEFAULT_PHOTONS,
     DEFAULT_SHOTS,
-    MODE_COUNT_OPTIONS,
+    MAX_SAMPLING_MODE_COUNT,
+    MIN_SAMPLING_MODE_COUNT,
     PHOTON_KIND_LABELS,
     PHOTON_OPTIONS,
     SAMPLING_ANCHOR,
     SAMPLING_CHIP_OPTIONS,
     SAMPLING_INTRO,
+    SAMPLING_MODE_COUNT_HINT,
     SAMPLING_SEED_HINT,
     SAMPLING_SEEDS,
     SAMPLING_TARGET_LABELS,
@@ -144,9 +146,14 @@ def _sampling_controls() -> html.Div:
     return html.Div(
         className="control-grid",
         children=[
-            labelled("Světlovody", _dropdown(
-                ids.CHIP_SAMPLING_MODES_DROPDOWN, [(str(count), count) for count in MODE_COUNT_OPTIONS], DEFAULT_MODE_COUNT,
-            )),
+            html.Div(className="field", children=[
+                html.Label("Světlovody"),
+                dcc.Input(
+                    id=ids.CHIP_SAMPLING_MODES_INPUT, type="number", min=MIN_SAMPLING_MODE_COUNT,
+                    max=MAX_SAMPLING_MODE_COUNT, step=1, value=DEFAULT_MODE_COUNT, debounce=True,
+                ),
+                html.P(SAMPLING_MODE_COUNT_HINT, className="hint small"),
+            ]),
             html.Div(className="field", children=[
                 html.Label("Fotony na vstupu"),
                 _dropdown(ids.CHIP_SAMPLING_PHOTONS_DROPDOWN, [(str(count), count) for count in PHOTON_OPTIONS],

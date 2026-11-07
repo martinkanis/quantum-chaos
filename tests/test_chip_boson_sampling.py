@@ -24,7 +24,8 @@ from ui import ids
 from ui.chip_sampling_callbacks import describe_pattern_count, parse_sampling_form
 from ui.chip_sampling_content import (
     EXACT_HINT,
-    MODE_COUNT_OPTIONS,
+    MAX_SAMPLING_MODE_COUNT,
+    MIN_SAMPLING_MODE_COUNT,
     PHOTON_OPTIONS,
     SAMPLING_ANCHOR,
     SAMPLING_INTRO,
@@ -164,7 +165,8 @@ def test_pocty_vzoru_v_navodu_sedi_a_vetsi_ulohu_simulator_odmitne():
 
 def largest_allowed_tasks():
     allowed = [
-        (modes, photons) for modes in MODE_COUNT_OPTIONS for photons in PHOTON_OPTIONS
+        (modes, photons) for modes in range(MIN_SAMPLING_MODE_COUNT, MAX_SAMPLING_MODE_COUNT + 1)
+        for photons in PHOTON_OPTIONS
         if photons <= modes and pattern_count(modes, photons) <= MAX_PATTERNS
     ]
     return [max(allowed), max(allowed, key=lambda task: (task[1], pattern_count(*task)))]
@@ -199,6 +201,13 @@ def test_formular_hlida_vstupy_a_ukaze_pocet_vzoru():
         parse_sampling_form({**SAMPLING_FORM, "kind": None})
     with pytest.raises(ChipError, match="výstřelů"):
         parse_sampling_form({**SAMPLING_FORM, "shots": "hodně"})
+    for invalid in (1, 65, 12.5, None):
+        with pytest.raises(ChipError, match="od 2 do 64"):
+            parse_sampling_form({**SAMPLING_FORM, "mode_count": invalid})
+    assert describe_pattern_count(65, 3) == "Počet světlovodů musí být celé číslo od 2 do 64."
+    limits = f"({MIN_SAMPLING_MODE_COUNT} až {MAX_SAMPLING_MODE_COUNT})"
+    assert f"počet světlovodů {limits}" in " ".join(SAMPLING_INTRO.split())
+    assert describe_pattern_count(17, 8) == "735 471 možných výstupních vzorů."
 
 
 def test_vysledky_ukazuji_oba_odhady_a_prvni_vystrely():

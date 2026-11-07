@@ -161,10 +161,7 @@ def parse_setup(setup_form: Dict[str, Any]) -> ChipSetup:
 
 
 def parse_mode_count(value: Any) -> int:
-    count = form_whole_number(value, MODE_COUNT_MESSAGE)
-    if not MIN_LAB_MODE_COUNT <= count <= MAX_LAB_MODE_COUNT:
-        raise ChipError(MODE_COUNT_MESSAGE)
-    return count
+    return form_whole_number_between(value, MIN_LAB_MODE_COUNT, MAX_LAB_MODE_COUNT, MODE_COUNT_MESSAGE)
 
 
 def parse_phases(internal: Sequence[Any], external: Sequence[Any]) -> MeshPhases:
@@ -194,6 +191,13 @@ def form_whole_number(value: Any, message: str) -> int:
     if not number.is_integer():
         raise ChipError(message)
     return int(number)
+
+
+def form_whole_number_between(value: Any, minimum: int, maximum: int, message: str) -> int:
+    number = form_whole_number(value, message)
+    if not minimum <= number <= maximum:
+        raise ChipError(message)
+    return number
 
 
 def _rounded(phases: Sequence[float]) -> list:

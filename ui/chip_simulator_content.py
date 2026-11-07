@@ -61,7 +61,7 @@ DEFAULT_TARGET = ChipTarget.SPREAD_EVENLY
 MIN_LAB_MODE_COUNT = 2
 MAX_LAB_MODE_COUNT = 8
 """Above eight waveguides the 56 phase sliders stop being something to tune by hand."""
-MODE_COUNT_HINT = "2 až 8. Fáze se při změně vynulují."
+MODE_COUNT_HINT = f"{MIN_LAB_MODE_COUNT} až {MAX_LAB_MODE_COUNT}. Fáze se při změně vynulují."
 
 CHIP_OPTIONS: Tuple[Tuple[str, float], ...] = (
     ("Ideální (děliče 50:50)", 0.0),

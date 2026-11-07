@@ -24,7 +24,9 @@ from ui.chip_simulator_content import (
     FABRICATION,
     LAB_ANCHOR,
     LAB_INTRO,
+    MAX_LAB_MODE_COUNT,
     MESH,
+    MIN_LAB_MODE_COUNT,
     PHASES_HINT,
     PHOTONS,
     PROGRAMMING,
@@ -199,6 +201,7 @@ def test_cisla_v_navodu_odpovidaji_vypoctu():
     assert pattern_match(zero, np.full((4, 4), 0.25)) == pytest.approx(0.25)
     assert "vstup 1 jde na výstup 4" in " ".join(LAB_INTRO.split())
     assert mzi_count(8) == 28 and "s osmi tedy 28" in " ".join(LAB_INTRO.split())
+    assert f"změnit od {MIN_LAB_MODE_COUNT} do {MAX_LAB_MODE_COUNT}" in " ".join(LAB_INTRO.split())
     assert "je proto shoda jen 25 %" in " ".join(LAB_INTRO.split())
     assert "Shoda 25 % u nulových fází" in text_of(PROGRAMMING)
 

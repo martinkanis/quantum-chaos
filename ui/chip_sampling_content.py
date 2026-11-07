@@ -27,16 +27,19 @@ $Z = 1$, dvojice v jednom detektoru dá $Z = 2$, trojice $Z = 6$. Číslo $\mu$ 
 Stejné $\mu$ umí klasický počítač odhadnout i bez fotonů, průměrem přes komplexní gaussovské vektory (výklad je
 v poslední kapitole). Simulátor oba odhady porovná při stejném počtu vzorků.
 
-1. Zvol počet světlovodů a fotonů. Se 16 světlovody a 6 fotony má čip 54 264 možných výstupních vzorů, s 8 fotony
-   490 314. Čip se 64 světlovody má 2 016 interferometrů a se 4 fotony 766 480 vzorů. Simulátor přesně spočítá
-   nejvýš 1 000 000 vzorů, takže čím víc světlovodů, tím méně fotonů se vejde.
+1. Zadej počet světlovodů (2 až 64) a zvol počet fotonů. Se 16 světlovody a 6 fotony má čip 54 264 možných
+   výstupních vzorů, s 8 fotony 490 314. Čip se 64 světlovody má 2 016 interferometrů a se 4 fotony 766 480 vzorů.
+   Simulátor přesně spočítá nejvýš 1 000 000 vzorů, takže čím víc světlovodů, tím méně fotonů se vejde.
 2. **Spustit boson sampling** vystřelí zvolený počet výstřelů a spočítá oba odhady.
 3. Přepni na **vyrobený čip** nebo na **rozlišitelné fotony**: odhad začne konvergovat jinam, než má. To je
    systematická chyba, kterou žádný počet výstřelů neodstraní.
 """
 
-MODE_COUNT_OPTIONS = (4, 8, 12, 16, 24, 32, 48, 64)
+MIN_SAMPLING_MODE_COUNT = 2
+MAX_SAMPLING_MODE_COUNT = 64
+"""A larger chip would be drawn as several megabytes; the number of photons is limited by the patterns."""
 DEFAULT_MODE_COUNT = 16
+SAMPLING_MODE_COUNT_HINT = f"{MIN_SAMPLING_MODE_COUNT} až {MAX_SAMPLING_MODE_COUNT}."
 PHOTON_OPTIONS = (2, 3, 4, 5, 6, 7, 8)
 DEFAULT_PHOTONS = 6
 SHOT_OPTIONS = (1_000, 10_000, 100_000)
