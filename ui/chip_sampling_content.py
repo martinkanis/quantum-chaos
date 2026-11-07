@@ -76,6 +76,11 @@ LIMIT_HINT = (
     "Hodnota, ke které odhad z tohoto čipu konverguje: jeho skutečná matice a zvolené fotony. Rozdíl proti přesnému μ "
     "je systematická chyba."
 )
+COLLISION_FREE_HINT = (
+    "Podíl výstřelů, ve kterých žádné dva fotony nesdílejí detektor (Z = 1), pro nerozlišitelné fotony a přesně "
+    "naprogramovaný čip; v závorce pro tento čip a zvolené fotony. Kolize řídí poměr n²/m, zhruba očekávaný počet "
+    "dvojic fotonů v jednom výstupu (výklad v poslední kapitole)."
+)
 CONVERGENCE_HINT = (
     "Průběžný odhad po prvních N vzorcích. Klasické Monte Carlo často vyskočí mimo graf: jeden vzorek s obří hodnotou "
     "posune celý průměr."
@@ -126,6 +131,19 @@ shlukují: že všech $n$ fotonů dorazí do jednoho výstupu, je u nerozlišite
 u rozlišitelných. Pro Fourierovu matici 4 × 4 a dva fotony vyjde $\mu = 1{,}5$, fotony tedy skončí spolu v polovině
 výstřelů. Rozlišitelné fotony dají $\mu = 1{,}25$, spolu skončí jen ve čtvrtině. Proto $\mu$ citlivě reaguje na to,
 jak dobře zdroj vyrábí nerozlišitelné fotony.
+
+**Kolik fotonů na kolik světlovodů.** Fotony se potkávají jako lidé v narozeninovém paradoxu: rozhoduje počet
+dvojic $n(n-1)/2$, ne počet fotonů. Dva nerozlišitelné fotony skončí oba ve výstupu $i$ s pravděpodobností
+$|2\,U_{i1}U_{i2}|^2/2! = 2\,|U_{i1}|^2|U_{i2}|^2$, rozlišitelné s $|U_{i1}|^2|U_{i2}|^2$, tedy přesně dvakrát méně.
+V náhodném (Haarově) interferometru je $\mathrm{E}\,|U_{i1}|^2|U_{i2}|^2 = 1/(m(m+1))$, takže dvojice skončí spolu
+s pravděpodobností $2/(m+1)$, rozlišitelná $1/(m+1)$ (naše odvození, ověřené testy). Očekávaný počet „srážek“ je
+proto zhruba $n^2/m$ a právě tenhle poměr, ne $m$ ani $n$ zvlášť, určuje, jak moc se fotony shlukují.
+
+Na náhodném interferometru se seedem 1 a ideálním čipem skončí se 64 světlovody a 4 fotony ($n^2/m = 0{,}25$) bez
+kolize 81,6 % výstřelů, u rozlišitelných fotonů 90,3 %, a $\mu = 1{,}22$ proti $1{,}10$. Se 16 světlovody a 8 fotony
+($n^2/m = 4$) je to jen 2,6 % proti 13,7 % a $\mu = 18{,}5$ proti $4{,}10$. Teorie boson samplingu Aaronsona
+a Arkhipova pracuje v prvním režimu: světlovodů je mnohem víc než $n^2$ a výstupy bez kolizí převažují. Ve druhém
+režimu, $n^2 \gtrsim m$, zase rozlišitelnost fotonů změní $\mu$ mnohem víc.
 
 **Klasické Monte Carlo pro stejné $\mu$ (naše odvození).** Pro komplexní gaussovský vektor $z \sim \mathcal{CN}(0, I)$
 a $w = U^\dagger z$ dává komplexní Wickova věta $\mathrm{E}[z^S \bar w^T] = \mathrm{Perm}(U_{S,T})$. Se dvěma

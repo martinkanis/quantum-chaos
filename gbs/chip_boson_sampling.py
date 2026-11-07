@@ -53,6 +53,11 @@ class PatternDistribution:
         """Variance of one shot value Z = S! divided by μ²."""
         return float(self.probabilities @ self.multiplicities**2) / self.bunching**2 - 1
 
+    @property
+    def collision_free_share(self) -> float:
+        """Probability that no two photons share an output, P(Z = 1)."""
+        return float(self.probabilities[self.multiplicities == 1].sum())
+
 
 def pattern_count(mode_count: int, photons: int) -> int:
     return comb(mode_count + photons - 1, photons)
@@ -175,6 +180,12 @@ class SamplingStudy:
     def gaussian_relative_variance(self) -> float:
         """Estimated from the draws themselves; heavy tails make it rather an underestimate."""
         return float(self.gaussian_values.var(ddof=1)) / self.target.bunching**2
+
+    @property
+    def crowding(self) -> float:
+        """n²/m: about the expected number of photon pairs sharing an output, since in a Haar-random interferometer
+        a pair of indistinguishable photons ends up together with probability 2/(m + 1)."""
+        return self.photons**2 / self.chip.mode_count
 
     @property
     def bias(self) -> float:
