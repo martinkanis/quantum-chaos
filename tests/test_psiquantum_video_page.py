@@ -47,7 +47,7 @@ def test_stranka_je_podstrankou_psiquantum_hned_za_ni():
     _, step_label, links, _, _ = describe_pager(PSIQUANTUM_VIDEO_PATH, None)
 
     assert PAGE_BY_PATH[PSIQUANTUM_VIDEO_PATH] == ids.PSIQUANTUM_VIDEO_PAGE
-    assert step_label == "Fotonika · krok 8 / 11"
+    assert step_label == "Fotonika · krok 9 / 12"
     assert links[0].children.href == PSIQUANTUM_PATH
     assert [label for label, _ in breadcrumb_trail(ids.PSIQUANTUM_VIDEO_PAGE)][-2].startswith("PsiQuantum")
 

@@ -111,11 +111,11 @@ def test_skripta_jsou_prvnich_pet_kroku_tematu_fotonika_a_vede_na_ne_akademie():
 
     assert path[:5] == list(PRIMER_CHAPTERS)
     assert path[5:] == [
-        ids.PHOTONICS_LANDSCAPE_PAGE, ids.PSIQUANTUM_PAGE, ids.PSIQUANTUM_VIDEO_PAGE, ids.PIQUASSO_PAGE,
-        ids.WALTHER_LECTURE_PAGE,
+        ids.CHIP_SIMULATOR_PAGE, ids.PHOTONICS_LANDSCAPE_PAGE, ids.PSIQUANTUM_PAGE, ids.PSIQUANTUM_VIDEO_PAGE,
+        ids.PIQUASSO_PAGE, ids.WALTHER_LECTURE_PAGE,
         ids.GHZ_STATES_PAGE,
     ]
-    assert step_label == "Fotonika · krok 1 / 11"
+    assert step_label == "Fotonika · krok 1 / 12"
     assert PAGE_BY_PATH[PRIMER_GBS_PATH] == ids.PRIMER_GBS_PAGE
     assert all(path_ in academy.tldr for path_, page_id in PAGE_BY_PATH.items() if page_id in PRIMER_CHAPTERS)
     assert PRIMER_APPENDICES_PATH in academy.tldr

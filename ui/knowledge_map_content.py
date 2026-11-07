@@ -65,6 +65,7 @@ BASE_LAYERS: Tuple[LayerInfo, ...] = (
             ids.PRIMER_BASICS_PAGE, ids.PRIMER_GAUSSIAN_STATES_PAGE, ids.PRIMER_PHASE_SPACE_PAGE, ids.PRIMER_GBS_PAGE,
             ids.PRIMER_APPENDICES_PAGE, ids.HAFNIAN_PAGE, ids.PHOTONIC_HARDWARE_PAGE, ids.PHOTONICS_LANDSCAPE_PAGE,
             ids.PIQUASSO_PAGE, ids.PSIQUANTUM_PAGE, ids.PSIQUANTUM_VIDEO_PAGE, ids.WALTHER_LECTURE_PAGE, ids.GHZ_STATES_PAGE,
+            ids.CHIP_SIMULATOR_PAGE,
         ),
         ids.NAV_PHOTONICS_MENU,
     ),
@@ -129,6 +130,7 @@ MAP_LABELS = {
     ids.PIQUASSO_PAGE: "Piquasso",
     ids.PSIQUANTUM_PAGE: "PsiQuantum",
     ids.PSIQUANTUM_VIDEO_PAGE: "Video o PsiQuantum",
+    ids.CHIP_SIMULATOR_PAGE: "Simulátor čipu",
     ids.PRIMER_BASICS_PAGE: "Skripta 1: základy",
     ids.PRIMER_GAUSSIAN_STATES_PAGE: "Skripta 2: gaussovské stavy",
     ids.PRIMER_PHASE_SPACE_PAGE: "Skripta 3: fázový prostor",
@@ -225,6 +227,13 @@ BASE_RELATIONS: Tuple[Relation, ...] = (
     ),
     Relation(
         ids.GHZ_STATES_PAGE, RelationKind.EXPLAINS, ids.PSIQUANTUM_PAGE, "proč plán stojí na třífotonových GHZ",
+    ),
+    Relation(
+        ids.CHIP_SIMULATOR_PAGE, RelationKind.EXPANDS, ids.PRIMER_BASICS_PAGE,
+        "děliče, interferometry a Clementsův rozklad vyzkoušené na čipu",
+    ),
+    Relation(
+        ids.CHIP_SIMULATOR_PAGE, RelationKind.EXPLAINS, ids.GBS_PAGE, "jak se na čipu nastaví interferometr U",
     ),
     Relation(
         ids.FAILURE_DIAGNOSTICS_PAGE, RelationKind.FOLLOWS, ids.RANDOM_MATRIX_GBS_PAGE,

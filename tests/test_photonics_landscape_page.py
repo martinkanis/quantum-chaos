@@ -34,7 +34,7 @@ def player(name_start):
     return next(item for item in PLAYERS if item.name.startswith(name_start))
 
 
-def test_stranka_je_v_tematu_fotonika_hned_po_skriptech():
+def test_stranka_je_v_tematu_fotonika_hned_po_skriptech_a_simulatoru_cipu():
     link_classes = show_page(PHOTONICS_LANDSCAPE_PATH)[len(PAGE_IDS):len(PAGE_IDS) + len(NAV_LINK_IDS)]
     active = [link_id for link_id, link_class in zip(NAV_LINK_IDS, link_classes) if link_class == ACTIVE_LINK_CLASS]
     _, step_label, _, _, _ = describe_pager(PHOTONICS_LANDSCAPE_PATH, None)
@@ -42,7 +42,7 @@ def test_stranka_je_v_tematu_fotonika_hned_po_skriptech():
     assert PAGE_BY_PATH[PHOTONICS_LANDSCAPE_PATH] == ids.PHOTONICS_LANDSCAPE_PAGE
     assert PHOTONICS_TOPIC in RESEARCH_TOPICS
     assert active == [ids.NAV_PHOTONICS_MENU]
-    assert step_label == "Fotonika · krok 6 / 11"
+    assert step_label == "Fotonika · krok 7 / 12"
     assert [label for label, _ in breadcrumb_trail(ids.PHOTONICS_LANDSCAPE_PAGE)] == [
         "Témata", "Fotonika a GBS", "Fotonika ve světě: konkurence a partneři",
     ]
