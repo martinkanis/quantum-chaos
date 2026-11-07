@@ -4,6 +4,7 @@ from ui.generated_topics import GENERATED_TOPICS
 from ui.layout import build_layout
 from ui.lazy_pages import LAZY_PAGE_IDS, built_page
 from ui.navigation import PAGE_BY_PATH
+from ui.chip_simulator_content import LAB_INTRO as CHIP_LAB_INTRO, TOPICS as CHIP_TOPICS
 from ui.photonics_landscape_content import TOPICS as PHOTONICS_TOPICS
 from ui.primer_page import PRIMER_CHAPTERS
 from ui.ghz_states_content import TOPICS as GHZ_TOPICS
@@ -30,8 +31,9 @@ def reading_texts():
     for chapter in PRIMER_CHAPTERS.values():
         yield chapter.intro
         yield from (section.body for section in chapter.sections)
+    yield CHIP_LAB_INTRO
     for topic in (*PHOTONICS_TOPICS, *WALTHER_TOPICS, *GHZ_TOPICS, *PSIQUANTUM_TOPICS,
-                      *PSIQUANTUM_VIDEO_TOPICS):
+                      *PSIQUANTUM_VIDEO_TOPICS, *CHIP_TOPICS):
         yield topic.in_short
         yield topic.explanation
 

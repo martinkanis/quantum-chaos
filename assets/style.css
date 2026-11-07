@@ -445,3 +445,30 @@ details.nav-link > summary:hover { color: var(--text); }
 .offline-status[data-kind="offline"] { background: #8a4b00; }
 .offline-status[data-kind="ready"] { background: #2e7d4f; }
 .offline-status[data-kind="warning"] { background: #8a4b00; }
+
+/* Photonic chip simulator (ui/chip_simulator_page.py) */
+.chip-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 8px; }
+.gbs-page .chip-buttons .primary-button { margin-top: 0; }
+.chip-laser-radio label { margin-right: 16px; cursor: pointer; }
+
+.chip-figure { border: 1px solid #25324a; border-radius: 10px; overflow-x: auto; margin-bottom: 14px; background: #0b1220; }
+.chip-readout-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+.chip-metrics { display: flex; flex-direction: column; gap: 10px; min-width: 170px; }
+
+.chip-matrix { border-collapse: collapse; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.chip-matrix caption { text-align: left; font-weight: 600; margin-bottom: 4px; }
+.chip-matrix th, .chip-matrix td { padding: 4px 8px; text-align: center; border: 1px solid var(--border); }
+.chip-matrix th { color: var(--text-muted); font-weight: 600; background: var(--surface-muted); }
+.chip-matrix th.laser-column { color: #d6336c; }
+.chip-matrix td.laser-column { font-weight: 700; }
+
+.chip-phases { margin-top: 16px; }
+.chip-phases summary { cursor: pointer; font-weight: 600; }
+.chip-phase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+.chip-phase-card { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-muted); }
+.chip-phase-card .field { margin: 8px 0 4px; }

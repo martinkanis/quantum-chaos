@@ -14,6 +14,7 @@ from ui.navigation import (
     ADVANTAGE_PATH,
     ANDERSEN_SHAN_PAPER_PATH,
     CAVEATS_PATH,
+    CHIP_SIMULATOR_PATH,
     FAILURE_DIAGNOSTICS_PATH,
     GBS_PATH,
     GUIDE_PATH,
@@ -263,20 +264,27 @@ GHZ_STATES = PageEntry(
     parent_page_id=ids.WALTHER_LECTURE_PAGE,
 )
 
+CHIP_SIMULATOR = PageEntry(
+    ids.CHIP_SIMULATOR_PAGE, "Simulátor fotonického čipu", CHIP_SIMULATOR_PATH,
+    "Čtyři světlovody, šest Machových–Zehnderových interferometrů a laser: naprogramuj čip Clementsovým rozkladem, "
+    "sleduj, kudy teče světlo, a na čipu s výrobními chybami fáze dolaď.",
+)
+
 PHOTONICS_TOPIC = ResearchTopic(
     anchor=PHOTONICS_TOPIC_ANCHOR,
     title="Fotonika",
     summary=(
         "Fotonické kvantové počítání od základů: česky přeložená skripta Kolarovszkiho a Zimboráse (IT4I, 2025) "
-        "o Fockově prostoru, gaussovských stavech, fázovém prostoru a Gaussian Boson Samplingu, potom přehled firem "
-        "a výzkumných skupin, které fotonický hardware stavějí, simulátor Piquasso od autorů skript a zápisky "
-        "z přednášky Philipa Walthera."
+        "o Fockově prostoru, gaussovských stavech, fázovém prostoru a Gaussian Boson Samplingu, simulátor "
+        "programovatelného čipu z interferometrů, potom přehled firem a výzkumných skupin, které fotonický hardware "
+        "stavějí, simulátor Piquasso od autorů skript a zápisky z přednášky Philipa Walthera."
     ),
     sections=(
         TopicSection(
             "Skripta: fotonické kvantové počítání a GBS",
             (PRIMER_BASICS, PRIMER_GAUSSIAN_STATES, PRIMER_PHASE_SPACE, PRIMER_GBS, PRIMER_APPENDICES),
         ),
+        TopicSection("Laboratoř", (CHIP_SIMULATOR,)),
         TopicSection("Firmy a výzkum", (PHOTONICS_LANDSCAPE,)),
         TopicSection("PsiQuantum: fotonický počítač zblízka", (PSIQUANTUM, PSIQUANTUM_VIDEO)),
         TopicSection("Software", (PIQUASSO,)),

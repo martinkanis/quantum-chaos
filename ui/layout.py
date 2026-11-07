@@ -6,6 +6,7 @@ from ui import ids
 from ui.advantage_page import build_advantage_page
 from ui.assistant_panel import build_assistant
 from ui.breadcrumbs import build_breadcrumb
+from ui.chip_simulator_page import build_chip_simulator_page
 from ui.gbs_page import build_gbs_page
 from ui.generated_topics import generated_page_ids
 from ui.lazy_pages import build_rendered_pages_store, page_placeholder
@@ -50,6 +51,7 @@ def build_layout() -> html.Div:
             page_placeholder(ids.PSIQUANTUM_PAGE),
             page_placeholder(ids.PSIQUANTUM_VIDEO_PAGE),
             *[page_placeholder(page_id) for page_id in PRIMER_CHAPTERS],
+            build_chip_simulator_page(),
             page_placeholder(ids.WALTHER_LECTURE_PAGE),
             page_placeholder(ids.GHZ_STATES_PAGE),
             build_random_matrix_page(),
