@@ -256,3 +256,22 @@ def test_ztraty_ve_vlakne_v_doplnku_sedi_s_vypoctem():
     assert f"{100 * 10 ** (-FIBRE_LOSS_DB_PER_KM / 10):.1f}" == "95.5" and "asi 95,5 %" in entanglement
     assert round(LIGHT_SPEED * 1e-9 * 100) == 30 and "30 cm za 1 ns" in entanglement
     assert loss_per_microsecond / 0.027 == pytest.approx(1 / 3, abs=0.03) and "třetinu" in entanglement
+
+
+def test_prezentaci_stahne_jen_prihlaseny_ctenar_jako_soubor(tmp_path, monkeypatch):
+    import web.lecture_slides as lecture_slides
+
+    (tmp_path / "test-prednaska").mkdir()
+    (tmp_path / "test-prednaska" / lecture_slides.PRESENTATION_NAME).write_bytes(b"pptx")
+    monkeypatch.setattr(lecture_slides, "LECTURES_DIRECTORY", tmp_path)
+    client = slide_client()
+    url = slide_url("test-prednaska", lecture_slides.PRESENTATION_NAME)
+
+    assert client.get(url).status_code == 302
+    log_in(client)
+    response = client.get(url)
+    assert response.status_code == 200
+    assert response.mimetype == lecture_slides.PRESENTATION_MIMETYPE
+    assert 'filename=test-prednaska.pptx' in response.headers["Content-Disposition"]
+    assert "private" in response.headers["Cache-Control"]
+    assert client.get(slide_url("walther-2022", lecture_slides.PRESENTATION_NAME)).status_code == 404
