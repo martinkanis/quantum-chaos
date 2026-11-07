@@ -442,25 +442,28 @@ def _mzi_spots(chip: Chip, phases: MeshPhases) -> List[HoverSpot]:
 
 
 def _add_port_labels(figure: go.Figure, flow: LightFlow, mode_count: int, source: LightSource) -> None:
+    """All labels in one update: add_annotation revalidates every earlier annotation, O(N²) on large chips."""
     end = _chip_end(mode_count) + LEAD_LENGTH
+    labels: List[dict] = []
     for mode in range(mode_count):
         y = _wire_y(mode, mode_count)
         is_lit = mode in flow.input_modes
-        figure.add_annotation(
+        labels.append(dict(
             x=-LEAD_LENGTH - 0.08, y=y, xanchor="right", showarrow=False,
             text=f"<b>{source.value if source == LightSource.LASER else 'foton'} ▸ {mode + 1}</b>" if is_lit
             else f"vstup {mode + 1}",
             font=dict(color=LASER_COLOR if is_lit else LABEL_COLOR, size=11),
-        )
+        ))
         detected = flow.detected[mode]
-        figure.add_annotation(
+        labels.append(dict(
             x=end + 0.08, y=y, xanchor="left", showarrow=False, text=f"<b>{_detected_label(detected, source)}</b>",
             font=dict(color=f"rgb({LIGHT_CORE_RGB})" if detected >= LIGHT_THRESHOLD else LABEL_COLOR, size=11),
-        )
-    figure.add_annotation(
+        ))
+    labels.append(dict(
         x=end + 0.08, y=mode_count - 0.5, xanchor="left", showarrow=False,
         text="detektory" if source == LightSource.LASER else "průměr fotonů", font=dict(color=LABEL_COLOR, size=10),
-    )
+    ))
+    figure.update_layout(annotations=[*figure.layout.annotations, *labels])
 
 
 def _detected_label(detected: float, source: LightSource) -> str:

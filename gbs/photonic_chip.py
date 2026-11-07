@@ -8,6 +8,7 @@ waveguide and P(x) = diag(e^{ix}, 1). An ideal coupler splits 50:50 (α = π/4),
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import List, Sequence, Tuple
 
 import numpy as np
@@ -35,8 +36,12 @@ class MziSlot:
         return self.upper_mode + 1
 
 
+@lru_cache(maxsize=None)
 def mesh_slots(mode_count: int) -> Tuple[MziSlot, ...]:
-    """Column c joins the neighbouring waveguides from c mod 2 on; N columns hold all N(N − 1)/2 MZIs."""
+    """Column c joins the neighbouring waveguides from c mod 2 on; N columns hold all N(N − 1)/2 MZIs.
+
+    Cached: drawing and simulating a chip ask for the slots once per MZI, which costs O(N⁴) for large chips.
+    """
     return tuple(
         MziSlot(column, upper_mode)
         for column in range(mode_count)
