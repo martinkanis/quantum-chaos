@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable, Dict
+from typing import Callable, Dict, Tuple
 
 import numpy as np
 
@@ -20,6 +20,7 @@ from gbs.photonic_chip import (
     coupler_matrix,
     fabricated_chip,
     light_flow,
+    mzi_matrix,
     pattern_match,
     transfer_matrix,
     transmission,
@@ -115,12 +116,22 @@ def _match(setup: ChipSetup, phases: MeshPhases) -> float:
 
 
 def _better_phase(chip: Chip, values: np.ndarray, index: int, target: np.ndarray) -> float:
-    """Minimum of the error over one phase, read from its exact Fourier series; the old value if that is better."""
+    """Minimum of the error over one phase, read from its exact Fourier series; the old value unless the minimum is
+    clearly better. Phases that do not change |U|² at all (φ in the first column) therefore keep the design value.
+
+    Only the MZI of the phase changes, so U = after · T(phase) · before with the rest of the mesh multiplied once.
+    """
+    mzi_total = len(values) // 2
+    mzi = index % mzi_total
+    after, before = _mesh_around(chip, values, mzi)
+    rows = slice(chip.slots[mzi].upper_mode, chip.slots[mzi].lower_mode + 1)
 
     def error_at(phase: float) -> float:
         trial = values.copy()
         trial[index] = phase
-        return _squared_error(chip, trial, target)
+        middle = before.copy()
+        middle[rows] = mzi_matrix(trial[mzi], trial[mzi_total + mzi], chip.split_angles[mzi]) @ before[rows]
+        return float(np.sum((transmission(after @ middle) - target) ** 2))
 
     samples = [error_at(2 * np.pi * sample / FOURIER_SAMPLES) for sample in range(FOURIER_SAMPLES)]
     coefficients = np.fft.rfft(samples) / FOURIER_SAMPLES
@@ -128,7 +139,22 @@ def _better_phase(chip: Chip, values: np.ndarray, index: int, target: np.ndarray
         coefficients[1] * np.exp(1j * PHASE_GRID) + coefficients[2] * np.exp(2j * PHASE_GRID)
     )
     candidate = float(PHASE_GRID[np.argmin(curve)])
-    return candidate if error_at(candidate) < error_at(values[index]) else float(values[index])
+    is_better = error_at(candidate) < error_at(values[index]) - CALIBRATION_TOLERANCE
+    return candidate if is_better else float(values[index])
+
+
+def _mesh_around(chip: Chip, values: np.ndarray, skipped: int) -> Tuple[np.ndarray, np.ndarray]:
+    """Products of the MZIs the light passes after and before the skipped one (values: all θ, then all φ)."""
+    mzi_total = len(values) // 2
+    after = np.eye(chip.mode_count, dtype=complex)
+    before = np.eye(chip.mode_count, dtype=complex)
+    for index, slot in enumerate(chip.slots):
+        if index == skipped:
+            continue
+        product = before if index < skipped else after
+        rows = slice(slot.upper_mode, slot.lower_mode + 1)
+        product[rows] = mzi_matrix(values[index], values[mzi_total + index], chip.split_angles[index]) @ product[rows]
+    return after, before
 
 
 def _squared_error(chip: Chip, values: np.ndarray, target: np.ndarray) -> float:
