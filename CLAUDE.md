@@ -57,6 +57,8 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
   `ui/lecture_notes_page.py`. Na `/zapisky-z-prednasek` se přednáška zařadí do fronty (`assistant/lecture_requests.py`,
   tabulka `lecture_requests`); zpracuje ji Claude Code na Macu podle `scripts/zapisky_z_prednasky.md` přes
   `scripts/lecture_queue.py` a API `web/lecture_queue_api.py` (token `LECTURE_WORKER_TOKEN`, mimo přihlášení).
+  Nástroje (Whisper, pptxgenjs) instaluje `scripts/lecture_tools.py` do `.lecture-tools/` a podklady přednášek leží
+  v `.lecture-work/`, obojí ve složce projektu mimo git.
 - `gbs/` – doména GBS: hafnián, sampler, gaussovské momenty (Steinova rekurze), ladění stlačení, odhad GBS-P,
   export do Qiskitu (šablona `qiskit_script_template.txt`), fotonický čip ze sítě MZI (`photonic_chip.py`,
   `clements.py`, `chip_programming.py`, kreslení `chip_charts.py` s polohami `chip_geometry.py` a součástkami

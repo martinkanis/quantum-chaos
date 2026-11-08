@@ -1,7 +1,8 @@
 // Builds content/lectures/<folder>/prezentace.pptx from prezentace.json next to it and the frames in slajdy/.
 // The JSON describes the deck, so notes from any lecture get a presentation without code changes.
-// pptxgenjs is not a dependency of the app:
-//   npm install pptxgenjs@3.12.0 && node scripts/lecture_presentation.js content/lectures/<folder>
+// pptxgenjs is not a dependency of the app; scripts/lecture_tools.py installs it into .lecture-tools/node of the
+// project folder, where this script finds it also when run from a git worktree:
+//   python3 scripts/lecture_tools.py install && node scripts/lecture_presentation.js content/lectures/<folder>
 //
 // prezentace.json:
 //   { "title", "subtitle", "footer", "style": "snimky" | "vlastni",
@@ -9,9 +10,17 @@
 //                   "section", "title", "items", "image", "caption", "notes", "header", "rows" } ] }
 // "items": steps and cards take [heading, text] pairs, stats [value, label] pairs, bullets and closing strings.
 // "image" is a frame from slajdy/; style "vlastni" leaves frames out and uses the whole width for the text.
+const { execFileSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
-const pptxgen = require("pptxgenjs");
+
+function projectNodeModules() {
+  const common = execFileSync("git", ["rev-parse", "--path-format=absolute", "--git-common-dir"],
+    { cwd: __dirname, encoding: "utf8" }).trim();
+  return path.join(path.dirname(common), ".lecture-tools", "node", "node_modules");
+}
+
+const pptxgen = require(require.resolve("pptxgenjs", { paths: [projectNodeModules(), ...module.paths] }));
 
 const COLORS = {
   night: "0B1A2E",

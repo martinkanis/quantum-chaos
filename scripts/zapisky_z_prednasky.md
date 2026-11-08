@@ -33,29 +33,28 @@ opravit, nahlas `stav ID chyba --zprava "<co a proč, česky>"`, uklid pracovní
 
 ## 1. Pracovní strom a nástroje
 
-Pracuj v čistém dočasném worktree z aktuálního `origin/main`, ne v checkoutu uživatele:
+Všechno leží ve složce projektu `~/Work/Projects/quantum-chaos`. Pracuj v čistém dočasném worktree z aktuálního
+`origin/main`, ne v checkoutu uživatele:
 
 ```
 git -C ~/Work/Projects/quantum-chaos fetch origin
-git -C ~/Work/Projects/quantum-chaos worktree add -b prednaska-<slug> /tmp/qc-prednaska-<slug> origin/main
+git -C ~/Work/Projects/quantum-chaos worktree add -b prednaska-<slug> ~/Work/Projects/quantum-chaos/.lecture-work/worktree-<slug> origin/main
 ```
 
-Nástroje leží mimo repozitář:
+Nástroje jsou ve složce projektu, mimo git (`.gitignore`). Skripty je najdou i z worktree.
 
-- `~/.local/share/quantum-chaos/tools-venv/bin/mlx_whisper`: Whisper large-v3 na Apple Silicon.
-- `~/.local/share/quantum-chaos/node-tools/node_modules`: pptxgenjs@3.12.0.
+- `.lecture-tools/whisper-venv/bin/mlx_whisper`: Whisper large-v3 na Apple Silicon. Model (asi 6 GB) je ve sdílené
+  mezipaměti `~/.cache/huggingface`.
+- `.lecture-tools/node/node_modules`: pptxgenjs@3.12.0.
 - `yt-dlp`, `ffmpeg`, `soffice` a `pdftoppm` z Homebrew.
-- Chybí-li něco, doinstaluj stejnými balíčky:
-  - `python3 -m venv … && pip install mlx-whisper`
-  - `npm install pptxgenjs@3.12.0`
+- Stav ověří `python3 scripts/lecture_tools.py check`. Chybějící doinstaluje `python3 scripts/lecture_tools.py install`.
 
 Python aplikace (testy, skripty) je `~/Work/Projects/quantum-chaos/.venv/bin/python`.
 
 ## 2. Podklady
 
 ```
-.venv/bin/python scripts/lecture_sources.py URL ~/Library/Caches/quantum-chaos/prednasky/<id-videa> \
-    --whisper ~/.local/share/quantum-chaos/tools-venv/bin/mlx_whisper
+.venv/bin/python scripts/lecture_sources.py URL ~/Work/Projects/quantum-chaos/.lecture-work/<id-videa>
 ```
 
 Skript vytvoří:
@@ -170,7 +169,7 @@ je popsaný v hlavičce `scripts/lecture_presentation.js`.
 Sestav prezentaci a převeď ji na náhledy:
 
 ```
-NODE_PATH=~/.local/share/quantum-chaos/node-tools/node_modules node scripts/lecture_presentation.js content/lectures/<folder>
+node scripts/lecture_presentation.js content/lectures/<folder>
 soffice --headless --convert-to pdf --outdir /tmp/qc-pptx content/lectures/<folder>/prezentace.pptx
 pdftoppm -r 50 -png /tmp/qc-pptx/prezentace.pdf /tmp/qc-pptx/s
 ```
@@ -196,6 +195,6 @@ ní snímek vynech.
 3. Jen když je lokální `main` čistý, srovnej ho: `git -C ~/Work/Projects/quantum-chaos merge --ff-only origin/main`.
 4. Nahlas hotovo:
    `python3 scripts/lecture_queue.py stav ID hotovo --stranka /zapisky/<slug> --zprava "Zveřejněno, nasazení běží."`.
-5. Smaž dočasný worktree a větev (`git worktree remove …`, `git branch -D prednaska-<slug>`).
-6. Pracovní složku v `~/Library/Caches/quantum-chaos/prednasky/` nech. Video a přepis se hodí, když se zápisky budou
-   opravovat.
+5. Smaž dočasný worktree a větev (`git worktree remove .lecture-work/worktree-<slug>`,
+   `git branch -D prednaska-<slug>`).
+6. Pracovní složku `.lecture-work/<id-videa>` nech. Video a přepis se hodí, když se zápisky budou opravovat.

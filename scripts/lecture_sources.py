@@ -10,8 +10,8 @@ the app. The work folder ends up with
     snimky/       one frame per distinct screen, slajd_SSSS.jpg after the second it comes from
     snimky.tsv    file name and second of every frame
 
-Usage:
-    .venv/bin/python scripts/lecture_sources.py URL WORK_FOLDER --whisper PATH_TO_mlx_whisper
+Usage, with the tools from scripts/lecture_tools.py installed in the project folder:
+    .venv/bin/python scripts/lecture_sources.py URL .lecture-work/<video id>
 """
 
 from __future__ import annotations
@@ -147,8 +147,13 @@ def main(arguments: Sequence[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("url")
     parser.add_argument("work", type=Path)
-    parser.add_argument("--whisper", type=Path, required=True, help="the mlx_whisper command")
+    parser.add_argument("--whisper", type=Path, help="the mlx_whisper command; by default the project's own")
     options = parser.parse_args(arguments)
+    if options.whisper is None:
+        # Imported here: tests import this module as scripts.lecture_sources, without scripts/ on the path.
+        from lecture_tools import whisper_command
+
+        options.whisper = whisper_command()
     try:
         prepare(options.url, options.work, options.whisper)
     except LectureSourceError as error:

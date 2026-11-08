@@ -166,3 +166,12 @@ def test_skript_na_podklady_najde_obrazovky_ktere_vydrzi_aspon_tri_sekundy():
 
     assert screen_seconds(probes) == [4, 10]
     assert frame_name(7) == "slajd_0007.jpg" and Path(frame_name(1234)).suffix == ".jpg"
+
+
+def test_nastroje_a_podklady_prednasek_jsou_ve_slozce_projektu_i_z_worktree():
+    from scripts.lecture_tools import project_folder, tools_folder, whisper_command, work_folder
+
+    assert (project_folder() / ".git").is_dir()
+    assert tools_folder() == project_folder() / ".lecture-tools"
+    assert whisper_command().is_relative_to(tools_folder())
+    assert work_folder("havcJFDaNiw") == project_folder() / ".lecture-work" / "havcJFDaNiw"
