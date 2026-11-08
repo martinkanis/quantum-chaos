@@ -494,3 +494,29 @@ details.nav-link > summary:hover { color: var(--text); }
 .chip-phase-card { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-muted); }
 .chip-phase-card .field { margin: 8px 0 4px; }
 .chip-shots { font-variant-numeric: tabular-nums; margin: 4px 0; }
+
+/* Lecture notes requests (ui/lecture_requests_page.py) */
+.field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 80px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+}
+.success-message { color: var(--success); margin: 12px 0; font-weight: 600; }
+.request-list { list-style: none; padding: 0; margin: 12px 0 0; }
+.request-item { padding: 10px 0; border-top: 1px solid var(--border); overflow-wrap: anywhere; }
+.request-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+.request-status.processing { background: #fff3d6; color: #8a5a00; }
+.request-status.done { background: #e1f3e8; color: var(--success); }
+.request-status.failed { background: #fbe4e4; color: var(--danger); }

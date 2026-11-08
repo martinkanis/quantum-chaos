@@ -10,6 +10,7 @@ from ui.chip_simulator_page import build_chip_simulator_page
 from ui.gbs_page import build_gbs_page
 from ui.generated_topics import generated_page_ids
 from ui.lazy_pages import build_rendered_pages_store, page_placeholder
+from ui.lecture_requests_page import build_lecture_requests_page
 from ui.main_menu import build_main_menu
 from ui.navigation import PAGE_IDS
 from ui.portfolio_page import build_portfolio_page
@@ -58,6 +59,7 @@ def build_layout() -> html.Div:
             page_placeholder(ids.FAILURE_DIAGNOSTICS_PAGE),
             page_placeholder(ids.RANDOM_MATRIX_GBS_PAGE),
             page_placeholder(ids.INTEGRALS_CHEAT_SHEET_PAGE),
+            build_lecture_requests_page(),
             *[page_placeholder(page_id) for page_id in generated_page_ids()],
             build_study_pager(),
             build_assistant(),

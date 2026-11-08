@@ -11,7 +11,8 @@ from dash import dcc, html
 from auth.login import LOGOUT_PATH
 from ui import ids
 from ui.knowledge_map_content import LAYERS, LayerInfo
-from ui.navigation import LINK_CLASS, TOPICS_PATH
+from ui.lecture_requests_content import TITLE as LECTURE_REQUESTS_TITLE
+from ui.navigation import LECTURE_REQUESTS_PATH, LINK_CLASS, TOPICS_PATH
 from ui.topic_catalog import page_entries
 
 MENU_CLASS = "top-nav"
@@ -31,6 +32,8 @@ def build_main_menu() -> html.Header:
                 children=[
                     dcc.Link("Témata a mapa", href=TOPICS_PATH, id=ids.NAV_TOPICS_LINK, className=LINK_CLASS),
                     *[_group_menu(info) for info in LAYERS],
+                    dcc.Link(LECTURE_REQUESTS_TITLE, href=LECTURE_REQUESTS_PATH, id=ids.NAV_LECTURE_REQUESTS_LINK,
+                             className=LINK_CLASS),
                     html.A("Odhlásit", href=LOGOUT_PATH, className="nav-link logout-link"),
                 ],
             ),

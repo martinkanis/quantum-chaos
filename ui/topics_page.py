@@ -6,7 +6,7 @@ from dash import dcc, html
 
 from ui import ids
 from ui.knowledge_map_page import details_card, layer_overview, map_card, map_stores, notes_cards
-from ui.navigation import ACADEMY_PATH
+from ui.navigation import ACADEMY_PATH, LECTURE_REQUESTS_PATH
 from ui.topic_catalog import (
     RESEARCH_TOPICS,
     TOPICS_TITLE,
@@ -46,6 +46,8 @@ def build_topics_page() -> html.Div:
                     children=[
                         "Odkazy na kurzy, blogy a další materiály ke kvantovému počítání jsou na stránce ",
                         dcc.Link("Quantum Academy", href=ACADEMY_PATH),
+                        ". Záznam přednášky zpracuješ do zápisků a prezentace na stránce ",
+                        dcc.Link("Zápisky z přednášky", href=LECTURE_REQUESTS_PATH),
                         ".",
                     ],
                 ),

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import hmac
 import logging
-from typing import Optional
+from typing import Optional, Tuple
 from urllib.parse import urlencode
 
 from flask import Flask, Response, jsonify, redirect, render_template_string, request, session
@@ -28,7 +28,10 @@ TOO_MANY_ATTEMPTS = "Příliš mnoho neúspěšných pokusů. Zkus to znovu za 1
 logger = logging.getLogger(__name__)
 
 
-def install_login(server: Flask, settings: LoginSettings, secure_cookies: bool = True) -> None:
+def install_login(
+    server: Flask, settings: LoginSettings, secure_cookies: bool = True, token_protected_prefixes: Tuple[str, ...] = (),
+) -> None:
+    """token_protected_prefixes: routes for programs (the lecture queue worker) that check a token of their own."""
     server.secret_key = settings.secret_key
     server.config.update(
         PERMANENT_SESSION_LIFETIME=SESSION_LIFETIME,
@@ -42,6 +45,8 @@ def install_login(server: Flask, settings: LoginSettings, secure_cookies: bool =
     @server.before_request
     def require_login() -> Optional[Response]:
         if _is_public(request.path) or session.get(SESSION_USER_KEY):
+            return None
+        if token_protected_prefixes and request.path.startswith(token_protected_prefixes):
             return None
         if request.path.startswith(DASH_REQUEST_PREFIX):
             return _json_error("Přihlášení vypršelo, načti stránku znovu.", 401)

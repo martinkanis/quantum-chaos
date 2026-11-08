@@ -51,6 +51,12 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
   přihlášeným (`/assets/` je veřejné), stejně jako prezentaci `prezentace.pptx` vedle nich (vyrábí ji skript
   ve `scripts/`, pptxgenjs není závislost aplikace). Zápisky z videa o PsiQuantum (`ui/psiquantum_video_*.py`)
   sdílejí snímky a odkazy do videa přes `slide_figure`. Přepisy a všechny snímky jsou ve větvi `podklady-video`.
+- Nové zápisky z přednášek jsou **data**: `content/topics/<slug>.json` s polem `lecture` (kapitoly se `start` a
+  snímky, vlastní kapitoly bez času na konci) a `content/lectures/<složka>/` (snímky, `prezentace.json`,
+  `prezentace.pptx` ze `scripts/lecture_presentation.js`). Stránku na `/zapisky/<slug>` staví
+  `ui/lecture_notes_page.py`. Na `/zapisky-z-prednasek` se přednáška zařadí do fronty (`assistant/lecture_requests.py`,
+  tabulka `lecture_requests`); zpracuje ji Claude Code na Macu podle `scripts/zapisky_z_prednasky.md` přes
+  `scripts/lecture_queue.py` a API `web/lecture_queue_api.py` (token `LECTURE_WORKER_TOKEN`, mimo přihlášení).
 - `gbs/` – doména GBS: hafnián, sampler, gaussovské momenty (Steinova rekurze), ladění stlačení, odhad GBS-P,
   export do Qiskitu (šablona `qiskit_script_template.txt`), fotonický čip ze sítě MZI (`photonic_chip.py`,
   `clements.py`, `chip_programming.py`, kreslení `chip_charts.py` s polohami `chip_geometry.py` a součástkami
@@ -109,6 +115,8 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 - Proměnné služby pro asistenta: `ANTHROPIC_API_KEY`, `GITHUB_TOKEN` (fine-grained, jen Contents: read and write
   na tento repozitář), `DATABASE_URL` (propojená z Postgresu); volitelně `ASSISTANT_MODEL`, `GITHUB_REPOSITORY`,
   `GITHUB_BRANCH`. Bez nich asistent v okně napíše, co chybí, zbytek aplikace běží.
+- `LECTURE_WORKER_TOKEN` (aspoň 32 znaků) otevře frontu přednášek pracovníkovi; bez něj se požadavky jen
+  sbírají. Stejný token má Mac v `~/.config/quantum-chaos/lecture-worker-token`.
 - Dockerfile kopíruje jen `assets assistant auth content edits gbs montecarlo randommatrix ui web app.py` – nový
   adresář nebo soubor v kořeni do něj přidej.
 

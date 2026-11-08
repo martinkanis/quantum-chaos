@@ -40,6 +40,7 @@ RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
 RANDOM_MATRIX_GBS_PATH = "/vyzkumne-smery/nahodne-matice-a-gbs"
 FAILURE_DIAGNOSTICS_PATH = "/vyzkumne-smery/kdy-gbs-selze"
 INTEGRALS_CHEAT_SHEET_PATH = "/tahaky/integraly"
+LECTURE_REQUESTS_PATH = "/zapisky-z-prednasek"
 
 VISIBLE: dict = {}
 """No inline display, so the stylesheet decides how a shown element is laid out (reading pages use a grid)."""
@@ -78,9 +79,11 @@ PAGE_IDS = (
     ids.RANDOM_MATRIX_GBS_PAGE,
     ids.FAILURE_DIAGNOSTICS_PAGE,
     ids.INTEGRALS_CHEAT_SHEET_PAGE,
+    ids.LECTURE_REQUESTS_PAGE,
 ) + generated_page_ids()
-NAV_LINK_IDS = (ids.NAV_TOPICS_LINK,) + tuple(info.menu_id for info in LAYERS)
-"""Top-level menu entries: the home page with the knowledge map and one drop-down per group of pages."""
+NAV_LINK_IDS = (ids.NAV_TOPICS_LINK,) + tuple(info.menu_id for info in LAYERS) + (ids.NAV_LECTURE_REQUESTS_LINK,)
+"""Top-level menu entries: the home page with the knowledge map, one drop-down per group of pages and the page that
+queues lectures for notes."""
 PAGE_BY_PATH = {
     TOPICS_PATH: ids.TOPICS_PAGE,
     KNOWLEDGE_MAP_PATH: ids.TOPICS_PAGE,
@@ -113,10 +116,12 @@ PAGE_BY_PATH = {
     RANDOM_MATRIX_GBS_PATH: ids.RANDOM_MATRIX_GBS_PAGE,
     FAILURE_DIAGNOSTICS_PATH: ids.FAILURE_DIAGNOSTICS_PAGE,
     INTEGRALS_CHEAT_SHEET_PATH: ids.INTEGRALS_CHEAT_SHEET_PAGE,
+    LECTURE_REQUESTS_PATH: ids.LECTURE_REQUESTS_PAGE,
     **generated_paths(),
 }
 ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.TOPICS_PAGE: frozenset({ids.NAV_TOPICS_LINK}),
+    ids.LECTURE_REQUESTS_PAGE: frozenset({ids.NAV_LECTURE_REQUESTS_LINK}),
     **{page_id: frozenset({info.menu_id}) for info in LAYERS for page_id in info.page_ids},
 }
 

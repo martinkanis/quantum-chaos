@@ -27,7 +27,9 @@ def test_horni_menu_ma_stejne_skupiny_a_poradi_stranek_jako_dashboard_temata():
     entries = page_entries()
 
     assert [group.id for group in groups] == [info.menu_id for info in LAYERS]
-    assert NAV_LINK_IDS == (ids.NAV_TOPICS_LINK,) + tuple(info.menu_id for info in LAYERS)
+    assert NAV_LINK_IDS == (ids.NAV_TOPICS_LINK,) + tuple(info.menu_id for info in LAYERS) + (
+        ids.NAV_LECTURE_REQUESTS_LINK,
+    )
     for info in LAYERS:
         assert group_links(menu, info.menu_id) == [entries[page_id].path for page_id in info.page_ids]
     dashboard_links = [link.href for link in components(build_topics_page()) if isinstance(link, dcc.Link)]
