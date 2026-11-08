@@ -1,11 +1,23 @@
-"""Texts of the page on when a GBS-based risk estimate fails: three sources of error and how to detect each one."""
+"""Texts of the page on when a GBS-based risk estimate fails: four sources of error and how to detect each one."""
 
 from __future__ import annotations
 
 from typing import Tuple
 
-from ui.caveats_content import CLASSICAL_SIMULATION, TAIL_RISK
-from ui.literature_review_content import BULMER_BOUNDARY
+from ui.caveats_content import CLASSICAL_SIMULATION, REAL_HARDWARE, TAIL_RISK
+from ui.literature_review_content import BULMER_BOUNDARY, QI_NOISY_SIMULABILITY
+from ui.photon_loss_content import (
+    EXAMPLE,
+    EXAMPLE_TRANSMISSION,
+    KISS_HERZOG_LEONHARDT_1995,
+    LARGE_LOSS_TRANSMISSION,
+    SMALL_LOSS_TRANSMISSION,
+    bias_range,
+    example_advantage,
+    extra_samples_range,
+    percent_label,
+    times_label,
+)
 from ui.random_matrix_content import (
     BDS_1996,
     BOUCHAUD_POTTERS_REVIEW,
@@ -121,10 +133,11 @@ LEAD = (
 )
 
 IN_SHORT = (
-    "Odhad rizika přes GBS může selhat třemi různými způsoby: data nejsou gaussovská, takže je chybné samo "
-    "zadání; zadání sedí, ale pro danou matici a portfolio GBS nemá výhodu; nebo je matice odhadnutá z krátké "
-    "historie a nese šum. Každý zdroj chyby se jinak pozná z dat – testy nelinearity a entropie, spektrem "
-    "matice spolu s vahami portfolia a poměrem q = N/T – a jinak se opravuje."
+    "Odhad rizika přes GBS může selhat čtyřmi různými způsoby: data nejsou gaussovská, takže je chybné samo "
+    "zadání; zadání sedí, ale pro danou matici a portfolio GBS nemá výhodu; matice je odhadnutá z krátké "
+    "historie a nese šum; nebo přístroj ztrácí fotony a odhad s tím nepočítá. Každý zdroj chyby se jinak pozná "
+    "předem – testy nelinearity a entropie, spektrem matice spolu s vahami portfolia, poměrem q = N/T "
+    "a změřenou propustností přístroje – a jinak se opravuje."
 )
 
 
@@ -138,6 +151,9 @@ def failure_sources_table() -> str:
         "a poloha vah vůči hlavním vlastním vektorům | kapitola 4 |",
         "| 3. šum ve vstupu | vstup: matice odhadnutá z krátké historie | poměr q = N/T, spektrum proti "
         "Marčenkovu–Pasturovu rozdělení | kapitola 5 |",
+        "| 4. přístroj ztrácí fotony | hardware: ztrátový přístroj vzorkuje jiné rozdělení, odhad bez opravy je "
+        "vychýlený a nestranná oprava stojí rozptyl | propustnost η proti kritické η_c a křivce úspory vzorků, "
+        "typ detektorů | kapitola 6 |",
     ])
 
 
@@ -155,7 +171,7 @@ zaručené počty vzorků, ne čas. V navazujícím článku odhadují, pro jak�
 fotonů jde simulovat klasicky. Výhoda tedy není samozřejmá ani v teorii, ani na hardwaru.
 
 **Náš návrh.** Místo jediného čísla „o kolik je GBS rychlejší“ rozlišit, *proč* odhad rizika přes GBS selže,
-a pro každou příčinu najít ukazatel, který jde spočítat z dat dřív, než se přístroj spustí. Navrhujeme tři
+a pro každou příčinu najít ukazatel, který jde zjistit dřív, než se přístroj spustí. Navrhujeme čtyři
 zdroje chyby z tabulky nahoře. Každý se jinak pozná a jinak opravuje. Kdo je nerozliší, snadno připíše GBS
 chybu gaussovského modelu nebo šumu v datech – a oponent se na to zeptá.
 
@@ -340,11 +356,61 @@ klasický krok, který GBS nenahradí.
     ),
 )
 
+def _hardware_findings() -> str:
+    small_low, small_high = bias_range(SMALL_LOSS_TRANSMISSION)
+    moderate_low, moderate_high = bias_range(EXAMPLE_TRANSMISSION)
+    extra_low, extra_high = extra_samples_range(LARGE_LOSS_TRANSMISSION)
+    return (
+        "**Co jsme spočítali (pět úloh stránky Výhoda GBS, ladění po módech).** Odhad bez opravy podceňuje o "
+        f"{percent_label(small_low)} až {percent_label(small_high)} při 1 % ztrát a o {percent_label(moderate_low)} "
+        f"až {percent_label(moderate_high)} při 10 % ztrát. Nestranná oprava má rozptyl rostoucí zhruba jako "
+        f"((1 − η)/η) na počet fotonů: u úlohy E[X₁⁸X₂⁸] klesne při 10 % ztrát úspora vzorků proti Monte Carlu "
+        f"z {times_label(EXAMPLE.comparison.advantage)} na {times_label(example_advantage(EXAMPLE_TRANSMISSION))} "
+        f"a při 20 % ztrát potřebuje GBS u pěti úloh {times_label(extra_low)} až {times_label(extra_high)} víc "
+        "výstřelů než Monte Carlo scénářů. Pod kritickou propustností η_c = tanh r_max/(1 + tanh r_max) ≈ "
+        f"{percent_label(EXAMPLE.critical_transmission)} je rozptyl opravy nekonečný (naše odvození). Prahové "
+        "detektory cílové vzory těchto úloh vůbec nerozliší.\n"
+    )
+
+
+HARDWARE_SOURCE = TheoryTopic(
+    anchor="ds-hardware",
+    title="Zdroj 4: přístroj ztrácí fotony",
+    in_short=(
+        "Skutečný Gaussian Boson Sampler ztrácí fotony a jeho detektory často jen klikají. Odhad GBS-P, který s tím "
+        f"nepočítá, je vychýlený, nestranná oprava stojí rozptyl, který při 10 % ztrát sníží úsporu vzorků úlohy "
+        f"E[X₁⁸X₂⁸] z {times_label(EXAMPLE.comparison.advantage)} na "
+        f"{times_label(example_advantage(EXAMPLE_TRANSMISSION))}, a pod kritickou propustností kolem "
+        f"{percent_label(EXAMPLE.critical_transmission)} je nekonečný. Diagnostikou je změřená propustnost přístroje."
+    ),
+    explanation=r"""
+**Co je doložené.** Ztráty fotonů a šum reálných přístrojů usnadňují klasickou simulaci (Qi a kol. 2020, Oh a kol.
+2024) a ztráty jde v principu kompenzovat až po měření (Kiss, Herzog a Leonhardt 1995). Jak ztráty působí na
+samotný odhad GBS-P, v prošlé literatuře rozebrané není – je to otevřená otázka 3 rešerše.
+
+**Jak to počítáme (náš výpočet).** Rovnoměrná ztráta komutuje s interferometrem, takže ztrátový přístroj je ideální
+přístroj s mincí za každý foton a četnosti vzorů i rozptyl opravy jdou spočítat přesně z tabulky gaussovských
+momentů, bez simulace výstřelů. Testy to ověřují proti vzorci se smíšeným gaussovským stavem.
+
+""" + _hardware_findings() + r"""
+**Diagnostika (náš návrh).** Propustnost η od zdroje po detektor – vazba vlákno–čip, útlum světlovodů, účinnost
+detektoru – proti kritické η_c a proti křivce úspory vzorků; a typ detektorů, protože prahové detektory odhad
+GBS-P neunesou. Na rozdíl od zdrojů 1–3 tu zatím chybí lék: dnešní čipy jsou hluboko pod tím, co odhad snese.
+Otevřené otázky a laboratoř jsou na podstránce.
+""",
+    further_reading=(
+        Reading(QI_NOISY_SIMULABILITY, "ztráty a šum usnadňují klasickou simulaci"),
+        Reading(OH_CLASSICAL_SIMULATION, "klasická simulace skutečných experimentů GBS"),
+        Reading(KISS_HERZOG_LEONHARDT_1995, "kompenzace ztrát po měření a hranice 1/2"),
+    ),
+    related_caveats=(REAL_HARDWARE, CLASSICAL_SIMULATION),
+)
+
 VERIFICATION_PLAN = TheoryTopic(
     anchor="ds-navrh",
     title="Jak by se to dalo ověřit",
     in_short=(
-        "V klouzavých oknech spočítat diagnostiky všech tří zdrojů, odhadnout riziko gaussovským modelem přesně "
+        "V klouzavých oknech spočítat diagnostiky všech čtyř zdrojů, odhadnout riziko gaussovským modelem přesně "
         "i přes GBS a otestovat, jestli diagnostiky předem ukážou, kdy odhad selže (náš návrh)."
     ),
     explanation=r"""
@@ -353,7 +419,8 @@ VERIFICATION_PLAN = TheoryTopic(
    a poloha vah vůči hlavním vlastním vektorům. Zdroj 3: $q$ a počet vlastních čísel nad pásem šumu.
 3. **Chyby v následujícím období, každá zvlášť.** Chyba modelu: přesný gaussovský výsledek proti tomu, co se
    stalo. Chyba odhadu: rozptyl GBS proti Monte Carlu při stejném počtu vzorků (v emulaci). Chyba vstupu:
-   surová proti vyčištěné matici.
+   surová proti vyčištěné matici. Chyba přístroje: odhad ze ztrátového přístroje proti ideálnímu při stejném
+   počtu výstřelů (v emulaci se změřenou propustností).
 4. **Test.** Předpovídají diagnostiky z okna velikost chyby lépe než jednoduchá srovnávací pravidla, třeba
    samotná volatilita okna?
 5. **Výsledek i při neúspěchu.** Když diagnostiky chybu nepředpovídají, je to také zjištění: selhání odhadu pak
@@ -376,5 +443,6 @@ TOPICS: Tuple[TheoryTopic, ...] = (
     DIAGNOSTIC_TOOLS,
     ESTIMATOR_SOURCE,
     INPUT_SOURCE,
+    HARDWARE_SOURCE,
     VERIFICATION_PLAN,
 )

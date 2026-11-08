@@ -23,6 +23,7 @@ from ui.layout import build_layout
 from ui.lazy_pages import LAZY_PAGE_IDS, built_page, register_lazy_page_callbacks
 from ui.lecture_requests_callbacks import register_lecture_request_callbacks
 from ui.navigation import register_navigation_callbacks
+from ui.photon_loss_callbacks import register_photon_loss_callbacks
 from ui.random_matrix_callbacks import register_random_matrix_callbacks
 from ui.study_progress import register_study_progress_callbacks
 from ui.text_edit_callbacks import register_text_edit_callbacks
@@ -45,6 +46,7 @@ register_callbacks(app)
 register_gbs_callbacks(app)
 register_advantage_callbacks(app)
 register_random_matrix_callbacks(app)
+register_photon_loss_callbacks(app)
 register_chip_simulator_callbacks(app)
 register_chip_interaction_callbacks(app)
 register_chip_bench_callbacks(app)

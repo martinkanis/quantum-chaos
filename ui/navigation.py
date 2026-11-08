@@ -39,6 +39,7 @@ GHZ_STATES_PATH = "/fotonika/prednaska-walther-2022/ghz-stavy"
 RANDOM_MATRIX_PATH = "/nahodne-matice-portfolio"
 RANDOM_MATRIX_GBS_PATH = "/vyzkumne-smery/nahodne-matice-a-gbs"
 FAILURE_DIAGNOSTICS_PATH = "/vyzkumne-smery/kdy-gbs-selze"
+PHOTON_LOSS_PATH = "/vyzkumne-smery/ztraty-fotonu"
 INTEGRALS_CHEAT_SHEET_PATH = "/tahaky/integraly"
 LECTURE_REQUESTS_PATH = "/zapisky-z-prednasek"
 
@@ -78,6 +79,7 @@ PAGE_IDS = (
     ids.RANDOM_MATRIX_PAGE,
     ids.RANDOM_MATRIX_GBS_PAGE,
     ids.FAILURE_DIAGNOSTICS_PAGE,
+    ids.PHOTON_LOSS_PAGE,
     ids.INTEGRALS_CHEAT_SHEET_PAGE,
     ids.LECTURE_REQUESTS_PAGE,
 ) + generated_page_ids()
@@ -115,6 +117,7 @@ PAGE_BY_PATH = {
     RANDOM_MATRIX_PATH: ids.RANDOM_MATRIX_PAGE,
     RANDOM_MATRIX_GBS_PATH: ids.RANDOM_MATRIX_GBS_PAGE,
     FAILURE_DIAGNOSTICS_PATH: ids.FAILURE_DIAGNOSTICS_PAGE,
+    PHOTON_LOSS_PATH: ids.PHOTON_LOSS_PAGE,
     INTEGRALS_CHEAT_SHEET_PATH: ids.INTEGRALS_CHEAT_SHEET_PAGE,
     LECTURE_REQUESTS_PATH: ids.LECTURE_REQUESTS_PAGE,
     **generated_paths(),
@@ -242,6 +245,10 @@ def random_matrix_gbs_href(anchor: str) -> str:
 
 def failure_diagnostics_href(anchor: str) -> str:
     return f"{FAILURE_DIAGNOSTICS_PATH}#{anchor}"
+
+
+def photon_loss_href(anchor: str) -> str:
+    return f"{PHOTON_LOSS_PATH}#{anchor}"
 
 
 def register_navigation_callbacks(app: Dash) -> None:

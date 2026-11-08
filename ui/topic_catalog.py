@@ -24,6 +24,7 @@ from ui.navigation import (
     PHOTONIC_HARDWARE_PATH,
     PHOTONICS_LANDSCAPE_PATH,
     PHOTONICS_TOPIC_ANCHOR,
+    PHOTON_LOSS_PATH,
     PIQUASSO_PATH,
     PSIQUANTUM_PATH,
     PSIQUANTUM_VIDEO_PATH,
@@ -312,13 +313,19 @@ RANDOM_MATRIX_TOPIC = ResearchTopic(
 
 FAILURE_DIAGNOSTICS = PageEntry(
     ids.FAILURE_DIAGNOSTICS_PAGE, "Kdy odhad rizika přes GBS selže", FAILURE_DIAGNOSTICS_PATH,
-    "Vlastní námět: tři zdroje chyby – negaussovská data, matice a portfolio, pro které GBS nemá výhodu, a šum "
-    "v odhadnuté matici – a jak každý z nich poznat z dat dřív, než se přístroj spustí.",
+    "Vlastní námět: čtyři zdroje chyby – negaussovská data, matice a portfolio, pro které GBS nemá výhodu, šum "
+    "v odhadnuté matici a ztráty fotonů v přístroji – a jak každý z nich poznat dřív, než se přístroj spustí.",
 )
 RANDOM_MATRIX_GBS = PageEntry(
     ids.RANDOM_MATRIX_GBS_PAGE, "Náhodné matice a GBS: hypotéza", RANDOM_MATRIX_GBS_PATH,
     "Podrobný rozbor 2. a 3. zdroje chyby: jak o úspoře vzorků rozhoduje spektrum spolu s polohou vah portfolia "
     "(šest aktiv, dvě portfolia), šum v odhadnuté matici a šest otevřených otázek.",
+    parent_page_id=ids.FAILURE_DIAGNOSTICS_PAGE,
+)
+PHOTON_LOSS = PageEntry(
+    ids.PHOTON_LOSS_PAGE, "Ztráty fotonů: čtvrtý zdroj chyby", PHOTON_LOSS_PATH,
+    "Laboratoř a rozbor 4. zdroje chyby: co rovnoměrné ztráty fotonů udělají s odhadem GBS-P pěti úloh, kolik "
+    "stojí nestranná oprava, proč nestačí prahové detektory a co říká hranice klasické simulace.",
     parent_page_id=ids.FAILURE_DIAGNOSTICS_PAGE,
 )
 
@@ -329,7 +336,7 @@ RESEARCH_DIRECTIONS_TOPIC = ResearchTopic(
         "Vlastní výzkumné náměty, které propojují ostatní témata. Nejsou to doložené výsledky: každá stránka "
         "odlišuje hypotézu, náš výpočet a literaturu a končí otázkami, na které by výzkum musel odpovědět."
     ),
-    sections=(TopicSection("Náměty", (FAILURE_DIAGNOSTICS, RANDOM_MATRIX_GBS)),),
+    sections=(TopicSection("Náměty", (FAILURE_DIAGNOSTICS, RANDOM_MATRIX_GBS, PHOTON_LOSS)),),
 )
 
 INTEGRALS_CHEAT_SHEET = PageEntry(

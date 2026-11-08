@@ -65,7 +65,10 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
   `chip_parts.py`: každý druh součástky je neviditelná stopa s popiskem, `customdata` končí druhem a číslem
   součástky, podle kterých `ui/chip_interaction_callbacks.py` pozná klik; pracovní stůl `bench.py` (zdroj, ztráty
   vlákno–čip a světlovodů, detektory, čítače jednotlivých fotonů; hodnoty jsou náš odhad); boson sampling na čipu
-  `chip_boson_sampling.py` s vektorizovanými permanenty, grafy `chip_sampling_charts.py`).
+  `chip_boson_sampling.py` s vektorizovanými permanenty, grafy `chip_sampling_charts.py`); ztráty fotonů
+  (`photon_loss.py`: rovnoměrná ztráta = binomické ředění ideálního rozdělení z tabulky momentů, nestranná oprava
+  a její rozptyl, prahové detektory; `loss_study.py` odhad GBS-P proti ztrátám, kritická propustnost a hranice
+  Qi a kol.; stránka `/vyzkumne-smery/ztraty-fotonu` jako 4. zdroj chyby diagnostiky selhání).
 - `ui/` – Dash vrstva: `*_page.py` layout, `*_callbacks.py` callbacky, `*_content.py` texty, `ids.py` všechna id,
   `navigation.py` cesty a přepínání stránek.
 - Business logika patří do `gbs/` a `montecarlo/`; UI jen parsuje formulář a vykresluje výsledek.

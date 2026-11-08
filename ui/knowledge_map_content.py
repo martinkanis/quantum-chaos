@@ -79,7 +79,7 @@ BASE_LAYERS: Tuple[LayerInfo, ...] = (
     ),
     LayerInfo(
         Layer.RESEARCH, "Vlastní výzkum", "otevřené otázky a hypotézy disertace", "#c53d3d",
-        (ids.FAILURE_DIAGNOSTICS_PAGE, ids.RANDOM_MATRIX_GBS_PAGE),
+        (ids.FAILURE_DIAGNOSTICS_PAGE, ids.RANDOM_MATRIX_GBS_PAGE, ids.PHOTON_LOSS_PAGE),
         ids.NAV_RESEARCH_MENU,
     ),
     LayerInfo(
@@ -140,6 +140,7 @@ MAP_LABELS = {
     ids.GHZ_STATES_PAGE: "GHZ stavy",
     ids.FAILURE_DIAGNOSTICS_PAGE: "Kdy GBS selže",
     ids.RANDOM_MATRIX_GBS_PAGE: "Náhodné matice a GBS",
+    ids.PHOTON_LOSS_PAGE: "Ztráty fotonů",
 }
 """Short labels for the map; the full page titles are in the hover text and in the details."""
 
@@ -238,6 +239,18 @@ BASE_RELATIONS: Tuple[Relation, ...] = (
     Relation(
         ids.FAILURE_DIAGNOSTICS_PAGE, RelationKind.FOLLOWS, ids.RANDOM_MATRIX_GBS_PAGE,
         "podrobný rozbor 2. a 3. zdroje chyby",
+    ),
+    Relation(
+        ids.FAILURE_DIAGNOSTICS_PAGE, RelationKind.FOLLOWS, ids.PHOTON_LOSS_PAGE,
+        "laboratoř a rozbor 4. zdroje chyby: ztráty fotonů",
+    ),
+    Relation(
+        ids.PHOTON_LOSS_PAGE, RelationKind.CHECKS, ids.ADVANTAGE_PAGE,
+        "kolik z výhody pěti úloh zbude po ztrátách fotonů",
+    ),
+    Relation(
+        ids.CHIP_SIMULATOR_PAGE, RelationKind.EXPLAINS, ids.PHOTON_LOSS_PAGE,
+        "odkud se ztráty berou: vazba, světlovody a detektory pracovního stolu",
     ),
     Relation(ids.INTEGRALS_CHEAT_SHEET_PAGE, RelationKind.EXPLAINS, ids.PORTFOLIO_PAGE, "Monte Carlo jako odhad integrálu"),
     Relation(

@@ -13,6 +13,7 @@ from ui.lazy_pages import build_rendered_pages_store, page_placeholder
 from ui.lecture_requests_page import build_lecture_requests_page
 from ui.main_menu import build_main_menu
 from ui.navigation import PAGE_IDS
+from ui.photon_loss_page import build_photon_loss_page
 from ui.portfolio_page import build_portfolio_page
 from ui.primer_page import PRIMER_CHAPTERS
 from ui.random_matrix_page import build_random_matrix_page
@@ -57,6 +58,7 @@ def build_layout() -> html.Div:
             page_placeholder(ids.GHZ_STATES_PAGE),
             build_random_matrix_page(),
             page_placeholder(ids.FAILURE_DIAGNOSTICS_PAGE),
+            build_photon_loss_page(),
             page_placeholder(ids.RANDOM_MATRIX_GBS_PAGE),
             page_placeholder(ids.INTEGRALS_CHEAT_SHEET_PAGE),
             build_lecture_requests_page(),

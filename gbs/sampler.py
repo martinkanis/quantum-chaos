@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from itertools import combinations_with_replacement
 from math import factorial
-from typing import List, Optional, Tuple
+from typing import List, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -88,15 +88,20 @@ def pattern_distribution(program: GbsProgram, total: int) -> Tuple[np.ndarray, n
 
 
 def total_photon_distribution(program: GbsProgram, max_total: int) -> np.ndarray:
-    """P(total = t) for t = 0..max_total.
+    """P(total = t) for t = 0..max_total."""
+    return total_photons_from_squeezing(program.squeezing, max_total)
+
+
+def total_photons_from_squeezing(squeezing: Sequence[float], max_total: int) -> np.ndarray:
+    """P(total = t) for t = 0..max_total behind any interferometer.
 
     The interferometer conserves photon number, so the total is a sum of independent
     single-mode squeezed-vacuum counts and needs no hafnians.
     """
     distribution = np.zeros(max_total + 1)
     distribution[0] = 1.0
-    for squeezing in program.squeezing:
-        distribution = np.convolve(distribution, squeezed_vacuum_distribution(squeezing, max_total))[: max_total + 1]
+    for value in squeezing:
+        distribution = np.convolve(distribution, squeezed_vacuum_distribution(float(value), max_total))[: max_total + 1]
     return distribution
 
 

@@ -3,6 +3,7 @@ from dash import dcc
 from ui import ids
 from ui.failure_diagnostics_content import (
     ESTIMATOR_SOURCE,
+    HARDWARE_SOURCE,
     INPUT_SOURCE,
     SOURCES_ANCHOR,
     TOPICS,
@@ -10,7 +11,9 @@ from ui.failure_diagnostics_content import (
 )
 from ui.failure_diagnostics_page import DETAIL_LINKS, build_failure_diagnostics_page
 from ui.knowledge_map_content import LAYERS, Layer
-from ui.navigation import FAILURE_DIAGNOSTICS_PATH, RANDOM_MATRIX_GBS_PATH, RANDOM_MATRIX_PATH
+from ui.navigation import FAILURE_DIAGNOSTICS_PATH, PHOTON_LOSS_PATH, RANDOM_MATRIX_GBS_PATH, RANDOM_MATRIX_PATH
+from ui.photon_loss_content import LAB_ANCHOR as PHOTON_LOSS_LAB_ANCHOR
+from ui.photon_loss_page import build_photon_loss_page
 from ui.random_matrix_content import LAB_ANCHOR
 from ui.random_matrix_gbs_content import FIRST_STUDY
 from ui.random_matrix_gbs_page import build_random_matrix_gbs_page
@@ -38,7 +41,7 @@ def test_vyzkumne_smery_zacinaji_strankou_o_selhani_gbs():
     research = next(info for info in LAYERS if info.layer == Layer.RESEARCH)
     assert research.page_ids[0] == ids.FAILURE_DIAGNOSTICS_PAGE
     assert [page.page_id for page in study_path(RESEARCH_DIRECTIONS_TOPIC)] == [
-        ids.FAILURE_DIAGNOSTICS_PAGE, ids.RANDOM_MATRIX_GBS_PAGE,
+        ids.FAILURE_DIAGNOSTICS_PAGE, ids.RANDOM_MATRIX_GBS_PAGE, ids.PHOTON_LOSS_PAGE,
     ]
 
 
@@ -64,14 +67,17 @@ def test_odkazy_na_podrobny_rozbor_vedou_na_existujici_kotvy():
     assert DETAIL_LINKS[INPUT_SOURCE.anchor][1] == f"{RANDOM_MATRIX_PATH}#{LAB_ANCHOR}"
     assert FIRST_STUDY.anchor in set(section_ids(build_random_matrix_gbs_page()))
     assert LAB_ANCHOR in set(section_ids(build_random_matrix_page()))
+    assert DETAIL_LINKS[HARDWARE_SOURCE.anchor][1] == f"{PHOTON_LOSS_PATH}#{PHOTON_LOSS_LAB_ANCHOR}"
+    assert PHOTON_LOSS_LAB_ANCHOR in set(section_ids(build_photon_loss_page()))
 
 
-def test_tabulka_ma_tri_zdroje_chyby_a_odkazuje_na_kapitoly():
+def test_tabulka_ma_ctyri_zdroje_chyby_a_odkazuje_na_kapitoly():
     rows = [row for row in failure_sources_table().splitlines() if row.startswith("| ") and row[2].isdigit()]
 
-    assert [row[2] for row in rows] == ["1", "2", "3"]
+    assert [row[2] for row in rows] == ["1", "2", "3", "4"]
     assert "kapitoly 2 a 3" in rows[0] and "kapitola 4" in rows[1] and "kapitola 5" in rows[2]
-    assert [topic.anchor for topic in TOPICS][1:5] == ["ds-data", "ds-nastroje", "ds-vyhoda", "ds-vstup"]
+    assert "kapitola 6" in rows[3]
+    assert [topic.anchor for topic in TOPICS][1:6] == ["ds-data", "ds-nastroje", "ds-vyhoda", "ds-vstup", "ds-hardware"]
 
 
 def test_cisla_v_textech_odpovidaji_vypoctu():
@@ -79,3 +85,6 @@ def test_cisla_v_textech_odpovidaji_vypoctu():
     assert "(0,82×)" in ESTIMATOR_SOURCE.explanation
     assert "22× víc vzorků" in ESTIMATOR_SOURCE.explanation
     assert "16× menší" in INPUT_SOURCE.explanation
+    assert "z 880× na 12×" in HARDWARE_SOURCE.explanation
+    assert "330× až 1 300× víc" in HARDWARE_SOURCE.explanation
+    assert "o 7 % až 9 % při 1 % ztrát a o 26 % až 45 % při 10 % ztrát" in HARDWARE_SOURCE.explanation

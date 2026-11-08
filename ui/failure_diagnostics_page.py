@@ -8,6 +8,7 @@ from ui import ids
 from ui.components import details_link
 from ui.failure_diagnostics_content import (
     ESTIMATOR_SOURCE,
+    HARDWARE_SOURCE,
     IN_SHORT,
     INPUT_SOURCE,
     LEAD,
@@ -15,7 +16,14 @@ from ui.failure_diagnostics_content import (
     TOPICS,
     failure_sources_table,
 )
-from ui.navigation import HIDDEN, failure_diagnostics_href, random_matrix_gbs_href, random_matrix_href
+from ui.navigation import (
+    HIDDEN,
+    failure_diagnostics_href,
+    photon_loss_href,
+    random_matrix_gbs_href,
+    random_matrix_href,
+)
+from ui.photon_loss_content import LAB_ANCHOR as PHOTON_LOSS_LAB_ANCHOR
 from ui.random_matrix_content import LAB_ANCHOR
 from ui.random_matrix_gbs_content import FIRST_STUDY
 from ui.theory_content import TheoryTopic
@@ -24,6 +32,7 @@ from ui.topic_sections import sources_section, table_of_contents, topic_section
 DETAIL_LINKS: Dict[str, Tuple[str, str]] = {
     ESTIMATOR_SOURCE.anchor: ("první výpočet na stránce Náhodné matice a GBS", random_matrix_gbs_href(FIRST_STUDY.anchor)),
     INPUT_SOURCE.anchor: ("laboratoř na stránce Náhodné matice a riziko portfolia", random_matrix_href(LAB_ANCHOR)),
+    HARDWARE_SOURCE.anchor: ("laboratoř ztrát fotonů", photon_loss_href(PHOTON_LOSS_LAB_ANCHOR)),
 }
 
 
@@ -33,12 +42,12 @@ def build_failure_diagnostics_page() -> html.Div:
         className="gbs-page",
         style=HIDDEN,
         children=[
-            html.H1("Kdy odhad rizika přes GBS selže: tři zdroje chyby"),
+            html.H1("Kdy odhad rizika přes GBS selže: čtyři zdroje chyby"),
             html.P(LEAD, className="lead"),
             html.Div(className="in-short", children=[html.Strong("V kostce: "), dcc.Markdown(IN_SHORT)]),
             html.Section(
                 className="card",
-                children=[html.H2("Tři zdroje chyby na jednom místě"), dcc.Markdown(failure_sources_table())],
+                children=[html.H2("Čtyři zdroje chyby na jednom místě"), dcc.Markdown(failure_sources_table())],
             ),
             table_of_contents(TOPICS, failure_diagnostics_href, SOURCES_ANCHOR),
             *[topic_section(number, topic, _illustrations(topic)) for number, topic in enumerate(TOPICS, start=1)],
