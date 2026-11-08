@@ -42,6 +42,7 @@ from ui.walther_lecture_content import (
 )
 from ui.walther_lecture_page import SLIDE_LINK_CLASS, build_walther_lecture_page, slide_figure
 from web.lecture_slides import LECTURES_DIRECTORY, SLIDES_FOLDER, install_lecture_slides, slide_path, slide_url
+from tests.photonics_steps import photonics_step
 
 PAULI = {
     "I": np.eye(2),
@@ -69,7 +70,7 @@ def test_prednaska_je_jedenactym_krokem_tematu_fotonika_a_v_menu_fotoniky():
     _, step_label, _, _, _ = describe_pager(WALTHER_LECTURE_PATH, None)
 
     assert PAGE_BY_PATH[WALTHER_LECTURE_PATH] == ids.WALTHER_LECTURE_PAGE
-    assert step_label == "Fotonika · krok 11 / 12"
+    assert step_label == photonics_step(11)
     assert active == [ids.NAV_PHOTONICS_MENU]
     assert ids.WALTHER_LECTURE_PAGE in [page.page_id for page in PHOTONICS_TOPIC.pages]
     assert breadcrumb_trail(ids.WALTHER_LECTURE_PAGE)[-1][0].startswith("Přednáška")

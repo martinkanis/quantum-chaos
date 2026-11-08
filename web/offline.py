@@ -19,6 +19,7 @@ from dash import Dash
 from flask import Response
 
 from ui import ids
+from ui.generated_topics import GENERATED_TOPICS
 from ui.navigation import PAGE_BY_PATH
 from ui.walther_lecture_content import LECTURE, SLIDES
 from web.lecture_slides import slide_url
@@ -81,7 +82,11 @@ def lazy_chunk_urls() -> List[str]:
 
 
 def slide_urls() -> List[str]:
-    return [slide_url(LECTURE, slide.file_name) for slide in SLIDES]
+    lecture_notes = [topic for topic in GENERATED_TOPICS if topic.lecture]
+    return [slide_url(LECTURE, slide.file_name) for slide in SLIDES] + [
+        slide_url(topic.lecture.folder, slide.file_name)
+        for topic in lecture_notes for section in topic.sections for slide in section.slides
+    ]
 
 
 def _depends_only_on_path(spec: dict) -> bool:

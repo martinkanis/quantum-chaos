@@ -26,6 +26,7 @@ from ui.study_progress import describe_pager
 from ui.theory_content import all_sources
 from ui.topic_catalog import breadcrumb_trail
 from web.lecture_slides import LECTURES_DIRECTORY, PRESENTATION_NAME, SLIDES_FOLDER, slide_url
+from tests.photonics_steps import photonics_step
 
 LIGHT_SPEED = 299_792_458
 FIBRE_INDEX = 1.468
@@ -47,7 +48,7 @@ def test_stranka_je_podstrankou_psiquantum_hned_za_ni():
     _, step_label, links, _, _ = describe_pager(PSIQUANTUM_VIDEO_PATH, None)
 
     assert PAGE_BY_PATH[PSIQUANTUM_VIDEO_PATH] == ids.PSIQUANTUM_VIDEO_PAGE
-    assert step_label == "Fotonika · krok 9 / 12"
+    assert step_label == photonics_step(9)
     assert links[0].children.href == PSIQUANTUM_PATH
     assert [label for label, _ in breadcrumb_trail(ids.PSIQUANTUM_VIDEO_PAGE)][-2].startswith("PsiQuantum")
 

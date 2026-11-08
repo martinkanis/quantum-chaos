@@ -8,6 +8,7 @@ from ui.primer_content import BIBLIOGRAPHY
 from ui.primer_page import PRIMER_CHAPTERS, build_primer_page, cited_numbers, markdown_text, section_heading
 from ui.study_progress import describe_pager
 from ui.topic_catalog import PHOTONICS_TOPIC, breadcrumb_trail, study_path
+from tests.photonics_steps import photonics_step
 
 TAG = re.compile(r"\\tag\{([^}]*)\}")
 SWALLOWED_BRACKET = re.compile(r"\\begin\{\w+\}\s*\[")
@@ -115,7 +116,7 @@ def test_skripta_jsou_prvnich_pet_kroku_tematu_fotonika_a_vede_na_ne_akademie():
         ids.PIQUASSO_PAGE, ids.WALTHER_LECTURE_PAGE,
         ids.GHZ_STATES_PAGE,
     ]
-    assert step_label == "Fotonika · krok 1 / 12"
+    assert step_label == photonics_step(1)
     assert PAGE_BY_PATH[PRIMER_GBS_PATH] == ids.PRIMER_GBS_PAGE
     assert all(path_ in academy.tldr for path_, page_id in PAGE_BY_PATH.items() if page_id in PRIMER_CHAPTERS)
     assert PRIMER_APPENDICES_PATH in academy.tldr

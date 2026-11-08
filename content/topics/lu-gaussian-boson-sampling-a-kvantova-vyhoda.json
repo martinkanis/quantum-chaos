@@ -1,0 +1,437 @@
+{
+  "slug": "lu-gaussian-boson-sampling-a-kvantova-vyhoda",
+  "title": "Přednáška: Chao-Yang Lu o Gaussian boson samplingu a kvantové výhodě (2021)",
+  "description": "Zápisky z přednášky vedoucího experimentu Jiuzhang: proč se násobí účinnosti, jak vznikly lepší zdroje fotonů, proč Gaussian boson sampling, jak se drží fáze na 22 metrech a jak ověřit výsledek, který nejde přepočítat.",
+  "in_short": "Chao-Yang Lu z USTC vypráví cestu k fotonické kvantové výhodě: od odhadu z roku 2013, že 50 fotonů by přicházelo jednou za $10^{150}$ sekund, přes deset let vývoje zdrojů jednotlivých fotonů až k Gaussian boson samplingu, který místo jednotlivých fotonů použije celé stlačené světlo z krystalu. Výsledkem je Jiuzhang s až 113 kliknutími. Zápisky vysvětlují každý krok polopatě a na konci ukazují, co se stalo potom a co si z toho vzít pro Monte Carlo na GBS.",
+  "sections": [
+    {
+      "heading": "Proč dokazovat kvantovou výhodu a co ukázal Sycamore",
+      "body": "**Kdo a kde.** Chao-Yang Lu (USTC, Hefei; doktorát v Cavendishově laboratoři v Cambridgi) přednáší v cyklu\n*Quantum Research Seminars Toronto* v červnu 2021, půl roku po prvním experimentu Jiuzhang. Je to téměř\npřesně ten experiment, ze kterého vychází představa „GBS jako akcelerátor Monte Carla“, o kterou se opírá\n[Monte Carlo na GBS](/gbs).\n\n**Dlouhá cesta a vejce po cestě.** Lu začíná u plánu Googlu: kvantovému počítači chybí kvalita (chybovost) i kvantita\n(počet qubitů) zároveň a počítač odolný vůči chybám (*fault-tolerant*) je ještě daleko. Proto čínský národní\nprogram „klade vejce po cestě“: dílčí milníky, které mají cenu samy o sobě. Prvním z nich je **kvantová výpočetní\nvýhoda**: zařízení, které řeší přesně zadanou úlohu, ne nutně užitečnou, ale drtivě rychleji než jakýkoli klasický\npočítač.\n\n**Proč na tom záleží: obdoba Bellova testu.** Rozšířená Churchova–Turingova teze (ECT) tvrdí, že každý fyzikálně\nrealizovatelný výpočet jde na pravděpodobnostním Turingově stroji provést s nejvýš polynomiálním zpomalením.\nKvantová mechanika tomu podle všeho odporuje, ale je to „všeobecně přijímaná, nedokázaná domněnka“ už od Feynmana.\nLu ji staví vedle Bellových pokusů: ty vyvrátily lokální skryté parametry a ukázaly, že provázání je zdroj\nsilnějších než klasických korelací. Pokus s kvantovou výhodou má stejně tak vyvrátit ECT a ukázat zdroj\nrychlejšího než klasického výpočtu (přehled Harrow a Montanaro, 2017).\n\n**Sycamore.** Google zvolil vzorkování z náhodných obvodů (*random circuit sampling*) na supravodivém procesoru\ns 53 qubity: milion vzorků, jejichž výpočet by podle tehdejšího odhadu Googlu trval superpočítači 10 000 let\n(Arute a kol., 2019). Na slajdu Lu hned připomíná odpovědi: IBM odhad snížila na 2,5 dne a další skupiny\n(Alibaba, Ústav teoretické fyziky CAS s NVIDIA) na dny při nižší věrnosti.\n\n**Nadřazenost není jednorázová.** Lu si „půjčuje“ slajd Umeshe Vaziraniho: stejně jako Bellovy testy se i pokusy\ns výhodou musí opakovaně zpřesňovat a zavírat „mezery“ (*loopholes*), protože klasičtí informatici přicházejí se\nstále lepšími algoritmy. Tahle věta se ukázala jako prorocká; co se stalo s Jiuzhangem, rozebírá\npředposlední kapitola.",
+      "start": 0,
+      "slides": [
+        {
+          "file_name": "slajd_0085.jpg",
+          "caption": "Titulní slajd: Gaussian boson sampling pro kvantovou výpočetní výhodu"
+        },
+        {
+          "file_name": "slajd_0139.jpg",
+          "caption": "Cíle kvantového počítání: kvalita i počet qubitů zároveň, „klást vejce po cestě“"
+        },
+        {
+          "file_name": "slajd_0195.jpg",
+          "caption": "Výpočetní obdoba Bellových pokusů: vyvrátit rozšířenou Churchovu–Turingovu tezi"
+        },
+        {
+          "file_name": "slajd_0228.jpg",
+          "caption": "Procesor Sycamore od Googlu a první odpovědi klasických počítačů"
+        },
+        {
+          "file_name": "slajd_0259.jpg",
+          "caption": "Vazirani: nadřazenost není jednorázový pokus, ale postupné zpřesňování"
+        }
+      ]
+    },
+    {
+      "heading": "Boson sampling: proč je permanent těžký",
+      "body": "**Model.** Boson sampling je zjednodušený model lineárně optického kvantového počítání: řada zdrojů jednotlivých\nfotonů svítí do velkého interferometru (síť děličů svazku a fázových posuvů, popsaná unitární maticí $U$) a na výstupu\nse měří, kolik fotonů dopadlo do kterého detektoru. Jeden výstřel dá vzor $S = (s_1, \\dots, s_m)$.\n\n**Proč permanent.** Fotony jsou nerozlišitelné bosony, takže se sčítají amplitudy všech „historií“ (který foton šel\nkam) dřív, než se umocní. Součet přes všechna přiřazení vstupů k detektorům je permanent podmatice $U_{S,T}$:\n\n$$\nP(S) = \\frac{|\\mathrm{Perm}(U_{S,T})|^2}{s_1!\\, s_2! \\cdots s_m!}\n$$\n\nPermanent je determinant bez znamének, a právě znaménka umožňují determinant spočítat Gaussovou eliminací.\nPro permanent žádná taková zkratka není: je #P-těžký (Valiant, 1979) a nejlepší přesné algoritmy (Ryser, Glynn)\npotřebují řádově $n\\,2^n$ operací. Polopatě a s kódem to vysvětluje [Hafnián a permanent polopatě](/gbs/hafnian).\n\n**Co dokázali Aaronson a Arkhipov.** Lu zdůrazňuje to podstatné: nejde jen o to, že je permanent těžký spočítat.\nAaronson a Arkhipov (konferenčně 2011, časopisecky 2013) ukázali, že by i *přibližná nebo zašuměná* klasická simulace\nvzorkování znamenala zhroucení polynomiální hierarchie, za dvou domněnek o permanentech gaussovských matic. Proto\nstačí „jen“ vzorkovat a výsledek nemusí nikdo přepočítat. Lu říká, že ho ta teorie inspirovala natolik, že si ji\npředsevzal realizovat.\n\n**Souvislost s naší aplikací.** Simulátor čipu má\n[laboratoř s boson samplingem](/fotonika/simulator-cipu#cip-boson-sampling), kde permanenty počítáme přesně\n(do milionu výstupních vzorů) a průměr $S!$ z výstřelů srovnáváme s klasickým Monte Carlem.",
+      "start": 260,
+      "slides": [
+        {
+          "file_name": "slajd_0322.jpg",
+          "caption": "Boson sampling: zdroje, interferometr a detektory; výpočetní složitost lineární optiky"
+        },
+        {
+          "file_name": "slajd_0335.jpg",
+          "caption": "Aaronson a Arkhipov a rozhovor pro Nature, který Lu zmiňuje"
+        }
+      ]
+    },
+    {
+      "heading": "Rok 2013: padesát fotonů za 10⁻¹⁵⁰ Hz",
+      "body": "**Odhad, který zchladí.** Zhruba v roce 2013 skupina sebrala nejlepší dostupné parametry zdroje, obvodu a detektorů\na spočítala, kolik padesátifotonových událostí by dostala, kdyby všechno spojila:\n\n- zdroj: asi 600 000 fotonů za sekundu, nerozlišitelnost kolem 90 %, účinnost zdroje asi 0,8 %;\n- obvod (interferometr): propustnost 10–30 %;\n- detektory: účinnost 85–90 %.\n\nVýsledek na slajdu: padesátifotonová událost s frekvencí asi $10^{-150}$ Hz, „jako vyhrát milionovou loterii\ndvacetkrát za sebou“.\n\n**Proč tak hrozně málo: účinnosti se násobí.** Každý z $n$ fotonů musí projít celým řetězcem, takže\npravděpodobnost úspěchu je součin účinností na foton umocněný na $n$:\n\n$$\nP_n \\approx \\left(\\eta_{\\text{zdroj}}\\,\\eta_{\\text{obvod}}\\,\\eta_{\\text{detektor}}\\right)^{n}\n$$\n\nNáš hrubý přepočet: $0{,}008 \\cdot 0{,}2 \\cdot 0{,}875 \\approx 0{,}0014$ na foton a pro 50 fotonů\n$0{,}0014^{50} \\approx 10^{-143}$; s rozsahem propustnosti obvodu 10–30 % vychází $10^{-158}$ až $10^{-134}$. Řád\nčísla ze slajdu tedy sedí. Násobí se ještě opakovací frekvencí pulzů a nerozlišitelností, ale exponent dělá\nvšechno: zlepšit jeden článek z 0,8 % na 80 % znamená na padesáti fotonech zlepšení o sto řádů.\n\n**Kontrolní seznam dokonalého zdroje.** Lu z toho dělá seznam, který se táhne celou přednáškou. Zdroj musí splnit\nvšechno **zároveň**:\n\n1. *Vysoká účinnost:* kvantová účinnost (vybuzený stav se skutečně vyzáří jako foton), deterministické generování\n   (jeden foton na jeden puls, ne náhodně) a vysoká účinnost sběru do jediného prostorového módu (vlákna).\n2. *Vysoká čistota:* téměř nulová pravděpodobnost, že puls vyzáří dva fotony. Měří se korelační funkcí\n   $g^{(2)}(0)$, která je pro ideální jednofotonový zdroj nulová.\n3. *Vysoká nerozlišitelnost:* fotony z různých pulzů (a z různých zdrojů) musí být stejné ve všech stupních\n   volnosti, tedy čas, frekvence, polarizace a prostorový mód. Měří se viditelností Hongova–Ouova–Mandelova jevu.\n\nBez nerozlišitelnosti zmizí interference a s ní i výpočetní těžkost: pro rozlišitelné fotony je pravděpodobnost\npermanent nezáporné matice $|U|^2$, který jde efektivně přibližně spočítat.",
+      "start": 336,
+      "slides": [
+        {
+          "file_name": "slajd_0388.jpg",
+          "caption": "Kde začínali v roce 2013: nejlepší zdroj, obvod a detektory dohromady dávají 10⁻¹⁵⁰ Hz pro 50 fotonů"
+        },
+        {
+          "file_name": "slajd_0428.jpg",
+          "caption": "Kontrolní seznam dokonalého zdroje jednotlivých fotonů"
+        }
+      ]
+    },
+    {
+      "heading": "SPDC: dříč multifotonových pokusů, ale ne dokonalý",
+      "body": "**Co je SPDC.** Spontánní parametrická sestupná konverze: silný laserový puls projde nelineárním krystalem a\nněkterý jeho foton se rozpadne na dva fotony s nižší energií (*signál* a *idler*). Energie se zachovává,\n$\\omega_{\\text{pumpa}} = \\omega_s + \\omega_i$. Detekce jednoho fotonu z páru ohlásí (*herald*), že druhý existuje.\nPodrobněji s čísly to popisuje [podkapitola o SPDC v simulátoru čipu](/fotonika/simulator-cipu#cip-boson-sampling).\n\n**Známé vrozené vady.** Emise je náhodná a se zvyšováním výkonu pumpy rostou i vícenásobné páry, které do pokusu\npřidají fotony navíc. Proto se pravděpodobnost páru na puls drží malá a $n$ fotonů naráz přijde jen s\npravděpodobností řádu $p^n$.\n\n**Méně známé vady, které Lu zdůrazňuje.** Ani po dvaceti letech vývoje SPDC nebyla optimální:\n\n- *Sběr:* provázané páry se tradičně braly z průsečíků dvou prstenců, do kterých krystal vyzařuje. Ty nemají\n  gaussovský tvar, takže je nejde navázat do jednovidového vlákna se stoprocentní účinností. V roce 2016 skupina\n  upravila krystal tak, aby vyzařoval **dva oddělené kruhové svazky** s téměř gaussovským profilem. Podle slajdu\n  tím zvedli účinnost sběru na 70 % při nerozlišitelnosti kolem 91 % zároveň a dostali čtyřikrát jasnější zdroj\n  než u svého osmifotonového pokusu, s 65 % výkonu pumpy (desetifotonové provázání, Wang a kol. 2016).\n- *Spektrální korelace:* páry jsou frekvenčně korelované (sdružená spektrální amplituda je šikmá elipsa: když má\n  signál vyšší frekvenci, má idler nižší). Ohlášený foton pak není v čistém stavu a fotony z různých zdrojů nejsou\n  nerozlišitelné. Obvyklá oprava, úzkopásmový filtr, ale zahazuje fotony. V roce 2018 upravili podmínku fázové\n  synchronizace tak, aby byla korelace **kruhová**, tedy žádná, a filtry nepotřebují: podle anotace přednášky\n  účinnost sběru 97 % a nerozlišitelnost 96 % zároveň (dvanáctifotonový pokus, Zhong a kol. 2018).\n\n**Proč to je důležité pro GBS.** Přesně tyhle zdroje, frekvenčně nekorelované a s vysokou účinností, později\nsvítí do Jiuzhangu. Rozdíl je v tom, jak se s nimi zachází: místo honby za jednotlivými páry se použije celé\nstlačené světlo (kapitola o GBS).",
+      "start": 429,
+      "slides": [
+        {
+          "file_name": "slajd_0466.jpg",
+          "caption": "Problémy SPDC: pravděpodobnostní emise, vícenásobné páry, sběr a kompromis účinnost–nerozlišitelnost"
+        },
+        {
+          "file_name": "slajd_0498.jpg",
+          "caption": "SPDC není tak vyzrálá, jak se zdá: z prstenců dva kruhové svazky (2016)"
+        },
+        {
+          "file_name": "slajd_0532.jpg",
+          "caption": "SPDC dotažená k dokonalosti: frekvenčně nekorelované páry bez filtrů (2018)"
+        }
+      ]
+    },
+    {
+      "heading": "Kvantová tečka: umělý atom jako zdroj jednotlivých fotonů",
+      "body": "**Co je kvantová tečka.** Ostrůvek polovodiče o velikosti nanometrů zapuštěný v jiném polovodiči. Elektron v něm\nmá diskrétní hladiny jako v atomu, proto „umělý atom“. Vybuzená tečka vyzáří nejvýš jeden foton, takže na rozdíl\nod SPDC je zdroj v principu deterministický: jeden puls, jeden foton.\n\n**Problém kvality: jak tečku budit.** Dřív se tečka budila *nerezonančně*: laserem s vyšší energií, ze které\nse nosiče náboje teprve „sesypou“ do tečky. To trvá nahodilou dobu (časové rozmazání, *jitter*) a nosiče kolem\ntečky rozkmitají elektrické pole. Fotony pak mají kolísající čas i frekvenci a podle Lua to omezuje\nnerozlišitelnost pod 60 %.\n\n**Řešení: pulzní rezonanční buzení.** Laser má přesně energii přechodu a dvouhladinový systém budí koherentně.\nPopulace pak osciluje mezi základním a vybuzeným stavem (Rabiho oscilace); takzvaný $\\pi$-puls převede tečku\ns jistotou do vybuzeného stavu. Na slajdu stačí na $\\pi$-puls jen několik nanowattů, o čtyři řády méně než dřív,\ntakže se okolí skoro neruší. Nerozlišitelnost podle přednášky stoupla na 99,5 % (He a kol. 2013).\n\n**Problém kvantity: jak fotony dostat ven.** Polovodič má vysoký index lomu, takže většina světla se odrazí zpět\ndovnitř (totální odraz) a z holé tečky se ven dostane asi 1 %. Řešením je **mikropilíř**: sloupek s Braggovými\nzrcadly nad tečkou i pod ní tvoří optickou dutinu. Když je tečka v rezonanci s dutinou, vyzařuje rychleji a\npřednostně do módu dutiny (Purcellův jev). Podle přednášky se doba života zkrátila z asi 700 ps na asi 80 ps a\núčinnost extrakce stoupla z asi 1 % na asi 66 % (Ding a kol. 2016).",
+      "start": 533,
+      "slides": [
+        {
+          "file_name": "slajd_0553.jpg",
+          "caption": "Problémy kvantových teček: sběr z materiálu s vysokým indexem lomu a rozlišitelnost fotonů"
+        },
+        {
+          "file_name": "slajd_0615.jpg",
+          "caption": "Pulzní rezonanční fluorescence: koherentní buzení bez časového rozmazání, o čtyři řády menší výkon"
+        },
+        {
+          "file_name": "slajd_0651.jpg",
+          "caption": "Kvantová tečka v mikropilíři: kratší doba života a účinnost extrakce kolem 66 %"
+        }
+      ]
+    },
+    {
+      "heading": "Poslední míle: polarizační filtr bere polovinu fotonů",
+      "body": "**Cena za rezonanční buzení.** Laser má teď stejnou vlnovou délku jako fotony z tečky, takže ho nejde odfiltrovat\nbarvou. Používá se křížená polarizace: budí se jednou polarizací a sbírá kolmou. Jenže tečka vyzařuje do obou\npolarizací rovnoměrně, takže filtr zahodí aspoň polovinu užitečných fotonů. Proto „poslední míle“ a slajd\ns účinností 50 %.\n\n**Řešení: zabít dvě mouchy jednou ranou.** Skupina rozbila symetrii dutiny: **eliptický mikropilíř** má dva\nnedegenerované lineárně polarizované módy, H a V, s různými frekvencemi.\n\n1. Tečka se naladí do rezonance s módem H. Purcellův jev pak zesiluje jen emisi do H, takže většina fotonů\n   vyletí s polarizací H (*polarizačně selektivní Purcellovo zesílení*).\n2. Budí se polarizací V a sbírá polarizací H (*ortogonální buzení a sběr*). Mód V je od tečky posunutý, ale ne\n   příliš, takže tečku pořád jde vybudit.\n\nLaser tak skončí ve „špatné“ polarizaci a fotony ve „správné“, takže filtr skoro nic neztrácí.\n\n**Výsledek.** Polarizované jednotlivé fotony s čistotou 99 % a nerozlišitelností 97 % (slajd, Wang a kol. 2019).\nLu ukazuje kontrolní seznam s fajfkou u každého bodu: zdroj, který v principu splňuje všechno zároveň.\n\n**Na co si dát pozor.** Zatržený seznam znamená splněné všechny tři požadavky v jednom zařízení, ne stoprocentní\nhodnoty. Na velkých pokusech se pořád násobí účinnosti jako v kapitole o roce 2013, jen s mnohem lepšími čísly.",
+      "start": 652,
+      "slides": [
+        {
+          "file_name": "slajd_0688.jpg",
+          "caption": "Problém „poslední míle“: polarizační filtr proti laseru stojí aspoň 50 % fotonů"
+        },
+        {
+          "file_name": "slajd_0745.jpg",
+          "caption": "Polarizovaná mikrodutina: dva nedegenerované módy H a V"
+        },
+        {
+          "file_name": "slajd_0763.jpg",
+          "caption": "Polarizované nerozlišitelné fotony: čistota 99 %, nerozlišitelnost 97 % (Wang a kol. 2019)"
+        },
+        {
+          "file_name": "slajd_0768.jpg",
+          "caption": "Kontrolní seznam zdroje: všechny body splněné zároveň"
+        }
+      ]
+    },
+    {
+      "heading": "Dvacet fotonů v 60 módech a laťka padesáti fotonů",
+      "body": "**Z tří fotonů na dvacet.** S kvantovou tečkou skupina v roce 2019 přešla z dřívějších zhruba tříčásticových\npokusů na **20 vstupních fotonů v interferometru s 60 módy** (Wang a kol. 2019). Výstupní prostor měl podle Lua\nrozměr $10^{14}$ a zdroj dával asi 16 milionů jednotlivých fotonů za sekundu. V době přednášky už měli přes\n45 milionů za sekundu a podle Lua mohou snadno jít nad 30 fotonů.\n\n**Proč nestačilo 20–30 fotonů.** Starší odhady z let 2013–2016 kladly hranici výhody na 20–30 fotonů. V roce 2017\nale skupina z Bristolu ukázala lepší klasický algoritmus (Metropolisovo vzorkování s nezávislými návrhy, Neville a\nkol. 2017), který zvedl laťku asi na 50 fotonů. Slajd se Sisyfem to ilustruje: každé zlepšení experimentu dohání\nzlepšení klasických algoritmů. Dnes známé přesné klasické vzorkování boson samplingu stojí zhruba tolik jako\nvýpočet dvou permanentů velikosti $n \\times n$ (Clifford a Clifford 2018).\n\n**Proč je padesát fotonů z tečky tak těžkých.** Jedna tečka dává fotony jeden po druhém v čase. Aby šly do\ninterferometru naráz, musí se rozdělit (demultiplexovat) do různých vstupů a zpozdit, a každý přepínač a zpožďovací\nsmyčka přidá ztráty. Účinnosti se zase násobí přes všechny fotony. Proto Lu sahá po jiné cestě.",
+      "start": 769,
+      "slides": [
+        {
+          "file_name": "slajd_0789.jpg",
+          "caption": "2019: boson sampling se 20 vstupními fotony a interferometrem s 60 módy"
+        },
+        {
+          "file_name": "slajd_0833.jpg",
+          "caption": "Odhady hranice výhody a laťka 50 fotonů po klasickém algoritmu z Bristolu (2017)"
+        }
+      ]
+    },
+    {
+      "heading": "Gaussian boson sampling: využít celý ledovec SPDC",
+      "body": "**Obrázek s ledovcem.** Většina dřívějších multifotonových pokusů se bála vícenásobných párů z SPDC, a tak\npracovala s malou pravděpodobností páru na puls (na slajdu $p < 0{,}05$). Využívala tím jen špičku ledovce.\nGaussian boson sampling (Hamilton a kol. 2017, podrobně Kruse a kol. 2019) bere **celý** výstup krystalu,\nstlačené vakuum i s vícenásobnými páry, a z jeho „vady“ dělá součást výpočetní úlohy.\n\n**Co je stlačené vakuum.** Koherentní superpozice stavů se sudým počtem fotonů, 0, 2, 4, 6, …, s pevným fázovým\nvztahem mezi nimi (fotony v krystalu vznikají po párech):\n\n$$\n|r, \\varphi\\rangle = \\frac{1}{\\sqrt{\\cosh r}} \\sum_{k=0}^{\\infty} \\left(-e^{i\\varphi} \\tanh r\\right)^{k}\n\\frac{\\sqrt{(2k)!}}{2^k\\, k!}\\, |2k\\rangle\n$$\n\nParametr $r$ je stlačení (čím větší, tím víc fotonů, střední počet je $\\sinh^2 r$) a $\\varphi$ je fáze, kterou\nnastavuje fáze pumpy.\n\n**Kde je výpočetní těžkost.** Lu to vysvětluje na cestách. V původním boson samplingu se sčítají amplitudy všech\nprostorových cest, kterými se fotony ze vstupů 1, 2, 3, 4 dostanou do výstupů 1, 3, 4, 7; v jeho ukázkové síti\njich je přes 20 000 (na slajdu 23 520). GBS k tomu přidá **další superpozici**: ty čtyři zachycené fotony mohly\npřijít z různých kombinací vstupních počtů fotonů, třeba 4-0-0-0, 2-2-0-0, 2-0-2-0 a tak dál. Součet přes\nvšechna rozdělení zachycených fotonů do párů dává místo permanentu **hafnián**:\n\n$$\nP(S) = \\frac{|\\mathrm{Haf}(B_S)|^2}{s_1! \\cdots s_m!\\, \\prod_j \\cosh r_j},\n\\qquad B = U \\,\\mathrm{diag}\\!\\left(e^{i\\varphi_j}\\tanh r_j\\right) U^{T}\n$$\n\nHafnián je zobecnění permanentu (permanent je hafnián blokové matice) a je také #P-těžký. Rozdíl obou úloh krok za\nkrokem popisuje [srovnání boson samplingu a GBS](/reserse-gbs-financni-riziko/fotonicky-hardware#fotonika-bs-a-gbs)\na odvození je v [kapitole 4 skript](/fotonika/gaussian-boson-sampling).\n\n**Detektory jen „klik, nebo nic“.** Jiuzhang používá prahové detektory, které nerozliší jeden foton od více.\nPravděpodobnost vzoru kliknutí pak není hafnián, ale **torontián** (Quesada, Arrazola a Killoran 2018), který je\nrovněž těžký. Lu proto mluví o „kliknutích“ (*clicks*), ne o fotonech.\n\n**Proč je to experimentálně snazší.** Stlačené vakuum vyrobí krystal přímo, bez čekání na to, až „vystřelí“ všechny\nzdroje naráz. Cena je jinde: fáze teď hraje roli (v $B$ je $\\varphi_j$), takže celé zařízení musí být fázově\nstabilní (kapitola o fázové stabilitě).",
+      "start": 834,
+      "slides": [
+        {
+          "file_name": "slajd_0863.jpg",
+          "caption": "Ledovec SPDC: dřívější pokusy využívaly jen špičku, GBS využije celé stlačené světlo"
+        },
+        {
+          "file_name": "slajd_0905.jpg",
+          "caption": "Vše je součet amplitud nerozlišitelných cest: 1234 → 1347 má už 23 520 kombinací"
+        },
+        {
+          "file_name": "slajd_1002.jpg",
+          "caption": "Boson sampling s permanentem a Gaussian boson sampling s hafniánem"
+        }
+      ]
+    },
+    {
+      "heading": "Jiuzhang: zdroj, laser a stimulovaná SPDC",
+      "body": "**Dva experimenty.** Jiuzhang 1.0 (Zhong a kol. 2020) poslal **50 jednovidových stlačených stavů** do interferometru\n**100 × 100** a zaznamenal až 76 kliknutí. Jiuzhang 2.0 (Zhong a kol. 2021, v době přednášky čerstvý) zvětšil\ninterferometr na **144 módů**.\n\n**Nákupní seznam velkého GBS.** Lu ho shrnuje do pěti položek, z nichž každá musí platit zároveň:\n\n1. *Zdroj:* stlačené stavy s vysokým stlačením, čistotou, nerozlišitelností a účinností sběru.\n2. *Interferometr:* velký a hluboký, s úplnou propojeností (každý vstup ovlivní každý výstup), náhodný, s\n   překryvem vlnových balíků, fázovou stabilitou a propustností blízkou 1.\n3. *Řízení fáze:* od vzniku stlačeného světla až po průchod interferometrem.\n4. *Detektory:* mnoho, s vysokou účinností a rychlé (supravodivé nanodrátové detektory).\n5. *Ověření:* získané vzorky se musí ověřit a porovnat se superpočítačem.\n\n**Laser.** Místo běžných 80 MHz měl na zakázku postavený pulzní laser stovky kilohertzů (v řeči 200 kHz, na slajdu\no stimulované PDC 250 kHz). Při stejném středním výkonu má každý puls mnohem vyšší špičkový výkon, a tedy větší\nstlačení. Deformovatelné zrcadlo vyrovnává disperzi vyšších řádů, takže puls je spektrálně co nejkratší\n(*transform-limited*). Laser se rozdělí do **25 svazků na 25 krystalů ppKTP**; každý dá dvoumódový stlačený stav,\ntedy celkem ekvivalent 50 jednovidových stlačených stavů. Výstup je frekvenčně nekorelovaný jako u zdroje z roku 2018.\n\n**Stimulovaná PDC: nápad z laseru.** Výkon laseru je vždycky omezený. V Jiuzhangu 2.0 proto pumpa projde krystalem\n**dvakrát** (za krystalem je duté zrcadlo). Páry z prvního průchodu stimulují vznik dalších párů ve druhém, podobně\njako stimulovaná emise v laseru. Podle slajdu je se stejným výkonem stlačené světlo **čtyřikrát jasnější**, nebo\nstačí čtvrtina výkonu. Účinnosti 25 dvoumódových zdrojů jsou na slajdu 0,90–0,94 a čistoty 0,94–0,98.",
+      "start": 1003,
+      "slides": [
+        {
+          "file_name": "slajd_1016.jpg",
+          "caption": "Nákupní seznam velkého GBS: zdroj, interferometr, fáze, detektory a ověření (Jiuzhang, 100 × 100)"
+        },
+        {
+          "file_name": "slajd_1030.jpg",
+          "caption": "Jiuzhang 2.0: 50 stlačených stavů do interferometru 144 × 144"
+        },
+        {
+          "file_name": "slajd_1071.jpg",
+          "caption": "Laser s deformovatelným zrcadlem, 25 krystalů a frekvenčně nekorelované spektrum"
+        },
+        {
+          "file_name": "slajd_1123.jpg",
+          "caption": "Inspirace laserem: stimulovaná PDC, se stejným výkonem čtyřikrát jasnější stlačené světlo"
+        }
+      ]
+    },
+    {
+      "heading": "Fázová stabilita: 22 metrů s přesností na nanometry",
+      "body": "**Proč na fázi záleží.** V původním boson samplingu nemají zdroje mezi sebou žádný fázový vztah: jednotlivý foton\nfázi nenese. Stlačené vakuum ji nese ($\\varphi_j$ ve vzorci pro $B$), takže změna délky dráhy mezi zdrojem a\ninterferometrem změní matici $B$, a tím celé rozdělení. GBS proto vyžaduje fázovou kontrolu od vzniku světla až\npo výstup interferometru.\n\n**Jak to udrželi.** Kombinací aktivního zámku (vlákno navinuté na piezoelektrickém válečku, které zpětná vazba\nnatahuje a zkracuje) a pasivní stabilizace. Podle přednášky drží všechny dráhy v rozmezí **25 nm**, v\nJiuzhangu 2.0 **15 nm**. V odpovědi na otázku Lu doplňuje měřítko: dráhy od zdroje po interferometr jsou dlouhé\n**22 metrů**, je jich 50 a každá se musí držet zhruba na **10 nm**; naučit se systém takto stabilizovat trvalo přes\nrok.\n\n**Co ta čísla znamenají.** Náš přepočet: fotony mají vlnovou délku kolem 1550 nm, takže kolísání dráhy o 15 nm\nposune fázi o $2\\pi \\cdot 15/1550 \\approx 0{,}06$ rad, asi 3,5°. Vůči délce dráhy je to\n$15\\ \\mathrm{nm} / 22\\ \\mathrm{m} \\approx 7 \\cdot 10^{-10}$.\n\n**Celé zařízení.** Na slajdu je řetězec: laser na zakázku → zdroje stlačeného světla → navázání do optických vláken\ns fázovými zámky → interferometr se 144 módy (sestavený z objemové optiky v jednom bloku) → detektory. Matice\ninterferometru změřená po amplitudách a fázích „vypadá pěkně náhodně“, což je požadavek teorie: těžkost se\ndokazuje pro náhodné (haarovské) unitární matice.",
+      "start": 1124,
+      "slides": [
+        {
+          "file_name": "slajd_1186.jpg",
+          "caption": "Aktivní a pasivní stabilizace fáze a změřená matice interferometru (amplitudy a fáze)"
+        },
+        {
+          "file_name": "slajd_1213.jpg",
+          "caption": "Celé zařízení: laser, zdroje, vlákna s fázovým zámkem a interferometr se 144 módy"
+        }
+      ]
+    },
+    {
+      "heading": "Tři režimy, kalibrace a výsledky",
+      "body": "**Tři režimy podle počtu kliknutí.** Lu dělí výsledky podle toho, co s nimi klasický počítač zvládne:\n\n| režim | kliknutí | co platí |\n|:---|:---|:---|\n| snadný | 2–4 | jde naměřit celé výstupní rozdělení, jako v dřívějších pokusech |\n| řídký | 5–40 | většina výstupních vzorů nepadne ani jednou, jen malá část má jednu událost |\n| neřešitelný | nad 40 | už výpočet jediné maticové funkce (pravděpodobnosti) je klasicky příliš těžký |\n\n**Kalibrace ve snadném režimu.** Do interferometru pustili jen několik stlačených stavů (v řeči „tři páry“) a\nnaměřili celé rozdělení dvoufotonových výstupů. Protože je celé, jde porovnat s teorií přímo: věrnost pro 23 vstupních\nkombinací je na slajdu v průměru asi 0,99 a malá je i celková variační vzdálenost. To dává jistotu, že stroj\n„běží správně“, než se pustí do režimu, kde přímé srovnání nejde.\n\n**Výsledky.** Se všemi 25 vstupy a při různých výkonech laseru měřili rozdělení počtu kliknutí; při nejvyšším\nvýkonu bylo maximum **113 kliknutí**. Nahráli i data s nízkým výkonem, kde je maximum kolem 20 kliknutí: tam si\npodle Lua může výsledky ověřit každý na notebooku, zatímco pro vysoké výkony je potřeba superpočítač. Rozměr\nvýstupního prostoru (počet možných vzorů) roste exponenciálně: Sycamore $10^{16}$, Jiuzhang 1.0 $10^{30}$ a\nJiuzhang 2.0 $10^{43}$ (slajd). Anotace přednášky k Jiuzhangu 1.0 uvádí rychlost vzorkování $10^{14}$krát vyšší\nnež nejlepší tehdejší simulace na superpočítačích.\n\n**Jak číst „kliknutí“.** Kliknutí není foton: detektor ohlásí jen „něco přišlo“. Při velkém stlačení může v jednom\ndetektoru skončit víc fotonů, a proto se později přešlo na pseudo-rozlišení počtu fotonů (kapitola o vývoji po\npřednášce).",
+      "start": 1214,
+      "slides": [
+        {
+          "file_name": "slajd_1299.jpg",
+          "caption": "Tři režimy (snadný, řídký, neřešitelný) a kalibrace v snadném režimu"
+        },
+        {
+          "file_name": "slajd_1353.jpg",
+          "caption": "Rozdělení počtu kliknutí, maximum 113 a rozměr výstupního prostoru 10⁴³"
+        }
+      ]
+    },
+    {
+      "heading": "Ověření: když výsledek nejde přepočítat",
+      "body": "**Proč je ověření těžké.** U Shorova algoritmu jde výsledek ověřit snadno: rozklad stačí roznásobit. U GBS je\núplné ověření podle všeho stejně těžké jako výpočet sám; problém je těžký „oběma směry“. Komunita proto sbírá\n**nepřímé důkazy**: ukazuje, že data odpovídají kvantovému modelu, a vylučuje všechny věrohodné alternativy.\n\n**Hypotézy, které je třeba vyloučit.**\n\n- *Tepelné stavy:* vznikly by při velkých ztrátách fotonů (stlačené světlo s velkými ztrátami vypadá jako tepelné).\n- *Rozlišitelné fotony:* vznikly by nesouladem módů (fotony z různých zdrojů by se lišily spektrem nebo časem).\n- *Rovnoměrné vzorky, koherentní světlo, stlačené tepelné stavy* a další; Lu výslovně vítá další návrhy.\n\n**Dva testy.** Nejdřív celé rozdělení počtu kliknutí: tvar i poloha vrcholů naměřených dat sedí na teorii a\nliší se od všech alternativ. Pak podsystémy: z celkových 144 výstupních módů vezmou jen část (třeba 60, 80, 100\nmódů) a pro každou alternativu spočítají bayesovský test $\\Delta H$. Zjednodušeně (náš zápis) jde o průměrný\nlogaritmus poměru věrohodností přes naměřené vzorky:\n\n$$\n\\Delta H = \\frac{1}{N}\\sum_{i=1}^{N} \\ln \\frac{P_{\\text{alternativa}}(S_i)}{P_{\\text{GBS}}(S_i)}\n$$\n\nZáporné $\\Delta H$ znamená, že data spíš vyrobil ideální GBS než podvrh. Podstatné je, že s rostoucím podsystémem\nje $\\Delta H$ zápornější, takže je rozumné usuzovat, že ověření platí i v režimu výhody, kde už ho přímo spočítat\nnejde. Je to ale **extrapolace**, ne důkaz.\n\n**Upřímné přiznání.** Lu sám říká, že teorie ověřování boson samplingu je méně vyspělá než u náhodných obvodů, a\nvyzývá komunitu k výpočtům, simulacím i útokům podvrženými vzorky. Surová data dali volně ke stažení\n(odkaz ve zdrojích).\n\n**Proč nás to zajímá.** Každá z vyloučených hypotéz je zároveň **způsob, jak může selhat odhad Monte Carla na GBS**:\nztráty posunou rozdělení k tepelnému, rozlišitelnost k permanentům $|U|^2$. Přesně tím se zabývá stránka\n[Kdy odhad rizika přes GBS selže](/vyzkumne-smery/kdy-gbs-selze).",
+      "start": 1354,
+      "slides": [
+        {
+          "file_name": "slajd_1537.jpg",
+          "caption": "Jak ověřovat: vyloučit tepelné, rozlišitelné, rovnoměrné, koherentní a stlačené tepelné hypotézy"
+        },
+        {
+          "file_name": "slajd_1567.jpg",
+          "caption": "Data jsou veřejná a výzva komunitě: lepší ověření, simulace i pokusy o podvržení vzorků"
+        }
+      ]
+    },
+    {
+      "heading": "Programovatelnost a co dál",
+      "body": "**Částečně programovatelný stroj.** Interferometr Jiuzhangu je pevný blok optiky, ale fáze a amplitudy vstupních\nstlačených stavů jdou nastavit. Skupina zkusila 30 náhodných nastavení fází vstupů a ukázala, že dávají 30 statisticky\nodlišných souborů vzorků: matice celkové variační vzdálenosti mezi nastaveními má malou diagonálu a velké hodnoty\nmimo ni.\n\n**Co dál podle Lua.** Udělat interferometr plně laditelný a hledat aplikace, přitom kriticky prověřit, jestli\nnavržené protokoly přinášejí skutečnou kvantovou výhodu.\n\n**Závěr.** Lu končí „ukradeným“ slajdem Johna Preskilla o hranicích fyziky: vedle malých a velkých vzdáleností je\ntřetí hranicí **složitost**, tedy chování velkých provázaných kvantových systémů, a právě tam patří pokusy s\nkvantovou výhodou. Projekt podle něj vymyslel společně s Jian-Wei Panem; skutečnými hrdiny jsou studenti a\npostdoci, kteří udělali těžkou práci.",
+      "start": 1568,
+      "slides": [
+        {
+          "file_name": "slajd_1602.jpg",
+          "caption": "Fázově programovatelný GBS: 30 náhodných nastavení fází dá 30 statisticky odlišných vzorků"
+        },
+        {
+          "file_name": "slajd_1614.jpg",
+          "caption": "Preskillovy hranice fyziky: malé vzdálenosti, velké vzdálenosti a složitost"
+        },
+        {
+          "file_name": "slajd_1652.jpg",
+          "caption": "Poděkování: tým studentů a postdoků, projekt s Jian-Wei Panem"
+        }
+      ]
+    },
+    {
+      "heading": "Otázky a odpovědi",
+      "body": "**Co bylo nejtěžší?** Podle Lua **zdroj světla**: nejdřív zlepšovali kvalitu, pak účinnost, a pak zjistili, že mezi\nnimi je vždy kompromis, a hledali způsoby, jak obojí sladit. Za skoro stejně náročnou považuje **fázovou\nstabilizaci**: 50 drah po 22 metrech, každá držená zhruba na 10 nm, a přes rok učení, jak systém stabilizovat.\n\n**Aplikace?** Tazatel z pořádající skupiny připomíná jejich návrh z roku 2015 simulovat boson samplingem\nvibronická spektra molekul (Huh a kol. 2015). Lu odpovídá, že kvantové počítače podle něj nejdřív vyřeší\n**kvantové** úlohy, ne klasické: kvantovou chemii, spektra molekul a zmiňuje i nedávný protokol pro transport\nelektronu jednou molekulou s pomocí GBS (Jahangiri a kol. 2021). U kvantového strojového učení a podobných úloh je\nskeptický, že by ukázaly skutečnou kvantovou výhodu.\n\n**Jak ověřili, že stlačené stavy jsou stejné?** Otázka z chatu míří na sdružené spektrální amplitudy při vysokém\nzisku: jsou fotony z různých zdrojů opravdu ve stejných (Schmidtových) módech? Lu odpovídá, že mají spektrometr\npro 1550 nm, kterým v úzkém okně skenují provázané fotony a amplitudu přímo měří; poprvé to publikovali v roce 2018\nu dvanáctifotonového pokusu.\n\n**Pro kontext (naše poznámka).** Tazatelé jsou ze skupiny, která seminář pořádá; přesná jména v záznamu nezazní,\nproto je neuvádíme.",
+      "start": 1653
+    },
+    {
+      "heading": "Co se stalo po přednášce",
+      "body": "Tahle kapitola v přednášce není; shrnuje vývoj podle literatury do doby psaní zápisků.\n\n**Další stroje.**\n\n- *Borealis* (Xanadu, Madsen a kol. 2022): GBS v časových módech, plně programovatelný, s 216 módy a\n  detektory rozlišujícími počet fotonů; tvrzení výhody s průměrem kolem 125 fotonů.\n- *Jiuzhang 3.0* (Deng a kol. 2023): detektory s pseudo-rozlišením počtu fotonů a až 255 kliknutí.\n\n**Klasické odpovědi.** Přesně podle Vaziraniho věty z úvodu přišla další kola:\n\n- Villalonga a kol. (2021) ukázali levný klasický vzorkovač, který v testech založených na nízkořádových\n  korelacích obstojí stejně dobře nebo lépe než data z Jiuzhangu, a otevřeli otázku, co testy z kapitoly\n  o ověření vlastně dokazují.\n- Bulmer a kol. (2022) odhadli hranici výhody: lepší algoritmy pro torontiány a hafniány, které využívají\n  kolize a ztráty, posunuly odhadované klasické časy pro Jiuzhang o mnoho řádů dolů, i když ne na úroveň\n  „běžného počítače“.\n- Oh a kol. (2024) představili klasický algoritmus, který využívá vysoké ztráty pokusů; jeho vzorky jsou podle\n  autorů v použitých testech blíž ideálnímu rozdělení než data z velkých experimentů.\n\n**Co z toho plyne (náš odhad).** Ztráty jsou slabé místo: čím víc světla se ztratí, tím blíž má stav k\ntepelnému, a tím snáz ho jde simulovat. Výhoda GBS tedy stojí a padá s účinností celého řetězce, což je přesně\nLuův kontrolní seznam. Diskuse o tom, které pokusy výhodu skutečně ukázaly, běží dál; přehled firem a strojů je na\nstránce [Fotonika ve světě](/fotonika-ve-svete)."
+    },
+    {
+      "heading": "Co si z přednášky vzít pro Monte Carlo na GBS",
+      "body": "Naše kapitola: jak přednáška souvisí s otázkou, jestli může GBS urychlit odhad finančního rizika.\n\n1. **Programovatelnost je podmínka, ne detail.** Odhad typu GBS-I nebo GBS-P potřebuje vzorkovat z konkrétní\n   matice $B$, do které je zakódovaná kovarianční matice úlohy. Jiuzhang umí měnit jen fáze vstupů, interferometr je\n   pevný. Pro Monte Carlo na GBS je potřeba stroj jako Borealis nebo programovatelný čip\n   ([simulátor čipu](/fotonika/simulator-cipu)).\n2. **Detektory určují vzorec.** S prahovými detektory jsou pravděpodobnosti torontiány, ne hafniány. Odhady\n   z [Monte Carla na GBS](/gbs) předpokládají počty fotonů, takže na stroji s kliknutími by se musely přepsat\n   nebo pracovat jen v řídkém režimu bez kolizí.\n3. **Selhání má známé tváře.** Hypotézy, které Lu vylučuje (tepelné světlo ze ztrát, rozlišitelné fotony, fázový\n   drift), jsou přesně zdroje **systematické chyby** odhadu: víc výstřelů ji nezmenší, jen přesněji změří. Na tom\n   staví [diagnostika selhání GBS](/vyzkumne-smery/kdy-gbs-selze).\n4. **Režimy jsou i statistické režimy.** V řídkém režimu má rozdělení hodnot výstřelů těžký chvost: vzácné výstřely\n   s vysokou hodnotou nesou velkou část průměru. To je stejný jev jako u průměru $S!$ v\n   [laboratoři s boson samplingem](/fotonika/simulator-cipu#cip-boson-sampling), kde křivka čipu dlouho pozvolna\n   klesá.\n5. **Ověřování je otevřený problém.** I pro výpočet integrálu platí: když výsledek neumíme přepočítat, potřebujeme\n   nezávislé kontroly, například malé podúlohy spočitatelné přesně (snadný režim) a testy proti alternativním\n   modelům, jak to dělá Lu."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Lu, C.-Y.: Gaussian boson sampling for quantum computational advantage. Quantum Research Seminars Toronto, 2. 6. 2021 (video)",
+      "url": "https://youtu.be/havcJFDaNiw",
+      "note": "záznam přednášky"
+    },
+    {
+      "title": "Zhong, H.-S. a kol.: Quantum computational advantage using photons. Science 370, 1460–1463 (2020)",
+      "url": "https://doi.org/10.1126/science.abe8770",
+      "note": "Jiuzhang 1.0: 50 stlačených stavů, 100 módů, až 76 kliknutí"
+    },
+    {
+      "title": "Zhong, H.-S. a kol.: Phase-programmable Gaussian boson sampling using stimulated squeezed light. Physical Review Letters 127, 180502 (2021)",
+      "url": "https://doi.org/10.1103/PhysRevLett.127.180502",
+      "note": "Jiuzhang 2.0: stimulovaná PDC, 144 módů, až 113 kliknutí, programovatelné fáze"
+    },
+    {
+      "title": "Hamilton, C. S. a kol.: Gaussian boson sampling. Physical Review Letters 119, 170501 (2017)",
+      "url": "https://doi.org/10.1103/PhysRevLett.119.170501",
+      "note": "návrh GBS a hafniánový vzorec"
+    },
+    {
+      "title": "Kruse, R. a kol.: Detailed study of Gaussian boson sampling. Physical Review A 100, 032326 (2019)",
+      "url": "https://doi.org/10.1103/PhysRevA.100.032326",
+      "note": "podrobná teorie a argument těžkosti GBS"
+    },
+    {
+      "title": "Quesada, N., Arrazola, J. M., Killoran, N.: Gaussian boson sampling using threshold detectors. Physical Review A 98, 062322 (2018)",
+      "url": "https://doi.org/10.1103/PhysRevA.98.062322",
+      "note": "prahové detektory a torontián"
+    },
+    {
+      "title": "Aaronson, S., Arkhipov, A.: The computational complexity of linear optics. Theory of Computing 9, 143–252 (2013)",
+      "url": "https://doi.org/10.4086/toc.2013.v009a004",
+      "note": "boson sampling a jeho výpočetní těžkost"
+    },
+    {
+      "title": "Arute, F. a kol.: Quantum supremacy using a programmable superconducting processor. Nature 574, 505–510 (2019)",
+      "url": "https://doi.org/10.1038/s41586-019-1666-5",
+      "note": "Sycamore, 53 qubitů"
+    },
+    {
+      "title": "Harrow, A. W., Montanaro, A.: Quantum computational supremacy. Nature 549, 203–209 (2017)",
+      "url": "https://doi.org/10.1038/nature23458",
+      "note": "přehled, ze kterého Lu bere obdobu Bellových testů"
+    },
+    {
+      "title": "Neville, A. a kol.: Classical boson sampling algorithms with superior performance to near-term experiments. Nature Physics 13, 1153–1157 (2017)",
+      "url": "https://doi.org/10.1038/nphys4270",
+      "note": "klasický algoritmus, který zvedl laťku asi na 50 fotonů"
+    },
+    {
+      "title": "Clifford, P., Clifford, R.: The classical complexity of boson sampling. SODA 2018",
+      "url": "https://arxiv.org/abs/1706.01260",
+      "note": "přesné klasické vzorkování (naše doplnění, v přednášce nezazní)"
+    },
+    {
+      "title": "Wang, H. a kol.: Boson sampling with 20 input photons and a 60-mode interferometer in a 10¹⁴-dimensional Hilbert space. Physical Review Letters 123, 250503 (2019)",
+      "url": "https://doi.org/10.1103/PhysRevLett.123.250503",
+      "note": "boson sampling s kvantovou tečkou"
+    },
+    {
+      "title": "He, Y.-M. a kol.: On-demand semiconductor single-photon source with near-unity indistinguishability. Nature Nanotechnology 8, 213–217 (2013)",
+      "url": "https://doi.org/10.1038/nnano.2012.262",
+      "note": "pulzní rezonanční buzení kvantové tečky"
+    },
+    {
+      "title": "Ding, X. a kol.: On-demand single photons with high extraction efficiency and near-unity indistinguishability from a resonantly driven quantum dot in a micropillar. Physical Review Letters 116, 020401 (2016)",
+      "url": "https://doi.org/10.1103/PhysRevLett.116.020401",
+      "note": "kvantová tečka v mikropilíři"
+    },
+    {
+      "title": "Wang, H. a kol.: Towards optimal single-photon sources from polarized microcavities. Nature Photonics 13, 770–775 (2019)",
+      "url": "https://doi.org/10.1038/s41566-019-0494-3",
+      "note": "eliptický mikropilíř, polarizované fotony"
+    },
+    {
+      "title": "Wang, X.-L. a kol.: Experimental ten-photon entanglement. Physical Review Letters 117, 210502 (2016)",
+      "url": "https://doi.org/10.1103/PhysRevLett.117.210502",
+      "note": "SPDC se dvěma kruhovými svazky"
+    },
+    {
+      "title": "Zhong, H.-S. a kol.: 12-photon entanglement and scalable scattershot boson sampling with optimal entangled-photon pairs from parametric down-conversion. Physical Review Letters 121, 250505 (2018)",
+      "url": "https://doi.org/10.1103/PhysRevLett.121.250505",
+      "note": "frekvenčně nekorelované páry bez filtrů"
+    },
+    {
+      "title": "Huh, J. a kol.: Boson sampling for molecular vibronic spectra. Nature Photonics 9, 615–620 (2015)",
+      "url": "https://doi.org/10.1038/nphoton.2015.153",
+      "note": "aplikace z otázky v diskusi"
+    },
+    {
+      "title": "Jahangiri, S., Arrazola, J. M., Delgado, A.: Quantum algorithm for simulating single-molecule electron transport. Journal of Physical Chemistry Letters 12, 1256–1261 (2021)",
+      "url": "https://doi.org/10.1021/acs.jpclett.0c03724",
+      "note": "protokol, který Lu zmiňuje v odpovědi"
+    },
+    {
+      "title": "Madsen, L. S. a kol.: Quantum computational advantage with a programmable photonic processor. Nature 606, 75–81 (2022)",
+      "url": "https://doi.org/10.1038/s41586-022-04725-x",
+      "note": "Borealis (naše kapitola o vývoji)"
+    },
+    {
+      "title": "Deng, Y.-H. a kol.: Gaussian boson sampling with pseudo-photon-number-resolving detectors and quantum computational advantage. Physical Review Letters 131, 150601 (2023)",
+      "url": "https://doi.org/10.1103/PhysRevLett.131.150601",
+      "note": "Jiuzhang 3.0 (naše kapitola o vývoji)"
+    },
+    {
+      "title": "Villalonga, B. a kol.: Efficient approximation of experimental Gaussian boson sampling. arXiv:2109.11525 (2021)",
+      "url": "https://arxiv.org/abs/2109.11525",
+      "note": "klasický vzorkovač proti testům Jiuzhangu"
+    },
+    {
+      "title": "Bulmer, J. F. F. a kol.: The boundary for quantum advantage in Gaussian boson sampling. Science Advances 8, eabl9236 (2022)",
+      "url": "https://doi.org/10.1126/sciadv.abl9236",
+      "note": "rychlejší klasické algoritmy a hranice výhody"
+    },
+    {
+      "title": "Oh, C. a kol.: Classical algorithm for simulating experimental Gaussian boson sampling. Nature Physics 20, 1461–1468 (2024)",
+      "url": "https://doi.org/10.1038/s41567-024-02535-8",
+      "note": "simulace ztrátových pokusů"
+    },
+    {
+      "title": "Surová data experimentů Jiuzhang (USTC)",
+      "url": "http://quantum.ustc.edu.cn/web/node/951",
+      "note": "odkaz ze slajdu přednášky"
+    }
+  ],
+  "placement": {
+    "layer": "fotonika",
+    "topic_anchor": "tema-fotonika",
+    "parent_page_id": null,
+    "section_title": "Přednášky"
+  },
+  "origin": {
+    "page_id": "lecture-requests-page",
+    "selection": "https://youtu.be/havcJFDaNiw",
+    "created": "2026-11-08",
+    "model": "Claude Code"
+  },
+  "lecture": {
+    "folder": "lu-gbs-2021",
+    "video_url": "https://youtu.be/havcJFDaNiw",
+    "video_seconds": 1951,
+    "speaker": "Chao-Yang Lu (USTC)",
+    "event": "Quantum Research Seminars Toronto",
+    "recorded": "2021-06-02",
+    "language": "anglicky",
+    "how_made": "Zvuk jsme přepsali modelem Whisper large-v3 a snímky vytáhli ze záznamu při změnách obrazu (58 obrazovek, zde vybrané); čísla ze slajdů jsme četli z plných snímků. Úvod moderátora je vynechaný, otázky zkrácené. Poslední dvě kapitoly jsou naše a v přednášce nezazní.",
+    "has_presentation": true,
+    "key_points": [
+      {
+        "text": "**Kvantová výhoda** je milník „po cestě“: přesně zadaná úloha, ne nutně užitečná, ale drtivě rychlejší než klasika. Má vyvrátit rozšířenou Churchovu–Turingovu tezi, podobně jako Bellovy testy vyvrátily lokální skryté parametry.",
+        "section": 1
+      },
+      {
+        "text": "**Účinnosti se násobí na každý foton:** v roce 2013 by 50 fotonů přicházelo s frekvencí 10⁻¹⁵⁰ Hz. Proto deset let vývoje zdrojů: SPDC bez filtrů a kvantová tečka v polarizované mikrodutině.",
+        "section": 3
+      },
+      {
+        "text": "**GBS bere celé stlačené světlo z SPDC** i s vícenásobnými páry; k prostorovým cestám přidá superpozici vstupních počtů fotonů a pravděpodobnosti jsou hafniány (s prahovými detektory torontiány).",
+        "section": 8
+      },
+      {
+        "text": "**Jiuzhang:** 50 stlačených stavů, interferometr 100 a pak 144 módů, až 113 kliknutí a výstupní prostor 10⁴³; stimulovaná PDC dává čtyřikrát jasnější světlo.",
+        "section": 9
+      },
+      {
+        "text": "**Fáze je cena za GBS:** 50 drah po 22 m stabilizovaných na 10–25 nm, přes rok práce.",
+        "section": 10
+      },
+      {
+        "text": "**Ověření je nepřímé:** vyloučit tepelné, rozlišitelné a další podvrhy a extrapolovat z podsystémů. Tytéž podvrhy jsou způsoby, jak může selhat Monte Carlo na GBS.",
+        "section": 12
+      }
+    ],
+    "related_page_id": "primer-gbs-page"
+  }
+}

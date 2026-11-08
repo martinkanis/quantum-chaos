@@ -23,6 +23,7 @@ from ui.study_progress import describe_pager
 from ui.theory_content import all_sources
 from ui.topic_catalog import breadcrumb_trail
 from ui.walther_lecture_content import SLIDES
+from tests.photonics_steps import photonics_step
 
 ZERO, ONE = np.array([1, 0]), np.array([0, 1])
 PLUS = (ZERO + ONE) / sqrt(2)
@@ -46,11 +47,11 @@ def text_of(topic) -> str:
     return " ".join((topic.in_short + " " + topic.explanation).split())
 
 
-def test_stranka_je_podstrankou_prednasky_a_poslednim_krokem_fotoniky():
+def test_stranka_je_podstrankou_prednasky_a_poslednim_rucne_psanym_krokem_fotoniky():
     _, step_label, _, _, _ = describe_pager(GHZ_STATES_PATH, None)
 
     assert PAGE_BY_PATH[GHZ_STATES_PATH] == ids.GHZ_STATES_PAGE
-    assert step_label == "Fotonika · krok 12 / 12"
+    assert step_label == photonics_step(12)
     assert [label for label, _ in breadcrumb_trail(ids.GHZ_STATES_PAGE)][-2].startswith("Přednáška")
 
 

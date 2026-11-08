@@ -300,15 +300,21 @@ def relations_with(
     pages = {page_id for info in layers for page_id in info.page_ids}
     added = []
     for topic in topics:
+        related = topic.lecture.related_page_id if topic.lecture else None
         target = next(
-            (page_id for page_id in (topic.origin.page_id, topic.placement.parent_page_id) if page_id in pages), None
+            (page_id for page_id in (topic.origin.page_id, topic.placement.parent_page_id, related)
+             if page_id in pages),
+            None,
         )
         if target:
-            added.append(Relation(
-                generated_page_id(topic.slug), RelationKind.EXPANDS, target,
-                f"rozvádí úryvek „{_excerpt(topic.origin.selection)}“",
-            ))
+            added.append(Relation(generated_page_id(topic.slug), RelationKind.EXPANDS, target, _expansion_note(topic)))
     return relations + tuple(added)
+
+
+def _expansion_note(topic: TopicPage) -> str:
+    if topic.lecture:
+        return f"zápisky z přednášky ({topic.lecture.speaker})"
+    return f"rozvádí úryvek „{_excerpt(topic.origin.selection)}“"
 
 
 def _excerpt(text: str, length: int = 60) -> str:

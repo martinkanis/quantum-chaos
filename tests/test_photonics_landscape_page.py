@@ -28,6 +28,7 @@ from ui.photonics_landscape_page import build_photonics_landscape_page, players_
 from ui.study_progress import describe_pager
 from ui.theory_content import all_sources
 from ui.topic_catalog import PHOTONICS_TOPIC, RESEARCH_TOPICS, breadcrumb_trail
+from tests.photonics_steps import photonics_step
 
 
 def player(name_start):
@@ -40,9 +41,9 @@ def test_stranka_je_v_tematu_fotonika_hned_po_skriptech_a_simulatoru_cipu():
     _, step_label, _, _, _ = describe_pager(PHOTONICS_LANDSCAPE_PATH, None)
 
     assert PAGE_BY_PATH[PHOTONICS_LANDSCAPE_PATH] == ids.PHOTONICS_LANDSCAPE_PAGE
-    assert PHOTONICS_TOPIC in RESEARCH_TOPICS
+    assert PHOTONICS_TOPIC.anchor in {topic.anchor for topic in RESEARCH_TOPICS}
     assert active == [ids.NAV_PHOTONICS_MENU]
-    assert step_label == "Fotonika · krok 7 / 12"
+    assert step_label == photonics_step(7)
     assert [label for label, _ in breadcrumb_trail(ids.PHOTONICS_LANDSCAPE_PAGE)] == [
         "Témata", "Fotonika a GBS", "Fotonika ve světě: konkurence a partneři",
     ]

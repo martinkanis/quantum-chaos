@@ -7,7 +7,7 @@ from typing import Collection, Dict, List, Optional, Tuple
 
 from assistant.topics import TopicPage
 from ui import ids
-from ui.generated_topics import GENERATED_SECTION_TITLE, GENERATED_TOPICS, generated_page_id, generated_path
+from ui.generated_topics import GENERATED_SECTION_TITLE, GENERATED_TOPICS, generated_page_id, topic_path
 from ui.knowledge_map_content import LAYERS, LayerInfo
 from ui.navigation import (
     ACADEMY_PATH,
@@ -370,24 +370,54 @@ EXPANDED_TOPIC = ResearchTopic(
 
 def generated_entry(topic: TopicPage) -> PageEntry:
     return PageEntry(
-        generated_page_id(topic.slug), topic.title, generated_path(topic.slug), topic.description,
+        generated_page_id(topic.slug), topic.title, topic_path(topic), topic.description,
         parent_page_id=topic.placement.parent_page_id,
     )
 
 
 def topics_with(topics: Tuple[ResearchTopic, ...], generated: Collection[TopicPage]) -> Tuple[ResearchTopic, ...]:
-    """Accepted topics join the topic their file names, in a section of their own; the rest form EXPANDED_TOPIC."""
+    """Accepted topics join the topic their file names, in the section it names (by default a section of their own).
+
+    A file whose topic does not exist but which gives the topic a title founds that topic (lecture notes „into a topic
+    of their own“); the rest form EXPANDED_TOPIC.
+    """
     anchors = {topic.anchor for topic in topics}
-    extended = []
-    for topic in topics:
-        pages = tuple(generated_entry(page) for page in generated if page.placement.topic_anchor == topic.anchor)
-        if pages:
-            topic = replace(topic, sections=topic.sections + (TopicSection(GENERATED_SECTION_TITLE, pages),))
-        extended.append(topic)
-    homeless = tuple(generated_entry(page) for page in generated if page.placement.topic_anchor not in anchors)
+    extended = [
+        _with_pages(topic, [page for page in generated if page.placement.topic_anchor == topic.anchor])
+        for topic in topics
+    ]
+    unknown = [page for page in generated if page.placement.topic_anchor not in anchors]
+    extended.extend(_founded_topics([page for page in unknown if page.placement.topic_title]))
+    homeless = tuple(generated_entry(page) for page in unknown if not page.placement.topic_title)
     if homeless:
         extended.append(replace(EXPANDED_TOPIC, sections=(TopicSection("Stránky", homeless),)))
     return tuple(extended)
+
+
+def _with_pages(topic: ResearchTopic, pages: Collection[TopicPage]) -> ResearchTopic:
+    sections = list(topic.sections)
+    for page in pages:
+        title = page.placement.section_title or GENERATED_SECTION_TITLE
+        index = next((index for index, section in enumerate(sections) if section.title == title), None)
+        if index is None:
+            sections.append(TopicSection(title, (generated_entry(page),)))
+        else:
+            sections[index] = replace(sections[index], pages=sections[index].pages + (generated_entry(page),))
+    return replace(topic, sections=tuple(sections))
+
+
+def _founded_topics(pages: Collection[TopicPage]) -> List[ResearchTopic]:
+    """One research topic per new anchor, titled and summarised by its first page that says how."""
+    founded: Dict[str, ResearchTopic] = {}
+    for page in pages:
+        anchor = page.placement.topic_anchor or ""
+        if anchor not in founded:
+            founded[anchor] = ResearchTopic(
+                anchor=anchor, title=page.placement.topic_title or "", summary=page.placement.topic_summary or "",
+                sections=(),
+            )
+    return [_with_pages(topic, [page for page in pages if page.placement.topic_anchor == anchor])
+            for anchor, topic in founded.items()]
 
 
 RESEARCH_TOPICS = topics_with(BASE_RESEARCH_TOPICS, GENERATED_TOPICS)

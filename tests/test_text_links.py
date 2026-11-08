@@ -42,7 +42,8 @@ def page_ids_on(page_id):
     page = built_page(page_id) if page_id in LAZY_PAGE_IDS else next(
         component for component in components(build_layout()) if getattr(component, "id", None) == page_id
     )
-    return {getattr(component, "id", None) for component in components(page)}
+    ids_on_page = (getattr(component, "id", None) for component in components(page))
+    return {component_id for component_id in ids_on_page if isinstance(component_id, str)}
 
 
 def test_odkazy_v_textech_vedou_na_existujici_stranky_a_kotvy():

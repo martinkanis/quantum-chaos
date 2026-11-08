@@ -41,6 +41,7 @@ from ui.study_progress import describe_pager
 from ui.theory_content import all_sources
 from ui.topic_catalog import breadcrumb_trail
 from tests.test_topics import active_links, visible_pages
+from tests.photonics_steps import photonics_step
 
 SETUP_FORM = {"mode_count": 4, "target": ChipTarget.SPREAD_EVENLY.value, "split_spread": 0.0, "seed": 1, "chip_unit": 1}
 HADAMARD = np.array([[1, 1, 1, 1], [1, -1, 1, -1], [1, 1, -1, -1], [1, -1, -1, 1]]) / 2
@@ -79,7 +80,7 @@ def test_simulator_je_v_tematu_fotonika_hned_za_skripty():
 
     assert visible_pages(CHIP_SIMULATOR_PATH) == [ids.CHIP_SIMULATOR_PAGE]
     assert active_links(CHIP_SIMULATOR_PATH) == [ids.NAV_PHOTONICS_MENU]
-    assert step_label == "Fotonika · krok 6 / 12"
+    assert step_label == photonics_step(6)
     assert links[0].children.href == PRIMER_APPENDICES_PATH
     assert [label for label, _ in breadcrumb_trail(ids.CHIP_SIMULATOR_PAGE)] == [
         "Témata", "Fotonika a GBS", "Simulátor fotonického čipu",

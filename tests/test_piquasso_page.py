@@ -48,6 +48,7 @@ from ui.piquasso_page import (
 from ui.study_progress import describe_pager
 from ui.theory_content import all_sources
 from ui.topic_catalog import breadcrumb_trail
+from tests.photonics_steps import photonics_step
 
 
 def czech(value: float, digits: int) -> str:
@@ -65,7 +66,7 @@ def test_stranka_je_desatym_krokem_tematu_fotonika_za_videem_o_psiquantu():
 
     assert PAGE_BY_PATH[PIQUASSO_PATH] == ids.PIQUASSO_PAGE
     assert active == [ids.NAV_PHOTONICS_MENU]
-    assert step_label == "Fotonika · krok 10 / 12"
+    assert step_label == photonics_step(10)
     assert links[0].children.href == PSIQUANTUM_VIDEO_PATH
     assert [label for label, _ in breadcrumb_trail(ids.PIQUASSO_PAGE)] == [
         "Témata", "Fotonika a GBS", "Fotonika ve světě: konkurence a partneři",
