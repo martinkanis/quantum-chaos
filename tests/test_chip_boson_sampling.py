@@ -1,7 +1,7 @@
 import time
 import tracemalloc
 from itertools import combinations_with_replacement
-from math import factorial
+from math import comb, factorial
 from typing import Any
 
 import numpy as np
@@ -265,6 +265,18 @@ def test_vysledky_ukazuji_oba_odhady_a_prvni_vystrely():
     assert any(text.startswith("výstupy ") and "→ Z = " in text for text in texts)
     assert any(text.startswith("Bez kolize, n²/m = 1,00") for text in texts) and "50,0 % (čip 50,0 %)" in texts
     assert czech_decimal(1502.27) == "1 502,27" and czech_decimal(0.01482) == "0,0148"
+
+
+def test_cisla_v_podkapitole_o_spdc_sedi_s_vypoctem():
+    text = text_of(SAMPLING_TOPIC)
+    pair_probability, photons, inputs = 0.01, 4, 16
+    fixed_inputs = pair_probability ** photons
+    scattershot = comb(inputs, photons) * fixed_inputs * (1 - pair_probability) ** (inputs - photons)
+
+    assert "Pro $p = 1$ %" in text and "Pro 16 vstupů, čtyři fotony a $p = 1$ %" in text
+    assert fixed_inputs == pytest.approx(1e-8) and "je to $10^{-8}$" in text
+    assert f"{scattershot:.1e}" == "1.6e-05" and r"asi $1{,}6 \cdot 10^{-5}$" in text
+    assert round(scattershot / fixed_inputs, -2) == 1600 and "zhruba 1 600krát častěji" in text
 
 
 def test_kazde_spusteni_losuje_nove_vystrely_na_stejnem_interferometru():

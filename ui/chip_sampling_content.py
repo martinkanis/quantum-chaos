@@ -7,7 +7,18 @@ from typing import Dict, Tuple
 from gbs.chip_boson_sampling import PhotonKind
 from gbs.chip_programming import ChipTarget
 from ui.advantage_content import ANGUITA_MONTE_CARLO_ACCELERATOR
-from ui.theory_content import AARONSON_ARKHIPOV, ANDERSEN_SHAN_EXPECTATIONS, Reading, Source, TheoryTopic
+from ui.navigation import PHOTONICS_TERMS_HREF
+from ui.photonic_hardware_content import LUND_SCATTERSHOT, WANG_TWENTY_PHOTONS
+from ui.photonics_landscape_content import SPDC_WIKI
+from ui.theory_content import (
+    AARONSON_ARKHIPOV,
+    ANDERSEN_SHAN_EXPECTATIONS,
+    HAMILTON,
+    ZHONG,
+    Reading,
+    Source,
+    TheoryTopic,
+)
 
 SAMPLING_ANCHOR = "cip-boson-sampling-laborator"
 SAMPLING_TITLE = "Laboratoř 2: boson sampling jako modifikované Monte Carlo"
@@ -111,6 +122,10 @@ CLIFFORD_2018 = Source(
     "[doi:10.1137/1.9781611975031.10](https://doi.org/10.1137/1.9781611975031.10), "
     "[arXiv:1706.01260](https://arxiv.org/abs/1706.01260)"
 )
+BENTIVEGNA_2015 = Source(
+    "Bentivegna, M. a kol.: *Experimental scattershot boson sampling*. Science Advances 1, e1400255 (2015), "
+    "[doi:10.1126/sciadv.1400255](https://doi.org/10.1126/sciadv.1400255)"
+)
 
 SAMPLING_TOPIC = TheoryTopic(
     anchor="cip-boson-sampling",
@@ -184,11 +199,64 @@ k jinému $\mu$. Rozlišitelné fotony neinterferují, $|\mathrm{Perm}(U_{S,T})|
 $\mathrm{Perm}(|U_{S,T}|^2)$ a $\mu$ se změní, v příkladech simulátoru klesne. V obou případech je chyba
 systematická: víc výstřelů ji nezmenší, jen ji přesněji změří. Přesně taková selhání rozebírá stránka
 [Kdy odhad rizika přes GBS selže](/vyzkumne-smery/kdy-gbs-selze).
+
+### Odkud se berou fotony: SPDC a scattershot
+
+**Co je SPDC.** Spontánní parametrická sestupná konverze (*spontaneous parametric down-conversion*): silný laserový
+puls projde nelineárním krystalem nebo vlnovodem a některý z jeho fotonů se občas rozpadne na **dva** fotony s nižší
+energií, *signál* a *idler*. Energie se zachovává, $\omega_{\text{pumpa}} = \omega_s + \omega_i$. Pár vzniká vždy
+celý, takže detekce idleru **ohlásí** (*herald*), že signál právě letí do interferometru. Jak krystal funguje,
+vysvětlují """ + f"[pojmy na stránce Fotonika ve světě]({PHOTONICS_TERMS_HREF})" + r""" a
+[zápisky z Waltherovy přednášky](/fotonika/prednaska-walther-2022#walther-provazani).
+
+**Háček: zdroj je náhodný.** Kdy pár vznikne, neurčuje nikdo. Pravděpodobnost $p$, že zdroj v pulsu vyrobí pár,
+se musí držet malá, protože dva páry naráz přijdou zhruba s pravděpodobností $p^2$ a přidají do vstupu foton navíc.
+Původní boson sampling potřebuje, aby v jednom pulsu vystřelilo všech $n$ zdrojů, a to se stane s pravděpodobností
+$p^n$. Pro $p = 1$ % ([Waltherův příklad](/fotonika/prednaska-walther-2022#walther-hardware)) a čtyři fotony je to
+$10^{-8}$, jeden použitelný puls ze sta milionů. Pokusy s boson samplingem ze SPDC proto do roku 2015 zůstávaly
+zhruba u tří fotonů (Bentivegna a kol.).
+
+**Scattershot: náhodu obrátit ve výhodu.** Lund a kol. (2014) navrhli připojit zdroj ke **každému** z $k$ vstupů,
+$k \gg n$, a brát každý puls, ve kterém vystřelilo právě $n$ zdrojů, ať jsou to kterékoli. Ohlašovací detektory
+řeknou, do kterých vstupů fotony vstoupily, takže množina vstupů $T$ je v každém výstřelu jiná, ale známá. Takový
+puls přijde s pravděpodobností $\binom{k}{n} p^n (1-p)^{k-n}$. Pro 16 vstupů, čtyři fotony a $p = 1$ % je to asi
+$1{,}6 \cdot 10^{-5}$, zhruba 1 600krát častěji než s pevnými vstupy (náš výpočet). Lund a kol. dokládají, že
+úloha s náhodným, ale ohlášeným vstupem zůstává pro klasický počítač těžká. Bentivegna a kol. (2015) ji předvedli
+se šesti zdroji SPDC na čipu s 13 módy; události přicházely 4,5krát častěji než při obyčejném boson samplingu se
+zdrojem průměrného jasu, čekali pětinásobek.
+
+**GBS jde ještě dál.** Hamilton a kol. (2017) ohlašování vypustili úplně: do interferometru pošlou přímo stlačené
+vakuum z krystalu i s vícenásobnými páry a pravděpodobnosti výstupů jsou hafniány místo permanentů (rozdíl popisuje
+[srovnání boson samplingu a GBS](/reserse-gbs-financni-riziko/fotonicky-hardware#fotonika-bs-a-gbs)). Žádný pár
+se nezahodí, a tak GBS se stlačeným světlem došel k velkým počtům fotonů: Jiuzhang (Zhong a kol. 2020) poslal
+50 stlačených stavů do interferometru se 100 módy a detektory zaznamenaly až 76 fotonů.
+
+**Je pravda, že boson sampling SPDC zachraňuje?** Spíš obráceně a jen zčásti. SPDC je pro původní boson sampling
+špatný zdroj; zachránily ho *upravené úlohy*, které náhodnost zdroje přijmou: scattershot s náhodným ohlášeným
+vstupem a GBS bez ohlašování. Vyřešily rychlost, ne všechno:
+
+- vícenásobné páry dál nutí držet $p$ malé (scattershot), nebo jsou přímo součástí modelu (GBS);
+- fotony z různých zdrojů musí být nerozlišitelné, jinak se rozdělení změní jako u rozlišitelných fotonů
+  v simulátoru;
+- ztráty mění rozdělení v obou úlohách.
+
+Druhá cesta je zdroj, který není náhodný: s kvantovou tečkou poslali Wang a kol. (2019) do interferometru
+s 60 módy 20 fotonů a zaznamenali jich až 14.
+
+**V simulátoru** je zdroj dokonalý: v každém výstřelu právě jeden foton v každém z prvních $n$ vstupů. Při
+scattershotu by se vstupy $T$ měnily výstřel od výstřelu a průměr $S!$ by odhadoval průměr $\mu$ přes ty vstupy
+(naše poznámka).
 """,
     further_reading=(
         Reading(ANDERSEN_SHAN_EXPECTATIONS, "obecný odhad GBS-I (Def. 3.3) a permanenty v příloze F"),
         Reading(ANGUITA_MONTE_CARLO_ACCELERATOR, "boson sampling jako akcelerátor Monte Carla na skutečném čipu"),
         Reading(CLIFFORD_2018, "přesné klasické vzorkování boson samplingu a jeho cena"),
         Reading(AARONSON_ARKHIPOV, "proč je boson sampling s mnoha fotony klasicky těžký"),
+        Reading(SPDC_WIKI),
+        Reading(LUND_SCATTERSHOT, "návrh: náhodný, ale ohlášený vstup z mnoha zdrojů SPDC"),
+        Reading(BENTIVEGNA_2015, "první scattershot boson sampling se šesti zdroji SPDC"),
+        Reading(HAMILTON, "Gaussian boson sampling: stlačené světlo bez ohlašování"),
+        Reading(ZHONG, "Jiuzhang: GBS s 50 stlačenými stavy a 100 módy"),
+        Reading(WANG_TWENTY_PHOTONS, "boson sampling s 20 fotony z kvantové tečky"),
     ),
 )
