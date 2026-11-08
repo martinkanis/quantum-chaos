@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable, Dict, Tuple
+from typing import Callable, Dict, Optional, Tuple
 
 import numpy as np
 
@@ -77,11 +77,17 @@ class ChipSetup:
     """Unitary matrix the chip should realise."""
 
 
-def build_setup(target: ChipTarget, split_spread: float, seed: int, mode_count: int = MODE_COUNT) -> ChipSetup:
-    """The same seed gives the same random target and the same fabricated chip."""
+def build_setup(
+    target: ChipTarget, split_spread: float, seed: int, mode_count: int = MODE_COUNT, chip_unit: Optional[int] = None,
+) -> ChipSetup:
+    """The same seed gives the same random target and, unless chip_unit names another fabricated piece of the same
+    design, the same fabrication errors."""
     if seed < 0:
         raise ChipError("Seed musí být nezáporné celé číslo.")
-    chip = fabricated_chip(mode_count, split_spread, np.random.default_rng([seed, CHIP_STREAM]))
+    if chip_unit is not None and chip_unit < 0:
+        raise ChipError("Číslo kusu čipu musí být nezáporné celé číslo.")
+    unit = seed if chip_unit is None else chip_unit
+    chip = fabricated_chip(mode_count, split_spread, np.random.default_rng([unit, CHIP_STREAM]))
     return ChipSetup(chip, target_unitary(target, mode_count, np.random.default_rng([seed, TARGET_STREAM])))
 
 
@@ -184,9 +190,10 @@ class ChipReadout:
         return float(np.abs(self.chip_transmission - self.target_transmission).max())
 
 
-def read_out(setup: ChipSetup, phases: MeshPhases, input_mode: int) -> ChipReadout:
+def read_out(setup: ChipSetup, phases: MeshPhases, input_mode: Optional[int]) -> ChipReadout:
+    """input_mode is the waveguide the laser shines into, None when the laser is off."""
     return ChipReadout(
         chip_transmission=transmission(transfer_matrix(setup.chip, phases)),
         target_transmission=transmission(setup.target),
-        flow=light_flow(setup.chip, phases, (input_mode,)),
+        flow=light_flow(setup.chip, phases, () if input_mode is None else (input_mode,)),
     )

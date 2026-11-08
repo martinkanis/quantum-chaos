@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dash import html
 
-from gbs.chip_charts import LightSource
+from gbs.bench import LightSource
 
 ANIMATION_CLASS = "chip-animation"
 

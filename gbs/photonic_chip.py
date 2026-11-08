@@ -53,9 +53,11 @@ def mzi_count(mode_count: int) -> int:
     return mode_count * (mode_count - 1) // 2
 
 
+ESTIMATED_COLUMN_LENGTH_CM = 0.1
+"""Our order-of-magnitude estimate of how long one column of MZIs is: about a millimetre."""
 ESTIMATED_COLUMN_TRANSIT_SECONDS = 1e-11
-"""Our order-of-magnitude estimate: a column of MZIs is about a millimetre long and light in a waveguide is two to
-four times slower than in vacuum, so it crosses one column in about 10 ps."""
+"""Our order-of-magnitude estimate: light in a waveguide is two to four times slower than in vacuum, so it crosses
+a column about a millimetre long in about 10 ps."""
 
 
 def estimated_transit_seconds(mode_count: int) -> float:
@@ -82,6 +84,15 @@ class MeshPhases:
 def zero_phases(mode_count: int = MODE_COUNT) -> MeshPhases:
     zeros = (0.0,) * mzi_count(mode_count)
     return MeshPhases(zeros, zeros)
+
+
+def random_phases(mode_count: int, rng: np.random.Generator) -> MeshPhases:
+    """Every θ and φ uniform in [0, 2π): a chip that does something arbitrary."""
+    count = mzi_count(mode_count)
+    return MeshPhases(
+        tuple(float(phase) for phase in rng.uniform(0, 2 * np.pi, count)),
+        tuple(float(phase) for phase in rng.uniform(0, 2 * np.pi, count)),
+    )
 
 
 @dataclass(frozen=True)
@@ -194,7 +205,8 @@ def light_flow(chip: Chip, phases: MeshPhases, input_modes: Sequence[int]) -> Li
     """Where the light shone into the inputs goes, column by column; the intensities of the inputs add up.
 
     For one photon in each input the sum is the mean number of photons on a waveguide, whether the photons
-    interfere or not: the interference shows only in which photons arrive together.
+    interfere or not: the interference shows only in which photons arrive together. Without inputs the laser is
+    off and the chip stays dark.
     """
     _check_phases(chip, phases)
     _check_inputs(chip, input_modes)
@@ -215,7 +227,7 @@ def light_flow(chip: Chip, phases: MeshPhases, input_modes: Sequence[int]) -> Li
 
 
 def _check_inputs(chip: Chip, input_modes: Sequence[int]) -> None:
-    if not input_modes or not all(0 <= mode < chip.mode_count for mode in input_modes):
+    if not all(0 <= mode < chip.mode_count for mode in input_modes):
         raise ChipError(f"Světlo může vstupovat jen do vstupů 1 až {chip.mode_count}.")
     if len(set(input_modes)) != len(input_modes):
         raise ChipError("Každý vstup může být vybraný jen jednou.")

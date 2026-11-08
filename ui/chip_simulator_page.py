@@ -8,24 +8,28 @@ import numpy as np
 from dash import dcc, html
 
 from gbs.chip_boson_sampling import PhotonKind
-from gbs.chip_charts import LightSource, empty_chip_figure
+from gbs.chip_charts import empty_chip_figure
+from gbs.bench import LightSource
 from gbs.photonic_chip import MODE_COUNT, mesh_slots
 from ui import ids
 from ui.chip_animation import light_animation_controls
+from ui.chip_bench_page import bench_controls, bench_readout_panel
+from ui.chip_selection import DEFAULT_SELECTED_SHIFTER, selected_shifter_data, selected_shifter_title
 from ui.chip_simulator_content import (
     ANIMATION_HINT,
-    CHIP_OPTIONS,
     CHIP_SEEDS,
     DEFAULT_TARGET,
     IN_SHORT,
     LAB_ANCHOR,
     LAB_INTRO,
+    SOURCE_OFF_LABEL,
     LEAD,
     MAX_LAB_MODE_COUNT,
     MIN_LAB_MODE_COUNT,
     MODE_COUNT_HINT,
     PHASES_HINT,
     SEED_HINT,
+    SELECTED_SHIFTER_HINT,
     SOURCES_ANCHOR,
     TARGET_LABELS,
     TITLE,
@@ -57,17 +61,11 @@ PHASE_STEP = 0.0001
 PHASE_MARKS = {0: "0", np.pi / 2: "π/2", np.pi: "π", 3 * np.pi / 2: "3π/2", 2 * np.pi: "2π"}
 CHIP_FIGURE_MIN_WIDTH = "680px"
 """Narrower screens scroll the chip sideways instead of squeezing its labels into each other."""
-DEFAULT_LASER_INPUT = 0
-"""Index of the waveguide the laser shines into; the page counts waveguides from 1."""
 
 
 def phase_slider_id(kind: str, mzi: Any) -> dict:
     """kind is ids.CHIP_INTERNAL_PHASE (θ) or ids.CHIP_EXTERNAL_PHASE (φ); mzi is its index, or ALL in callbacks."""
     return {"type": ids.CHIP_PHASE_SLIDER, "kind": kind, "mzi": mzi}
-
-
-def laser_options(mode_count: int) -> List[dict]:
-    return [{"label": str(mode + 1), "value": mode} for mode in range(mode_count)]
 
 
 def phase_cards(mode_count: int) -> List[html.Div]:
@@ -113,8 +111,14 @@ def _lab_section() -> html.Section:
                 html.Button("Naprogramovat podle návrhu", id=ids.CHIP_PROGRAM_BUTTON, className="primary-button"),
                 html.Button("Doladit na tomto čipu", id=ids.CHIP_CALIBRATE_BUTTON, className="secondary-button"),
                 html.Button("Vynulovat fáze", id=ids.CHIP_RESET_BUTTON, className="secondary-button"),
+                html.Button("Náhodné fáze", id=ids.CHIP_RANDOM_BUTTON, className="secondary-button"),
+                html.Button(SOURCE_OFF_LABEL, id=ids.CHIP_LASER_BUTTON, className="secondary-button"),
             ]),
+            bench_controls(),
+            dcc.Store(id=ids.CHIP_LASER_ON, data=True),
+            dcc.Store(id=ids.CHIP_SELECTED_SHIFTER, data=selected_shifter_data(DEFAULT_SELECTED_SHIFTER)),
             html.Div(id=ids.CHIP_ERROR_MESSAGE, className="error-message"),
+            _selected_shifter_panel(),
             light_animation_controls(ids.CHIP_FIGURE, LightSource.LASER),
             html.Div(className="chip-figure", children=dcc.Graph(
                 id=ids.CHIP_FIGURE, figure=empty_chip_figure(), style={"minWidth": CHIP_FIGURE_MIN_WIDTH},
@@ -122,9 +126,27 @@ def _lab_section() -> html.Section:
             )),
             html.P(ANIMATION_HINT, className="hint small"),
             html.Div(id=ids.CHIP_READOUT),
+            bench_readout_panel(),
             _phase_sliders(),
         ],
     )
+
+
+def _selected_shifter_panel() -> html.Div:
+    """One slider for the shifter clicked in the chip, right above it; the full set stays below the chip."""
+    return html.Div(className="chip-selected", children=[
+        html.Div(className="chip-selected-head", children=[
+            html.Span("Vybraný posouvač", className="chip-selected-label"),
+            html.Strong(
+                selected_shifter_title(DEFAULT_SELECTED_SHIFTER, MODE_COUNT), id=ids.CHIP_SELECTED_PHASE_TITLE,
+            ),
+        ]),
+        dcc.Slider(
+            id=ids.CHIP_SELECTED_PHASE_SLIDER, min=0, max=2 * np.pi, step=PHASE_STEP, value=0, marks=PHASE_MARKS,
+            updatemode="mouseup",
+        ),
+        html.P(SELECTED_SHIFTER_HINT, className="hint small"),
+    ])
 
 
 def _sampling_section() -> html.Section:
@@ -210,11 +232,6 @@ def _controls() -> html.Div:
                 options=[{"label": label, "value": target.value} for target, label in TARGET_LABELS.items()],
                 value=DEFAULT_TARGET.value, clearable=False, searchable=False,
             )),
-            labelled("Čip", dcc.Dropdown(
-                id=ids.CHIP_FABRICATION_DROPDOWN,
-                options=[{"label": label, "value": spread} for label, spread in CHIP_OPTIONS],
-                value=CHIP_OPTIONS[0][1], clearable=False, searchable=False,
-            )),
             html.Div(className="field", children=[
                 html.Label("Seed"),
                 dcc.Dropdown(
@@ -223,10 +240,6 @@ def _controls() -> html.Div:
                 ),
                 html.P(SEED_HINT, className="hint small"),
             ]),
-            labelled("Laser svítí do vstupu", dcc.RadioItems(
-                id=ids.CHIP_LASER_RADIO,
-                options=laser_options(MODE_COUNT), value=DEFAULT_LASER_INPUT, inline=True, className="chip-laser-radio",
-            )),
         ],
     )
 

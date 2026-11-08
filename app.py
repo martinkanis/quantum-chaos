@@ -11,6 +11,8 @@ from ui.advantage_callbacks import register_advantage_callbacks
 from ui.assistant_callbacks import register_assistant_callbacks
 from ui.breadcrumbs import register_breadcrumb_callbacks
 from ui.callbacks import register_callbacks
+from ui.chip_bench_callbacks import register_chip_bench_callbacks
+from ui.chip_interaction_callbacks import register_chip_interaction_callbacks
 from ui.chip_sampling_callbacks import register_chip_sampling_callbacks
 from ui.chip_simulator_callbacks import register_chip_simulator_callbacks
 from ui.editable_text import EditablePages
@@ -40,6 +42,8 @@ register_gbs_callbacks(app)
 register_advantage_callbacks(app)
 register_random_matrix_callbacks(app)
 register_chip_simulator_callbacks(app)
+register_chip_interaction_callbacks(app)
+register_chip_bench_callbacks(app)
 register_chip_sampling_callbacks(app)
 register_study_progress_callbacks(app)
 register_knowledge_map_callbacks(app)

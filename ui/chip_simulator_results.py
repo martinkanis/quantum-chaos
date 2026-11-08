@@ -7,7 +7,7 @@ from typing import Sequence
 import numpy as np
 from dash import html
 
-from gbs.chip_charts import czech_percent
+from gbs.chip_parts import czech_percent
 from gbs.chip_programming import ChipReadout
 from ui.chip_simulator_content import DEVIATION_HINT, MATCH_HINT, MATRIX_HINT
 from ui.components import metric_tile

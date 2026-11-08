@@ -459,6 +459,19 @@ details.nav-link > summary:hover { color: var(--text); }
 .chip-animation-scale { font-weight: 400; font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; }
 .chip-animation-readout { font-size: 0.85rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
 
+.chip-bench { margin: 6px 0 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; }
+.chip-bench summary { cursor: pointer; font-weight: 600; }
+.chip-option-description { font-weight: 400; font-size: 0.85rem; color: var(--text-muted); }
+.chip-unit { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.chip-unit input { width: 6em; }
+.gbs-page .chip-unit .secondary-button { margin-top: 0; }
+.chip-bench-readout { margin-top: 14px; }
+.chip-bench-table td { text-align: right; }
+.chip-shots-dropdown { min-width: 11em; }
+.chip-selected { margin: 6px 0 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-muted); }
+.chip-selected-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 4px; }
+.chip-selected-label { font-size: 0.85rem; color: var(--text-muted); }
+
 .chip-figure { border: 1px solid #25324a; border-radius: 10px; overflow-x: auto; margin-bottom: 14px; background: #0b1220; }
 .chip-readout-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
 .chip-metrics { display: flex; flex-direction: column; gap: 10px; min-width: 170px; }

@@ -7,7 +7,8 @@ from typing import List
 import numpy as np
 from dash import dcc, html
 
-from gbs.chip_charts import LightSource, chip_figure, figure_height
+from gbs.chip_charts import chip_figure, figure_height
+from gbs.bench import LightSource
 from gbs.chip_boson_sampling import SamplingStudy
 from gbs.chip_sampling_charts import convergence_chart, shot_value_chart
 from gbs.photonic_chip import light_flow

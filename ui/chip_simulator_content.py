@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Dict, Tuple
 
 from gbs.chip_programming import ChipTarget
+from ui.chip_bench_content import BENCH_TOPIC
 from ui.chip_sampling_content import SAMPLING_TOPIC
 from ui.theory_content import AARONSON_ARKHIPOV, CLEMENTS, RECK, Reading, Source, TheoryTopic
 
@@ -30,7 +31,7 @@ na každém kusu zvlášť.
 LAB_INTRO = r"""
 Čip má na začátku 4 světlovody (vstupy vlevo, detektory vpravo) a 6 MZI ve čtyřech sloupcích. Počet světlovodů
 jde změnit od 2 do 8: čip s $N$ světlovody má $N(N-1)/2$ MZI v $N$ sloupcích, s osmi tedy 28. Každý MZI má dva
-fázové posouvače: $\varphi$ (oranžový, na horním vstupu) a $\theta$ (fialový, mezi oběma děliči). Laser svítí
+fázové posouvače: $\varphi$ (oranžový, na horním vstupu) a $\theta$ (fialový, mezi oběma děliči). Zdroj svítí
 do zvoleného vstupu. Čím víc světla světlovodem teče, tím jasněji září, a čísla vpravo ukazují, kolik ho dopadne
 na každý detektor. Po najetí myší se představí každá část čipu: vstup, světlovod, posouvač, dělič, MZI i detektor.
 
@@ -43,8 +44,12 @@ na každý detektor. Po najetí myší se představí každá část čipu: vstu
 3. **Naprogramovat podle návrhu** spočítá fáze Clementsovým rozkladem cíle. Na ideálním čipu je shoda 100 %.
 4. Přepni na **vyrobený čip** a zkus totéž: návrhové fáze už nestačí. **Doladit na tomto čipu** je upraví podle
    chyb děličů tohoto kusu.
-5. Fáze jde měnit i ručně posuvníky pod čipem a sledovat, jak se světlo přelévá.
-6. **Pustit světlo** pošle světlo čipem zpomaleně. Průchod jde kdykoli zastavit a posuvníkem *Okamžik* posouvat.
+5. Na **pracovním stole** vyber zdroj, detektory a ztráty. Laser s fotodiodou ukáže, kolik světla se opravdu
+   změří, jednotlivé fotony s APD nebo SNSPD cvakají po jednom. Jiný **kus čipu** má jiné výrobní chyby.
+6. Čip je klikací: klikni na posouvač nebo MZI a nastav ho posuvníkem nad čipem, kliknutím na vstup vlevo tam
+   přesuneš zdroj. **Náhodné fáze** nastaví všechny fáze náhodně, **Vypnout zdroj** čip zhasne. Všechny fáze jsou
+   i v posuvnících pod čipem.
+7. **Pustit světlo** pošle světlo čipem zpomaleně. Průchod jde kdykoli zastavit a posuvníkem *Okamžik* posouvat.
 
 Simulátor vznikl podle [Virtual Chip Simulator](https://sim.q-memory.tech/) firmy Q-Memory; tady je navíc výpočet
 a pod čipem výklad, proč to funguje.
@@ -58,6 +63,12 @@ TARGET_LABELS: Dict[ChipTarget, str] = {
     ChipTarget.RANDOM: "Náhodná unitární matice",
 }
 DEFAULT_TARGET = ChipTarget.SPREAD_EVENLY
+SELECTED_SHIFTER_HINT = (
+    "Klikni v čipu na kterýkoli posouvač (oranžový φ, fialový θ) nebo na MZI a nastav ho tady. Kliknutím na vstup "
+    "vlevo tam přesuneš zdroj."
+)
+SOURCE_OFF_LABEL = "Vypnout zdroj"
+SOURCE_ON_LABEL = "Zapnout zdroj"
 MIN_LAB_MODE_COUNT = 2
 MAX_LAB_MODE_COUNT = 8
 """Above eight waveguides the 56 phase sliders stop being something to tune by hand."""
@@ -70,7 +81,7 @@ CHIP_OPTIONS: Tuple[Tuple[str, float], ...] = (
 )
 """Label and the standard deviation of the share of light each coupler sends across."""
 CHIP_SEEDS = (1, 2, 3, 4, 5)
-SEED_HINT = "Určuje náhodnou cílovou matici i výrobní chyby čipu. Stejný seed dá vždy stejný kus i stejnou matici."
+SEED_HINT = "Určuje náhodnou cílovou matici; výrobní chyby určuje číslo kusu na pracovním stole."
 PHASES_HINT = (
     "θ určuje, jak MZI dělí světlo (0 = vše do sousedního světlovodu, π/2 = půl na půl, π = rovně), φ posouvá fázi "
     "horního vstupu. Obě jsou v radiánech."
@@ -337,4 +348,4 @@ z nepřesných součástek složit obvod, který dělá přesně, co má, ukazuj
     ),
 )
 
-TOPICS: Tuple[TheoryTopic, ...] = (MZI, MESH, PROGRAMMING, PHOTONS, FABRICATION, SAMPLING_TOPIC)
+TOPICS: Tuple[TheoryTopic, ...] = (MZI, MESH, PROGRAMMING, PHOTONS, FABRICATION, BENCH_TOPIC, SAMPLING_TOPIC)

@@ -3,51 +3,42 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from enum import Enum
+from dataclasses import dataclass
 from typing import Any, Dict, List, NamedTuple, Optional, Sequence, Tuple
 
 import plotly.graph_objects as go
 
-from gbs.chip_hover_texts import (
-    COUPLER_HOVER,
-    EXTERNAL_SHIFTER_HOVER,
-    INPUT_HOVER,
-    INTERNAL_SHIFTER_HOVER,
-    LASER_DETECTOR_HOVER,
-    MZI_HOVER,
-    PHOTON_DETECTOR_HOVER,
-    WAVEGUIDE_HOVER,
+from gbs.bench import LightSource
+from gbs.chip_geometry import (
+    COORDINATE_DECIMALS,
+    COUPLER_GAP,
+    EXTERNAL_SHIFTER_AT,
+    FIRST_BEND,
+    FIRST_COUPLER_CENTER,
+    INTERNAL_SHIFTER_AT,
+    LAST_BEND,
+    LEAD_LENGTH,
+    MAX_SHIFTER_MODES,
+    SECOND_BEND,
+    SECOND_BEND_FROM_FIRST,
+    SECOND_COUPLER_CENTER,
+    chip_end,
+    column_x,
+    label_room,
+    modes_outside_mzis,
+    wire_y,
 )
-from gbs.photonic_chip import Chip, LightFlow, MeshPhases, MziSlot, estimated_transit_seconds, mzi_matrix, split_ratios
+from gbs.chip_parts import ChipPart, SelectedShifter, add_part_hovers, czech_phase, detected_label
+from gbs.photonic_chip import Chip, LightFlow, MeshPhases, MziSlot, estimated_transit_seconds
 
-COLUMN_WIDTH = 1.6
-LEAD_LENGTH = 0.5
-COUPLER_GAP = 0.07
-"""Half the distance of the two waveguides inside a directional coupler (the mode spacing is 1)."""
-EXTERNAL_SHIFTER_AT = 0.07
-FIRST_BEND = (0.14, 0.24)
-FIRST_COUPLER_CENTER = 0.30
-SECOND_BEND_FROM_FIRST = (0.36, 0.46)
-INTERNAL_SHIFTER_AT = 0.50
-SECOND_BEND = (0.54, 0.64)
-SECOND_COUPLER_CENTER = 0.70
-LAST_BEND = (0.76, 0.86)
-"""Positions along one column as fractions of its width: φ, coupler, arms with θ, coupler, way out."""
 SHIFTER_SIZE = (0.11, 0.18)
 LABEL_OFFSET = 0.24
-PORT_LABEL_ROOM = 1.0
-PORT_LABEL_ROOM_PER_COLUMN = 0.16
-"""Room left and right of the chip for the input labels and the detected shares; wide chips are drawn smaller, so
-their labels need more of the axis."""
 LIGHT_THRESHOLD = 1e-3
 LIGHT_LEVELS = 20
 """Waveguides with similar light share one shape, so even 120 MZIs stay a few dozen shapes."""
 MAX_LABELLED_MODES = 4
 """The values of the phases are written next to the shifters only on small chips, elsewhere they would not fit."""
-MAX_SHIFTER_MODES = 8
-"""Larger chips are drawn without phase shifters, which would no longer fit."""
 COMPACT_ROW_HEIGHT = 40
-COORDINATE_DECIMALS = 3
 
 CHIP_BACKGROUND = "#0b1220"
 CHIP_BORDER = "#25324a"
@@ -59,17 +50,21 @@ LASER_COLOR = "#ff4d8d"
 INTERNAL_SHIFTER_COLOR = "#b794f6"
 EXTERNAL_SHIFTER_COLOR = "#f6ad55"
 FIGURE_HEIGHT = 380
-HOVER_MARKER_SIZE = 24
+SELECTED_COLOR = "#ff4d8d"
+SELECTED_FILL = "rgba(255, 77, 141, 0.28)"
 HOVER_LABEL = dict(bgcolor="#16213a", bordercolor=CHIP_BORDER, font=dict(color="#e8eef8", size=12), align="left")
 
 
-class LightSource(str, Enum):
-    LASER = "laser"
-    PHOTONS = "fotony"
-    """One photon in each input; the detectors show the mean number of photons."""
+@dataclass(frozen=True)
+class ChipInteraction:
+    """The chip answers clicks (laboratory 1): hover texts say what a click does and the selected shifter glows."""
+    selected: SelectedShifter
 
 
-def chip_figure(chip: Chip, phases: MeshPhases, flow: LightFlow, source: LightSource = LightSource.LASER) -> go.Figure:
+def chip_figure(
+    chip: Chip, phases: MeshPhases, flow: LightFlow, source: LightSource = LightSource.LASER,
+    interaction: Optional[ChipInteraction] = None,
+) -> go.Figure:
     figure = go.Figure()
     _add_chip_outline(figure, chip.mode_count)
     pieces = _lead_pieces(flow, chip.mode_count) + _mesh_pieces(chip, flow)
@@ -78,7 +73,9 @@ def chip_figure(chip: Chip, phases: MeshPhases, flow: LightFlow, source: LightSo
     if chip.mode_count <= MAX_SHIFTER_MODES:
         for index, slot in enumerate(chip.slots):
             _add_mzi_labels(figure, slot, index, phases, chip.mode_count)
-    _add_part_hovers(figure, chip, phases, flow, source)
+    if interaction is not None:
+        _add_selection(figure, chip, interaction.selected)
+    add_part_hovers(figure, chip, phases, flow, source, is_clickable=interaction is not None)
     _add_port_labels(figure, flow, chip.mode_count, source)
     figure.update_layout(
         height=figure_height(chip.mode_count),
@@ -90,8 +87,8 @@ def chip_figure(chip: Chip, phases: MeshPhases, flow: LightFlow, source: LightSo
         hoverlabel=HOVER_LABEL,
         xaxis=dict(
             visible=False, fixedrange=True,
-            range=[-LEAD_LENGTH - _label_room(chip.mode_count),
-                   _chip_end(chip.mode_count) + LEAD_LENGTH + _label_room(chip.mode_count)],
+            range=[-LEAD_LENGTH - label_room(chip.mode_count),
+                   chip_end(chip.mode_count) + LEAD_LENGTH + label_room(chip.mode_count)],
         ),
         yaxis=dict(visible=False, fixedrange=True, range=[-0.6, chip.mode_count - 0.4]),
         meta={"lightAnimation": _light_animation(chip.mode_count, pieces, waveguide_shape, light_shapes)},
@@ -109,31 +106,13 @@ def empty_chip_figure() -> go.Figure:
     return figure
 
 
-def _label_room(mode_count: int) -> float:
-    return max(PORT_LABEL_ROOM, PORT_LABEL_ROOM_PER_COLUMN * mode_count)
-
-
 def figure_height(mode_count: int) -> int:
     return max(FIGURE_HEIGHT, COMPACT_ROW_HEIGHT * mode_count + 60)
 
 
-def _wire_y(mode: int, mode_count: int) -> float:
-    """Waveguide 1 on top."""
-    return float(mode_count - 1 - mode)
-
-
-def _x(column: int, fraction: float) -> float:
-    """Rounded, because the coordinates end up as text in SVG paths sent to the browser."""
-    return round((column + fraction) * COLUMN_WIDTH, COORDINATE_DECIMALS)
-
-
-def _chip_end(mode_count: int) -> float:
-    return mode_count * COLUMN_WIDTH
-
-
 def _add_chip_outline(figure: go.Figure, mode_count: int) -> None:
     figure.add_shape(
-        type="rect", x0=-0.25, x1=_chip_end(mode_count) + 0.25, y0=-0.45, y1=mode_count - 0.55,
+        type="rect", x0=-0.25, x1=chip_end(mode_count) + 0.25, y0=-0.45, y1=mode_count - 0.55,
         line=dict(color=CHIP_BORDER, width=1), fillcolor="rgba(255, 255, 255, 0.015)",
     )
 
@@ -151,10 +130,10 @@ Piece = Tuple[Tuple[Segment, ...], float]
 
 
 def _lead_pieces(flow: LightFlow, mode_count: int) -> List[Piece]:
-    end = _chip_end(mode_count)
+    end = chip_end(mode_count)
     pieces: List[Piece] = []
     for mode in range(mode_count):
-        y = _wire_y(mode, mode_count)
+        y = wire_y(mode, mode_count)
         pieces.append(((Segment(-LEAD_LENGTH, 0.0, y, y),), flow.columns[0][mode]))
         pieces.append(((Segment(end, end + LEAD_LENGTH, y, y),), flow.detected[mode]))
     return pieces
@@ -166,16 +145,10 @@ def _mesh_pieces(chip: Chip, flow: LightFlow) -> List[Piece]:
         for index, slot in enumerate(chip.slots):
             if slot.column == column:
                 pieces.extend(_mzi_pieces(chip, flow, index))
-        for mode in _modes_outside_mzis(chip, column):
-            y = _wire_y(mode, chip.mode_count)
-            pieces.append(((Segment(_x(column, 0), _x(column, 1), y, y),), flow.columns[column][mode]))
+        for mode in modes_outside_mzis(chip, column):
+            y = wire_y(mode, chip.mode_count)
+            pieces.append(((Segment(column_x(column, 0), column_x(column, 1), y, y),), flow.columns[column][mode]))
     return pieces
-
-
-def _modes_outside_mzis(chip: Chip, column: int) -> List[int]:
-    """Waveguides that pass the column straight, at the edge of the mesh."""
-    in_mzis = {mode for slot in chip.slots if slot.column == column for mode in (slot.upper_mode, slot.lower_mode)}
-    return sorted(set(range(chip.mode_count)) - in_mzis)
 
 
 def _mzi_pieces(chip: Chip, flow: LightFlow, index: int) -> List[Piece]:
@@ -183,13 +156,13 @@ def _mzi_pieces(chip: Chip, flow: LightFlow, index: int) -> List[Piece]:
     light = flow.mzis[index]
     pieces: List[Piece] = []
     for side, mode in enumerate((slot.upper_mode, slot.lower_mode)):
-        paths = _mzi_waveguide(slot.column, _wire_y(mode, chip.mode_count), _coupled_y(slot, side, chip.mode_count))
+        paths = _mzi_waveguide(slot.column, wire_y(mode, chip.mode_count), _coupled_y(slot, side, chip.mode_count))
         pieces.extend(zip(paths, (light.entering[side], light.inside[side], light.leaving[side])))
     return pieces
 
 
 def _coupled_y(slot: MziSlot, side: int, mode_count: int) -> float:
-    middle = (_wire_y(slot.upper_mode, mode_count) + _wire_y(slot.lower_mode, mode_count)) / 2
+    middle = (wire_y(slot.upper_mode, mode_count) + wire_y(slot.lower_mode, mode_count)) / 2
     return round(middle + COUPLER_GAP if side == 0 else middle - COUPLER_GAP, COORDINATE_DECIMALS)
 
 
@@ -212,7 +185,7 @@ def _mzi_waveguide(
 
 def _route(column: int, waypoints: Sequence[Tuple[float, float]]) -> Tuple[Segment, ...]:
     """Segments between waypoints given as (fraction of the column width, height)."""
-    points = [(_x(column, fraction), y) for fraction, y in waypoints]
+    points = [(column_x(column, fraction), y) for fraction, y in waypoints]
     return tuple(
         Segment(start_x, end_x, start_y, end_y)
         for (start_x, start_y), (end_x, end_y) in zip(points, points[1:])
@@ -288,8 +261,8 @@ def _light_animation(
         "waveguideShape": waveguide_shape,
         "lightShapes": light_shapes,
         "start": -LEAD_LENGTH,
-        "end": _chip_end(mode_count) + LEAD_LENGTH,
-        "top": _wire_y(0, mode_count),
+        "end": chip_end(mode_count) + LEAD_LENGTH,
+        "top": wire_y(0, mode_count),
         "lanes": [
             [
                 round(_light_strength(intensity), COORDINATE_DECIMALS),
@@ -301,19 +274,33 @@ def _light_animation(
 
 
 def _add_mzi_labels(figure: go.Figure, slot: MziSlot, index: int, phases: MeshPhases, mode_count: int) -> None:
-    upper_y = _wire_y(slot.upper_mode, mode_count)
+    upper_y = wire_y(slot.upper_mode, mode_count)
     shows_values = mode_count <= MAX_LABELLED_MODES
     _add_shifter(
-        figure, _x(slot.column, INTERNAL_SHIFTER_AT), upper_y,
+        figure, column_x(slot.column, INTERNAL_SHIFTER_AT), upper_y,
         f"θ{index + 1} {czech_phase(phases.internal[index])}" if shows_values else None, INTERNAL_SHIFTER_COLOR,
     )
     _add_shifter(
-        figure, _x(slot.column, EXTERNAL_SHIFTER_AT), upper_y,
+        figure, column_x(slot.column, EXTERNAL_SHIFTER_AT), upper_y,
         f"φ{index + 1} {czech_phase(phases.external[index])}" if shows_values else None, EXTERNAL_SHIFTER_COLOR,
     )
     figure.add_annotation(
-        x=_x(slot.column, INTERNAL_SHIFTER_AT), y=upper_y - 0.5, text=f"MZI {index + 1}", showarrow=False,
+        x=column_x(slot.column, INTERNAL_SHIFTER_AT), y=upper_y - 0.5, text=f"MZI {index + 1}", showarrow=False,
         font=dict(color=LABEL_COLOR, size=10),
+    )
+
+
+def _add_selection(figure: go.Figure, chip: Chip, selected: SelectedShifter) -> None:
+    """A glowing frame around the selected shifter, where the chip draws its shifters."""
+    if chip.mode_count > MAX_SHIFTER_MODES or not 0 <= selected.mzi < len(chip.slots):
+        return
+    slot = chip.slots[selected.mzi]
+    position = INTERNAL_SHIFTER_AT if selected.part == ChipPart.INTERNAL_SHIFTER else EXTERNAL_SHIFTER_AT
+    x, y = column_x(slot.column, position), wire_y(slot.upper_mode, chip.mode_count)
+    width, height = SHIFTER_SIZE
+    figure.add_shape(
+        type="rect", x0=x - width, x1=x + width, y0=y - height, y1=y + height,
+        line=dict(color=SELECTED_COLOR, width=2.5), fillcolor=SELECTED_FILL,
     )
 
 
@@ -332,121 +319,12 @@ def _add_shifter(figure: go.Figure, x: float, y: float, label: Optional[str], co
     )
 
 
-HoverSpot = Tuple[float, float, Tuple[str, ...]]
-"""Position of an invisible hover target and the values its description template reads from customdata."""
-
-
-def _add_part_hovers(figure: go.Figure, chip: Chip, phases: MeshPhases, flow: LightFlow, source: LightSource) -> None:
-    """Every part of the chip describes itself on hover: inputs, waveguides, phase shifters, couplers, MZIs and
-    detectors. Shared text sits in the template once per kind of part, so even large chips stay small."""
-    _add_hover_trace(figure, _input_spots(flow, chip.mode_count, source), INPUT_HOVER)
-    _add_hover_trace(figure, _waveguide_spots(chip, flow, source), WAVEGUIDE_HOVER)
-    if chip.mode_count <= MAX_SHIFTER_MODES:
-        external, internal = _shifter_spots(chip, phases)
-        _add_hover_trace(figure, external, EXTERNAL_SHIFTER_HOVER)
-        _add_hover_trace(figure, internal, INTERNAL_SHIFTER_HOVER)
-    _add_hover_trace(figure, _coupler_spots(chip), COUPLER_HOVER)
-    _add_hover_trace(figure, _mzi_spots(chip, phases), MZI_HOVER)
-    detector_hover = LASER_DETECTOR_HOVER if source == LightSource.LASER else PHOTON_DETECTOR_HOVER
-    _add_hover_trace(figure, _detector_spots(flow, chip.mode_count, source), detector_hover)
-
-
-def _add_hover_trace(figure: go.Figure, spots: List[HoverSpot], template: str) -> None:
-    xs, ys, values = zip(*spots)
-    figure.add_trace(go.Scatter(
-        x=xs, y=ys, customdata=values, hovertemplate=template + "<extra></extra>", mode="markers",
-        marker=dict(size=HOVER_MARKER_SIZE, color="rgba(0, 0, 0, 0)"),
-    ))
-
-
-def _input_spots(flow: LightFlow, mode_count: int, source: LightSource) -> List[HoverSpot]:
-    x = -LEAD_LENGTH - _label_room(mode_count) / 2
-    return [
-        (x, _wire_y(mode, mode_count), (str(mode + 1), _input_state(mode in flow.input_modes, source)))
-        for mode in range(mode_count)
-    ]
-
-
-def _input_state(is_lit: bool, source: LightSource) -> str:
-    if source == LightSource.LASER:
-        return "Svítí sem laser." if is_lit else "Sem nic nesvítí."
-    return "Sem vstupuje jeden foton." if is_lit else "Prázdný vstup, žádný foton."
-
-
-def _detector_spots(flow: LightFlow, mode_count: int, source: LightSource) -> List[HoverSpot]:
-    x = _chip_end(mode_count) + LEAD_LENGTH + _label_room(mode_count) / 2
-    return [
-        (x, _wire_y(mode, mode_count), (str(mode + 1), _detected_label(flow.detected[mode], source)))
-        for mode in range(mode_count)
-    ]
-
-
-def _waveguide_spots(chip: Chip, flow: LightFlow, source: LightSource) -> List[HoverSpot]:
-    """On the input and output leads and wherever a waveguide passes a column without an MZI."""
-    spots: List[HoverSpot] = []
-    end = _chip_end(chip.mode_count)
-    for mode in range(chip.mode_count):
-        y = _wire_y(mode, chip.mode_count)
-        spots.append((-LEAD_LENGTH / 2, y, _waveguide_values(mode, flow.columns[0][mode], source)))
-        spots.append((end + LEAD_LENGTH / 2, y, _waveguide_values(mode, flow.detected[mode], source)))
-    for column in range(chip.mode_count):
-        for mode in _modes_outside_mzis(chip, column):
-            spots.append((
-                _x(column, 0.5), _wire_y(mode, chip.mode_count),
-                _waveguide_values(mode, flow.columns[column][mode], source),
-            ))
-    return spots
-
-
-def _waveguide_values(mode: int, light: float, source: LightSource) -> Tuple[str, ...]:
-    if source == LightSource.LASER:
-        return str(mode + 1), f"Teče tudy {czech_percent(light)} světla."
-    return str(mode + 1), f"Teče tudy průměrně {_detected_label(light, source)} fotonu."
-
-
-def _shifter_spots(chip: Chip, phases: MeshPhases) -> Tuple[List[HoverSpot], List[HoverSpot]]:
-    external: List[HoverSpot] = []
-    internal: List[HoverSpot] = []
-    for index, slot in enumerate(chip.slots):
-        upper_y = _wire_y(slot.upper_mode, chip.mode_count)
-        number = str(index + 1)
-        external.append((
-            _x(slot.column, EXTERNAL_SHIFTER_AT), upper_y, (number, czech_phase(phases.external[index])),
-        ))
-        internal.append((
-            _x(slot.column, INTERNAL_SHIFTER_AT), upper_y, (number, czech_phase(phases.internal[index])),
-        ))
-    return external, internal
-
-
-def _coupler_spots(chip: Chip) -> List[HoverSpot]:
-    spots: List[HoverSpot] = []
-    for index, (slot, ratios) in enumerate(zip(chip.slots, split_ratios(chip))):
-        y = (_wire_y(slot.upper_mode, chip.mode_count) + _wire_y(slot.lower_mode, chip.mode_count)) / 2
-        for order, (center, ratio) in enumerate(zip((FIRST_COUPLER_CENTER, SECOND_COUPLER_CENTER), ratios), start=1):
-            spots.append((_x(slot.column, center), y, (str(index + 1), str(order), czech_percent(ratio))))
-    return spots
-
-
-def _mzi_spots(chip: Chip, phases: MeshPhases) -> List[HoverSpot]:
-    spots: List[HoverSpot] = []
-    for index, slot in enumerate(chip.slots):
-        internal, external = phases.internal[index], phases.external[index]
-        cross_share = abs(mzi_matrix(internal, external, chip.split_angles[index])[1, 0]) ** 2
-        spots.append((
-            _x(slot.column, INTERNAL_SHIFTER_AT), _wire_y(slot.upper_mode, chip.mode_count) - 0.5,
-            (str(index + 1), str(slot.upper_mode + 1), str(slot.lower_mode + 1), czech_phase(internal),
-             czech_phase(external), czech_percent(cross_share)),
-        ))
-    return spots
-
-
 def _add_port_labels(figure: go.Figure, flow: LightFlow, mode_count: int, source: LightSource) -> None:
     """All labels in one update: add_annotation revalidates every earlier annotation, O(N²) on large chips."""
-    end = _chip_end(mode_count) + LEAD_LENGTH
+    end = chip_end(mode_count) + LEAD_LENGTH
     labels: List[dict] = []
     for mode in range(mode_count):
-        y = _wire_y(mode, mode_count)
+        y = wire_y(mode, mode_count)
         is_lit = mode in flow.input_modes
         labels.append(dict(
             x=-LEAD_LENGTH - 0.08, y=y, xanchor="right", showarrow=False,
@@ -456,7 +334,7 @@ def _add_port_labels(figure: go.Figure, flow: LightFlow, mode_count: int, source
         ))
         detected = flow.detected[mode]
         labels.append(dict(
-            x=end + 0.08, y=y, xanchor="left", showarrow=False, text=f"<b>{_detected_label(detected, source)}</b>",
+            x=end + 0.08, y=y, xanchor="left", showarrow=False, text=f"<b>{detected_label(detected, source)}</b>",
             font=dict(color=f"rgb({LIGHT_CORE_RGB})" if detected >= LIGHT_THRESHOLD else LABEL_COLOR, size=11),
         ))
     labels.append(dict(
@@ -464,17 +342,3 @@ def _add_port_labels(figure: go.Figure, flow: LightFlow, mode_count: int, source
         text="detektory" if source == LightSource.LASER else "průměr fotonů", font=dict(color=LABEL_COLOR, size=10),
     ))
     figure.update_layout(annotations=[*figure.layout.annotations, *labels])
-
-
-def _detected_label(detected: float, source: LightSource) -> str:
-    if source == LightSource.LASER:
-        return czech_percent(detected)
-    return f"{detected:.2f}".replace(".", ",")
-
-
-def czech_phase(value: float) -> str:
-    return f"{value:.2f}".replace(".", ",")
-
-
-def czech_percent(share: float) -> str:
-    return f"{100 * share:.1f} %".replace(".", ",")

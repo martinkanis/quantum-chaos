@@ -4,7 +4,8 @@ from typing import Dict, List
 import plotly.graph_objects as go
 
 from gbs import chip_hover_texts
-from gbs.chip_charts import LightSource, chip_figure
+from gbs.chip_charts import chip_figure
+from gbs.bench import LightSource
 from gbs.chip_programming import ChipTarget, build_setup, design_phases
 from gbs.photonic_chip import light_flow, split_ratios
 

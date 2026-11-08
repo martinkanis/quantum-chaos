@@ -53,8 +53,11 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
   sdílejí snímky a odkazy do videa přes `slide_figure`. Přepisy a všechny snímky jsou ve větvi `podklady-video`.
 - `gbs/` – doména GBS: hafnián, sampler, gaussovské momenty (Steinova rekurze), ladění stlačení, odhad GBS-P,
   export do Qiskitu (šablona `qiskit_script_template.txt`), fotonický čip ze sítě MZI (`photonic_chip.py`,
-  `clements.py`, `chip_programming.py`, kreslení `chip_charts.py`; boson sampling na čipu `chip_boson_sampling.py`
-  s vektorizovanými permanenty, grafy `chip_sampling_charts.py`).
+  `clements.py`, `chip_programming.py`, kreslení `chip_charts.py` s polohami `chip_geometry.py` a součástkami
+  `chip_parts.py`: každý druh součástky je neviditelná stopa s popiskem, `customdata` končí druhem a číslem
+  součástky, podle kterých `ui/chip_interaction_callbacks.py` pozná klik; pracovní stůl `bench.py` (zdroj, ztráty
+  vlákno–čip a světlovodů, detektory, čítače jednotlivých fotonů; hodnoty jsou náš odhad); boson sampling na čipu
+  `chip_boson_sampling.py` s vektorizovanými permanenty, grafy `chip_sampling_charts.py`).
 - `ui/` – Dash vrstva: `*_page.py` layout, `*_callbacks.py` callbacky, `*_content.py` texty, `ids.py` všechna id,
   `navigation.py` cesty a přepínání stránek.
 - Business logika patří do `gbs/` a `montecarlo/`; UI jen parsuje formulář a vykresluje výsledek.

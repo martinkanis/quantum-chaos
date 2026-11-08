@@ -42,7 +42,7 @@ from ui.theory_content import all_sources
 from ui.topic_catalog import breadcrumb_trail
 from tests.test_topics import active_links, visible_pages
 
-SETUP_FORM = {"mode_count": 4, "target": ChipTarget.SPREAD_EVENLY.value, "split_spread": 0.0, "seed": 1}
+SETUP_FORM = {"mode_count": 4, "target": ChipTarget.SPREAD_EVENLY.value, "split_spread": 0.0, "seed": 1, "chip_unit": 1}
 HADAMARD = np.array([[1, 1, 1, 1], [1, -1, 1, -1], [1, 1, -1, -1], [1, -1, -1, 1]]) / 2
 
 

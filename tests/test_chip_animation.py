@@ -7,7 +7,8 @@ import plotly.graph_objects as go
 import pytest
 
 from gbs.chip_boson_sampling import PhotonKind, run_sampling_study
-from gbs.chip_charts import WAVEGUIDE_COLOR, LightSource, chip_figure
+from gbs.chip_charts import WAVEGUIDE_COLOR, chip_figure
+from gbs.bench import LightSource
 from gbs.chip_programming import ChipTarget, build_setup, design_phases
 from gbs.photonic_chip import ESTIMATED_COLUMN_TRANSIT_SECONDS, MODE_COUNT, estimated_transit_seconds, light_flow
 from ui import ids
