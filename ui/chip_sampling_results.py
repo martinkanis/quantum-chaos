@@ -7,9 +7,10 @@ from typing import List
 import numpy as np
 from dash import dcc, html
 
-from gbs.chip_charts import chip_figure, figure_height
 from gbs.bench import LightSource
 from gbs.chip_boson_sampling import SamplingStudy
+from gbs.chip_charts import chip_figure, figure_height
+from gbs.chip_parts import czech_percent
 from gbs.chip_sampling_charts import convergence_chart, shot_value_chart
 from gbs.photonic_chip import light_flow
 from ui import ids
@@ -17,6 +18,7 @@ from ui.chip_animation import light_animation_controls
 from ui.chip_sampling_content import (
     BOSON_HINT,
     BOSON_SHOTS_HINT,
+    COLLISION_FREE_HINT,
     CONVERGENCE_HINT,
     EXACT_HINT,
     FIRST_SHOTS_HINT,
@@ -78,6 +80,10 @@ def _metric_tiles(study: SamplingStudy) -> List[html.Div]:
                     GAUSSIAN_SHOTS_HINT),
         metric_tile("Kam konverguje čip", f"{czech_decimal(study.sampler.bunching)} ({_signed_percent(study.bias)})",
                     LIMIT_HINT),
+        metric_tile(f"Bez kolize, n²/m = {study.crowding:.2f}".replace(".", ","),
+                    f"{czech_percent(study.target.collision_free_share)} "
+                    f"(čip {czech_percent(study.sampler.collision_free_share)})",
+                    COLLISION_FREE_HINT),
     ]
 
 

@@ -18,6 +18,7 @@ from gbs.chip_boson_sampling import (
     pattern_distribution,
     run_sampling_study,
 )
+from gbs.chip_parts import czech_percent
 from gbs.chip_programming import ChipTarget, target_unitary
 from gbs.photonic_chip import ChipError, mzi_count
 from ui import ids
@@ -102,6 +103,40 @@ def test_fourier_se_dvema_fotony_ma_mu_jedna_a_pul_a_rozlisitelne_ctvrt():
     assert bosons.relative_variance == pytest.approx(1 / 9)
     assert "vyjde $\\mu = 1{,}5$, fotony tedy skončí spolu v polovině výstřelů" in text_of(SAMPLING_TOPIC)
     assert "Rozlišitelné fotony dají $\\mu = 1{,}25$, spolu skončí jen ve čtvrtině" in text_of(SAMPLING_TOPIC)
+
+
+def test_dvojice_fotonu_v_haarove_interferometru_skonci_spolu_s_pravdepodobnosti_dve_ku_m_plus_jedna():
+    modes, draws = 5, 2000
+    rng = np.random.default_rng(11)
+    bosons, particles = [], []
+    for _ in range(draws):
+        unitary = random_unitary(modes, rng)
+        bosons.append(1 - pattern_distribution(unitary, 2, PhotonKind.INDISTINGUISHABLE).collision_free_share)
+        particles.append(1 - pattern_distribution(unitary, 2, PhotonKind.DISTINGUISHABLE).collision_free_share)
+
+    assert np.allclose(bosons, 2 * np.array(particles))
+    assert abs(np.mean(bosons) - 2 / (modes + 1)) < 4 * np.std(bosons) / np.sqrt(draws)
+    assert "dvojice skončí spolu s pravděpodobností $2/(m+1)$, rozlišitelná $1/(m+1)$" in text_of(SAMPLING_TOPIC)
+
+
+def collision_numbers(modes: int, photons: int):
+    bosons = run_sampling_study(ChipTarget.RANDOM, 0.0, 1, modes, photons, PhotonKind.INDISTINGUISHABLE, 10)
+    particles = run_sampling_study(ChipTarget.RANDOM, 0.0, 1, modes, photons, PhotonKind.DISTINGUISHABLE, 10)
+    return (
+        bosons.crowding, czech_percent(bosons.target.collision_free_share),
+        czech_percent(particles.sampler.collision_free_share),
+        round(bosons.target.bunching, 2), round(particles.sampler.bunching, 2),
+    )
+
+
+def test_cisla_o_kolizich_ve_vykladu_odpovidaji_vypoctu():
+    text = text_of(SAMPLING_TOPIC)
+
+    assert collision_numbers(64, 4) == (0.25, "81,6 %", "90,3 %", 1.22, 1.10)
+    assert collision_numbers(16, 8) == (4.0, "2,6 %", "13,7 %", 18.5, 4.10)
+    assert ("64 světlovody a 4 fotony ($n^2/m = 0{,}25$) bez kolize 81,6 % výstřelů, u rozlišitelných fotonů 90,3 %, "
+            "a $\\mu = 1{,}22$ proti $1{,}10$") in text
+    assert "($n^2/m = 4$) je to jen 2,6 % proti 13,7 % a $\\mu = 18{,}5$ proti $4{,}10$" in text
 
 
 def test_uplny_homogenni_polynom_je_soucet_vsech_monomu_daneho_stupne():
@@ -217,4 +252,5 @@ def test_vysledky_ukazuji_oba_odhady_a_prvni_vystrely():
     assert "1,50" in texts and "10" in texts
     assert any(text.startswith("Boson sampling, 1 000 výstřelů") for text in texts)
     assert any(text.startswith("výstupy ") and "→ Z = " in text for text in texts)
+    assert any(text.startswith("Bez kolize, n²/m = 1,00") for text in texts) and "50,0 % (čip 50,0 %)" in texts
     assert czech_decimal(1502.27) == "1 502,27" and czech_decimal(0.01482) == "0,0148"
