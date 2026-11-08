@@ -2,6 +2,7 @@ import time
 import tracemalloc
 from itertools import combinations_with_replacement
 from math import factorial
+from typing import Any
 
 import numpy as np
 import pytest
@@ -10,6 +11,7 @@ from gbs.boson_sampling import output_patterns, permanent, random_unitary, trans
 from gbs.chip_boson_sampling import (
     MAX_PATTERNS,
     PhotonKind,
+    SamplingStudy,
     all_pattern_permanents,
     complete_homogeneous,
     gaussian_estimator_values,
@@ -20,9 +22,10 @@ from gbs.chip_boson_sampling import (
 )
 from gbs.chip_parts import czech_percent
 from gbs.chip_programming import ChipTarget, target_unitary
+from gbs.chip_sampling_charts import convergence_chart
 from gbs.photonic_chip import ChipError, mzi_count
 from ui import ids
-from ui.chip_sampling_callbacks import describe_pattern_count, parse_sampling_form
+from ui.chip_sampling_callbacks import describe_pattern_count, parse_sampling_form, run_boson_sampling
 from ui.chip_sampling_content import (
     EXACT_HINT,
     MAX_SAMPLING_MODE_COUNT,
@@ -36,6 +39,14 @@ from ui.chip_sampling_results import build_sampling_results, czech_count, czech_
 from ui.chip_simulator_content import TOPICS
 from ui.chip_simulator_page import build_chip_simulator_page
 from tests.test_chip_simulator_page import component_ids, texts_in
+
+TEST_DRAWS_SEED = 7
+
+
+def sampling_study(*args: Any) -> SamplingStudy:
+    """run_sampling_study whose shots and Gaussian vectors are seeded, so that the tests are deterministic."""
+    return run_sampling_study(*args, draws=np.random.default_rng(TEST_DRAWS_SEED))
+
 
 FOURIER = target_unitary(ChipTarget.SPREAD_EVENLY, 4, np.random.default_rng(0))
 SAMPLING_FORM = {
@@ -120,8 +131,8 @@ def test_dvojice_fotonu_v_haarove_interferometru_skonci_spolu_s_pravdepodobnosti
 
 
 def collision_numbers(modes: int, photons: int):
-    bosons = run_sampling_study(ChipTarget.RANDOM, 0.0, 1, modes, photons, PhotonKind.INDISTINGUISHABLE, 10)
-    particles = run_sampling_study(ChipTarget.RANDOM, 0.0, 1, modes, photons, PhotonKind.DISTINGUISHABLE, 10)
+    bosons = sampling_study(ChipTarget.RANDOM, 0.0, 1, modes, photons, PhotonKind.INDISTINGUISHABLE, 10)
+    particles = sampling_study(ChipTarget.RANDOM, 0.0, 1, modes, photons, PhotonKind.DISTINGUISHABLE, 10)
     return (
         bosons.crowding, czech_percent(bosons.target.collision_free_share),
         czech_percent(particles.sampler.collision_free_share),
@@ -168,9 +179,9 @@ def test_klasicky_rozptyl_je_o_rady_vetsi_a_s_fotony_roste_rychleji():
 
 
 def test_ideal_trefi_mu_a_vyrobeny_cip_ma_systematickou_chybu_nezavislou_na_vystrelech():
-    ideal = run_sampling_study(ChipTarget.RANDOM, 0.0, 1, 8, 4, PhotonKind.INDISTINGUISHABLE, 20_000)
-    fabricated = run_sampling_study(ChipTarget.RANDOM, 0.08, 1, 8, 4, PhotonKind.INDISTINGUISHABLE, 20_000)
-    fewer_shots = run_sampling_study(ChipTarget.RANDOM, 0.08, 1, 8, 4, PhotonKind.INDISTINGUISHABLE, 1_000)
+    ideal = sampling_study(ChipTarget.RANDOM, 0.0, 1, 8, 4, PhotonKind.INDISTINGUISHABLE, 20_000)
+    fabricated = sampling_study(ChipTarget.RANDOM, 0.08, 1, 8, 4, PhotonKind.INDISTINGUISHABLE, 20_000)
+    fewer_shots = sampling_study(ChipTarget.RANDOM, 0.08, 1, 8, 4, PhotonKind.INDISTINGUISHABLE, 1_000)
 
     assert abs(ideal.bias) < 1e-9
     assert abs(ideal.estimate - ideal.target.bunching) < 4 * ideal.standard_error
@@ -181,7 +192,7 @@ def test_ideal_trefi_mu_a_vyrobeny_cip_ma_systematickou_chybu_nezavislou_na_vyst
 @pytest.mark.parametrize("target", [ChipTarget.RANDOM, ChipTarget.SPREAD_EVENLY])
 def test_rozlisitelne_fotony_v_prikladech_simulatoru_mu_snizi(target):
     for seed in range(1, 6):
-        study = run_sampling_study(target, 0.0, seed, 16, 6, PhotonKind.DISTINGUISHABLE, 100)
+        study = sampling_study(target, 0.0, seed, 16, 6, PhotonKind.DISTINGUISHABLE, 100)
 
         assert study.sampler.bunching < study.target.bunching
 
@@ -211,7 +222,7 @@ def largest_allowed_tasks():
 def test_nejvetsi_ulohy_dobehnou_do_peti_sekund_a_vejdou_se_do_pameti(modes, photons):
     tracemalloc.start()
     started = time.perf_counter()
-    study = run_sampling_study(ChipTarget.RANDOM, 0.08, 1, modes, photons, PhotonKind.INDISTINGUISHABLE, 100_000)
+    study = sampling_study(ChipTarget.RANDOM, 0.08, 1, modes, photons, PhotonKind.INDISTINGUISHABLE, 100_000)
     build_sampling_results(study)
     elapsed = time.perf_counter() - started
     peak_mib = tracemalloc.get_traced_memory()[1] / 2**20
@@ -246,7 +257,7 @@ def test_formular_hlida_vstupy_a_ukaze_pocet_vzoru():
 
 
 def test_vysledky_ukazuji_oba_odhady_a_prvni_vystrely():
-    study = run_sampling_study(ChipTarget.SPREAD_EVENLY, 0.0, 1, 4, 2, PhotonKind.INDISTINGUISHABLE, 1000)
+    study = sampling_study(ChipTarget.SPREAD_EVENLY, 0.0, 1, 4, 2, PhotonKind.INDISTINGUISHABLE, 1000)
     texts = list(texts_in(build_sampling_results(study)))
 
     assert "1,50" in texts and "10" in texts
@@ -254,3 +265,31 @@ def test_vysledky_ukazuji_oba_odhady_a_prvni_vystrely():
     assert any(text.startswith("výstupy ") and "→ Z = " in text for text in texts)
     assert any(text.startswith("Bez kolize, n²/m = 1,00") for text in texts) and "50,0 % (čip 50,0 %)" in texts
     assert czech_decimal(1502.27) == "1 502,27" and czech_decimal(0.01482) == "0,0148"
+
+
+def test_kazde_spusteni_losuje_nove_vystrely_na_stejnem_interferometru():
+    form = {**SAMPLING_FORM, "mode_count": 16, "photons": 6}
+    runs = [list(texts_in(run_boson_sampling(1, form)["results"])) for _ in range(2)]
+    first_shots = [[text for text in texts if text.startswith("výstupy ")] for texts in runs]
+    exact_mu = [texts[texts.index("Přesné μ ⓘ") + 1] for texts in runs]
+
+    assert len(first_shots[0]) == 8 and first_shots[0] != first_shots[1]
+    assert exact_mu[0] == exact_mu[1]
+
+
+def test_graf_konvergence_jde_prepnout_na_linearni_osu_x_a_priblizit_osu_y_kolem_mu():
+    study = sampling_study(ChipTarget.RANDOM, 0.0, 1, 16, 6, PhotonKind.INDISTINGUISHABLE, 10_000)
+    figure = convergence_chart(study)
+    x_menu, y_menu = figure.layout.updatemenus
+    y_changes = {button.label: button.args[0] for button in y_menu.buttons}
+    around = y_changes["Y kolem μ"]["yaxis.range"]
+    chip_curve = np.array(figure.data[1].y)
+    settled = chip_curve[len(chip_curve) // 2:]
+    exact = study.target.bunching
+
+    assert [button.args[0]["xaxis.type"] for button in x_menu.buttons] == ["log", "linear"]
+    assert list(y_changes["Y 0 až 2μ"]["yaxis.range"]) == [0, 2 * exact]
+    assert y_changes["Y vše"] == {"yaxis.autorange": True}
+    assert around[0] < min(exact, settled.min()) and max(exact, settled.max()) < around[1]
+    assert 5 * (around[1] - around[0]) < 2 * exact
+    assert figure.layout.separators == ", "

@@ -24,9 +24,6 @@ MAX_SHOTS = 100_000
 PERMANENT_CHUNK_ELEMENTS = 1 << 20
 """Prefix products and partial sums of one chunk of patterns: 2²⁰ complex numbers = 16 MiB, whatever the task."""
 DRAW_CHUNK = 8192
-SHOT_STREAM = 2
-GAUSSIAN_STREAM = 3
-"""Random streams of one seed next to the target (0) and the fabrication errors (1) of gbs/chip_programming.py."""
 
 
 class PhotonKind(str, Enum):
@@ -195,26 +192,25 @@ class SamplingStudy:
 
 def run_sampling_study(
     target: ChipTarget, split_spread: float, seed: int, mode_count: int, photons: int, kind: PhotonKind, shots: int,
+    *, draws: np.random.Generator,
 ) -> SamplingStudy:
     """The chip programmed by the design phases samples `shots` patterns; the same number of Gaussian draws feed
-    plain Monte Carlo of the target μ, which a classical computer can do without photons."""
+    plain Monte Carlo of the target μ, which a classical computer can do without photons. The seed fixes the
+    interferometer and the fabricated chip, `draws` the shots and the Gaussian vectors."""
     if not 1 <= shots <= MAX_SHOTS:
         raise ChipError(f"Počet výstřelů musí být mezi 1 a {_spaced(MAX_SHOTS)}.")
     _check_size(mode_count, photons)
     setup = build_setup(target, split_spread, seed, mode_count)
     phases = design_phases(setup)
     sampler = pattern_distribution(transfer_matrix(setup.chip, phases), photons, kind)
-    shot_rng = np.random.default_rng([seed, SHOT_STREAM])
     return SamplingStudy(
         chip=setup.chip,
         phases=phases,
         photons=photons,
         target=pattern_distribution(setup.target, photons, PhotonKind.INDISTINGUISHABLE),
         sampler=sampler,
-        shot_indices=shot_rng.choice(len(sampler.probabilities), size=shots, p=_normalised(sampler.probabilities)),
-        gaussian_values=gaussian_estimator_values(
-            setup.target, photons, shots, np.random.default_rng([seed, GAUSSIAN_STREAM]),
-        ),
+        shot_indices=draws.choice(len(sampler.probabilities), size=shots, p=_normalised(sampler.probabilities)),
+        gaussian_values=gaussian_estimator_values(setup.target, photons, shots, draws),
     )
 
 

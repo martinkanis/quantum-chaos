@@ -6,7 +6,7 @@ import numpy as np
 import plotly.graph_objects as go
 import pytest
 
-from gbs.chip_boson_sampling import PhotonKind, run_sampling_study
+from gbs.chip_boson_sampling import PhotonKind
 from gbs.chip_charts import WAVEGUIDE_COLOR, chip_figure
 from gbs.bench import LightSource
 from gbs.chip_programming import ChipTarget, build_setup, design_phases
@@ -16,6 +16,7 @@ from ui.chip_animation import ANIMATION_CLASS
 from ui.chip_sampling_results import build_sampling_results
 from ui.chip_simulator_content import ANIMATION_HINT
 from ui.chip_simulator_page import build_chip_simulator_page
+from tests.test_chip_boson_sampling import sampling_study
 from tests.test_chip_simulator_page import component_ids
 
 ANIMATION_SCRIPT = Path(__file__).resolve().parent.parent / "assets" / "chip_animation.js"
@@ -100,7 +101,7 @@ def test_odhad_skutecneho_pruchodu_v_textu_sedi_s_vypoctem_a_se_snimkem_obrazovk
 
 def test_ovladani_animace_je_u_cipu_v_laboratori_i_u_vystrelu_fotonu():
     page_controls = list(animation_controls(build_chip_simulator_page()))
-    study = run_sampling_study(ChipTarget.RANDOM, 0.0, 1, 8, 3, PhotonKind.INDISTINGUISHABLE, 100)
+    study = sampling_study(ChipTarget.RANDOM, 0.0, 1, 8, 3, PhotonKind.INDISTINGUISHABLE, 100)
     results = build_sampling_results(study)
     result_controls = list(animation_controls(results))
 

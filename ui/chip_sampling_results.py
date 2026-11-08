@@ -35,6 +35,22 @@ FIRST_SHOTS_SHOWN = 8
 MIN_FIGURE_WIDTH = 680
 FIGURE_WIDTH_PER_MODE = 70
 """Large chips scroll sideways on narrow screens instead of squeezing their MZIs together."""
+ZOOMABLE_GRAPH_CONFIG = {
+    "displayModeBar": True,
+    "displaylogo": False,
+    "modeBarButtons": [["zoom2d", "pan2d"], ["zoomIn2d", "zoomOut2d", "autoScale2d", "resetScale2d"]],
+    "locale": "cs",
+    "locales": {"cs": {"dictionary": {
+        "Zoom": "Přiblížit výběr",
+        "Pan": "Posouvat",
+        "Zoom in": "Přiblížit",
+        "Zoom out": "Oddálit",
+        "Autoscale": "Ukázat všechny hodnoty",
+        "Reset axes": "Původní pohled",
+        "Double-click to zoom back out": "Dvojklikem se vrátíš na původní pohled",
+    }}},
+}
+"""Plotly's own zoom and pan buttons, with Czech tooltips."""
 
 
 def build_sampling_results(study: SamplingStudy) -> html.Div:
@@ -53,7 +69,7 @@ def build_sampling_results(study: SamplingStudy) -> html.Div:
         )),
         html.P(PHOTON_ANIMATION_HINT, className="hint small"),
         html.H3("Jak se odhady blíží k μ"),
-        dcc.Graph(figure=convergence_chart(study), config={"displayModeBar": False}),
+        dcc.Graph(figure=convergence_chart(study), config=ZOOMABLE_GRAPH_CONFIG),
         html.P(CONVERGENCE_HINT, className="hint small"),
         html.H3("Hodnoty výstřelů"),
         dcc.Graph(figure=shot_value_chart(study), config={"displayModeBar": False}),

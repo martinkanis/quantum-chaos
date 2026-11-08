@@ -58,7 +58,10 @@ SAMPLING_CHIP_OPTIONS: Tuple[Tuple[str, float], ...] = (
     ("Vyrobený, děliče 50 ± 8 %", 0.08),
 )
 SAMPLING_SEEDS = (1, 2, 3, 4, 5)
-SAMPLING_SEED_HINT = "Určuje náhodný interferometr, výrobní chyby čipu i samotné výstřely."
+SAMPLING_SEED_HINT = (
+    "Určuje náhodný interferometr a výrobní chyby čipu. Výstřely i gaussovské vzorky se při každém spuštění "
+    "losují znovu."
+)
 TARGET_RELATIVE_ERROR = 0.01
 """The accuracy the readout converts the variance of one sample into a number of samples for."""
 
@@ -86,7 +89,10 @@ COLLISION_FREE_HINT = (
 )
 CONVERGENCE_HINT = (
     "Průběžný odhad po prvních N vzorcích. Klasické Monte Carlo často vyskočí mimo graf: jeden vzorek s obří hodnotou "
-    "posune celý průměr."
+    "posune celý průměr. Totéž v menším potká čip: vzácný výstřel se shlukem fotonů, třeba sedm v jednom detektoru "
+    "(Z = 7! = 5 040), zvedne průměr o Z/N, a křivka proto ještě tisíce výstřelů pozvolna klesá. Tlačítka nad grafem přepnou osu X na lineární a osu Y přiblíží kolem μ (tam je vidět, jak "
+    "odhad čipu kolísá) nebo ukážou všechny hodnoty. Tažením v grafu přiblížíš vybraný obdélník, tahem za konec osy "
+    "změníš měřítko jen jí; dvojklik vrátí původní pohled."
 )
 SHOT_VALUES_HINT = (
     "Jak často má výstřel hodnotu Z = S!: 1 znamená, že žádné dva fotony nedorazily do stejného detektoru, 2 jednu "

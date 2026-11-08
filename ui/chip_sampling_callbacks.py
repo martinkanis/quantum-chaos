@@ -6,6 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
+import numpy as np
 from dash import Dash, Input, Output, State
 
 from gbs.chip_boson_sampling import MAX_PATTERNS, PhotonKind, SamplingStudy, pattern_count, run_sampling_study
@@ -106,4 +107,5 @@ def _run_study(form: SamplingForm) -> SamplingStudy:
     )
     return run_sampling_study(
         form.target, form.split_spread, form.seed, form.mode_count, form.photons, form.kind, form.shots,
+        draws=np.random.default_rng(),
     )
