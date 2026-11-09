@@ -38,6 +38,8 @@
   color: var(--text-muted);
 }
 .assistant-body mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
+/* A quoted formula is Markdown: its paragraphs keep the quote as tight as a plain text. */
+.assistant-quote p { margin: 0.25em 0; }
 .assistant-preview { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 8px; }
 .assistant-preview .gbs-page, .assistant-preview .card { box-shadow: none; }
 /* The buttons stay in view at the bottom while a long preview scrolls. */

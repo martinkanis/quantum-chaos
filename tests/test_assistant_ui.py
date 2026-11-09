@@ -8,7 +8,7 @@ from assistant.claude import AssistantError
 from assistant.jobs import AgentRunner, JobStatus, MemoryJobStore
 from assistant.publish import PublishError
 from assistant.topics import topic_from_dict
-from tests.test_assistant import SELECTION, topic_data
+from tests.test_assistant import FORMULA_SELECTION, SELECTION, topic_data
 from ui import ids
 from ui.assistant_callbacks import (
     ACCEPT,
@@ -85,6 +85,23 @@ def test_dovysvetleni_otevre_okno_s_textem_a_nabidne_rozvedeni():
     assert any(isinstance(item, dcc.Markdown) and item.children == "Vysvětlení s $x$." for item in view.body)
     assert view.context["explanation"] == "Vysvětlení s $x$."
     assert assistant.explained[0].page_title == "Teorie Monte Carla na GBS"
+
+
+def test_citace_vzorce_se_sazi_mathjaxem_a_blokovy_vzorec_dostane_vlastni_radky():
+    assistant = FakeAssistant()
+
+    view = handle_action(assistant, ids.ASSISTANT_REQUEST, None, {"action": "explain", **FORMULA_SELECTION}, None)
+    plain = handle_action(assistant, ids.ASSISTANT_REQUEST, None, {"action": "explain", **SELECTION}, None)
+
+    quoted = view.body[0]
+    assert isinstance(quoted, html.Blockquote) and isinstance(quoted.children, dcc.Markdown)
+    assert quoted.children.mathjax is True
+    assert quoted.children.children == (
+        "Rozptyl odhadu je\n\n$$\n\\operatorname{Var}(\\hat\\mu) = \\frac{\\sigma^2}{N}\n$$\n\na chyba klesá jako "
+        "$1/\\sqrt{N}$."
+    )
+    assert assistant.explained[0].has_formula is True
+    assert isinstance(plain.body[0].children, str)
 
 
 def test_chyba_claude_se_ukaze_v_okne_bez_tlacitek():
@@ -223,3 +240,10 @@ def test_skript_asistenta_pouziva_id_z_aplikace():
 
     assert used <= {value for name, value in vars(ids).items() if name.startswith("ASSISTANT_")}
     assert {ids.ASSISTANT_REQUEST, ids.ASSISTANT_MODAL, ids.ASSISTANT_MODAL_BODY} <= used
+
+
+def test_skript_asistenta_posila_vzorce_jako_tex_ze_zdroje_mathjaxu():
+    script = (ASSETS / "assistant.js").read_text(encoding="utf-8")
+
+    assert "startup.document" in script and '"mjx-container"' in script
+    assert "has_formula" in script and "$$ " in script

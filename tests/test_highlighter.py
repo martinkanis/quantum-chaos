@@ -32,6 +32,13 @@ def test_zvyraznovat_jde_text_na_kazde_strance_aplikace():
     assert f'"{HIGHLIGHT_ROOTS_ATTRIBUTE}"' in SCRIPT
 
 
+def test_klepnuti_na_vzorec_ho_vybere_a_lista_ukaze_jen_asistenta():
+    style = (ASSETS / "highlighter.css").read_text(encoding="utf-8")
+
+    assert '"mjx-container"' in SCRIPT and "selectFormula(formula)" in SCRIPT
+    assert "qc-highlighter-formula" in SCRIPT and ".qc-highlighter-formula" in style
+
+
 def test_paleta_ma_devet_ruznych_pastelovych_barev_se_ctivym_textem():
     colors = COLOR_PATTERN.findall(SCRIPT)
     names = [name for name, _fill, _line in colors]

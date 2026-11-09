@@ -1,7 +1,7 @@
 // Text highlighter: select text with the mouse (on a phone or tablet hold it, or swipe a finger sideways across it),
 // then highlight or underline it in one of nine pastel colours; a tap on a mark changes or removes it, and selected
 // text that is marked can be erased from its marks. The same toolbar asks Claude to explain the selection or to
-// expand it into a new topic (assets/assistant.js).
+// expand it into a new topic (assets/assistant.js); a tap on a formula selects it whole for that.
 // The marks are painted with the CSS Custom Highlight API, so the DOM that Dash (React) renders is never changed,
 // and they are kept in this browser's localStorage, anchored to the page container (ids in data-highlight-roots,
 // set in ui/layout.py) by text offsets and the text around them, so they survive edits elsewhere on the page.
@@ -36,6 +36,9 @@
     // A tap or a swipe that starts here belongs to the control, not to the highlighter.
     const INTERACTIVE = "a, button, summary, label, input, select, textarea, [contenteditable], [role='button'], " +
         "canvas, .js-plotly-plot, .dash-table-container, .dash-dropdown";
+    // MathJax typesets formulas as SVG drawings with no text to select: a tap selects the whole formula, and the
+    // selection goes to Claude as the formula's TeX (assets/assistant.js). A formula alone cannot be marked.
+    const FORMULA = "mjx-container";
     const WORD_CHARACTER = /[\p{L}\p{N}_]/u;
     const TAP_DISTANCE = 10;
     const TAP_MILLISECONDS = 600;
@@ -62,7 +65,8 @@
     let liveRanges = new Map();
     let markedFormulas = new Set();
     // erasable: the pending selection covers text of a mark, so the toolbar offers to erase it.
-    let state = {mode: null, pending: null, editing: null, erasable: false};
+    // formula: the pending selection is a formula alone, with no text to mark, so only Claude and the editor show.
+    let state = {mode: null, pending: null, editing: null, erasable: false, formula: false};
     let rootIds = null;
     let toolbar = null;
     let lastPointerType = "mouse";
@@ -610,10 +614,12 @@
         return state.mode === "edit" ? markById(state.editing) : null;
     }
 
+    /** Shows the controls of the state; false when none applies (a formula alone without Claude or the editor). */
     function renderToolbar() {
         const current = shownMark() || preferences;
         const color = COLORS[current.color];
         toolbar.dataset.kind = current.kind;
+        toolbar.classList.toggle("qc-highlighter-formula", Boolean(state.formula));
         toolbar.style.setProperty("--qc-fill", color.fill);
         toolbar.style.setProperty("--qc-line", color.line);
         toolbar.querySelectorAll("[data-kind]").forEach((button) => {
@@ -630,17 +636,21 @@
         toolbar.querySelector("[data-text-edit]").hidden = !(window.qcTextEdit && window.qcTextEdit.editableAt(range));
         const row = toolbar.querySelector(".qc-highlighter-assistant");
         row.hidden = Array.from(row.querySelectorAll("button")).every((button) => button.hidden);
+        return !state.formula || !row.hidden;
     }
 
     function showToolbar(nextState) {
         state = nextState;
-        renderToolbar();
+        if (!renderToolbar()) {
+            hideToolbar();
+            return;
+        }
         toolbar.hidden = false;
         positionToolbar();
     }
 
     function hideToolbar() {
-        state = {mode: null, pending: null, editing: null, erasable: false};
+        state = {mode: null, pending: null, editing: null, erasable: false, formula: false};
         if (toolbar) {
             toolbar.hidden = true;
         }
@@ -761,10 +771,35 @@
         const range = selection && selection.rangeCount && !selection.isCollapsed ? selection.getRangeAt(0) : null;
         const span = range && !isTyping() ? spanOf(range) : null;
         if (span) {
-            showToolbar({mode: "new", pending: range.cloneRange(), editing: null, erasable: isMarked(span)});
+            showToolbar({
+                mode: "new", pending: range.cloneRange(), editing: null, erasable: isMarked(span), formula: false,
+            });
+        } else if (range && !isTyping() && selectsFormula(range)) {
+            showToolbar({mode: "new", pending: range.cloneRange(), editing: null, erasable: false, formula: true});
         } else if (state.mode === "new" && Date.now() - toolbarTouchedAt > TOOLBAR_GRACE_MILLISECONDS) {
             hideToolbar();
         }
+    }
+
+    /** Whether the selection, which has no text of a page, covers a formula of one. */
+    function selectsFormula(range) {
+        const ancestor = elementOf(range.commonAncestorContainer);
+        if (!ancestor || !rootOf(ancestor)) {
+            return false;
+        }
+        const enclosing = ancestor.closest(FORMULA);
+        const formulas = enclosing ? [enclosing] : Array.from(ancestor.querySelectorAll(FORMULA));
+        return formulas.some((formula) => range.intersectsNode(formula));
+    }
+
+    /** A tap selects the whole formula: dragging across its SVG drawing selects nothing, or only a piece of it. */
+    function selectFormula(formula) {
+        const range = document.createRange();
+        range.selectNode(formula);
+        const selection = document.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        evaluateSelection();
     }
 
     /** The mark under a point; of overlapping ones the newest. */
@@ -870,6 +905,11 @@
             const selection = document.getSelection();
             const collapsed = !selection || selection.isCollapsed;
             if (isTap && collapsed && target && !target.closest(INTERACTIVE)) {
+                const formula = target.closest(FORMULA);
+                if (formula && rootOf(formula)) {
+                    selectFormula(formula);
+                    return;
+                }
                 const mark = markAt(event.clientX, event.clientY);
                 if (mark) {
                     showToolbar({mode: "edit", pending: null, editing: mark.id});

@@ -33,6 +33,29 @@ EXPLAIN_SYSTEM = "\n\n".join([
     HONESTY,
 ])
 
+TEX_NOTE = (
+    "Vzorce v úryvku i v jeho okolí jsou zdrojový TeX, přesně jak je stránka sází: $…$ v řádku, "
+    "$$ … $$ samostatně."
+)
+
+FORMULA_GUIDE = (
+    "Čtenář má zatím slabší matematiku a fyziku, proto vzorec vysvětli úplně a po krocích, nic nepřeskakuj jako "
+    "samozřejmé: (1) jednou větou slovy, co vzorec říká; (2) význam každého symbolu a zápisu – indexy, stříšky, "
+    "závorky, operátory, a co je číslo, vektor, matice, operátor nebo funkce; (3) postup či odvození krok za krokem, "
+    "odkud vzorec plyne nebo jak se z levé strany dojde k pravé, a u každého kroku pojmenuj použité pravidlo; "
+    "(4) jak vzorec navazuje na okolní odstavec a na co se dál použije, ideálně s malým příkladem na konkrétních "
+    "číslech."
+)
+
+EXPLAIN_FORMULA_SYSTEM = "\n\n".join([
+    APP_CONTEXT,
+    "Čtenář si na stránce označil vzorec, sám nebo s okolním textem, a chce ho dovysvětlit. " + FORMULA_GUIDE,
+    "Rozsah podle složitosti vzorce, nejvýš asi dvě normostrany (3 600 znaků), v krátkých odstavcích nebo "
+    "odrážkách. Žádné nadpisy ani úvodní fráze, rovnou k věci.",
+    FORMATTING,
+    HONESTY,
+])
+
 TOPIC_TOOL_NAME = "odevzdat_stranku"
 
 TOPIC_SYSTEM = "\n\n".join([
@@ -96,11 +119,16 @@ TOPIC_TOOL = {
 SUBMIT_REMINDER = f"Teď zavolej nástroj {TOPIC_TOOL_NAME} s hotovou stránkou."
 
 
+def explain_system(context: SelectionContext) -> str:
+    """A selection with a formula gets the step-by-step instructions and room for them."""
+    return EXPLAIN_FORMULA_SYSTEM if context.has_formula else EXPLAIN_SYSTEM
+
+
 def explain_message(context: SelectionContext) -> str:
     return "\n".join([
         *_context_lines(context),
         "",
-        "Dovysvětli označený úryvek.",
+        "Dovysvětli označený vzorec po krocích." if context.has_formula else "Dovysvětli označený úryvek.",
     ])
 
 
@@ -123,4 +151,6 @@ def _context_lines(context: SelectionContext) -> list:
     if context.paragraph and context.paragraph != context.selection:
         lines += ["<okoli_uryvku>", context.paragraph, "</okoli_uryvku>"]
     lines += ["<oznaceny_uryvek>", context.selection, "</oznaceny_uryvek>"]
+    if context.has_formula:
+        lines.append(f"<poznamka>{TEX_NOTE}</poznamka>")
     return lines

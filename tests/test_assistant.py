@@ -23,9 +23,9 @@ from assistant.jobs import (
     libpq_dsn,
     recover_jobs,
 )
-from assistant.prompts import TOPIC_TOOL_NAME
+from assistant.prompts import EXPLAIN_SYSTEM, TOPIC_TOOL_NAME, explain_message, explain_system, topic_message
 from assistant.publish import PublishError, PublishSettings, publish_topic
-from assistant.selection import SelectionError, selection_from_request
+from assistant.selection import SelectionError, selection_from_request, selection_to_dict
 from assistant.topics import (
     TopicError,
     load_topics,
@@ -43,6 +43,15 @@ SELECTION = {
     "selection": "Wickova–Isserlisova věta   a\n hafnián",
     "paragraph": "Momenty gaussovského rozdělení se rozkládají na párování.",
 }
+FORMULA_SELECTION = {
+    **SELECTION,
+    "selection": "Rozptyl odhadu je $$ \\operatorname{Var}(\\hat\\mu) = \\frac{\\sigma^2}{N} $$ a chyba klesá jako "
+    "$1/\\sqrt{N}$.",
+    "paragraph": "Pro $N$ nezávislých vzorků platí $$ \\operatorname{Var}(\\hat\\mu) = \\frac{\\sigma^2}{N} $$ "
+    "Proto chyba klesá s odmocninou.",
+    "has_formula": True,
+}
+"""A selection with formulas as assets/assistant.js sends it: the TeX source of each formula on one line."""
 PLACEMENT = {"layer": "gbs-ve-financich", "topic_anchor": "tema-rozvedena", "parent_page_id": "theory-page"}
 SUBMITTED = {
     "title": "Wickova věta a párování",
@@ -141,6 +150,28 @@ def test_oznaceny_text_se_overi_a_mezery_sjednoti():
         selection_from_request({"selection": "  "})
     with pytest.raises(SelectionError, match="moc dlouhý"):
         selection_from_request({"selection": "x" * 2001})
+
+
+def test_vyber_se_vzorcem_dostane_pokyny_pro_zacinajiciho_doktoranda():
+    context = selection_from_request(FORMULA_SELECTION)
+    plain = selection_from_request(SELECTION)
+
+    assert context.has_formula is True and plain.has_formula is False
+    assert selection_to_dict(context)["has_formula"] is True
+    system = explain_system(context)
+    assert "každého symbolu" in system and "krok za krokem" in system and "dvě normostrany" in system
+    assert explain_system(plain) == EXPLAIN_SYSTEM
+    message = explain_message(context)
+    assert "$$ \\operatorname{Var}(\\hat\\mu) = \\frac{\\sigma^2}{N} $$" in message
+    assert "<poznamka>" in message and "zdrojový TeX" in message
+    assert message.endswith("Dovysvětli označený vzorec po krocích.")
+    assert "<poznamka>" not in explain_message(plain)
+    assert "zdrojový TeX" in topic_message(context, None, [])
+
+
+def test_priznak_vzorce_plati_jen_jako_pravdivostni_hodnota():
+    assert selection_from_request({**SELECTION, "has_formula": "ano"}).has_formula is False
+    assert selection_from_request({**SELECTION, "has_formula": 1}).has_formula is False
 
 
 def test_vysvetleni_vrati_text_a_posle_kontext_strany():

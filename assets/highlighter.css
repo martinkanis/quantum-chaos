@@ -111,3 +111,8 @@
 }
 .qc-highlighter-ask:hover { border-color: var(--accent); color: var(--accent); }
 @media (pointer: coarse) { .qc-highlighter-ask { min-height: 38px; } }
+
+/* A selected formula has no text to mark, so only the row for Claude and the editor shows. */
+.qc-highlighter-formula .qc-highlighter-row:not(.qc-highlighter-assistant),
+.qc-highlighter-formula .qc-highlighter-colors { display: none; }
+.qc-highlighter-formula .qc-highlighter-assistant { border-top: none; padding-top: 0; }

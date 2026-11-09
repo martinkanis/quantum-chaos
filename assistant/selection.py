@@ -1,4 +1,4 @@
-"""Text the reader selected on a page, with the context the browser sends along (assets/highlighter.js)."""
+"""Text the reader selected on a page, with the context the browser sends along (assets/assistant.js)."""
 
 from __future__ import annotations
 
@@ -23,7 +23,9 @@ class SelectionContext:
     """Heading of the chapter around the selection; empty when the page has none."""
     selection: str
     paragraph: str
-    """The paragraph (or list item) the selection starts in, for context."""
+    """The paragraph (or list item) the selection starts in, for context; around a formula its neighbours too."""
+    has_formula: bool = False
+    """The selection holds a formula, sent as its TeX source: $…$ in a line, $$ … $$ on its own."""
 
 
 def selection_from_request(data: Any) -> SelectionContext:
@@ -42,6 +44,7 @@ def selection_from_request(data: Any) -> SelectionContext:
         section_title=_text(data, "section_title")[:MAX_TITLE_LENGTH],
         selection=selection,
         paragraph=_text(data, "paragraph")[:MAX_PARAGRAPH_LENGTH],
+        has_formula=data.get("has_formula") is True,
     )
 
 
@@ -52,6 +55,7 @@ def selection_to_dict(context: SelectionContext) -> dict:
         "section_title": context.section_title,
         "selection": context.selection,
         "paragraph": context.paragraph,
+        "has_formula": context.has_formula,
     }
 
 

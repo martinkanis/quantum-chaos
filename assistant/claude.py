@@ -8,12 +8,12 @@ from dataclasses import dataclass
 from typing import Any, List, Mapping, Optional, Sequence
 
 from assistant.prompts import (
-    EXPLAIN_SYSTEM,
     SUBMIT_REMINDER,
     TOPIC_SYSTEM,
     TOPIC_TOOL,
     TOPIC_TOOL_NAME,
     explain_message,
+    explain_system,
     topic_message,
 )
 from assistant.selection import SelectionContext
@@ -68,7 +68,7 @@ def make_client(timeout: float, max_retries: int) -> Any:
 def explain(context: SelectionContext, client: Optional[Any] = None) -> str:
     response = _create(
         client or make_client(EXPLAIN_TIMEOUT_SECONDS, EXPLAIN_RETRIES),
-        system=EXPLAIN_SYSTEM,
+        system=explain_system(context),
         messages=[{"role": "user", "content": explain_message(context)}],
         effort=EXPLAIN_EFFORT,
         max_tokens=EXPLAIN_MAX_TOKENS,

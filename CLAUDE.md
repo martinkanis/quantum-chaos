@@ -75,6 +75,8 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 - `assets/highlighter.js` – zvýrazňování a podtrhávání textu (CSS Custom Highlight API, DOM Dashe nemění), uložené
   v localStorage a ukotvené ke stránkám z `data-highlight-roots` v `ui/layout.py` (= `PAGE_IDS`). Pravidla
   `::highlight()` zpomalují sázení MathJaxu, proto jsou jen pro použité barvy a při změnách DOM se vypínají.
+  Vzorce (MathJax je sází do SVG bez textu) vybere klepnutí; Dovysvětlit a Rozvést je dostanou jako zdrojový TeX
+  ze seznamu `MathJax.startup.document.math` (`assets/assistant.js`), prompt pro vzorec je v `assistant/prompts.py`.
 - `assets/text_links.js` – odkaz v Markdownu na stránku aplikace (`[text](/cesta#kotva)` v kartě `.theory-section`
   nebo ve „V kostce“) přepne stránku jako `dcc.Link`, bez načtení celé aplikace. Že vede na existující stránku
   a kotvu, hlídá `tests/test_text_links.py`.

@@ -7,6 +7,7 @@ the work behind each action is in plain functions that return a View, which the 
 from __future__ import annotations
 
 import logging
+import re
 import time
 from dataclasses import dataclass, replace
 from typing import Any, Callable, FrozenSet, List, Mapping, Optional, Tuple
@@ -57,6 +58,8 @@ from ui.topic_catalog import page_entries, placement_for
 
 AGENTS_SHOWN = 10
 QUOTE_LENGTH = 300
+DISPLAY_FORMULA = re.compile(r"\s*\$\$(.+?)\$\$\s*")
+"""A display formula as the browser sends it, on one line; dcc.Markdown typesets it only on lines of its own."""
 EXPAND, ACCEPT, REJECT = "expand", "accept", "reject"
 ACTION_BUTTONS = (EXPAND, ACCEPT, REJECT)
 NOT_READY = "Návrh už není ke schválení."
@@ -155,11 +158,11 @@ def ask(assistant: Assistant, request: Mapping) -> View:
     try:
         explanation = assistant.explain(selection)
     except AssistantError as error:
-        return dialog(title, [quote(selection.selection)], str(error))
+        return dialog(title, [quote(selection.selection, selection.has_formula)], str(error))
     return dialog(
         title,
         [
-            quote(selection.selection),
+            quote(selection.selection, selection.has_formula),
             dcc.Markdown(explanation, mathjax=True, link_target="_blank", className="assistant-explanation"),
             html.P(EXPLANATION_NOTE, className="hint small"),
         ],
@@ -179,7 +182,10 @@ def start_agent(assistant: Assistant, selection: Any, explanation: Optional[str]
     except (SelectionError, JobError) as error:
         return dialog(EXPAND_TITLE, [], str(error))
     return dialog(
-        EXPAND_TITLE, [quote(context.selection), html.P(AGENT_STARTED)], context={"job_id": job.id}, poll=True,
+        EXPAND_TITLE,
+        [quote(context.selection, context.has_formula), html.P(AGENT_STARTED)],
+        context={"job_id": job.id},
+        poll=True,
     )
 
 
@@ -188,7 +194,8 @@ def show_job(assistant: Assistant, job_id: Optional[str], message: str = "", **c
     if job is None:
         return dialog(AGENT_TITLE, [], MISSING_JOB)
     context = {"job_id": job.id}
-    selection = quote((job.request.get("selection") or {}).get("selection", ""))
+    requested = job.request.get("selection") or {}
+    selection = quote(requested.get("selection", ""), requested.get("has_formula") is True)
     if job.status == JobStatus.READY:
         try:
             topic = topic_from_dict(job.result or {})
@@ -279,9 +286,17 @@ def agents_outputs(assistant: Assistant, previous: Optional[Mapping]) -> Tuple:
     return VISIBLE if jobs else HIDDEN, agents_summary(jobs), agent_items(jobs), state, stop_polling
 
 
-def quote(text: str) -> html.Blockquote:
+def quote(text: str, with_formulas: bool = False) -> html.Blockquote:
+    """The selection as the reader saw it; with formulas it is typeset whole, so that no TeX is cut in half."""
+    if with_formulas:
+        return html.Blockquote(dcc.Markdown(formula_blocks(text), mathjax=True), className="assistant-quote")
     short = text if len(text) <= QUOTE_LENGTH else text[:QUOTE_LENGTH].rsplit(" ", 1)[0] + "…"
     return html.Blockquote(short, className="assistant-quote")
+
+
+def formula_blocks(text: str) -> str:
+    """Markdown of a selection with its display formulas on lines of their own, as dcc.Markdown needs them."""
+    return DISPLAY_FORMULA.sub(lambda match: f"\n\n$$\n{match.group(1).strip()}\n$$\n\n", text).strip()
 
 
 def _accept_hint(assistant: Assistant, topic: TopicPage, job: Job) -> str:
