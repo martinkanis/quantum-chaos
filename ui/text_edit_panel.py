@@ -14,6 +14,7 @@ from ui.text_edit_content import CANCEL_LABEL, ORIGINAL_LABEL, REVERT_LABEL, SAV
 
 MODAL_CLASS = "assistant-modal"
 OPEN_MODAL_CLASS = "assistant-modal open"
+SCROLL_CLASS = "assistant-scroll"
 """The look of the assistant's pop-up (assets/assistant.css)."""
 TEXT_ROWS = 12
 
@@ -28,13 +29,15 @@ def build_text_editor() -> html.Div:
             **{"aria-modal": "true", "aria-labelledby": ids.TEXT_EDIT_TITLE},
             children=[
                 html.H2(TITLE, id=ids.TEXT_EDIT_TITLE, className="assistant-title"),
-                html.Div(id=ids.TEXT_EDIT_HINT, className="hint small"),
-                dcc.Textarea(id=ids.TEXT_EDIT_TEXT, className="text-edit-area", rows=TEXT_ROWS, value=""),
-                html.Details(id=ids.TEXT_EDIT_ORIGINAL_BOX, className="text-edit-original", style=HIDDEN, children=[
-                    html.Summary(ORIGINAL_LABEL),
-                    html.Pre(id=ids.TEXT_EDIT_ORIGINAL),
+                html.Div(className=SCROLL_CLASS, children=[
+                    html.Div(id=ids.TEXT_EDIT_HINT, className="hint small"),
+                    dcc.Textarea(id=ids.TEXT_EDIT_TEXT, className="text-edit-area", rows=TEXT_ROWS, value=""),
+                    html.Details(id=ids.TEXT_EDIT_ORIGINAL_BOX, className="text-edit-original", style=HIDDEN, children=[
+                        html.Summary(ORIGINAL_LABEL),
+                        html.Pre(id=ids.TEXT_EDIT_ORIGINAL),
+                    ]),
+                    html.P(id=ids.TEXT_EDIT_MESSAGE, className="error-message"),
                 ]),
-                html.P(id=ids.TEXT_EDIT_MESSAGE, className="error-message"),
                 html.Div(className="assistant-actions", children=[
                     html.Button(REVERT_LABEL, id=ids.TEXT_EDIT_REVERT_BUTTON, className="secondary-button", style=HIDDEN),
                     html.Button(CANCEL_LABEL, id=ids.TEXT_EDIT_CANCEL_BUTTON, className="secondary-button"),

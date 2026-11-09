@@ -21,12 +21,14 @@
   max-height: calc(100dvh - 32px);
   box-sizing: border-box;
   padding: 20px 24px 0;
-  overflow-y: auto;
+  overflow: hidden;
   background: var(--surface);
   border-radius: 12px;
   box-shadow: 0 16px 48px rgba(28, 35, 48, 0.3);
 }
 .assistant-title { margin: 0 0 12px; font-size: 1.25rem; }
+/* Only the content scrolls, between the title and the buttons, so that the buttons never cover it. */
+.assistant-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .assistant-body { line-height: 1.6; min-height: 48px; }
 .assistant-body p, .assistant-body li { max-width: 75ch; }
 .assistant-quote {
@@ -42,10 +44,9 @@
 .assistant-quote p { margin: 0.25em 0; }
 .assistant-preview { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 8px; }
 .assistant-preview .gbs-page, .assistant-preview .card { box-shadow: none; }
-/* The buttons stay in view at the bottom while a long preview scrolls. */
+/* The buttons stay in view at the bottom while a long preview scrolls above them. */
 .assistant-actions {
-  position: sticky;
-  bottom: 0;
+  flex-shrink: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;

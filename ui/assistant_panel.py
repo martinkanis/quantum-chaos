@@ -31,6 +31,8 @@ from ui.topic_catalog import EXPANDED_TOPIC, choosable_topics
 POLL_MILLISECONDS = 5000
 MODAL_CLASS = "assistant-modal"
 OPEN_MODAL_CLASS = "assistant-modal open"
+SCROLL_CLASS = "assistant-scroll"
+"""The part of the dialog that scrolls between the title and the buttons, so that the buttons never cover it."""
 
 
 def build_assistant() -> html.Div:
@@ -61,9 +63,11 @@ def _modal() -> html.Div:
         **{"aria-modal": "true", "aria-labelledby": ids.ASSISTANT_MODAL_TITLE},
         children=[
             html.H2(id=ids.ASSISTANT_MODAL_TITLE, className="assistant-title"),
-            dcc.Loading(type="dot", children=html.Div(id=ids.ASSISTANT_MODAL_BODY, className="assistant-body")),
-            _placement_chooser(),
-            html.P(id=ids.ASSISTANT_MODAL_MESSAGE, className="error-message"),
+            html.Div(className=SCROLL_CLASS, children=[
+                dcc.Loading(type="dot", children=html.Div(id=ids.ASSISTANT_MODAL_BODY, className="assistant-body")),
+                _placement_chooser(),
+                html.P(id=ids.ASSISTANT_MODAL_MESSAGE, className="error-message"),
+            ]),
             html.Div(className="assistant-actions", children=[
                 html.Button(EXPAND_LABEL, id=ids.ASSISTANT_EXPAND_BUTTON, className="primary-button", style=HIDDEN),
                 html.Button(START_LABEL, id=ids.ASSISTANT_START_BUTTON, className="primary-button", style=HIDDEN),

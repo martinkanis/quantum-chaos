@@ -38,7 +38,7 @@ from ui.assistant_content import (
     RETRY_JOB,
     STATUS_LABELS,
 )
-from ui.assistant_panel import OPEN_MODAL_CLASS, topic_options
+from ui.assistant_panel import OPEN_MODAL_CLASS, build_assistant, topic_options
 from ui.generated_page import build_generated_page, generated_page_content
 from ui.generated_topics import generated_page_id, generated_path
 from ui.knowledge_map_content import BASE_LAYERS, BASE_RELATIONS, Layer, layers_with, relations_with
@@ -54,6 +54,7 @@ from ui.navigation import (
     VISIBLE,
     show_page,
 )
+from ui.text_edit_panel import build_text_editor
 from ui.topic_catalog import (
     BASE_RESEARCH_TOPICS,
     EXPANDED_TOPIC,
@@ -124,6 +125,22 @@ def ready_job(assistant):
             break
         time.sleep(0.01)
     return assistant.store.get(job.id)
+
+
+def dialog_of(modal):
+    return next(item for item in components(modal) if getattr(item, "className", None) == "assistant-dialog")
+
+
+def test_obsah_okna_roluje_mezi_nadpisem_a_tlacitky_ktera_ho_neprekryvaji():
+    for modal, inner_ids in (
+        (build_assistant(), (ids.ASSISTANT_MODAL_BODY, ids.ASSISTANT_PLACEMENT, ids.ASSISTANT_MODAL_MESSAGE)),
+        (build_text_editor(), (ids.TEXT_EDIT_TEXT, ids.TEXT_EDIT_MESSAGE)),
+    ):
+        dialog = dialog_of(modal)
+        assert [child.className for child in dialog.children] == ["assistant-title", "assistant-scroll", "assistant-actions"]
+        scroll = dialog.children[1]
+        assert {getattr(item, "id", None) for item in components(scroll)} >= set(inner_ids)
+        assert not any(isinstance(item, html.Button) for item in components(scroll))
 
 
 def test_dovysvetleni_otevre_okno_s_textem_a_nabidne_rozvedeni():
