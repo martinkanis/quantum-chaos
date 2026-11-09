@@ -19,16 +19,14 @@ from enum import Enum
 from typing import Any, Dict, List, Mapping, Optional
 
 from assistant.jobs import DATABASE_URL_ENV, libpq_dsn
+from assistant.topics import MAX_TOPIC_TITLE_LENGTH, NEW_TOPIC
 
 MAX_URL_LENGTH = 500
-MAX_TOPIC_TITLE_LENGTH = 120
 MAX_NOTE_LENGTH = 2000
 MAX_MESSAGE_LENGTH = 2000
 RECENT_LIMIT = 20
 URL_PATTERN = re.compile(r"^https?://[^\s/]+\.[^\s/]+(/\S*)?$")
 PAGE_PATH_PATTERN = re.compile(r"^/[a-z0-9/-]*$")
-NEW_TOPIC = "nove-tema"
-"""Value of the topic choice that asks for a research topic of its own."""
 DATABASE_UNAVAILABLE = "Fronta přednášek je teď nedostupná. Zkus to za chvíli znovu."
 
 logger = logging.getLogger(__name__)

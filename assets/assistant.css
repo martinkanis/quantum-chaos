@@ -56,6 +56,9 @@
   border-top: 1px solid var(--border);
 }
 .assistant .error-message:empty { display: none; }
+/* The topic chooser under the body of the pop-up (ui/assistant_panel.py); hidden unless a dialog asks for it. */
+.assistant-placement { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.assistant-placement .field { margin-bottom: 10px; }
 .generated-note { font-size: 0.9rem; }
 
 /* Agents page (ui/agents_page.py): the history of the runs as a list of cards. */

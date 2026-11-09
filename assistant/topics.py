@@ -23,6 +23,8 @@ MAX_HEADING_LENGTH = 160
 MAX_BODY_LENGTH = 12000
 MAX_SOURCES = 30
 MAX_SELECTION_LENGTH = 2000
+MAX_TOPIC_TITLE_LENGTH = 120
+"""Title of a research topic the reader founds for a page or for lecture notes."""
 MAX_LECTURE_SECTIONS = 20
 """Notes follow the chapters of a recorded lecture, which can have more of them than an expanded topic."""
 MAX_SLIDES_PER_SECTION = 40
@@ -33,6 +35,9 @@ SLUG_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 URL_PATTERN = re.compile(r"^https?://\S+$")
 SLIDE_FILE_PATTERN = re.compile(r"^slajd_\d{4}\.jpg$")
 ISO_DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+NEW_TOPIC = "nove-tema"
+"""Value of a topic choice that asks for a research topic of its own, titled by the reader."""
+TOPIC_ANCHOR_PREFIX = "tema-"
 
 logger = logging.getLogger(__name__)
 
@@ -156,6 +161,18 @@ def slugify(title: str) -> str:
     if len(slug) > MAX_SLUG_LENGTH:
         slug = slug[:MAX_SLUG_LENGTH].rsplit("-", 1)[0]
     return slug or "tema"
+
+
+def topic_anchor(title: str) -> str:
+    """Anchor of a research topic founded by the reader, „tema-<slug>“: the same title always joins one topic."""
+    return f"{TOPIC_ANCHOR_PREFIX}{slugify(title)}"
+
+
+def placement_with_summary(placement: Mapping[str, Any], description: str) -> dict:
+    """A topic founded by the page gets the page's description as its summary, until someone writes a better one."""
+    if placement.get("topic_title") and not placement.get("topic_summary"):
+        return {**placement, "topic_summary": description}
+    return dict(placement)
 
 
 def unique_slug(slug: str, taken: Collection[str]) -> str:

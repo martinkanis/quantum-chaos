@@ -12,6 +12,7 @@ EXPAND_LABEL = "Rozvést jako samostatné téma"
 ACCEPT_LABEL = "Přijmout, commitnout a nasadit"
 REJECT_LABEL = "Zamítnout"
 CLOSE_LABEL = "Zavřít"
+START_LABEL = "Spustit agenta"
 AGENTS_LABEL = "Agenti"
 
 EXPLANATION_NOTE = "Vysvětlení píše jazykový model Claude; zdroje, které uvádí, si ověř."
@@ -21,10 +22,19 @@ AGENT_STARTED = (
     "Stránku pak uvidíš jako návrh a rozhodneš, jestli ji přijmeš."
 )
 STILL_RUNNING = "Agent pořád pracuje. Až doběhne, odkaz Agenti v horní liště ukáže návrh ke schválení."
+PLACEMENT_HINT = (
+    "Vyber, pod které téma se nová stránka zařadí na stránce Témata; v horní liště a na mapě bude u skupiny "
+    "stránky, ze které vzešla. Bez výběru skončí v tématu Rozvedená témata. Téma jde ještě změnit při schvalování."
+)
 ACCEPT_HINT = (
     "Přijetím aplikace uloží stránku do repozitáře (commit a push do main) a Rock8Cloud ji během pár minut nasadí. "
-    "Stránka se zařadí do skupiny „{group}“ pod stránku „{parent}“ a do tématu Rozvedená témata."
+    "Stránka se zařadí do skupiny „{group}“ pod stránku „{parent}“ a do tématu, které vybereš dole."
 )
+TOPIC_LABEL = "Téma na stránce Témata"
+DEFAULT_TOPIC_SUFFIX = " (výchozí)"
+NEW_TOPIC_OPTION = "Nové téma…"
+NEW_TOPIC_LABEL = "Název nového tématu (jen když vybereš „Nové téma…“)"
+NEW_TOPIC_PLACEHOLDER = "Třeba: Kvantové tečky"
 RUNNING_AGENTS_WARNING = (
     " Pozor: nasazení restartuje aplikaci a agenti, kteří ještě běží ({count}), se přeruší; pak je spustíš znovu."
 )
@@ -64,6 +74,7 @@ EMPTY_HISTORY = "Zatím žádný agent neběžel."
 ORIGIN_LABEL = "Ze stránky"
 EXCERPT_LABEL = "úryvek"
 UNKNOWN_PAGE = "neznámá stránka"
+TOPIC_META_LABEL = "téma"
 STARTED_LABEL = "Začátek"
 FINISHED_LABEL = "Konec"
 STILL_RUNNING_LABEL = "zatím běží"

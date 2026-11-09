@@ -33,6 +33,10 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
   (`jobs.py`, bez `DATABASE_URL` jen v paměti) a commit přijatého tématu přes GitHub API (`publish.py`).
   Historie běhů je stránka `/agenti` (`ui/agents_page.py`, trvale v layoutu); odkaz Agenti v liště vedle Odhlásit
   nese počet návrhů ke schválení a návrh se otevírá, přijímá a zamítá v okně asistenta (`ui/assistant_callbacks.py`).
+  Před spuštěním agenta i při schvalování si čtenář v okně vybere téma stránky (`TopicChoice`,
+  `topic_catalog.placement_with_choice`): existující téma, nebo nové s názvem; volba jde do `placement.topic_anchor`
+  (+ `topic_title`, `topic_summary` = popis stránky) v JSON a `topics_with` stránku zařadí nebo téma založí.
+  Bez výběru zůstává téma „Rozvedená témata“; skupina v liště a na mapě je vždy podle zdrojové stránky.
 - `content/topics/*.json` – témata, která napsal asistent a uživatel přijal; aplikace je zapisuje sama commitem
   do `main` (před vlastní prací `git pull`). Čte je `ui/generated_topics.py`, stránky staví `ui/generated_page.py`
   a zařazuje je skupina zdrojové stránky v menu a na mapě a téma „Rozvedená témata“ (`topic_catalog.topics_with`).

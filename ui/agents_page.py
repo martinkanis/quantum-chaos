@@ -35,11 +35,12 @@ from ui.assistant_content import (
     STARTED_LABEL,
     STATUS_LABELS,
     STILL_RUNNING_LABEL,
+    TOPIC_META_LABEL,
     UNKNOWN_PAGE,
 )
 from ui.generated_topics import generated_path
 from ui.navigation import HIDDEN
-from ui.topic_catalog import PageEntry, page_entries
+from ui.topic_catalog import EXPANDED_TOPIC, PageEntry, choosable_topics, page_entries
 
 DISPLAY_TIME_ZONE = "Europe/Prague"
 """The reader's time zone; the jobs keep UTC and the server runs in UTC."""
@@ -112,14 +113,23 @@ def _history_item(job: Job, entries: Mapping[str, PageEntry]) -> html.Li:
 
 
 def _origin(job: Job, entries: Mapping[str, PageEntry]) -> str:
-    """The page the selection came from and, when the title line shows the drafted title, the selection itself."""
+    """The page the selection came from, the topic the page joins and, when the title line shows the drafted
+    title, the selection itself."""
     selection = _selection(job)
     entry = entries.get(selection.get("page_id", ""))
     page_title = entry.title if entry else (selection.get("page_title") or selection.get("page_id") or UNKNOWN_PAGE)
-    origin = f"{ORIGIN_LABEL} „{page_title}“"
+    origin = f"{ORIGIN_LABEL} „{page_title}“, {TOPIC_META_LABEL} „{_topic_title(job)}“"
     if (job.result or {}).get("title"):
         origin += f", {EXCERPT_LABEL}: „{excerpt(selection.get('selection', ''), EXCERPT_LENGTH)}“"
     return origin
+
+
+def _topic_title(job: Job) -> str:
+    """The research topic of the page: the one approved with the result, else the one chosen at the start."""
+    placement = (job.result or {}).get("placement") or job.request.get("placement") or {}
+    anchor = placement.get("topic_anchor") or EXPANDED_TOPIC.anchor
+    known = next((topic.title for topic in choosable_topics() if topic.anchor == anchor), None)
+    return known or placement.get("topic_title") or anchor
 
 
 def _times(job: Job) -> str:

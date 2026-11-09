@@ -11,7 +11,7 @@
     const TITLE = "assistant-modal-title";
     const BODY = "assistant-modal-body";
     const MESSAGE = "assistant-modal-message";
-    const EXPAND_BUTTON = "assistant-expand-button";
+    const START_BUTTON = "assistant-start-button";
     const MODAL_CLASS = "assistant-modal";
     const OPEN_MODAL_CLASS = "assistant-modal open";
     const NOTIFIED_KEY = "qc-agents-notified";
@@ -28,7 +28,7 @@
     const TITLES = {explain: "Dovysvětlení", expand: "Rozvedení tématu"};
     const WAITING = {
         explain: "Claude píše vysvětlení, obvykle do půl minuty…",
-        expand: "Spouštím agenta…",
+        expand: "Připravuji rozvedení…",
     };
     const WAITING_FORMULA = "Claude rozepisuje vzorec krok za krokem, obvykle do minuty…";
     const APP_TITLE = document.title;
@@ -216,9 +216,6 @@
     }
 
     function ask(action, range) {
-        if (action === "expand") {
-            askForNotifications();
-        }
         const context = contextOf(range);
         setProps(MODAL, {className: OPEN_MODAL_CLASS});
         setProps(TITLE, {children: TITLES[action]});
@@ -289,7 +286,8 @@
     document.addEventListener("click", (event) => {
         if (event.target.id === MODAL) {
             closeModal();
-        } else if (event.target.closest("#" + EXPAND_BUTTON)) {
+        } else if (event.target.closest("#" + START_BUTTON)) {
+            // The agent starts here, so this click is the user gesture the permission prompt needs.
             askForNotifications();
         }
     });

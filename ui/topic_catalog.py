@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import Collection, Dict, List, Optional, Tuple
+from typing import Collection, Dict, List, Mapping, Optional, Tuple
 
-from assistant.topics import TopicPage
+from assistant.topics import MAX_TOPIC_TITLE_LENGTH, NEW_TOPIC, Placement, TopicPage, topic_anchor
 from ui import ids
 from ui.generated_topics import GENERATED_SECTION_TITLE, GENERATED_TOPICS, generated_page_id, topic_path
 from ui.knowledge_map_content import LAYERS, LayerInfo
@@ -87,6 +87,19 @@ class StudyStep:
 
 Crumb = Tuple[str, Optional[str]]
 """Label and link; the current page has no link."""
+
+
+@dataclass(frozen=True)
+class TopicChoice:
+    """The research topic the reader picked for a page the assistant writes: an anchor, or a new topic's title."""
+
+    anchor: str
+    """Anchor of a research topic, or NEW_TOPIC with new_title."""
+    new_title: str = ""
+
+
+class TopicChoiceError(ValueError):
+    """A choice that cannot place the page; the message says why in Czech."""
 
 PORTFOLIO = PageEntry(
     ids.PORTFOLIO_PAGE, "Klasické Monte Carlo", PORTFOLIO_PATH,
@@ -521,3 +534,72 @@ def placement_for(page_id: str) -> Optional[Dict[str, Optional[str]]]:
     if group is None:
         return None
     return {"layer": group.layer.value, "topic_anchor": EXPANDED_TOPIC.anchor, "parent_page_id": page_id}
+
+
+def default_choice() -> TopicChoice:
+    return TopicChoice(EXPANDED_TOPIC.anchor)
+
+
+def choosable_topics() -> Tuple[ResearchTopic, ...]:
+    """The research topics a page can join, the expanded topics first as the default."""
+    others = tuple(topic for topic in RESEARCH_TOPICS if topic.anchor != EXPANDED_TOPIC.anchor)
+    return (EXPANDED_TOPIC,) + others
+
+
+def choice_of(placement: Placement) -> TopicChoice:
+    """The choice that leads to this placement; a topic the catalog does not know yet is „new“ with its title."""
+    anchor = placement.topic_anchor or EXPANDED_TOPIC.anchor
+    if any(topic.anchor == anchor for topic in choosable_topics()):
+        return TopicChoice(anchor)
+    return TopicChoice(NEW_TOPIC, placement.topic_title or "")
+
+
+def placement_with_choice(placement: Mapping[str, Optional[str]], choice: Optional[TopicChoice]) -> dict:
+    """The placement with the research topic the reader chose; without a choice the expanded topics.
+
+    A new topic gets its anchor from its title, so a title that names an existing topic joins that topic instead.
+    """
+    if choice is None or not choice.anchor:
+        return _placed_in(placement, EXPANDED_TOPIC)
+    if choice.anchor == NEW_TOPIC:
+        title = _checked_topic_title(choice.new_title)
+        known = _choosable_topic(topic_anchor(title))
+        return _placed_in(placement, known) if known else _founded_placement(placement, title)
+    known = _choosable_topic(choice.anchor)
+    if known is None:
+        raise TopicChoiceError("Vybrané téma aplikace nezná. Vyber ho znovu z nabídky.")
+    return _placed_in(placement, known)
+
+
+def _placed_in(placement: Mapping[str, Optional[str]], topic: ResearchTopic) -> dict:
+    """A page in an existing topic; one founded by an earlier page carries the topic's title and summary like it."""
+    founded = _is_founded(topic)
+    return {
+        **placement,
+        "topic_anchor": topic.anchor,
+        "topic_title": topic.title if founded else None,
+        "topic_summary": topic.summary if founded else None,
+    }
+
+
+def _founded_placement(placement: Mapping[str, Optional[str]], title: str) -> dict:
+    """A page that founds a topic of its own; the summary is filled in from the page once it is written."""
+    return {**placement, "topic_anchor": topic_anchor(title), "topic_title": title, "topic_summary": None}
+
+
+def _is_founded(topic: ResearchTopic) -> bool:
+    base_anchors = {base.anchor for base in BASE_RESEARCH_TOPICS}
+    return topic.anchor != EXPANDED_TOPIC.anchor and topic.anchor not in base_anchors
+
+
+def _choosable_topic(anchor: str) -> Optional[ResearchTopic]:
+    return next((topic for topic in choosable_topics() if topic.anchor == anchor), None)
+
+
+def _checked_topic_title(title: str) -> str:
+    title = title.strip()
+    if not title:
+        raise TopicChoiceError("Napiš název nového tématu, nebo vyber některé z nabídky.")
+    if len(title) > MAX_TOPIC_TITLE_LENGTH:
+        raise TopicChoiceError(f"Název tématu je moc dlouhý, povoleno je nejvýš {MAX_TOPIC_TITLE_LENGTH} znaků.")
+    return title

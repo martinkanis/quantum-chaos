@@ -7,7 +7,14 @@ from typing import Any, Collection, Mapping, Optional
 
 from assistant.claude import write_topic
 from assistant.selection import selection_from_request, selection_to_dict
-from assistant.topics import URL_PATTERN, slugify, topic_from_dict, topic_to_dict, unique_slug
+from assistant.topics import (
+    URL_PATTERN,
+    placement_with_summary,
+    slugify,
+    topic_from_dict,
+    topic_to_dict,
+    unique_slug,
+)
 
 
 def agent_request(
@@ -37,7 +44,7 @@ def draft_topic(request: Mapping[str, Any], taken_slugs: Collection[str], client
     page = topic_from_dict({
         **content,
         "slug": unique_slug(slugify(str(content.get("title", ""))), taken_slugs),
-        "placement": request.get("placement") or {},
+        "placement": placement_with_summary(request.get("placement") or {}, str(content.get("description", ""))),
         "origin": {
             "page_id": context.page_id or "neznama-stranka",
             "selection": context.selection,

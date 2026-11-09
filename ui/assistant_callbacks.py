@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 import re
 import time
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 from typing import Any, Callable, FrozenSet, List, Mapping, Optional, Tuple
 
 from dash import ALL, Dash, Input, Output, State, ctx, dcc, html, no_update
@@ -29,7 +29,15 @@ from assistant.jobs import (
 )
 from assistant.publish import PublishError, publish_settings_from_environment, publish_topic
 from assistant.selection import SelectionContext, SelectionError, selection_from_request, selection_to_dict
-from assistant.topics import TopicError, TopicPage, topic_from_dict, topic_to_dict, unique_slug
+from assistant.topics import (
+    Placement,
+    TopicError,
+    TopicPage,
+    placement_with_summary,
+    topic_from_dict,
+    topic_to_dict,
+    unique_slug,
+)
 from ui import ids
 from ui.agents_page import agent_history, agents_link_label
 from ui.assistant_content import (
@@ -45,6 +53,7 @@ from ui.assistant_content import (
     MISSING_JOB,
     NO_PLACEMENT,
     OPEN_PAGE,
+    PLACEMENT_HINT,
     PREVIEW_TITLE,
     REJECTED,
     RUNNING_AGENTS_WARNING,
@@ -55,15 +64,23 @@ from ui.generated_page import generated_page_content
 from ui.generated_topics import generated_path, published_slugs
 from ui.knowledge_map_content import LAYERS
 from ui.navigation import AGENTS_PATH, HIDDEN, VISIBLE
-from ui.topic_catalog import page_entries, placement_for
+from ui.topic_catalog import (
+    TopicChoice,
+    TopicChoiceError,
+    choice_of,
+    default_choice,
+    page_entries,
+    placement_for,
+    placement_with_choice,
+)
 
 AGENTS_SHOWN = 100
 """Runs listed on the agents page, from the newest; hidden runs are left out by the store."""
 QUOTE_LENGTH = 300
 DISPLAY_FORMULA = re.compile(r"\s*\$\$(.+?)\$\$\s*")
 """A display formula as the browser sends it, on one line; dcc.Markdown typesets it only on lines of its own."""
-EXPAND, ACCEPT, REJECT = "expand", "accept", "reject"
-ACTION_BUTTONS = (EXPAND, ACCEPT, REJECT)
+EXPAND, START, ACCEPT, REJECT = "expand", "start", "accept", "reject"
+ACTION_BUTTONS = (EXPAND, START, ACCEPT, REJECT)
 NOT_READY = "Návrh už není ke schválení."
 
 logger = logging.getLogger(__name__)
@@ -103,7 +120,10 @@ class View:
     body: Any = no_update
     message: Any = no_update
     buttons: Any = no_update
-    """The action buttons to show (EXPAND, ACCEPT, REJECT); the close button is always there."""
+    """The action buttons to show (EXPAND, START, ACCEPT, REJECT); the close button is always there."""
+    placement: Any = no_update
+    """Whether the topic chooser is shown, with the choice it starts from."""
+    choice: Any = no_update
     context: Any = no_update
     poll: bool = False
     """Start polling the agents, because one of them is now running or deploying."""
@@ -111,7 +131,8 @@ class View:
 
 
 def dialog(title: str, body: List, message: str = "", buttons: FrozenSet[str] = frozenset(), **changes: Any) -> View:
-    return View(open=True, title=title, body=body, message=message, buttons=buttons, **changes)
+    """A dialog hides the topic chooser unless it asks for it (placement=True with the choice to start from)."""
+    return View(open=True, title=title, body=body, message=message, buttons=buttons, **{"placement": False, **changes})
 
 
 def view_outputs(view: View) -> Tuple:
@@ -120,15 +141,23 @@ def view_outputs(view: View) -> Tuple:
         button_styles: Tuple = (no_update,) * len(ACTION_BUTTONS)
     else:
         button_styles = tuple(VISIBLE if button in view.buttons else HIDDEN for button in ACTION_BUTTONS)
+    placement_style = no_update if view.placement is no_update else (VISIBLE if view.placement else HIDDEN)
+    choice = view.choice if isinstance(view.choice, TopicChoice) else None
     return (
-        modal_class, view.title, view.body, view.message, *button_styles, view.context,
+        modal_class, view.title, view.body, view.message, *button_styles, placement_style,
+        choice.anchor if choice else no_update, choice.new_title if choice else no_update, view.context,
         False if view.poll else no_update,
         time.time() if view.poll or view.refresh else no_update,
     )
 
 
 def handle_action(
-    assistant: Assistant, trigger: Any, value: Any, request: Optional[Mapping], context: Optional[Mapping]
+    assistant: Assistant,
+    trigger: Any,
+    value: Any,
+    request: Optional[Mapping],
+    context: Optional[Mapping],
+    choice: Optional[TopicChoice] = None,
 ) -> View:
     """Dispatches one click or request; a re-rendered agents list re-fires the callback without a click."""
     if trigger == ids.ASSISTANT_REQUEST:
@@ -137,9 +166,11 @@ def handle_action(
         return View()
     context = context or {}
     if trigger == ids.ASSISTANT_EXPAND_BUTTON:
-        return start_agent(assistant, context.get("selection"), context.get("explanation"))
+        return offer_placement(context.get("selection"), context.get("explanation"))
+    if trigger == ids.ASSISTANT_START_BUTTON:
+        return start_agent(assistant, context.get("selection"), context.get("explanation"), choice)
     if trigger == ids.ASSISTANT_ACCEPT_BUTTON:
-        return accept(assistant, context.get("job_id"))
+        return accept(assistant, context.get("job_id"), choice)
     if trigger == ids.ASSISTANT_REJECT_BUTTON:
         return reject(assistant, context.get("job_id"))
     if isinstance(trigger, Mapping):
@@ -156,7 +187,7 @@ def ask(assistant: Assistant, request: Mapping) -> View:
     except SelectionError as error:
         return dialog(title, [], str(error))
     if request.get("action") == EXPAND:
-        return start_agent(assistant, selection_to_dict(selection), None)
+        return offer_placement(selection_to_dict(selection), None)
     try:
         explanation = assistant.explain(selection)
     except AssistantError as error:
@@ -173,15 +204,39 @@ def ask(assistant: Assistant, request: Mapping) -> View:
     )
 
 
-def start_agent(assistant: Assistant, selection: Any, explanation: Optional[str]) -> View:
+def offer_placement(selection: Any, explanation: Optional[str]) -> View:
+    """Before an agent starts, the reader picks the research topic the new page will join."""
+    try:
+        context = selection_from_request(selection)
+        if placement_for(context.page_id) is None:
+            raise SelectionError(NO_PLACEMENT)
+    except SelectionError as error:
+        return dialog(EXPAND_TITLE, [], str(error))
+    return dialog(
+        EXPAND_TITLE,
+        [quote(context.selection, context.has_formula), html.P(PLACEMENT_HINT, className="hint")],
+        buttons=frozenset({START}),
+        placement=True,
+        choice=default_choice(),
+        context={"selection": selection_to_dict(context), "explanation": explanation},
+    )
+
+
+def start_agent(
+    assistant: Assistant, selection: Any, explanation: Optional[str], choice: Optional[TopicChoice] = None
+) -> View:
     try:
         context = selection_from_request(selection)
         placement = placement_for(context.page_id)
         if placement is None:
             raise SelectionError(NO_PLACEMENT)
+        placement = placement_with_choice(placement, choice)
+    except (SelectionError, TopicChoiceError) as error:
+        return _placement_problem(selection, explanation, str(error))
+    try:
         existing_pages = [entry.title for entry in page_entries().values()]
         job = assistant.runner.start(agent_request(selection, explanation, placement, existing_pages))
-    except (SelectionError, JobError) as error:
+    except JobError as error:
         return dialog(EXPAND_TITLE, [], str(error))
     return dialog(
         EXPAND_TITLE,
@@ -192,6 +247,7 @@ def start_agent(assistant: Assistant, selection: Any, explanation: Optional[str]
 
 
 def show_job(assistant: Assistant, job_id: Optional[str], message: str = "", **changes: Any) -> View:
+    """A proposal waiting for approval comes with the topic chooser set to where the agent placed it."""
     job = _job(assistant, job_id)
     if job is None:
         return dialog(AGENT_TITLE, [], MISSING_JOB)
@@ -207,7 +263,8 @@ def show_job(assistant: Assistant, job_id: Optional[str], message: str = "", **c
             html.P(_accept_hint(assistant, topic, job), className="hint"),
             html.Div(className="assistant-preview", children=generated_page_content(topic, with_anchors=False)),
         ]
-        return dialog(PREVIEW_TITLE, body, message, frozenset({ACCEPT, REJECT}), context=context, **changes)
+        chooser = {"placement": True, "choice": choice_of(topic.placement), **changes}
+        return dialog(PREVIEW_TITLE, body, message, frozenset({ACCEPT, REJECT}), context=context, **chooser)
     if job.status == JobStatus.DEPLOYING:
         body = [html.P(DEPLOYING), *_commit_link(job)]
     elif job.status == JobStatus.DEPLOYED:
@@ -222,12 +279,14 @@ def show_job(assistant: Assistant, job_id: Optional[str], message: str = "", **c
     return dialog(AGENT_TITLE, body, message, context=context, **changes)
 
 
-def accept(assistant: Assistant, job_id: Optional[str]) -> View:
+def accept(assistant: Assistant, job_id: Optional[str], choice: Optional[TopicChoice] = None) -> View:
+    """Publishes the proposal in the topic chosen now; a choice that fails keeps the proposal and the typed title."""
     job = _job(assistant, job_id)
     if job is None or job.status != JobStatus.READY:
         return show_job(assistant, job_id, NOT_READY)
     try:
         topic = topic_from_dict(job.result or {})
+        topic = replace(topic, placement=_chosen_placement(topic, choice))
         taken = published_slugs()
         if topic.slug in taken:
             topic = replace(topic, slug=unique_slug(topic.slug, taken))
@@ -235,6 +294,8 @@ def accept(assistant: Assistant, job_id: Optional[str]) -> View:
         assistant.store.update(job.id, {
             "status": JobStatus.DEPLOYING, "commit_url": commit_url, "result": topic_to_dict(topic),
         })
+    except TopicChoiceError as error:
+        return show_job(assistant, job_id, str(error), choice=choice)
     except (TopicError, PublishError, JobError) as error:
         return show_job(assistant, job_id, str(error))
     return show_job(assistant, job_id, poll=True)
@@ -308,6 +369,20 @@ def formula_blocks(text: str) -> str:
     return DISPLAY_FORMULA.sub(lambda match: f"\n\n$$\n{match.group(1).strip()}\n$$\n\n", text).strip()
 
 
+def _placement_problem(selection: Any, explanation: Optional[str], message: str) -> View:
+    """The chooser stays open with the reader's choice, so that a missing title can be filled in."""
+    view = offer_placement(selection, explanation)
+    return replace(view, message=message, choice=no_update) if view.placement else view
+
+
+def _chosen_placement(topic: TopicPage, choice: Optional[TopicChoice]) -> Placement:
+    """The agent's placement with the topic chosen at approval; a topic founded now takes the page's description."""
+    if choice is None:
+        return topic.placement
+    placement = placement_with_choice(asdict(topic.placement), choice)
+    return Placement(**placement_with_summary(placement, topic.description))
+
+
 def _accept_hint(assistant: Assistant, topic: TopicPage, job: Job) -> str:
     group = next((info.title for info in LAYERS if info.layer.value == topic.placement.layer), topic.placement.layer)
     parent = page_entries().get(topic.placement.parent_page_id or "")
@@ -349,9 +424,10 @@ CLOSE_JS = "function(clicks) { return clicks ? '" + MODAL_CLASS + "' : window.da
 def register_assistant_callbacks(app: Dash, assistant: Optional[Assistant] = None) -> None:
     assistant = assistant or assistant_from_environment()
 
-    def on_action(request, _expand, _accept, _reject, _open, _retry, _dismiss, context):
+    def on_action(request, _expand, _start, _accept, _reject, _open, _retry, _dismiss, context, topic, new_topic):
         value = ctx.triggered[0]["value"] if ctx.triggered else None
-        return view_outputs(handle_action(assistant, ctx.triggered_id, value, request, context))
+        choice = TopicChoice(topic or "", new_topic or "")
+        return view_outputs(handle_action(assistant, ctx.triggered_id, value, request, context, choice))
 
     app.callback(
         Output(ids.ASSISTANT_MODAL, "className", allow_duplicate=True),
@@ -359,19 +435,26 @@ def register_assistant_callbacks(app: Dash, assistant: Optional[Assistant] = Non
         Output(ids.ASSISTANT_MODAL_BODY, "children"),
         Output(ids.ASSISTANT_MODAL_MESSAGE, "children"),
         Output(ids.ASSISTANT_EXPAND_BUTTON, "style"),
+        Output(ids.ASSISTANT_START_BUTTON, "style"),
         Output(ids.ASSISTANT_ACCEPT_BUTTON, "style"),
         Output(ids.ASSISTANT_REJECT_BUTTON, "style"),
+        Output(ids.ASSISTANT_PLACEMENT, "style"),
+        Output(ids.ASSISTANT_TOPIC_DROPDOWN, "value"),
+        Output(ids.ASSISTANT_NEW_TOPIC_INPUT, "value"),
         Output(ids.ASSISTANT_CONTEXT, "data"),
         Output(ids.AGENTS_INTERVAL, "disabled", allow_duplicate=True),
         Output(ids.AGENTS_REFRESH, "data"),
         Input(ids.ASSISTANT_REQUEST, "data"),
         Input(ids.ASSISTANT_EXPAND_BUTTON, "n_clicks"),
+        Input(ids.ASSISTANT_START_BUTTON, "n_clicks"),
         Input(ids.ASSISTANT_ACCEPT_BUTTON, "n_clicks"),
         Input(ids.ASSISTANT_REJECT_BUTTON, "n_clicks"),
         Input({"type": ids.AGENT_OPEN, "index": ALL}, "n_clicks"),
         Input({"type": ids.AGENT_RETRY, "index": ALL}, "n_clicks"),
         Input({"type": ids.AGENT_DISMISS, "index": ALL}, "n_clicks"),
         State(ids.ASSISTANT_CONTEXT, "data"),
+        State(ids.ASSISTANT_TOPIC_DROPDOWN, "value"),
+        State(ids.ASSISTANT_NEW_TOPIC_INPUT, "value"),
         prevent_initial_call=True,
     )(on_action)
 
