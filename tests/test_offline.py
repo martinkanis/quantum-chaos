@@ -8,7 +8,14 @@ from ui import ids
 from ui.navigation import PAGE_BY_PATH, WALTHER_LECTURE_PATH
 from ui.walther_lecture_content import LECTURE, SLIDES
 from web.lecture_slides import slide_url
-from web.offline import MANIFEST_PATH, SERVICE_WORKER_PATH, build_manifest, lazy_chunk_urls, path_callbacks
+from web.offline import (
+    MANIFEST_PATH,
+    SERVICE_WORKER_FILE,
+    SERVICE_WORKER_PATH,
+    build_manifest,
+    lazy_chunk_urls,
+    path_callbacks,
+)
 
 CALLBACK_PATH = "/_dash-update-component"
 
@@ -62,6 +69,14 @@ def test_predem_se_ukladaji_jen_callbacky_zavisle_na_ceste():
     assert any(f"{ids.TOPICS_PAGE}.style" in output for output in outputs)
     assert any(f"{ids.STUDY_PAGER}.style" in output for output in outputs)
     assert not any("results" in output for output in outputs)
+    assert not any(ids.AGENTS_LIST in output for output in outputs)
+
+
+def test_worker_neuklada_seznam_agentu_ktery_se_meni_bez_ctenare():
+    worker = SERVICE_WORKER_FILE.read_text(encoding="utf-8")
+
+    assert f'"{ids.AGENTS_LIST}.children"' in worker
+    assert "!isLive(body)" in worker
 
 
 def test_server_odpovi_na_kazdy_predem_ukladany_callback(reader):

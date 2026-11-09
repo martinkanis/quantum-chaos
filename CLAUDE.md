@@ -31,6 +31,8 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
 - `assistant/` – Claude v aplikaci: dovysvětlení označeného textu (`claude.explain`), agenti, kteří úryvek
   rozvedou na novou stránku (`agent.py`, webové vyhledávání + strukturované odevzdání), jejich stav v Postgresu
   (`jobs.py`, bez `DATABASE_URL` jen v paměti) a commit přijatého tématu přes GitHub API (`publish.py`).
+  Historie běhů je stránka `/agenti` (`ui/agents_page.py`, trvale v layoutu); odkaz Agenti v liště vedle Odhlásit
+  nese počet návrhů ke schválení a návrh se otevírá, přijímá a zamítá v okně asistenta (`ui/assistant_callbacks.py`).
 - `content/topics/*.json` – témata, která napsal asistent a uživatel přijal; aplikace je zapisuje sama commitem
   do `main` (před vlastní prací `git pull`). Čte je `ui/generated_topics.py`, stránky staví `ui/generated_page.py`
   a zařazuje je skupina zdrojové stránky v menu a na mapě a téma „Rozvedená témata“ (`topic_catalog.topics_with`).
@@ -88,7 +90,8 @@ Cílový čtenář je začínající doktorand: texty podrobně, ale polopatě, 
   na `/sw.js`). Ten ukládá aplikaci, slajdy i odpovědi callbacků (stránky Dash skládá z nich) a offline je vrací;
   chybějící odpověď je 204 = beze změny. Po každém nasazení nebo po 12 h stáhne předem všechny stránky podle
   `/offline-manifest.json` (cesty, callbacky závislé jen na cestě, odložený kód Dashe, slajdy). Klíč odpovědi
-  u callbacků podle cesty ignoruje store (`*-store`). Odhlášení uložené stránky smaže. Nový zdroj, který se
+  u callbacků podle cesty ignoruje store (`*-store`). Odpovědi, které se mění bez čtenáře (seznam agentů), worker
+  neukládá (`LIVE_OUTPUTS`). Odhlášení uložené stránky smaže. Nový zdroj, který se
   načítá mimo `/_dash-component-suites/`, `/assets/` a `/prednasky/`, přidej do workeru nebo do manifestu.
 - Stránky s formuláři jsou trvale v layoutu a jen se skrývají (`show_page`), takže formuláře přežijí přepnutí.
   Čtecí stránky bez formulářů se posílají až při první návštěvě (`ui/lazy_pages.py`, jinak by prohlížeč při každém

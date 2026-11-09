@@ -15,6 +15,7 @@ const STATIC_PREFIXES = ["/_dash-component-suites/", "/assets/", "/prednasky/"];
 const SKIPPED_NAVIGATIONS = new Set(["/login"]);
 const LOGOUT_PATH = "/logout";
 const USER_ACTIONS = [".n_clicks", ".n_intervals", ".n_submit", ".contents"];
+const LIVE_OUTPUTS = ["agents-list.children"];
 const REFRESH_MILLISECONDS = 12 * 60 * 60 * 1000;
 const PARALLEL_DOWNLOADS = 3;
 const STORE_SUFFIX = "-store";
@@ -81,7 +82,7 @@ async function callback(request) {
   const key = await callbackKey(body);
   try {
     const response = await fetch(request);
-    if (response.status === 200 && isStorable(response) && !isUserAction(body)) {
+    if (response.status === 200 && isStorable(response) && !isUserAction(body) && !isLive(body)) {
       await put(key, response.clone());
     }
     return response;
@@ -237,6 +238,11 @@ function isStore(item) {
 // Answers to clicks and timers are not worth keeping: offline nothing can recompute them anyway.
 function isUserAction(body) {
   return (body.changedPropIds || []).some((prop) => USER_ACTIONS.some((suffix) => prop.endsWith(suffix)));
+}
+
+// Answers that change on the server without the reader (the agents and their states) would come back stale.
+function isLive(body) {
+  return LIVE_OUTPUTS.some((output) => (body.output || "").includes(output));
 }
 
 function isStorable(response) {

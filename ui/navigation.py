@@ -42,6 +42,7 @@ FAILURE_DIAGNOSTICS_PATH = "/vyzkumne-smery/kdy-gbs-selze"
 PHOTON_LOSS_PATH = "/vyzkumne-smery/ztraty-fotonu"
 INTEGRALS_CHEAT_SHEET_PATH = "/tahaky/integraly"
 LECTURE_REQUESTS_PATH = "/zapisky-z-prednasek"
+AGENTS_PATH = "/agenti"
 
 VISIBLE: dict = {}
 """No inline display, so the stylesheet decides how a shown element is laid out (reading pages use a grid)."""
@@ -82,10 +83,13 @@ PAGE_IDS = (
     ids.PHOTON_LOSS_PAGE,
     ids.INTEGRALS_CHEAT_SHEET_PAGE,
     ids.LECTURE_REQUESTS_PAGE,
+    ids.AGENTS_PAGE,
 ) + generated_page_ids()
-NAV_LINK_IDS = (ids.NAV_TOPICS_LINK,) + tuple(info.menu_id for info in LAYERS) + (ids.NAV_LECTURE_REQUESTS_LINK,)
-"""Top-level menu entries: the home page with the knowledge map, one drop-down per group of pages and the page that
-queues lectures for notes."""
+NAV_LINK_IDS = (ids.NAV_TOPICS_LINK,) + tuple(info.menu_id for info in LAYERS) + (
+    ids.NAV_LECTURE_REQUESTS_LINK, ids.NAV_AGENTS_LINK,
+)
+"""Top-level menu entries: the home page with the knowledge map, one drop-down per group of pages, the page that
+queues lectures for notes and the history of the assistant's agents."""
 PAGE_BY_PATH = {
     TOPICS_PATH: ids.TOPICS_PAGE,
     KNOWLEDGE_MAP_PATH: ids.TOPICS_PAGE,
@@ -120,11 +124,13 @@ PAGE_BY_PATH = {
     PHOTON_LOSS_PATH: ids.PHOTON_LOSS_PAGE,
     INTEGRALS_CHEAT_SHEET_PATH: ids.INTEGRALS_CHEAT_SHEET_PAGE,
     LECTURE_REQUESTS_PATH: ids.LECTURE_REQUESTS_PAGE,
+    AGENTS_PATH: ids.AGENTS_PAGE,
     **generated_paths(),
 }
 ACTIVE_LINKS_BY_PAGE: Dict[str, FrozenSet[str]] = {
     ids.TOPICS_PAGE: frozenset({ids.NAV_TOPICS_LINK}),
     ids.LECTURE_REQUESTS_PAGE: frozenset({ids.NAV_LECTURE_REQUESTS_LINK}),
+    ids.AGENTS_PAGE: frozenset({ids.NAV_AGENTS_LINK}),
     **{page_id: frozenset({info.menu_id}) for info in LAYERS for page_id in info.page_ids},
 }
 

@@ -116,6 +116,8 @@ details.card > summary { cursor: pointer; font-weight: 600; margin-bottom: 12px;
 
 .top-nav {
   display: flex;
+  /* Links that do not fit beside the groups (Agenti, Odhlásit on a laptop) go to a second row. */
+  flex-wrap: wrap;
   align-items: stretch;
   gap: 4px;
   padding: 0 20px;
@@ -369,7 +371,8 @@ details.nav-link > summary:hover { color: var(--text); }
 .submenu-role { margin: 4px 16px 8px; font-size: 0.8rem; font-weight: 400; color: var(--text-muted); white-space: normal; }
 .submenu-link { padding: 8px 16px; color: var(--text); text-decoration: none; font-weight: 500; white-space: normal; }
 .submenu-link:hover { background: var(--surface-muted); color: var(--accent); }
-.logout-link { margin-left: auto; }
+.nav-account { display: flex; gap: 4px; margin-left: auto; }
+.agents-count { color: #8a5a00; font-weight: 700; }
 
 @media (min-width: 1101px) {
   .submenu { position: absolute; top: 100%; left: 0; z-index: 30; }
@@ -377,13 +380,14 @@ details.nav-link > summary:hover { color: var(--text); }
 
 @media (max-width: 1100px) {
   .menu-bar { display: block; }
-  .top-nav { display: none; flex-direction: column; padding: 0 12px 12px; }
+  .top-nav { display: none; flex-direction: column; flex-wrap: nowrap; padding: 0 12px 12px; }
   .menu-open .top-nav { display: flex; }
   .nav-link { border-bottom: none; border-left: 3px solid transparent; padding: 10px 12px; }
   .nav-link.active { border-left-color: var(--accent); }
   details.nav-link > summary { padding: 10px 12px; }
   .submenu { border: none; box-shadow: none; padding: 0 0 8px 20px; min-width: 0; }
-  .logout-link { margin-left: 0; }
+  /* In the stacked menu the two links line up with the others. */
+  .nav-account { display: contents; }
 }
 .subtopic-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; align-items: start; }
 .subtopic-form input, .subtopic-form textarea { width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font: inherit; }

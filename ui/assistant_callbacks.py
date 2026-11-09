@@ -1,6 +1,6 @@
 """Callbacks of the assistant: explaining a selection, starting agents, previewing, accepting and rejecting pages.
 
-Every action of the pop-up and of the agents panel goes through one callback, so the pop-up has a single owner;
+Every action of the pop-up and of the agents page goes through one callback, so the pop-up has a single owner;
 the work behind each action is in plain functions that return a View, which the tests call directly.
 """
 
@@ -31,6 +31,7 @@ from assistant.publish import PublishError, publish_settings_from_environment, p
 from assistant.selection import SelectionContext, SelectionError, selection_from_request, selection_to_dict
 from assistant.topics import TopicError, TopicPage, topic_from_dict, topic_to_dict, unique_slug
 from ui import ids
+from ui.agents_page import agent_history, agents_link_label
 from ui.assistant_content import (
     ACCEPT_HINT,
     AGENT_STARTED,
@@ -49,14 +50,15 @@ from ui.assistant_content import (
     RUNNING_AGENTS_WARNING,
     STILL_RUNNING,
 )
-from ui.assistant_panel import MODAL_CLASS, OPEN_MODAL_CLASS, agent_items, agents_summary
+from ui.assistant_panel import MODAL_CLASS, OPEN_MODAL_CLASS
 from ui.generated_page import generated_page_content
 from ui.generated_topics import generated_path, published_slugs
 from ui.knowledge_map_content import LAYERS
-from ui.navigation import HIDDEN, VISIBLE
+from ui.navigation import AGENTS_PATH, HIDDEN, VISIBLE
 from ui.topic_catalog import page_entries, placement_for
 
-AGENTS_SHOWN = 10
+AGENTS_SHOWN = 100
+"""Runs listed on the agents page, from the newest; hidden runs are left out by the store."""
 QUOTE_LENGTH = 300
 DISPLAY_FORMULA = re.compile(r"\s*\$\$(.+?)\$\$\s*")
 """A display formula as the browser sends it, on one line; dcc.Markdown typesets it only on lines of its own."""
@@ -268,22 +270,29 @@ def dismiss(assistant: Assistant, job_id: Optional[str]) -> View:
     return View(refresh=True)
 
 
+def refresh_agents(assistant: Assistant, trigger: Any, pathname: Optional[str], previous: Optional[Mapping]) -> Tuple:
+    """A page switch reads the agents only when it leads to their page; the timer, actions and the load always do."""
+    if trigger == ids.URL and pathname != AGENTS_PATH:
+        return (no_update,) * len(AGENTS_OUTPUTS)
+    return agents_outputs(assistant, previous)
+
+
 def agents_outputs(assistant: Assistant, previous: Optional[Mapping]) -> Tuple:
-    """Panel style, summary, list, state for notifications and whether polling stops; no redraw if nothing changed."""
+    """Menu link, history, state for notifications and whether polling stops; no redraw if nothing changed."""
     try:
         jobs = assistant.store.recent(AGENTS_SHOWN)
     except JobError as error:
-        return VISIBLE, agents_summary([]), html.P(str(error), className="error-message"), no_update, False
+        return no_update, html.P(str(error), className="error-message"), no_update, False
     signature = [[job.id, job.status.value, job.updated_at.isoformat()] for job in jobs]
     stop_polling = not any(job.status in ACTIVE for job in jobs)
     if previous and previous.get("signature") == signature:
-        return no_update, no_update, no_update, no_update, stop_polling
+        return no_update, no_update, no_update, stop_polling
     state = {
         "signature": signature,
         "ready": [_notice(job) for job in jobs if job.status == JobStatus.READY],
         "deployed": [_notice(job) for job in jobs if job.status == JobStatus.DEPLOYED],
     }
-    return VISIBLE if jobs else HIDDEN, agents_summary(jobs), agent_items(jobs), state, stop_polling
+    return agents_link_label(jobs), agent_history(jobs), state, stop_polling
 
 
 def quote(text: str, with_formulas: bool = False) -> html.Blockquote:
@@ -329,6 +338,10 @@ def _job(assistant: Assistant, job_id: Optional[str]) -> Optional[Job]:
         return None
 
 
+AGENTS_OUTPUTS = (
+    (ids.NAV_AGENTS_LINK, "children"), (ids.AGENTS_LIST, "children"), (ids.AGENTS_STATE, "data"),
+    (ids.AGENTS_INTERVAL, "disabled"),
+)
 NOTIFY_JS = "function(state) { if (window.qcAssistant) { window.qcAssistant.notify(state); } }"
 CLOSE_JS = "function(clicks) { return clicks ? '" + MODAL_CLASS + "' : window.dash_clientside.no_update; }"
 
@@ -362,16 +375,16 @@ def register_assistant_callbacks(app: Dash, assistant: Optional[Assistant] = Non
         prevent_initial_call=True,
     )(on_action)
 
+    def on_agents(_intervals, _refresh, pathname, previous):
+        return refresh_agents(assistant, ctx.triggered_id, pathname, previous)
+
     app.callback(
-        Output(ids.AGENTS_PANEL, "style"),
-        Output(ids.AGENTS_SUMMARY, "children"),
-        Output(ids.AGENTS_LIST, "children"),
-        Output(ids.AGENTS_STATE, "data"),
-        Output(ids.AGENTS_INTERVAL, "disabled"),
+        *[Output(component_id, prop) for component_id, prop in AGENTS_OUTPUTS],
         Input(ids.AGENTS_INTERVAL, "n_intervals"),
         Input(ids.AGENTS_REFRESH, "data"),
+        Input(ids.URL, "pathname"),
         State(ids.AGENTS_STATE, "data"),
-    )(lambda _intervals, _refresh, previous: agents_outputs(assistant, previous))
+    )(on_agents)
 
     app.clientside_callback(
         CLOSE_JS,

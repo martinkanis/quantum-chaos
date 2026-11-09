@@ -28,7 +28,7 @@ def test_horni_menu_ma_stejne_skupiny_a_poradi_stranek_jako_dashboard_temata():
 
     assert [group.id for group in groups] == [info.menu_id for info in LAYERS]
     assert NAV_LINK_IDS == (ids.NAV_TOPICS_LINK,) + tuple(info.menu_id for info in LAYERS) + (
-        ids.NAV_LECTURE_REQUESTS_LINK,
+        ids.NAV_LECTURE_REQUESTS_LINK, ids.NAV_AGENTS_LINK,
     )
     for info in LAYERS:
         assert group_links(menu, info.menu_id) == [entries[page_id].path for page_id in info.page_ids]

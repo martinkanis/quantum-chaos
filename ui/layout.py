@@ -4,6 +4,7 @@ from dash import dcc, html
 
 from ui import ids
 from ui.advantage_page import build_advantage_page
+from ui.agents_page import build_agents_page
 from ui.assistant_panel import build_assistant
 from ui.breadcrumbs import build_breadcrumb
 from ui.chip_simulator_page import build_chip_simulator_page
@@ -62,6 +63,7 @@ def build_layout() -> html.Div:
             page_placeholder(ids.RANDOM_MATRIX_GBS_PAGE),
             page_placeholder(ids.INTEGRALS_CHEAT_SHEET_PAGE),
             build_lecture_requests_page(),
+            build_agents_page(),
             *[page_placeholder(page_id) for page_id in generated_page_ids()],
             build_study_pager(),
             build_assistant(),

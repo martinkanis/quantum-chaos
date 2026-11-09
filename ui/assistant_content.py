@@ -1,4 +1,4 @@
-"""Texts of the assistant pop-up and of the agents panel."""
+"""Texts of the assistant pop-up and of the agents page."""
 
 from __future__ import annotations
 
@@ -16,11 +16,11 @@ AGENTS_LABEL = "Agenti"
 
 EXPLANATION_NOTE = "Vysvětlení píše jazykový model Claude; zdroje, které uvádí, si ověř."
 AGENT_STARTED = (
-    "Agent hledá zdroje a píše novou stránku, obvykle 1–3 minuty. Okno můžeš zavřít a číst dál: až doběhne, ozve se "
-    "okénko Agenti vpravo nahoře, a pokud jsi je povolil, i notifikace prohlížeče. Stránku pak uvidíš jako návrh "
-    "a rozhodneš, jestli ji přijmeš."
+    "Agent hledá zdroje a píše novou stránku, obvykle 1–3 minuty. Okno můžeš zavřít a číst dál: až doběhne, odkaz "
+    "Agenti v horní liště ukáže počet návrhů ke schválení, a pokud jsi je povolil, ozve se i notifikace prohlížeče. "
+    "Stránku pak uvidíš jako návrh a rozhodneš, jestli ji přijmeš."
 )
-STILL_RUNNING = "Agent pořád pracuje. Až doběhne, ozve se okénko Agenti vpravo nahoře."
+STILL_RUNNING = "Agent pořád pracuje. Až doběhne, odkaz Agenti v horní liště ukáže návrh ke schválení."
 ACCEPT_HINT = (
     "Přijetím aplikace uloží stránku do repozitáře (commit a push do main) a Rock8Cloud ji během pár minut nasadí. "
     "Stránka se zařadí do skupiny „{group}“ pod stránku „{parent}“ a do tématu Rozvedená témata."
@@ -31,7 +31,7 @@ RUNNING_AGENTS_WARNING = (
 REJECTED = "Návrh jsi zamítl, do aplikace se nedostane."
 DEPLOYING = (
     "Stránka je commitnutá a pushnutá. Rock8Cloud teď sestavuje a nasazuje novou verzi aplikace, obvykle pár minut. "
-    "Až bude hotovo, okénko Agenti ukáže „Nasazeno“ a stránku otevřeš odkazem."
+    "Až bude hotovo, stránka Agenti ukáže „Nasazeno“ a novou stránku otevřeš odkazem."
 )
 DEPLOYED = "Stránka je v aplikaci. Odkaz načte aplikaci znovu, aby v ní byla i nová stránka."
 COMMIT_LINK = "Commit na GitHubu"
@@ -42,8 +42,31 @@ NO_PLACEMENT = (
 MISSING_JOB = "Tohoto agenta už aplikace nezná."
 
 OPEN_JOB = "Zobrazit"
+OPEN_PROPOSAL = "Otevřít návrh ke schválení"
 RETRY_JOB = "Spustit znovu"
 DISMISS_JOB = "Skrýt"
+
+# The page with the history of the agents (ui/agents_page.py).
+AGENTS_TITLE = "Agenti"
+AGENTS_LEAD = (
+    "Agent je Claude, který z označeného úryvku napíše návrh nové stránky: vyhledá zdroje, text sepíše a počká, až "
+    "ho schválíš. Spustíš ho tak, že na studijní stránce označíš text a v liště zvýrazňovače zvolíš „Rozvést na "
+    "téma“. Tady je historie všech běhů od nejnovějšího; návrh ke schválení odsud otevřeš, přečteš a přijmeš, nebo "
+    "zamítneš."
+)
+AGENTS_HINT = (
+    "Odkaz Agenti v horní liště ukazuje, kolik návrhů čeká na schválení. Běh, který skryješ tlačítkem Skrýt, "
+    "se v seznamu už neobjeví."
+)
+HISTORY_TITLE = "Historie běhů"
+LOADING_HISTORY = "Načítám seznam agentů…"
+EMPTY_HISTORY = "Zatím žádný agent neběžel."
+ORIGIN_LABEL = "Ze stránky"
+EXCERPT_LABEL = "úryvek"
+UNKNOWN_PAGE = "neznámá stránka"
+STARTED_LABEL = "Začátek"
+FINISHED_LABEL = "Konec"
+STILL_RUNNING_LABEL = "zatím běží"
 
 STATUS_LABELS = {
     JobStatus.RUNNING: "Pracuje…",

@@ -10,9 +10,10 @@ from dash import dcc, html
 
 from auth.login import LOGOUT_PATH
 from ui import ids
+from ui.assistant_content import AGENTS_LABEL
 from ui.knowledge_map_content import LAYERS, LayerInfo
 from ui.lecture_requests_content import TITLE as LECTURE_REQUESTS_TITLE
-from ui.navigation import LECTURE_REQUESTS_PATH, LINK_CLASS, TOPICS_PATH
+from ui.navigation import AGENTS_PATH, LECTURE_REQUESTS_PATH, LINK_CLASS, TOPICS_PATH
 from ui.topic_catalog import page_entries
 
 MENU_CLASS = "top-nav"
@@ -34,11 +35,20 @@ def build_main_menu() -> html.Header:
                     *[_group_menu(info) for info in LAYERS],
                     dcc.Link(LECTURE_REQUESTS_TITLE, href=LECTURE_REQUESTS_PATH, id=ids.NAV_LECTURE_REQUESTS_LINK,
                              className=LINK_CLASS),
-                    html.A("Odhlásit", href=LOGOUT_PATH, className="nav-link logout-link"),
+                    _account_links(),
                 ],
             ),
         ],
     )
+
+
+def _account_links() -> html.Div:
+    """Agents and logout at the right end of the bar; grouped, so that they wrap to a new row together."""
+    return html.Div(className="nav-account", children=[
+        # The label gets the number of proposals waiting for approval (ui/assistant_callbacks.py).
+        dcc.Link(AGENTS_LABEL, href=AGENTS_PATH, id=ids.NAV_AGENTS_LINK, className=LINK_CLASS),
+        html.A("Odhlásit", href=LOGOUT_PATH, className=LINK_CLASS),
+    ])
 
 
 def _group_menu(info: LayerInfo) -> html.Details:
