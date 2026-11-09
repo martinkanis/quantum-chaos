@@ -1,0 +1,66 @@
+{
+  "slug": "mzi-zblizka-programovatelny-delic-svazku",
+  "title": "MZI zblízka: programovatelný dělič svazku",
+  "description": "Jak Machův–Zehnderův interferometr vzniká ze dvou děličů 50:50, co přesně dělají úhly θ a φ, jak MZI vynuluje prvek matice a co se pokazí na skutečném čipu.",
+  "in_short": "Machův–Zehnderův interferometr (MZI) je **dělič svazku s nastavitelným poměrem**. Dva pevné děliče 50:50 a fázový posuvník mezi nimi dohromady dávají libovolnou rotaci dvou módů. Vnitřní fáze určuje, kolik světla přejde do druhého vlnovodu, vnější fáze určuje, s jakou relativní fází se módy smíchají. Na této stránce MZI odvodíme z jednotlivých součástek, ukážeme vzorec pro úhly, které vynulují zvolený prvek matice, a probereme, proč skutečný MZI s nedokonalými děliči neumí přesně to, co jeho ideální matice.",
+  "sections": [
+    {
+      "heading": "Proč dva děliče a ne jeden",
+      "body": "**Intuice.** Pevný dělič 50:50 (na čipu typicky směrový vazební člen, tedy dva vlnovody přiblížené na pevnou délku) má poměr dělení „zapečený“ při výrobě. Za provozu ho měnit nejde. Trik MZI spočívá v tom, že poměr dělení neměníme v děliči, ale v **interferenci**. První dělič rozdělí světlo do dvou ramen. V jednom rameni světlo nabere navíc fázi $\\alpha$. Druhý dělič pak obě vlny znovu sečte. Podle $\\alpha$ se na jednom výstupu sčítají konstruktivně a na druhém destruktivně, nebo naopak, nebo něco mezi tím. Měnit fázi ohřevem je snadné, takže z pevných součástek dostaneme nastavitelný dělič.\n\n**Vzorec.** Zvolme konvenci, v níž má dělič 50:50 a posuvník v horním rameni matice\n\n$$\nB=\\frac{1}{\\sqrt2}\\begin{pmatrix}1 & i\\\\ i & 1\\end{pmatrix},\\qquad P(\\alpha)=\\begin{pmatrix}e^{i\\alpha} & 0\\\\ 0 & 1\\end{pmatrix}.\n$$\n\nSvětlo prochází nejdřív děličem, pak posuvníkem a pak druhým děličem, takže celková matice je $B\\,P(\\alpha)\\,B$. Pořadí násobení je tu díky symetrii jedno. Roznásobením a vytknutím $e^{i\\alpha/2}$ (vlastní výpočet) dostaneme\n\n$$\nB\\,P(\\alpha)\\,B = i\\,e^{i\\alpha/2}\\begin{pmatrix}\\sin(\\alpha/2) & \\cos(\\alpha/2)\\\\ \\cos(\\alpha/2) & -\\sin(\\alpha/2)\\end{pmatrix}.\n$$\n\nPravděpodobnost, že foton zůstane ve svém vlnovodu („bar“), je tedy $\\sin^2(\\alpha/2)$. Pravděpodobnost, že přejde do druhého („cross“), je $\\cos^2(\\alpha/2)$.\n\n**Příklad.** Pro $\\alpha=0$ vyjde matice s nulami na diagonále: všechno světlo přejde do druhého vlnovodu. Pro $\\alpha=\\pi$ jsou nuly mimo diagonálu: světlo zůstane, kde bylo. Pro $\\alpha=\\pi/2$ dostaneme $\\sin^2(\\pi/4)=0{,}5$, tedy znovu dělič 50:50, tentokrát ale „naprogramovaný“. Pro $\\alpha=1$ rad vychází přechod $\\cos^2(0{,}5)\\approx 0{,}77$. Tyto hodnoty jsme ověřili přímým numerickým vynásobením matic. Všimněte si důležitého detailu: **úhel míchání je polovinou fyzické fáze**. Ohřívač musí posunout fázi o $\\pi$, aby MZI přešel z úplného průchodu do úplného přepnutí."
+    },
+    {
+      "heading": "Dva knoflíky: co přesně dělají θ a φ",
+      "body": "**Intuice.** Prostřední posuvník nastavuje **kolik** světla přejde. To je vnitřní fáze, v zápisu Clementse a kol. (2016) úhel $\\theta$. Vnější posuvník na jednom vstupu nastavuje, **s jakou relativní fází** do míchání oba módy vstupují. To je $\\phi$. Pro jeden foton ve dvou vlnovodech (tzv. dual-rail kódování, viz Skripta 1) je to přesně dvojice „zeměpisná šířka a délka“ na Blochově sféře. Dva knoflíky proto stačí na libovolnou rotaci dvouhladinového systému až na globální fázi. Harris a kol. (2017) popisují své MZI právě takto: každý je složen ze dvou směrových vazebních členů 50 %, vnitřního posuvníku $\\theta$ a vnějšího posuvníku $\\phi$ a díky těmto dvěma posuvníkům realizuje prvky grupy SU(2).\n\n**Vzorec.** V konvenci Clementse a kol. (2016)\n\n$$\nT(\\theta,\\phi)=\\begin{pmatrix} e^{i\\phi}\\cos\\theta & -\\sin\\theta \\\\ e^{i\\phi}\\sin\\theta & \\cos\\theta \\end{pmatrix}\n$$\n\nplatí $|T_{11}|^2=\\cos^2\\theta$ (bar) a $|T_{21}|^2=\\sin^2\\theta$ (cross). Srovnáním s předchozí kapitolou vidíme, že až na pevné fáze na vstupech a výstupech odpovídá $\\theta=(\\pi-\\alpha)/2$. Tento převod jsme odvodili sami a platí jen pro konvence zvolené na této stránce. Různé knihovny a čipy mají $\\theta$ posunuté nebo zdvojené, proto při čtení cizího kódu vždy nejdřív zkontrolujte, který úhel dává úplné přepnutí.\n\n**Příklad.** $\\theta=0$ znamená úplný průchod (matice je diagonální), $\\theta=\\pi/2$ úplné přepnutí a $\\theta=\\pi/4$ dělič 50:50. Když vstupuje světlo jen do prvního módu, $\\phi$ na výsledné intenzity nemá vliv. Pouze přidá fázi, kterou detektor nevidí. Jakmile ale světlo vstupuje do obou módů najednou, $\\phi$ rozhoduje, kam interference světlo pošle. Právě této vlastnosti využívá nulování prvků v další kapitole."
+    },
+    {
+      "heading": "Jak jeden MZI vynuluje prvek matice",
+      "body": "**Intuice.** Při rozkladu cílové matice $V$ (kapitola o programování čipu na stránce Simulátor fotonického čipu) chceme, aby MZI smíchal dva sousední prvky jednoho řádku a celou jejich „váhu“ přesunul do jednoho z nich. Je to stejná situace jako u světla, které vstupuje do obou ramen: s vhodnou fází a poměrem dělení se na jednom výstupu vše vyruší. Vnější fáze $\\phi$ nejdřív srovná fáze obou čísel a vnitřní úhel $\\theta$ pak nastaví poměr tak, aby se odečetla přesně na nulu.\n\n**Vzorec.** Označme $a=V_{r,m}$ a $b=V_{r,m+1}$. Násobíme zprava inverzí $T^{-1}=T^\\dagger$, protože tak postupují Clements a kol. (2016). Řádek $(a,b)$ se změní na\n\n$$\n\\big(a\\,e^{-i\\phi}\\cos\\theta-b\\sin\\theta,\\;\\; a\\,e^{-i\\phi}\\sin\\theta+b\\cos\\theta\\big).\n$$\n\nPrvní složka je nulová, právě když $a\\,e^{-i\\phi}\\cos\\theta=b\\sin\\theta$. To splníme volbou\n\n$$\n\\phi=\\arg a-\\arg b,\\qquad \\theta=\\arctan\\frac{|a|}{|b|}.\n$$\n\nOdvození je naše vlastní a v programu může být jiná konvence, která nuluje druhou složku nebo násobí zleva. Princip je ale vždy stejný: fáze srovná, úhel vyváží velikosti. Okrajové případy: je-li $b=0$, vezmeme $\\theta=\\pi/2$, tedy úplné přepnutí. Jsou-li obě čísla nulová, je prvek nulový už předem a $\\theta,\\phi$ mohou být libovolné.\n\n**Příklad.** Ať $a=0{,}6\\,i$ a $b=0{,}8$. Pak $\\phi=\\pi/2-0=\\pi/2$ a $\\theta=\\arctan(0{,}6/0{,}8)=\\arctan 0{,}75\\approx 0{,}6435$ rad, tedy asi $36{,}87^\\circ$. Kontrola: $a\\,e^{-i\\pi/2}=0{,}6$, $\\cos\\theta=0{,}8$, $\\sin\\theta=0{,}6$. První složka je $0{,}6\\cdot0{,}8-0{,}8\\cdot0{,}6=0$ a druhá $0{,}6\\cdot0{,}6+0{,}8\\cdot0{,}8=1$. MZI tedy „posbíral“ celou normu řádku $\\sqrt{0{,}36+0{,}64}=1$ do jednoho prvku. Tohle se při rozkladu děje opakovaně, dokud nezbude diagonální matice fází."
+    },
+    {
+      "heading": "Od voltu k úhlu: posuvníky a kalibrace",
+      "body": "**Intuice.** Matice $T(\\theta,\\phi)$ je abstrakce. Čip ale nedostává úhly, dostává napětí na ohřívačích. Křemík (nebo nitrid křemíku) při ohřátí mírně změní index lomu, a tím i fázi, kterou světlo v daném úseku vlnovodu nabere. Mezi „spočítal jsem $\\theta$“ a „čip dělá $T(\\theta,\\phi)$“ proto stojí **kalibrace**: pro každý posuvník je potřeba změřit, jakou fázi dává při jakém napětí.\n\n**Vzorec (vlastní zjednodušení).** Ohřívač je odpor $R$, takže topný výkon je $V^2/R$. Pro malé změny teploty je změna fáze zhruba úměrná výkonu, a tedy\n\n$$\n\\varphi(V)\\approx\\varphi_0+\\kappa\\,V^2 .\n$$\n\nZde $\\varphi_0$ je náhodná fáze daná výrobními nepřesnostmi a $\\kappa$ účinnost ohřívače. Obě konstanty se liší kus od kusu, a proto se měří. Naprogramování čipu má tedy dva kroky: rozklad $V\\to\\{\\theta_k,\\phi_k\\}$ (čistá matematika) a převod $\\theta_k\\to V_k$ přes kalibrační křivku (fyzika). Skutečné křivky nejsou přesně kvadratické a sousední ohřívače se navzájem ovlivňují teplem (tzv. tepelné přeslechy). Přehled řídicí elektroniky a programovacích strategií programovatelných čipů podávají Bogaerts a kol. (2020).\n\n**Příklad.** Harris a kol. (2017) postavili křemíkový procesor z 88 MZI s 26 vstupními a 26 výstupními módy. Ten má 176 termooptických posuvníků, tedy právě dva na každý MZI ($88\\cdot 2=176$). K jejich ovládání vyvinuli 240kanálový zdroj napětí s 16bitovou přesností. Pro všechny vnitřní i vnější posuvníky na čipu změřili křivku fáze v závislosti na napětí. Jednoduchý výpočet ukazuje, proč na rozlišení záleží. Při 16 bitech je napěťový rozsah rozdělen na $2^{16}=65\\,536$ kroků. Odhadem (vlastní, za předpokladu, že rozsah pokrývá asi $2\\pi$ a že závislost je kvadratická) to dává kroky fáze řádově v desetitisícinách radiánu, kromě oblasti u nulového napětí, kde je křivka plochá."
+    },
+    {
+      "heading": "Když dělič není 50:50",
+      "body": "**Intuice.** Celé odvození v první kapitole stálo na tom, že oba děliče jsou přesně 50:50. Když je dělič při výrobě trochu „vychýlený“, nemohou se obě vlny na výstupu přesně vyrušit, protože nejsou stejně silné. MZI pak některé nastavení umí jen přibližně. Typicky mu chybí úplné přepnutí. V jazyce rozkladu to znamená, že některý prvek nejde vynulovat úplně a výsledná matice čipu se od cílové $V$ liší. U GBS tak čip vzorkuje z jiného rozdělení, než jsme zamýšleli (viz stránku Kdy odhad rizika přes GBS selže).\n\n**Vzorec (vlastní odvození).** Nahraďme oba děliče stejným nedokonalým děličem s amplitudami $\\cos\\beta$ a $\\sin\\beta$, kde pro ideál $\\beta=\\pi/4$. Diagonální prvek MZI je\n\n$$\n\\big(B_\\beta P(\\alpha) B_\\beta\\big)_{11}=\\cos^2\\!\\beta\\,e^{i\\alpha}-\\sin^2\\!\\beta .\n$$\n\nJeho absolutní hodnota je nejmenší pro $\\alpha=0$ a rovná se $|\\cos^2\\beta-\\sin^2\\beta|=|\\cos 2\\beta|$. To je nula jen pro $\\beta=\\pi/4$. Mimodiagonální prvek je úměrný $1+e^{i\\alpha}$, a ten jde vynulovat vždy. Při dvou stejně vychýlených děličích tedy úplný průchod zvládneme, úplné přepnutí ne. Ve výstupu, který měl zůstat tmavý, zůstane aspoň podíl výkonu $\\cos^2 2\\beta$.\n\n**Příklad.** Děliče 55:45 mají $\\cos^2\\beta=0{,}55$ a $\\sin^2\\beta=0{,}45$, takže $\\cos 2\\beta=0{,}1$. V nejlepším nastavení pro přepnutí tak 1 % výkonu zůstane v původním vlnovodu. To odpovídá kontrastu asi $10\\log_{10}(0{,}99/0{,}01)\\approx 20$ dB. Výsledek jsme ověřili numerickým prohledáním všech $\\alpha$. Literatura nabízí několik náprav. Miller (2015) navrhl dvojitý MZI se samonastavovací procedurou, která kompenzuje vyrobené poměry dělení kdekoli od 85:15 do 15:85. Clements a kol. (2016) ukázali, že jejich obdélníková síť snáší nevyvážené ztráty výrazně lépe než trojúhelníková. Pai a kol. (2019) simulovali gradientní optimalizaci sítí z nedokonalých MZI. Upozorňují, že při rovnoměrně náhodné inicializaci se kvůli lokálnímu propojení prvků hledání stáčí k pásovým maticím a hůř konverguje k náhodným unitárním maticím. Pro simulátor z toho plyne praktická rada: nestačí spočítat úhly, je dobré pak přes skutečný model nedokonalého MZI dopočítat, jakou matici čip opravdu realizuje."
+    }
+  ],
+  "sources": [
+    {
+      "title": "W. R. Clements, P. C. Humphreys, B. J. Metcalf, W. S. Kolthammer, I. A. Walmsley (2016): Optimal design for universal multiport interferometers, Optica 3, 1460",
+      "url": "https://arxiv.org/abs/1603.08788",
+      "note": "Konvence matice MZI T(θ,φ), postup s násobením inverzí MZI, vyšší odolnost obdélníkové sítě vůči nevyváženým ztrátám."
+    },
+    {
+      "title": "N. C. Harris a kol. (2017): Quantum transport simulations in a programmable nanophotonic processor, Nature Photonics 11, 447",
+      "url": "https://arxiv.org/html/1507.03406",
+      "note": "Stavba MZI ze dvou vazebních členů 50 % a posuvníků θ, φ (realizace SU(2)); čip s 88 MZI, 26 módy a 176 termooptickými posuvníky; 240kanálová 16bitová elektronika; měření křivek fáze v závislosti na napětí."
+    },
+    {
+      "title": "D. A. B. Miller (2015): Perfect optics with imperfect components, Optica 2, 747",
+      "url": "https://opg.optica.org/optica/fulltext.cfm?uri=optica-2-8-747&id=324149",
+      "note": "Omezení sítí MZI děliči, které se odchylují od 50:50; dvojitý MZI se samonastavením kompenzující poměry od 85:15 do 15:85."
+    },
+    {
+      "title": "S. Pai, B. Bartlett, O. Solgaard, D. A. B. Miller (2019): Matrix optimization on universal unitary photonic devices, Phys. Rev. Applied 11, 064044",
+      "url": "https://ui.adsabs.harvard.edu/abs/2019PhRvP..11f4044P/abstract",
+      "note": "Gradientní optimalizace sítí z nedokonalých MZI; náhodná inicializace stáčí hledání k pásovým maticím."
+    },
+    {
+      "title": "W. Bogaerts, D. Pérez, J. Capmany, D. A. B. Miller, J. Poon, D. Englund, F. Morichetti, A. Melloni (2020): Programmable photonic circuits, Nature 586, 207–216",
+      "url": "https://www.nature.com/articles/s41586-020-2764-0",
+      "note": "Přehled stavebních prvků, architektur, řídicí elektroniky a programovacích strategií programovatelných fotonických čipů."
+    }
+  ],
+  "placement": {
+    "layer": "fotonika",
+    "topic_anchor": "tema-rozvedena",
+    "parent_page_id": "chip-simulator-page"
+  },
+  "origin": {
+    "page_id": "chip-simulator-page",
+    "selection": "MZI",
+    "created": "2026-11-09",
+    "model": "claude-opus-5-5"
+  }
+}
