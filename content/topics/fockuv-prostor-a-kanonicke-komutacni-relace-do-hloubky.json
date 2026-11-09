@@ -1,0 +1,71 @@
+{
+  "slug": "fockuv-prostor-a-kanonicke-komutacni-relace-do-hloubky",
+  "title": "Fockův prostor a kanonické komutační relace do hloubky",
+  "description": "Proč Fockovy stavy tvoří ortonormální bázi, jak se skládá prostor pro mnoho módů, odkud se bere slovo „bosonový“ a proč komutační relace vyžadují nekonečnou dimenzi.",
+  "in_short": "Fockův prostor je „účetní kniha“ fotonického počítače: každý bázový vektor $|n_1,\\dots,n_M\\rangle$ udává, kolik fotonů je v kterém módu. Báze je ortonormální a úplná, takže každý stav se do ní dá rozložit a měření počtu fotonů z něj přímo čte pravděpodobnosti. Pravidla, jak se mezi bázovými stavy přechází, shrnuje jediná rovnice $[\\hat a,\\hat a^\\dagger]=1$. Ta má překvapivý důsledek: v konečné dimenzi splnit nejde, a proto každá numerická simulace, která Fockův prostor ořezává, komutační relace na okraji nutně porušuje.",
+  "sections": [
+    {
+      "heading": "Co přesně znamená „ortonormální báze“ a proč na tom záleží",
+      "body": "Stránka „Co je kvantový mód a jak po něm chodí žebříkové operátory“ už vysvětlila, co je mód a jak na Fockovy stavy působí $\\hat a$ a $\\hat a^\\dagger$. Tady se podíváme na samotnou větu z úryvku: Fockovy stavy tvoří ortonormální bázi. Má dvě poloviny. **Ortonormalita** říká, že stavy s různým počtem fotonů se navzájem „nepřekrývají“. **Úplnost** (slovo „báze“) říká, že žádný stav módu nechybí: každý fyzikální stav se dá poskládat z Fockových stavů. Teprve obě vlastnosti dohromady dovolují brát koeficienty rozkladu jako pravděpodobnosti.\n\nFormálně:\n\n$$\n\\langle m|n\\rangle=\\delta_{mn}, \\qquad \\sum_{n=0}^{\\infty}|n\\rangle\\langle n| = \\hat{1}.\n$$\n\nDruhé rovnosti se říká rozklad jednotky. Když ji „vložíme“ před libovolný stav, dostaneme $|\\psi\\rangle=\\sum_n |n\\rangle\\langle n|\\psi\\rangle$, takže koeficienty jsou prostě průměty $c_n=\\langle n|\\psi\\rangle$. Ve stejné bázi je diagonální operátor počtu fotonů:\n\n$$\n\\hat n=\\sum_{n=0}^{\\infty} n\\,|n\\rangle\\langle n|, \\qquad \\langle\\psi|\\hat n|\\psi\\rangle=\\sum_n n\\,|c_n|^2 .\n$$\n\nFockova báze je tedy vlastní bází měření, které provádí detektor počítající fotony. Proto se v ní GBS přirozeně popisuje.\n\n**Příklad (vlastní výpočet).** Vezměme $|\\psi\\rangle=\\tfrac{1}{\\sqrt2}\\left(|0\\rangle+|2\\rangle\\right)$. Normalizace sedí, protože $\\tfrac12+\\tfrac12=1$. Detektor naměří 0 fotonů s pravděpodobností 0,5 a 2 fotony také s pravděpodobností 0,5. Střední počet fotonů je $0\\cdot\\tfrac12+2\\cdot\\tfrac12=1$, ale výsledek „1 foton“ nepřijde nikdy, protože $\\langle 1|\\psi\\rangle=0$. Střední hodnota tedy nemusí být hodnota, kterou lze naměřit. Stav, ve kterém jsou jen sudé počty fotonů, ostatně není vymyšlený: stlačené vakuum, které je vstupem GBS, má také jen sudé složky (viz Skripta 2)."
+    },
+    {
+      "heading": "Mnoho módů: tenzorový součin a počítání stavů",
+      "body": "Fotonický čip má $M$ módů, třeba $M$ vlnovodů. Každý mód má svůj Fockův prostor a prostor celého systému je jejich tenzorový součin. Bázové stavy jsou prostě seznamy obsazovacích čísel, například $|2,0,1\\rangle$ znamená „dva fotony v prvním módu, žádný ve druhém a jeden ve třetím“. Ortonormalita se přenáší po složkách: dva seznamy jsou ortogonální, jakmile se liší aspoň v jednom módu.\n\n$$\n|n_1,\\dots,n_M\\rangle = |n_1\\rangle\\otimes\\cdots\\otimes|n_M\\rangle, \\qquad \\langle m_1,\\dots,m_M|n_1,\\dots,n_M\\rangle=\\prod_{i=1}^{M}\\delta_{m_i n_i}.\n$$\n\nKolik takových stavů má přesně $N$ fotonů celkem? Jde o rozmístění $N$ nerozlišitelných kuliček do $M$ přihrádek, takže podle kombinatoriky „hvězdiček a přepážek“\n\n$$\n\\dim\\mathcal H_{N,M}=\\binom{N+M-1}{N}.\n$$\n\nLineární interferometr počet fotonů zachovává, takže pracuje uvnitř tohoto konečného podprostoru. Stlačování naopak fotony vytváří, a proto GBS „žije“ v celém nekonečném prostoru přes všechna $N$.\n\n**Příklad (vlastní výpočet).** Pro $M=2$ a $N=2$ vychází $\\binom{3}{2}=3$ stavy: $|2,0\\rangle$, $|1,1\\rangle$ a $|0,2\\rangle$. Pro $M=4$ a $N=2$ je jich $\\binom{5}{2}=10$, pro $M=8$ a $N=10$ už $\\binom{17}{10}=19\\,448$. Jeden výstup GBS experimentu, tedy vzorek $(n_1,\\dots,n_M)$, je právě jeden takový bázový vektor. Pravděpodobnost každého z nich je dána hafniánem (Hamilton a kol., 2017; podrobněji stránka „Hafnián a permanent polopatě“). Počet možných výsledků roste kombinatoricky rychle, a proto nemá smysl spočítat všechny pravděpodobnosti a dává smysl vzorkovat."
+    },
+    {
+      "heading": "Proč „bosonový“: od symetrických tenzorů k obsazovacím číslům",
+      "body": "Fotony jde popsat i „po částicích“, jak to dělá první kvantování (Skripta A–B): částice 1 je v módu $a$, částice 2 v módu $b$. U nerozlišitelných bosonů ale nemá smysl říkat, *která* částice je kde. Fyzikální jsou jen stavy symetrické vůči prohození částic. Fockův prostor tuto redundanci odstraní tím, že si pamatuje jen *kolik* částic je v kterém módu. Podle přehledu na Wikipedii (heslo *Fock space*) je bosonový Fockův prostor přímým součtem symetrizovaných tenzorových součinů jednočásticového prostoru, jednoho pro každý počet částic $N=0,1,2,\\dots$\n\n$$\n\\mathcal F_{+}(\\mathcal H)=\\bigoplus_{N=0}^{\\infty} S_{+}\\,\\mathcal H^{\\otimes N},\n$$\n\nkde $S_{+}$ je symetrizátor (průměr přes všechny permutace částic) a člen $N=0$ je jednorozměrný prostor vakua. Báze obsazovacích čísel z předchozí kapitoly je přesně báze tohoto prostoru. Heslo *Fock state* také zdůrazňuje, že symetrii vůči výměně částic zajišťují komutační relace kreačních a anihilačních operátorů. Tím se dostáváme k další kapitole.\n\n**Příklad.** Dva fotony, jeden v módu $a$ a jeden v módu $b$, se v prvním kvantování zapíší jako\n\n$$\n\\tfrac{1}{\\sqrt2}\\big(|a\\rangle_1|b\\rangle_2+|b\\rangle_1|a\\rangle_2\\big)\\;\\longleftrightarrow\\;|1,1\\rangle .\n$$\n\nVlevo jsou dva členy a štítky částic, vpravo jediné číslo pro každý mód. Pro dva fotony v témže módu $a$ je symetrický stav jen $|a\\rangle_1|a\\rangle_2$, což ve Fockově zápisu odpovídá $|2,0\\rangle$. Druhý zápis je úspornější a navíc přirozeně připouští superpozice různých počtů částic, což první kvantování s pevným $N$ neumí."
+    },
+    {
+      "heading": "Kanonické komutační relace: jedna rovnice místo celé tabulky",
+      "body": "Fockův prostor můžeme zadat dvěma způsoby: buď vyjmenujeme bázi a řekneme, jak na ni působí operátory, nebo napíšeme algebraická pravidla a bázi z nich odvodíme. Kanonické komutační relace (CCR) jsou ten druhý, úspornější způsob. Přepisují pravidlo „$\\hat a^\\dagger$ přidá foton a $\\hat a$ ho ubere“ do jediné rovnice. Pro $M$ módů:\n\n$$\n[\\hat a_i,\\hat a_j^\\dagger]=\\delta_{ij}, \\qquad [\\hat a_i,\\hat a_j]=[\\hat a_i^\\dagger,\\hat a_j^\\dagger]=0 .\n$$\n\nOperátory různých módů tedy komutují, takže módy jsou nezávislé „krabičky“. Z druhé rovnice navíc plyne $\\hat a_i^\\dagger\\hat a_j^\\dagger=\\hat a_j^\\dagger\\hat a_i^\\dagger$: nezáleží na pořadí, v jakém fotony přidáváme. To je bosonová symetrie z minulé kapitoly zapsaná algebraicky. Stačí ještě postulovat vakuum $\\hat a_i|0\\rangle=0$ a celá báze vznikne jako\n\n$$\n|n_1,\\dots,n_M\\rangle=\\prod_{i=1}^{M}\\frac{(\\hat a_i^\\dagger)^{n_i}}{\\sqrt{n_i!}}\\,|0,\\dots,0\\rangle .\n$$\n\nCCR se často píší i pro kvadratury, tedy „polohu“ a „hybnost“ pole. Při volbě $\\hbar=1$ a $\\hat a=(\\hat x+i\\hat p)/\\sqrt2$ dostaneme (vlastní výpočet, stačí roznásobit)\n\n$$\n[\\hat a,\\hat a^\\dagger]=\\tfrac12\\big(-i[\\hat x,\\hat p]+i[\\hat p,\\hat x]\\big)=-i[\\hat x,\\hat p] ,\n$$\n\ntakže $[\\hat a,\\hat a^\\dagger]=1$ platí právě tehdy, když $[\\hat x,\\hat p]=i$. Pozor: knihovny a články používají různé konvence pro $\\hbar$ a faktor u $\\sqrt2$. Při čtení kovariančních matic ve Skriptech 2 se to vždy vyplatí zkontrolovat. Proč je tento popis „ten správný“? Stone–von Neumannova věta (viz heslo na Wikipedii) říká, že pro konečně mnoho stupňů volnosti jsou všechny ireducibilní reprezentace CCR (v jejich rigorózní Weylově podobě) unitárně ekvivalentní. Fockův prostor tedy není jedna z mnoha možností, ale v podstatě jediná.\n\n**Příklad (vlastní výpočet).** Z CCR plyne $[\\hat n,\\hat a^\\dagger]=\\hat a^\\dagger[\\hat a,\\hat a^\\dagger]=\\hat a^\\dagger$. Pro vlastní stav $\\hat n|n\\rangle=n|n\\rangle$ proto platí $\\hat n(\\hat a^\\dagger|n\\rangle)=(n+1)\\,\\hat a^\\dagger|n\\rangle$, takže $\\hat a^\\dagger$ opravdu zvyšuje počet fotonů o jedna. Nic z toho jsme nemuseli předpokládat, vše vyplynulo z jedné rovnice. Podrobnosti o faktorech $\\sqrt{n}$ najdeš na stránce o žebříkových operátorech."
+    },
+    {
+      "heading": "Proč nekonečná dimenze a co se rozbije při ořezání",
+      "body": "Dovysvětlení k úryvku uvádělo, že Fockův prostor jednoho módu je nekonečněrozměrný. Tady je důvod: **CCR v konečné dimenzi splnit nelze.** Argument se vejde na jeden řádek. Stopa komutátoru dvou konečných matic je vždy nula, protože $\\mathrm{Tr}(AB)=\\mathrm{Tr}(BA)$. Stopa jednotkové matice rozměru $D$ je ale $D\\neq 0$:\n\n$$\n\\mathrm{Tr}\\,[A,B]=0 \\quad\\text{ale}\\quad \\mathrm{Tr}\\,\\hat 1_D=D .\n$$\n\nPrávě takto argumentuje Fritz (2012, *On infinite-dimensional state spaces*, arXiv:1202.3817). Podle hesla o Stone–von Neumannově větě na Wikipedii si toho všiml už Hermann Weyl. V nekonečné dimenzi spor nevzniká, protože jednotkový operátor stopu nemá a $\\hat a$, $\\hat a^\\dagger$ jsou neomezené operátory.\n\nPočítač ale umí jen konečné matice. Simulátory proto zavádějí ořezání (cutoff). Například ve Strawberry Fields znamená `cutoff_dim` $=D$, že každý mód umí reprezentovat jen stavy $|0\\rangle,\\dots,|D-1\\rangle$. Dokumentace přitom výslovně varuje, že některé operace, například kubické fázové hradlo, mohou kvůli konečnému ořezání trpět velkými numerickými nepřesnostmi. Co přesně se rozbije, ukáže přímý výpočet (vlastní, ověřený numericky v Pythonu). Ořezaná matice $\\hat a_D$ má nad diagonálou $\\sqrt1,\\dots,\\sqrt{D-1}$ a pro $D=5$ vychází\n\n$$\n[\\hat a_5,\\hat a_5^\\dagger]=\\mathrm{diag}(1,1,1,1,-4).\n$$\n\nCCR tedy platí přesně na všech stavech kromě posledního. Na okraji se „schová“ celá chyba, $-(D-1)$, aby stopa vyšla nulová, jak vyžaduje argument výše.\n\nPraktické pravidlo (vlastní shrnutí): ořezání je neškodné, pokud stav na nejvyšších obsazovacích číslech nemá skoro žádnou váhu. **Příklad.** Koherentní stav se středním počtem fotonů $1$ má poissonovské rozdělení počtu fotonů (učebnicový výsledek, viz Skripta 2). Pravděpodobnost, že ořezání $D=5$ „uřízne“ něco podstatného, je\n\n$$\nP(n\\ge5)=1-e^{-1}\\Big(1+1+\\tfrac12+\\tfrac16+\\tfrac1{24}\\Big)\\approx 0{,}0037 ,\n$$\n\ntedy asi 0,37 % normy. Chyba je malá, ale ne nulová, a při silnějším stlačení nebo posunutí rychle roste. U více módů navíc velikost ořezaného prostoru roste jako $D^M$: pro $D=5$ a $M=8$ je to $5^8=390\\,625$ složek. To je jeden z důvodů, proč se GBS simuluje přes gaussovský formalismus a hafniány (Skripta 2 a 4), a ne přes vektor ve Fockově bázi."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Wikipedia: Fock space",
+      "url": "https://en.wikipedia.org/wiki/Fock_space",
+      "note": "Konstrukce bosonového Fockova prostoru jako (doplnění) přímého součtu symetrizovaných tenzorových součinů jednočásticového prostoru."
+    },
+    {
+      "title": "Wikipedia: Fock state",
+      "url": "https://en.wikipedia.org/wiki/Fock_state",
+      "note": "Báze obsazovacích čísel; bosony odpovídají symetrickým tenzorovým součinům; komutační relace zajišťují symetrii vůči výměně částic."
+    },
+    {
+      "title": "Wikipedia: Stone–von Neumann theorem",
+      "url": "https://en.wikipedia.org/wiki/Stone%E2%80%93von_Neumann_theorem",
+      "note": "Weylovo pozorování, že CCR nelze splnit v konečné dimenzi; jednoznačnost ireducibilních reprezentací CCR až na unitární ekvivalenci."
+    },
+    {
+      "title": "T. Fritz (2012): On infinite-dimensional state spaces, arXiv:1202.3817",
+      "url": "https://arxiv.org/abs/1202.3817",
+      "note": "Argument přes stopu, proč kanonickou komutační relaci nelze splnit v konečné dimenzi; Fockův prostor jako prostor spočetně nekonečné dimenze."
+    },
+    {
+      "title": "Strawberry Fields dokumentace: sf.backends.FockBackend",
+      "url": "https://strawberryfields.readthedocs.io/en/latest/code/api/strawberryfields.backends.FockBackend.html",
+      "note": "Význam parametru cutoff_dim (stavy |0⟩ až |cutoff_dim−1⟩) a varování před numerickými nepřesnostmi kvůli ořezání Fockovy báze."
+    },
+    {
+      "title": "C. S. Hamilton, R. Kruse, L. Sansoni, S. Barkhofen, C. Silberhorn, I. Jex (2017): Gaussian Boson Sampling, Phys. Rev. Lett. 119, 170501, arXiv:1612.01199",
+      "url": "https://arxiv.org/abs/1612.01199",
+      "note": "Výstup GBS jako vzorek obsazovacích čísel ve Fockově bázi, jehož pravděpodobnost je dána hafniánem."
+    }
+  ],
+  "placement": {
+    "layer": "fotonika",
+    "topic_anchor": "tema-rozvedena",
+    "parent_page_id": "primer-basics-page"
+  },
+  "origin": {
+    "page_id": "primer-basics-page",
+    "selection": "1.1 Fockův prostor a kanonické komutační relaceZákladním objektem fotonických kvantových systémů, kterými se zabýváme, je fotonický kvantový mód (qumode), zkráceně jen mód. Zhruba řečeno, v jednom kvantovém módu může být určitý počet částic (fotonů) n≥0, který reprezentujeme vektorem |n⟩; ten odpovídá kvantovému stavu kvantového módu s n fotony. Těmto vektorům říkáme Fockovy stavy (Fock states), číslu n obsazovací číslo (occupation number) a vektorovému prostoru, který generují, (bosonový) Fockův prostor (Fock space). Fockovy stavy tvoří ortogonální bázi Fockova prostoru, tj.",
+    "created": "2026-11-09",
+    "model": "claude-opus-5-5"
+  }
+}
